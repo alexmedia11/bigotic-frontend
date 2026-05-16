@@ -168,7 +168,6 @@
             pagination: { el: '.swiper-pagination', clickable: true },
         });
 
-        // Function to safely update the balance display UI
         function updateBalanceUI(balanceValue) {
             const rawBalance = parseFloat(balanceValue) || 0;
             document.getElementById('balance').innerText = rawBalance.toLocaleString('en-NG', { 
@@ -178,7 +177,6 @@
         }
 
         window.onload = async function() {
-            // 1. Get user session payload
             const user = JSON.parse(localStorage.getItem('user'));
             
             if (!user) {
@@ -186,32 +184,33 @@
                 return;
             }
 
-            // 2. Display Name Processing Logic
             const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
             document.getElementById('username-display').innerText = dynamicDisplayName;
             document.getElementById('user-initial').innerText = dynamicDisplayName.charAt(0).toUpperCase();
 
-            // 3. Render Cached Balance immediately so the screen doesn't show blank
             updateBalanceUI(user.balance);
 
-            // 4. Live Background Refresh from Database
-            // Fixed route to fetch specific user's balance dynamically upon page opening/refreshing
             if (user.email) {
                 try {
-                    const response = await fetch(`https://bigoticdata-backend.onrender.com/user-profile?email=${encodeURIComponent(user.email)}`);
+                    // Added cache-busting timestamp to the API call so Render doesn't send old information
+                    const response = await fetch(`https://bigoticdata-backend.onrender.com/user-profile?email=${encodeURIComponent(user.email)}&t=${new Date().getTime()}`);
                     if (response.ok) {
-                        const freshUserData = await response.json();
-                        if (freshUserData && freshUserData.balance !== undefined) {
-                            // Update local storage so the values persist correctly
-                            user.balance = freshUserData.balance;
+                        const result = await response.json();
+                        
+                        // Smart parsing: Check if balance is direct, or nested inside a data/user block
+                        let freshBalance = undefined;
+                        if (result.balance !== undefined) freshBalance = result.balance;
+                        else if (result.user && result.user.balance !== undefined) freshBalance = result.user.balance;
+                        else if (result.data && result.data.balance !== undefined) freshBalance = result.data.balance;
+
+                        if (freshBalance !== undefined) {
+                            user.balance = freshBalance;
                             localStorage.setItem('user', JSON.stringify(user));
-                            
-                            // Re-render UI balance instantly
-                            updateBalanceUI(freshUserData.balance);
+                            updateBalanceUI(freshBalance);
                         }
                     }
                 } catch (err) {
-                    console.log("Realtime wallet background sync paused, serving cached device wallet configuration state.", err);
+                    console.log("Realtime wallet background sync paused.", err);
                 }
             }
         };
