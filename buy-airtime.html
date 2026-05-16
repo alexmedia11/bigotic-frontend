@@ -137,8 +137,16 @@
             "9MOBILE": ['0809', '0817', '0818', '0909', '0908']
         };
 
+        // MobileSub Network ID Mapping
+        const networkIds = {
+            "MTN": 1,
+            "AIRTEL": 2,
+            "GLO": 3,
+            "9MOBILE": 4
+        };
+
         phoneInput.addEventListener('input', function() {
-            let phoneNumber = this.value.replace(/\s/g, ''); // Clear random spaces
+            let phoneNumber = this.value.replace(/\s/g, '');
             
             if (phoneNumber.length >= 4) {
                 let prefix = phoneNumber.substring(0, 4);
@@ -152,9 +160,7 @@
                 }
 
                 if (detectedNetwork) {
-                    networkSelect.value = detectedNetwork; // Sync dropdown list automatically
-                    
-                    // Display the green verification label
+                    networkSelect.value = detectedNetwork;
                     networkBadge.innerHTML = `Network detected: <span class="uppercase font-black text-blue-400">${detectedNetwork}</span>  ✅<br><span class="text-[10px] font-normal text-slate-500">Note: Ignore this warning for ported numbers</span>`;
                     networkBadge.classList.remove('hidden');
                 } else {
@@ -204,11 +210,19 @@
             const currentUser = JSON.parse(localStorage.getItem('user'));
             const networkVal = networkSelect.value;
             const phoneVal = phoneInput.value.trim();
-            const amountVal = document.getElementById('amount').value;
+            const amountVal = parseInt(document.getElementById('amount').value);
 
             if (!currentUser || !currentUser.email) {
                 showNotification("Session expired. Logging out...");
                 setTimeout(() => { window.location.href = "login.html"; }, 2000);
+                return;
+            }
+
+            // Map string back into MobileSub numeric layout IDs
+            const networkNumericId = networkIds[networkVal];
+
+            if (!networkNumericId) {
+                showNotification("Please select a valid network option.");
                 return;
             }
 
@@ -222,7 +236,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: currentUser.email,
-                        network: networkVal,
+                        network: networkNumericId, // Sends numerical value (e.g., 2 for Airtel)
                         phone: phoneVal,
                         amount: amountVal
                     })
