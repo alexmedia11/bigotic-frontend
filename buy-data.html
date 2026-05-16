@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Data | Bigotic Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0b0f19; color: white; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+    </style>
+</head>
+<body class="flex items-center justify-center p-5 pb-28">
+
+    <div class="max-w-md w-full">
+        <div class="flex items-center space-x-4 mb-8">
+            <button onclick="location.href='dashboard.html'" class="w-10 h-10 glass rounded-full flex items-center justify-center text-blue-400 border border-blue-500/20 active:scale-90 transition-all">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <h1 class="text-2xl font-black tracking-tight">Buy Data Bundle</h1>
+        </div>
+
+        <div class="glass p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
+            <div class="relative z-10">
+                <form id="dataForm" class="space-y-6">
+                    
+                    <div>
+                        <label class="text-[10px] text-blue-400 mb-1.5 block uppercase font-black tracking-[0.1em]">Select Network</label>
+                        <select id="network" required class="w-full bg-[#111827] border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold appearance-none">
+                            <option value="">-- Choose Network --</option>
+                            <option value="1">MTN</option>
+                            <option value="2">Airtel</option>
+                            <option value="3">Glo</option>
+                            <option value="4">9Mobile</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-blue-400 mb-1.5 block uppercase font-black tracking-[0.1em]">Select Plan</label>
+                        <select id="dataPlan" required disabled class="w-full bg-[#111827] border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold appearance-none">
+                            <option value="">-- Select Network First --</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-blue-400 mb-1.5 block uppercase font-black tracking-[0.1em]">Recipient Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="e.g. 08123456789" maxlength="11" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold">
+                    </div>
+
+                    <div id="priceDisplayBox" class="hidden bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Amount To Pay</p>
+                        <h2 class="text-2xl font-black text-blue-400 mt-1">₦<span id="calculatedPrice">0.00</span></h2>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full blue-gradient hover:opacity-90 py-5 rounded-2xl font-black text-xs uppercase shadow-2xl shadow-blue-600/30 transition-all flex justify-center items-center active:scale-95">
+                        Purchase Bundle
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const networkSelect = document.getElementById('network');
+        const planSelect = document.getElementById('dataPlan');
+        const priceBox = document.getElementById('priceDisplayBox');
+        const calculatedPriceSpan = document.getElementById('calculatedPrice');
+        const dataForm = document.getElementById('dataForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+
+        let cachedPlans = [];
+        const PROFIT_MARGIN_SME = 30;
+        const PROFIT_MARGIN_OTHERS = 50;
+
+        window.onload = function() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    // UPDATED FETCH LOGIC
+    fetch(`${BACKEND_URL}/get-data-plans`)
+        .then(res => res.json())
+        .then(data => {
+            // Your server sends the array directly, so 'data' IS the list of plans
+            if (Array.isArray(data)) {
+                cachedPlans = data;
+                console.log("Plans loaded successfully:", cachedPlans.length);
+            } else if (data.plans) {
+                // This covers you if you ever change the backend to { plans: [...] }
+                cachedPlans = data.plans;
+            }
+        })
+        .catch(err => {
+            console.error("Error loading network specifications:", err);
+            alert("Could not load data plans. Check if the server is awake.");
+        });
+};
+
+        networkSelect.addEventListener('change', function() {
+    const networkId = parseInt(this.value);
+    planSelect.innerHTML = '<option value="">-- Select Package --</option>';
+    
+    if (!networkId) {
+        planSelect.disabled = true;
+        return;
+    }
+
+    const filtered = cachedPlans.filter(p => p.network === networkId);
+    
+    filtered.forEach(plan => {
+        const option = document.createElement('option');
+        option.value = plan.id;
+        option.dataset.cost = plan.price;
+        // This line adds the validity period so the user knows how long it lasts
+        option.innerText = `${plan.name} (${plan.type}) - ₦${plan.price} [${plan.validity || 'Standard'}]`;
+        planSelect.appendChild(option);
+    });
+
+    planSelect.disabled = false;
+});
+
+        planSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const cost = selectedOption.dataset.cost;
+
+            if (cost) {
+                calculatedPriceSpan.innerText = parseFloat(cost).toFixed(2);
+                priceBox.classList.remove('hidden');
+            } else {
+                priceBox.classList.add('hidden');
+            }
+        });
+
+        dataForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            const network = networkSelect.value;
+            const dataPlan = planSelect.value;
+            const phone = document.getElementById('phone').value.trim();
+
+            if (phone.length < 11 || isNaN(phone)) {
+                alert("Please write a valid 11 digit mobile contact value.");
+                return;
+            }
+
+            submitBtn.innerText = "Processing Order...";
+            submitBtn.disabled = true;
+
+            fetch(`${BACKEND_URL}/buy-data`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: user.email,
+                    network: network,
+                    dataPlan: dataPlan,
+                    phone: phone
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+    if (data.success) { // Check for the success boolean we added to server.js
+        user.balance = data.newBalance;
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Better success message
+        alert("✅ Purchase Successful!\nYour data bundle has been sent.");
+        window.location.href = "dashboard.html";
+    } else {
+        // Shows the actual error from the provider (e.g., "Insufficient Fund")
+        alert("❌ Transaction Failed: " + (data.error || "Unknown Error"));
+        resetSubmitButton();
+    }
+})
+            .catch(err => {
+                console.error(err);
+                alert("System processing fault encountered. Please check server logs.");
+                resetSubmitButton();
+            });
+        });
+
+        function resetSubmitButton() {
+            submitBtn.innerText = "Purchase Bundle";
+            submitBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>

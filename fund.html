@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Wallet | Bigotic Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; color: white; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        .spinner { border: 2px solid rgba(255,255,255,0.1); border-left-color: #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex items-center justify-center p-5 relative overflow-hidden">
+
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-600/20 blur-[120px] rounded-full -z-10"></div>
+
+    <div class="max-w-md w-full">
+        <div class="flex items-center space-x-4 mb-8">
+            <button onclick="location.href='dashboard.html'" class="w-10 h-10 glass rounded-full flex items-center justify-center text-blue-400 border border-blue-500/20 active:scale-90 transition-all">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <h1 class="text-2xl font-black tracking-tight">Fund Wallet</h1>
+        </div>
+
+        <div class="glass p-8 rounded-[2.5rem] relative">
+            <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-[0.2em] font-bold text-center">Secure Funding via Paystack</p>
+            
+            <form id="paymentForm" class="space-y-6">
+                <div>
+                    <label class="text-[10px] text-blue-400 mb-2 block uppercase font-black tracking-widest">Deposit Amount</label>
+                    <div class="relative group">
+                        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-xl font-bold text-blue-500/50 group-focus-within:text-blue-500 transition-colors">₦</span>
+                        <input type="number" id="amount" required placeholder="0.00" min="100" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 pl-12 text-2xl outline-none focus:border-blue-500/50 transition-all font-bold placeholder:opacity-20">
+                    </div>
+                    <div class="flex justify-between mt-3 px-1">
+                        <span class="text-[9px] text-gray-500 font-bold uppercase italic">Minimum: ₦100</span>
+                        <span class="text-[9px] text-blue-400 font-bold uppercase italic flex items-center"><i data-lucide="shield-check" class="w-3 h-3 mr-1"></i> Secured</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="payBtn" class="w-full blue-gradient py-5 rounded-2xl font-black text-xs uppercase shadow-2xl shadow-blue-900/40 transition-all flex justify-center items-center active:scale-95">
+                    Proceed To Checkout
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="statusModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
+        <div class="glass max-w-xs w-full p-8 rounded-[2.5rem] text-center relative z-10 border border-white/10 shadow-2xl">
+            <div id="modalIcon" class="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center">
+                </div>
+            <h3 id="modalTitle" class="text-xl font-black mb-2"></h3>
+            <p id="modalMsg" class="text-xs text-gray-400 leading-relaxed mb-6"></p>
+            <button id="modalBtn" class="w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"></button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const paymentForm = document.getElementById('paymentForm');
+        const payBtn = document.getElementById('payBtn');
+        const statusModal = document.getElementById('statusModal');
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+
+        function showStatus(type, title, msg, btnText, action = null) {
+            const iconBox = document.getElementById('modalIcon');
+            const btn = document.getElementById('modalBtn');
+            
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMsg').innerText = msg;
+            btn.innerText = btnText;
+
+            // Reset classes
+            iconBox.className = "w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center ";
+            btn.className = "w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ";
+
+            if (type === 'loading') {
+                iconBox.innerHTML = `<div class="spinner !w-8 !h-8"></div>`;
+                iconBox.classList.add('bg-blue-500/10');
+                btn.classList.add('hidden'); // Hide button during loading
+            } else if (type === 'success') {
+                iconBox.innerHTML = `<i data-lucide="check-circle" class="w-8 h-8 text-emerald-400"></i>`;
+                iconBox.classList.add('bg-emerald-500/10');
+                btn.classList.add('bg-emerald-500', 'text-black');
+                btn.classList.remove('hidden');
+            } else {
+                iconBox.innerHTML = `<i data-lucide="alert-circle" class="w-8 h-8 text-red-400"></i>`;
+                iconBox.classList.add('bg-red-500/10');
+                btn.classList.add('bg-red-500', 'text-white');
+                btn.classList.remove('hidden');
+            }
+
+            statusModal.classList.remove('hidden');
+            lucide.createIcons();
+
+            btn.onclick = action ? action : () => statusModal.classList.add('hidden');
+        }
+
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user) {
+                showStatus('error', 'Auth Required', 'Please log in to fund your account.', 'Login', () => location.href='login.html');
+                return;
+            }
+
+            payBtn.innerHTML = `<div class="spinner mr-3"></div> INITIALIZING...`;
+            payBtn.disabled = true;
+
+            const handler = PaystackPop.setup({
+                key: 'pk_live_8b224c134d4236b808b2d779e4a5dd9d33c7adc2',
+                email: user.email,
+                amount: amount * 100,
+                currency: "NGN",
+                callback: function(response) {
+                    showStatus('loading', 'Verifying...', 'Please wait while we confirm your transaction.', '');
+                    
+                    fetch(`${BACKEND_URL}/verify-payment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ reference: response.reference, email: user.email })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            user.balance = data.newBalance;
+                            localStorage.setItem('user', JSON.stringify(user));
+                            showStatus('success', 'Wallet Funded!', `₦${amount} successfully added to your balance.`, 'Go to Dashboard', () => location.href='dashboard.html');
+                        } else {
+                            showStatus('error', 'Failed', data.error || 'Verification failed', 'Retry');
+                            resetPayBtn();
+                        }
+                    })
+                    .catch(() => {
+                        showStatus('error', 'Network Error', 'Check your connection and try again.', 'Close');
+                        resetPayBtn();
+                    });
+                },
+                onClose: function() {
+                    resetPayBtn();
+                }
+            });
+            handler.openIframe();
+        });
+
+        function resetPayBtn() {
+            payBtn.innerText = "Proceed To Checkout";
+            payBtn.disabled = false;
+        }
+    </script>
+</body>
+</html>

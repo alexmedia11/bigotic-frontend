@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Bigotic Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .bg-gradient { background: radial-gradient(circle at bottom left, #1e3a8a, #0f172a, #000000); min-height: 100vh; }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-1rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient text-white flex items-center justify-center p-6 relative">
+
+    <div id="toastContainer" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <div class="max-w-md w-full">
+        <div class="text-center mb-8">
+            <a href="index.html" class="text-3xl font-black tracking-tighter text-blue-400">BIGOTIC<span class="text-white">DATA</span></a>
+        </div>
+
+        <div class="glass p-8 rounded-[2rem] shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6">Welcome Back</h2>
+            
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block uppercase font-bold tracking-wider">Email</label>
+                    <input type="email" id="email" required placeholder="Enter your email" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-blue-500 transition-all">
+                </div>
+
+                <div>
+                    <div class="flex justify-between">
+                        <label class="text-xs text-gray-400 mb-1 block uppercase font-bold tracking-wider">Password</label>
+                        <a href="#" class="text-[10px] text-blue-400 uppercase font-bold hover:underline">Forgot?</a>
+                    </div>
+                    <input type="password" id="password" required placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-blue-500 transition-all">
+                </div>
+
+                <button type="submit" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold shadow-lg shadow-blue-600/20 transition-all flex justify-center items-center">
+                    Login to Dashboard
+                </button>
+            </form>
+
+            <p class="text-center text-gray-400 text-sm mt-8">
+                New to Bigotic? <a href="signup.html" class="text-blue-400 font-bold hover:text-blue-300">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+
+        function showNotification(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-300 ${
+                type === 'success' 
+                ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-200' 
+                : 'bg-rose-950/80 border-rose-500/30 text-rose-200'
+            }`;
+
+            const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
+            
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-5 h-5 flex-shrink-0"></i>
+                <p class="text-xs font-semibold leading-relaxed">${message}</p>
+            `;
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            
+            loginBtn.innerText = "Authenticating...";
+            loginBtn.disabled = true;
+
+            const emailVal = document.getElementById('email').value.trim();
+            const passwordVal = document.getElementById('password').value;
+            const liveUrl = 'https://bigoticdata-backend.onrender.com/login';
+
+            try {
+                const response = await fetch(liveUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailVal, password: passwordVal })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // This data variable contains everything the server found in the DB
+                    // (fullName, username, phone, balance, etc.)
+                    
+                    // SAVE ALL DATA, NOT JUST EMAIL
+                    localStorage.setItem('user', JSON.stringify(data)); 
+                    
+                    showNotification("Login Successful! Redirecting... 🔓", "success");
+                    
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1500);
+                } else {
+                    showNotification(data.error || "Invalid Credentials. Please check details.");
+                }
+            } catch (err) {
+                console.error("LOGIN SYSTEM NETWORK FAILURE:", err);
+                showNotification("Could not connect to server. It might be sleeping—please wait a minute and try again.");
+            } finally {
+                loginBtn.innerText = "Login to Dashboard";
+                loginBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

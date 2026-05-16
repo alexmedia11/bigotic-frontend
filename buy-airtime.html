@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Airtime | Bigotic Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #020617; /* Deepest Navy/Black */
+            color: white; 
+            min-height: 100vh; 
+        }
+        .glass { 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        .dark-card {
+            background: linear-gradient(145deg, #0f172a 0%, #020617 100%);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+        .premium-gradient { 
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%); 
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-1rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="pb-28">
+
+    <div id="toastContainer" class="fixed top-24 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <nav class="flex justify-between items-center px-6 py-5 sticky top-0 z-50 bg-[#020617]/80 backdrop-blur-md border-b border-white/5">
+        <button onclick="location.href='dashboard.html'" class="flex items-center text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors">
+            <i data-lucide="chevron-left" class="w-5 h-5 mr-1"></i> Back
+        </button>
+        <div class="text-lg font-black tracking-tighter text-blue-600">BIGOTIC<span class="text-white">DATA</span></div>
+    </nav>
+
+    <main class="px-5 max-w-md mx-auto mt-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-black tracking-tight">Buy Airtime</h1>
+            <p class="text-sm text-slate-400 mt-1">Instant top-up for all Nigerian networks.</p>
+        </header>
+
+        <form id="airtimeForm" class="space-y-6">
+            <div class="dark-card p-7 rounded-[2rem] shadow-2xl space-y-6">
+                
+                <div>
+                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Select Network</label>
+                    <select id="network" required class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all font-semibold appearance-none">
+                        <option value="" disabled selected>-- Choose Network --</option>
+                        <option value="MTN">MTN</option>
+                        <option value="AIRTEL">AIRTEL</option>
+                        <option value="GLO">GLO</option>
+                        <option value="9MOBILE">9MOBILE</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Phone Number</label>
+                    <div class="relative">
+                        <input type="tel" id="phone" required placeholder="08012345678" maxlength="11" class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold placeholder-slate-700">
+                        <i data-lucide="phone" class="absolute right-5 top-5 w-5 h-5 text-slate-600"></i>
+                    </div>
+                    <p id="network-badge" class="text-xs font-semibold text-emerald-400 mt-3 ml-1 hidden transition-all duration-300"></p>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Amount (₦)</label>
+                    <div class="relative">
+                        <input type="number" id="amount" required min="50" placeholder="Min ₦50" class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold placeholder-slate-700">
+                        <span class="absolute right-5 top-5 font-bold text-slate-600">NGN</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full premium-gradient hover:brightness-110 py-5 rounded-2xl font-black text-sm uppercase shadow-2xl shadow-blue-900/20 transition-all flex justify-center items-center active:scale-[0.98] tracking-widest text-white">
+                Purchase Airtime
+            </button>
+        </form>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 md:hidden">
+        <div class="bg-slate-900/90 backdrop-blur-xl border border-white/5 rounded-[2.5rem] h-20 shadow-2xl flex items-center justify-around px-2">
+            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-blue-500">
+                <i data-lucide="phone" class="w-5 h-5 mb-1"></i>
+                <span class="text-[8px] font-black uppercase tracking-tighter">Airtime</span>
+            </a>
+            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-500">
+                <i data-lucide="wifi" class="w-5 h-5 mb-1"></i>
+                <span class="text-[8px] font-black uppercase tracking-tighter">Data</span>
+            </a>
+            <div class="relative -top-6">
+                <a href="dashboard.html" class="w-16 h-16 bg-blue-600 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-blue-900/40 border-4 border-[#020617] active:scale-90 transition-all">
+                    <i data-lucide="layout-dashboard" class="w-7 h-7"></i>
+                </a>
+            </div>
+            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-500">
+                <i data-lucide="clock" class="w-5 h-5 mb-1"></i>
+                <span class="text-[8px] font-black uppercase tracking-tighter">History</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-500">
+                <i data-lucide="user" class="w-5 h-5 mb-1"></i>
+                <span class="text-[8px] font-black uppercase tracking-tighter">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const airtimeForm = document.getElementById('airtimeForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const phoneInput = document.getElementById('phone');
+        const networkSelect = document.getElementById('network');
+        const networkBadge = document.getElementById('network-badge');
+
+        // ==========================================
+        // REAL-TIME NIGERIAN CARRIER DETECTION
+        // ==========================================
+        const networkPrefixes = {
+            "MTN": ['0803', '0806', '0810', '0813', '0814', '0816', '0903', '0906', '0913', '0916', '0703', '0706', '0704', '0901'],
+            "AIRTEL": ['0802', '0808', '0812', '0902', '0907', '0912', '0911', '0708', '0701'],
+            "GLO": ['0805', '0807', '0811', '0815', '0905', '0915', '0705'],
+            "9MOBILE": ['0809', '0817', '0818', '0909', '0908']
+        };
+
+        phoneInput.addEventListener('input', function() {
+            let phoneNumber = this.value.replace(/\s/g, ''); // Clear random spaces
+            
+            if (phoneNumber.length >= 4) {
+                let prefix = phoneNumber.substring(0, 4);
+                let detectedNetwork = null;
+
+                for (const [network, prefixes] of Object.entries(networkPrefixes)) {
+                    if (prefixes.includes(prefix)) {
+                        detectedNetwork = network;
+                        break;
+                    }
+                }
+
+                if (detectedNetwork) {
+                    networkSelect.value = detectedNetwork; // Sync dropdown list automatically
+                    
+                    // Display the green verification label
+                    networkBadge.innerHTML = `Network detected: <span class="uppercase font-black text-blue-400">${detectedNetwork}</span>  ✅<br><span class="text-[10px] font-normal text-slate-500">Note: Ignore this warning for ported numbers</span>`;
+                    networkBadge.classList.remove('hidden');
+                } else {
+                    networkBadge.classList.add('hidden');
+                }
+            } else {
+                networkBadge.classList.add('hidden');
+            }
+        });
+
+        // ==========================================
+        // NOTIFICATION HANDLER
+        // ==========================================
+        function showNotification(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-300 ${
+                type === 'success' 
+                ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-200' 
+                : 'bg-rose-950/90 border-rose-500/30 text-rose-200'
+            }`;
+
+            const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
+            
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-5 h-5 flex-shrink-0"></i>
+                <p class="text-xs font-bold leading-tight">${message}</p>
+            `;
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // ==========================================
+        // FORM SUBMISSION (LIVE RENDER ENDPOINT)
+        // ==========================================
+        airtimeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            const networkVal = networkSelect.value;
+            const phoneVal = phoneInput.value.trim();
+            const amountVal = document.getElementById('amount').value;
+
+            if (!currentUser || !currentUser.email) {
+                showNotification("Session expired. Logging out...");
+                setTimeout(() => { window.location.href = "login.html"; }, 2000);
+                return;
+            }
+
+            // Show Processing Loader UI
+            submitBtn.innerHTML = `<span class="animate-pulse">PROCESSING...</span>`;
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://bigoticdata-backend.onrender.com/buy-airtime', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUser.email,
+                        network: networkVal,
+                        phone: phoneVal,
+                        amount: amountVal
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentUser.balance = data.newBalance;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    
+                    showNotification("Purchase Successful! 🎉", "success");
+                    setTimeout(() => { window.location.href = "dashboard.html"; }, 2000);
+                } else {
+                    showNotification(data.error || "Transaction failed.");
+                    submitBtn.innerText = "Purchase Airtime";
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error("AIRTIME FRONTEND ERROR:", err);
+                showNotification("Server connection error. Please try again.");
+                submitBtn.innerText = "Purchase Airtime";
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

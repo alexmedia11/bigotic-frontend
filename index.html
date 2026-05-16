@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigotic Data | Instant VTU & Bills</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        /* Rich, deep dark gradient without the harsh light blue top glare */
+        .bg-gradient-rich { background: radial-gradient(circle at top right, #0b1528, #05070f, #000000); }
+    </style>
+</head>
+<body class="bg-gradient-rich text-white min-h-screen flex flex-col justify-between scroll-smooth relative">
+
+    <a href="https://wa.me/2349159436827" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#20ba5a] p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 z-50 flex items-center justify-center group">
+        <svg class="w-7 h-7 text-white fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 12.008 0c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 12.004-11.952 12.004-.003 0-.005 0-.008 0-2.005-.001-3.975-.493-5.732-1.424L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-1.005-5.048-2.839-6.884-1.833-1.836-4.271-2.846-6.877-2.847-5.437 0-9.863 4.373-9.867 9.743-.001 1.704.457 3.366 1.325 4.814l-.993 3.626 3.73-.969zM16.4 13.572c-.303-.151-1.793-.884-2.071-.984-.278-.101-.48-.151-.68.151-.2.302-.776.984-.951 1.186-.176.201-.351.226-.654.075-.303-.151-1.281-.473-2.44-1.507-.901-.804-1.51-1.796-1.687-2.098-.176-.302-.019-.465.132-.615.136-.135.303-.352.454-.528.151-.176.201-.302.303-.503.101-.201.05-.377-.025-.528-.075-.151-.68-1.637-.932-2.246-.247-.591-.497-.512-.68-.521-.176-.009-.377-.01-.578-.01-.201 0-.528.075-.804.377-.277.302-1.056 1.03-1.056 2.512 0 1.482 1.081 2.913 1.232 3.114.151.201 2.128 3.248 5.155 4.555.72.311 1.281.497 1.721.638.723.23 1.381.197 1.901.12.579-.087 1.794-.734 2.046-1.443.251-.708.251-1.317.176-1.442-.075-.126-.278-.201-.581-.352z"/>
+        </svg>
+        <span class="absolute right-16 bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none shadow-xl">Chat with Support</span>
+    </a>
+
+    <nav class="flex justify-between items-center px-6 py-6 max-w-7xl w-full mx-auto z-40">
+        <div class="text-2xl font-black tracking-tighter text-blue-400">BIGOTIC<span class="text-white">DATA</span></div>
+        <div class="hidden md:flex space-x-8 text-sm font-medium">
+            <a href="#services" class="hover:text-blue-400 transition">Services</a>
+            <a href="#about" class="hover:text-blue-400 transition">Why Choose Us</a>
+            <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+            <a href="#" class="hover:text-blue-400 transition">API Docs</a>
+        </div>
+        <div class="space-x-4 flex items-center">
+            <a href="login.html" class="text-sm font-semibold hover:text-blue-400 transition">Login</a>
+            <a href="signup.html" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-full text-sm font-bold transition shadow-lg shadow-blue-500/20">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="max-w-7xl mx-auto px-6 pt-8 pb-24 grid lg:grid-cols-2 gap-12 items-center w-full">
+        <div>
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Fast & Automated</span>
+            <h1 class="text-5xl lg:text-7xl font-extrabold mt-6 leading-tight">
+                Empower Your <span class="text-blue-500">Digital Life</span> 
+            </h1>
+            <p class="text-gray-400 mt-6 text-lg max-w-md">
+                The fastest way to buy Airtime, Data, and pay Utility bills in Nigeria. Secure transactions, delivered instantly 24/7.
+            </p>
+            <div class="mt-10 flex flex-wrap gap-4">
+                <a href="signup.html" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                    Sign Up Now <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="login.html" class="glass px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition flex items-center gap-2">
+                    Access Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="relative group rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-950/40 p-2">
+            <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent pointer-events-none"></div>
+            <img src="Promo1.jpg" alt="Bigotic Data Services Overview" class="w-full h-auto rounded-[2.2rem] object-cover shadow-inner transition-transform duration-500 group-hover:scale-[1.01]">
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-6 py-12 border-t border-b border-white/5 w-full">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="text-3xl font-black text-blue-400">50k+</div>
+                <div class="text-gray-400 text-xs uppercase mt-1 tracking-widest font-bold">Active Users</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-black text-blue-400">200k+</div>
+                <div class="text-gray-400 text-xs uppercase mt-1 tracking-widest font-bold">Processed Orders</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-black text-blue-400">99.9%</div>
+                <div class="text-gray-400 text-xs uppercase mt-1 tracking-widest font-bold">API Uptime</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl font-black text-blue-400">24/7</div>
+                <div class="text-gray-400 text-xs uppercase mt-1 tracking-widest font-bold">Automated Support</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="max-w-7xl mx-auto px-6 py-24 w-full">
+        <div class="text-center max-w-xl mx-auto mb-16">
+            <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Our Ecosystem</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold mt-2">Services Built For Convenience</h2>
+            <p class="text-gray-400 mt-4">We provide wholesale rates for retail actions. Everything is lightning fast and fully automated.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass p-8 rounded-3xl transition-transform hover:-translate-y-2 duration-300">
+                <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="wifi" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Cheap Data Bundles</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Get low-cost SME, Gifting, and Corporate data variants for MTN, Airtel, Glo, and 9mobile instantly.
+                </p>
+                <a href="login.html" class="text-blue-400 text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:text-blue-300">Buy Data <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+            </div>
+
+            <div class="glass p-8 rounded-3xl transition-transform hover:-translate-y-2 duration-300">
+                <div class="w-12 h-12 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="phone" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Instant VTU Airtime</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Top up your cellular credit lines with zero delays. Enjoy discounts on every recharge value you purchase.
+                </p>
+                <a href="login.html" class="text-purple-400 text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:text-purple-300">Buy Airtime <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+            </div>
+
+            <div class="glass p-8 rounded-3xl transition-transform hover:-translate-y-2 duration-300">
+                <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="tv" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Utility & Cable Bills</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Renew your DSTV, GOTV, and Startimes packages or generate prepaid electricity tokens automatically.
+                </p>
+                <a href="login.html" class="text-emerald-400 text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:text-emerald-300">Pay Bills <i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="max-w-7xl mx-auto px-6 py-16 w-full grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+            <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Why Bigotic Data</span>
+            <h2 class="text-3xl md:text-5xl font-extrabold mt-3 leading-tight">Designed for Regular Users & Developers</h2>
+            <p class="text-gray-400 mt-6 leading-relaxed">
+                Whether you just want to load a personal device cheaply or you run a custom platform requiring high-volume VTU API delivery setups, Bigotic Data provides a rugged structure that ensures zero failure rates.
+            </p>
+            <div class="mt-8 space-y-4">
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 bg-blue-500/20 text-blue-400 p-1 rounded-md"><i data-lucide="check" class="w-4 h-4"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm">Automated Wallet Funding</h4>
+                        <p class="text-gray-400 text-xs mt-1">Get your personalized static bank account numbers for immediate automatic wallet funding.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="mt-1 bg-blue-500/20 text-blue-400 p-1 rounded-md"><i data-lucide="check" class="w-4 h-4"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm">Developer Friendly API</h4>
+                        <p class="text-gray-400 text-xs mt-1">Integrate our ultra-fast endpoints into your own script setups to resell effortlessly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="relative flex justify-center">
+            <div class="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full"></div>
+            <div class="glass p-8 rounded-3xl max-w-sm w-full relative z-10 space-y-4">
+                <div class="flex justify-between items-center text-xs text-gray-400">
+                    <span>Transaction Track</span>
+                    <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full">Success</span>
+                </div>
+                <div class="text-2xl font-bold">₦4,500.00</div>
+                <div class="text-xs text-slate-400 border-t border-white/5 pt-3 space-y-2">
+                    <div class="flex justify-between"><span>Product:</span><span class="text-white">MTN 10GB Monthly</span></div>
+                    <div class="flex justify-between"><span>Status:</span><span class="text-white">Delivered Instantly</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="max-w-7xl mx-auto px-6 py-24 w-full">
+        <div class="glass rounded-[2.5rem] p-8 md:p-12 grid md:grid-cols-2 gap-12 items-center relative overflow-hidden">
+            <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/10 blur-3xl rounded-full"></div>
+            <div>
+                <h2 class="text-3xl font-extrabold">Need Help? Reach Out</h2>
+                <p class="text-gray-400 mt-4 text-sm leading-relaxed">
+                    Experiencing a late delivery issue, or want to make inquiries about our reseller API rates? Our team handles responses quickly.
+                </p>
+                <div class="mt-8 space-y-3 text-sm">
+                    <div class="flex items-center gap-3 text-gray-300">
+                        <i data-lucide="mail" class="text-blue-400 w-4 h-4"></i> support@bigoticdata.com
+                    </div>
+                    <div class="flex items-center gap-3 text-gray-300">
+                        <i data-lucide="phone" class="text-blue-400 w-4 h-4"></i> +234 915 943 6827
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <h4 class="font-bold text-sm tracking-wider uppercase text-gray-400">Join our communities</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="https://wa.me/2349159436827" target="_blank" class="bg-emerald-600/10 border border-emerald-500/20 hover:bg-emerald-600/20 p-4 rounded-2xl flex items-center gap-3 transition">
+                        <i data-lucide="message-square" class="text-emerald-400 w-5 h-5"></i>
+                        <div>
+                            <div class="font-bold text-xs">WhatsApp Support</div>
+                            <div class="text-[10px] text-gray-400">Message Directly</div>
+                        </div>
+                    </a>
+                    <a href="#" class="bg-sky-600/10 border border-sky-500/20 hover:bg-sky-600/20 p-4 rounded-2xl flex items-center gap-3 transition">
+                        <i data-lucide="send" class="text-sky-400 w-5 h-5"></i>
+                        <div>
+                            <div class="font-bold text-xs">Telegram</div>
+                            <div class="text-[10px] text-gray-400">Join Group</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 bg-black/30 backdrop-blur-md w-full">
+        <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500">
+            <div>
+                <div class="text-xl font-black text-blue-400 tracking-tighter mb-2">BIGOTIC<span class="text-white">DATA</span></div>
+                <p class="text-xs text-gray-600">Automated tech ecosystem for digital utility distribution.</p>
+            </div>
+            <div class="flex space-x-6 text-xs">
+                <a href="#" class="hover:text-white transition">Terms of Service</a>
+                <a href="#" class="hover:text-white transition">Privacy Policy</a>
+            </div>
+            <div class="text-xs tracking-wide">
+                &copy; 2026 BigoticData. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Vector Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

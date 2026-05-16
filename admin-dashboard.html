@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center | Bigotic Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 glass border-r border-white/5 hidden md:flex flex-col">
+        <div class="p-6 border-b border-white/5">
+            <h1 class="text-xl font-black text-blue-400 tracking-tighter">BIGOTIC<span class="text-white">ADMIN</span></h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('overview')" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 transition text-blue-400 font-bold text-sm">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Overview
+            </button>
+            <button onclick="switchTab('users')" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 transition text-gray-400 font-bold text-sm">
+                <i data-lucide="users" class="w-5 h-5 mr-3"></i> Manage Users
+            </button>
+        </nav>
+        <div class="p-4 border-t border-white/5">
+            <a href="dashboard.html" class="w-full flex items-center justify-center p-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition font-bold text-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Exit Admin
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-8 relative">
+        <div id="overview" class="tab-content active max-w-6xl mx-auto">
+            <h2 class="text-2xl font-black mb-6">Platform Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div class="glass p-6 rounded-3xl border-t border-blue-500/30">
+                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Total Users</p>
+                    <h2 id="metric-users" class="text-3xl font-black mt-2">0</h2>
+                </div>
+                <div class="glass p-6 rounded-3xl border-t border-orange-500/30">
+                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Wallet Liability</p>
+                    <h2 id="metric-liability" class="text-2xl font-black mt-2 text-orange-400">₦0</h2>
+                </div>
+                <div class="glass p-6 rounded-3xl border-t border-purple-500/30">
+                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Total Sales</p>
+                    <h2 id="metric-sales" class="text-2xl font-black mt-2 text-purple-400">₦0</h2>
+                </div>
+                <div class="blue-gradient p-6 rounded-3xl shadow-xl">
+                    <p class="text-white/70 text-[10px] font-bold uppercase tracking-widest">Total Profit</p>
+                    <h2 id="metric-profit" class="text-3xl font-black mt-2 text-white">₦0</h2>
+                </div>
+            </div>
+
+            <h3 class="text-sm font-bold text-gray-500 uppercase mb-4 tracking-widest px-1">Recent Transactions</h3>
+            <div class="glass rounded-[2rem] overflow-hidden border border-white/5">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5">
+                        <tr>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">User</th>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">Service</th>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">Amount</th>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 text-right">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-transactions-body" class="divide-y divide-white/5 text-sm text-gray-300">
+                        <tr><td colspan="4" class="p-10 text-center">Fetching transactions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="users" class="tab-content max-w-6xl mx-auto">
+            <h2 class="text-2xl font-black mb-6">User Management</h2>
+            <div class="glass rounded-[2rem] overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5">
+                        <tr>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">User Email</th>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">Balance</th>
+                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-table" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="fundModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#111827] border border-white/10 rounded-[2rem] p-8 max-w-sm w-full relative">
+            <h3 class="text-xl font-black mb-1">Fund Wallet</h3>
+            <p id="fund-target-email" class="text-xs text-blue-400 mb-6 font-bold"></p>
+            <input type="number" id="fund-amount" placeholder="Amount (₦)" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 mb-4 outline-none">
+            <button onclick="executeFunding()" id="fund-btn" class="w-full blue-gradient py-4 rounded-xl font-black text-xs uppercase">Add Funds</button>
+            <button onclick="closeFundModal()" class="w-full mt-2 text-gray-500 text-xs">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+        const ADMIN_EMAIL = "ichinonso650@gmail.com";
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        async function loadData() {
+            try {
+                // Fetch Users
+                const userRes = await fetch(`${BACKEND_URL}/admin/users`, {
+                    headers: { 'admin-email': ADMIN_EMAIL }
+                });
+                const users = await userRes.json();
+                
+                // Fetch Transactions
+                const txRes = await fetch(`${BACKEND_URL}/admin/transactions`, {
+                    headers: { 'admin-email': ADMIN_EMAIL }
+                });
+                const txs = await txRes.json();
+
+                renderStats(users, txs);
+                renderUsers(users);
+                renderTransactions(txs);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderStats(users, txs) {
+            let liability = users.reduce((acc, u) => acc + (u.balance || 0), 0);
+            let profit = txs.reduce((acc, t) => acc + (t.profit || 0), 0);
+            let sales = txs.filter(t => t.type !== 'Wallet Funding' && t.type !== 'Admin Funding')
+                           .reduce((acc, t) => acc + t.amount, 0);
+
+            document.getElementById('metric-users').innerText = users.length;
+            document.getElementById('metric-liability').innerText = `₦${liability.toLocaleString()}`;
+            document.getElementById('metric-sales').innerText = `₦${sales.toLocaleString()}`;
+            document.getElementById('metric-profit').innerText = `₦${profit.toLocaleString()}`;
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('admin-user-table');
+            tbody.innerHTML = users.map(user => `
+                <tr class="hover:bg-white/5">
+                    <td class="p-4 text-sm">${user.email}</td>
+                    <td class="p-4 text-emerald-400 font-bold">₦${(user.balance || 0).toLocaleString()}</td>
+                    <td class="p-4 text-right">
+                        <button onclick="openFundModal('${user.email}')" class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg text-[10px] font-bold">FUND</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderTransactions(txs) {
+            const tbody = document.getElementById('recent-transactions-body');
+            tbody.innerHTML = txs.slice(0, 10).map(tx => `
+                <tr class="border-b border-white/5">
+                    <td class="p-4 text-[11px]">${tx.email}</td>
+                    <td class="p-4"><span class="bg-white/10 px-2 py-1 rounded text-[10px]">${tx.type}</span></td>
+                    <td class="p-4 font-bold text-blue-400">₦${tx.amount}</td>
+                    <td class="p-4 text-right text-gray-500 text-[10px]">${new Date(tx.date).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        let currentFundEmail = '';
+        function openFundModal(email) {
+            currentFundEmail = email;
+            document.getElementById('fund-target-email').innerText = email;
+            document.getElementById('fundModal').classList.remove('hidden');
+        }
+        function closeFundModal() { document.getElementById('fundModal').classList.add('hidden'); }
+
+        async function executeFunding() {
+            const amount = document.getElementById('fund-amount').value;
+            const btn = document.getElementById('fund-btn');
+            btn.innerText = "WAIT...";
+            
+            const res = await fetch(`${BACKEND_URL}/admin/fund-wallet`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'admin-email': ADMIN_EMAIL },
+                body: JSON.stringify({ email: currentFundEmail, amount })
+            });
+            const data = await res.json();
+            if(data.success) {
+                alert("Funded!");
+                location.reload();
+            }
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
