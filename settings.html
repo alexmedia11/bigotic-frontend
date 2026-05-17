@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile | Bigotic Data</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0b0f19; color: white; min-height: 100vh; }
@@ -14,6 +14,18 @@
     </style>
 </head>
 <body class="p-5 pb-28 flex justify-center">
+
+    <div id="coming-soon-toast" class="fixed top-[-100px] left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm transition-all duration-500 ease-out pointer-events-none">
+        <div class="glass bg-[#0f172a]/90 border border-blue-500/30 rounded-2xl p-4 flex items-center space-x-3 shadow-[0_20px_40px_rgba(0,0,0,0.7),0_0_20px_rgba(59,130,246,0.15)]">
+            <div class="w-10 h-10 bg-blue-500/10 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-400 shrink-0">
+                <i data-lucide="construction" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-white">Feature Coming Soon</h4>
+                <p class="text-[10px] text-gray-400 mt-0.5 font-semibold">We are optimizing this service for you.</p>
+            </div>
+        </div>
+    </div>
 
     <div class="max-w-md w-full">
         <div class="flex items-center mb-8 relative">
@@ -28,22 +40,18 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-3 mb-8">
-            <button onclick="alert('Profile editing coming soon!')" class="glass rounded-2xl p-3 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
+        <div class="grid grid-cols-3 gap-3 mb-8">
+            <button onclick="showComingSoonNotice()" class="glass rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
                 <i data-lucide="user-pen" class="w-5 h-5 text-blue-400 mb-2"></i>
                 <span class="text-[8px] font-bold uppercase text-gray-400">Edit<br>Profile</span>
             </button>
-            <button onclick="alert('Feature locked. Contact Admin.')" class="glass rounded-2xl p-3 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
+            <button onclick="showComingSoonNotice()" class="glass rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
                 <i data-lucide="key" class="w-5 h-5 text-blue-400 mb-2"></i>
                 <span class="text-[8px] font-bold uppercase text-gray-400">Change<br>Pin</span>
             </button>
-            <button onclick="alert('Update Password via Email Support')" class="glass rounded-2xl p-3 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
+            <button onclick="showComingSoonNotice()" class="glass rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
                 <i data-lucide="lock" class="w-5 h-5 text-blue-400 mb-2"></i>
                 <span class="text-[8px] font-bold uppercase text-gray-400">Change<br>Password</span>
-            </button>
-            <button onclick="location.href='api-docs.html'" class="glass rounded-2xl p-3 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all border border-blue-500/30 bg-blue-500/5">
-                <i data-lucide="code" class="w-5 h-5 text-blue-400 mb-2"></i>
-                <span class="text-[8px] font-bold uppercase text-blue-400">Developer<br>API</span>
             </button>
         </div>
 
@@ -75,19 +83,6 @@
                         <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Phone Number</p>
                         <p id="prof-phone" class="text-sm font-bold text-white">Not Set</p>
                     </div>
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <i data-lucide="key-round" class="w-5 h-5 text-gray-500"></i>
-                        <div>
-                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">API Key</p>
-                            <p id="prof-api" class="text-sm font-mono text-gray-300">Generating...</p>
-                        </div>
-                    </div>
-                    <button onclick="copyAPIKey()" class="text-blue-400 hover:text-blue-300 p-2 glass rounded-lg transition-colors active:scale-90">
-                        <i data-lucide="copy" class="w-4 h-4"></i>
-                    </button>
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -154,38 +149,35 @@
                 return;
             }
 
-            // Sync with backend logic: Check for fullName or username, fallback to email prefix
             const displayName = user.fullName || user.username || user.email.split('@')[0];
-            const apiKey = user._id ? `bg_${user._id.substring(0, 10)}...` : "Not Available";
 
             document.getElementById('header-name').innerText = displayName;
             document.getElementById('prof-fullname').innerText = displayName;
             document.getElementById('prof-email').innerText = user.email;
-            document.getElementById('prof-api').innerText = apiKey;
             
-            // Handle Phone display fix
             if(user.phone && user.phone !== "Not Set") {
                 document.getElementById('prof-phone').innerText = user.phone;
             }
 
-            // Admin Gate visibility
             if (user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim()) {
                 document.getElementById('admin-gate-box').classList.remove('hidden');
             }
         };
 
-        function copyAPIKey() {
-            const keyText = document.getElementById('prof-api').innerText;
-            navigator.clipboard.writeText(keyText).then(() => {
-                alert("API Key copied to clipboard!");
-            });
+        // PREMIUM APP ENGINE ANNOUNCEMENT TOAST FUNCTIONALITY
+        let toastTimeout;
+        function showComingSoonNotice() {
+            const toast = document.getElementById('coming-soon-toast');
+            clearTimeout(toastTimeout);
+            toast.style.top = "24px";
+            toastTimeout = setTimeout(() => {
+                toast.style.top = "-100px";
+            }, 3000);
         }
 
         function handleLogout() {
-            if(confirm("Log out of Bigotic Data?")) {
-                localStorage.removeItem('user');
-                window.location.href = "login.html";
-            }
+            localStorage.removeItem('user');
+            window.location.href = "login.html";
         }
     </script>
 </body>
