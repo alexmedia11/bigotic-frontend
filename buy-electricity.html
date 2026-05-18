@@ -45,6 +45,7 @@
                         <option value="6">Ibadan Electricity (IBEDC)</option>
                         <option value="7">Kaduna Electricity (KAEDCO)</option>
                         <option value="8">Abuja Electricity (AEDC)</option>
+                        <option value="9">Enugu Electric (EEDC)</option>
                     </select>
                 </div>
 
@@ -116,13 +117,11 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
         }
 
-        // Trigger reset handlers upon changing options configuration
         discoSelect.addEventListener('change', resetMeterVerification);
         document.querySelectorAll('input[name="meterType"]').forEach(radio => {
             radio.addEventListener('change', resetMeterVerification);
         });
 
-        // Track key entry to match standard Nigerian meter lengths dynamically (typically 11-13 digits)
         meterNumberInput.addEventListener('input', () => {
             const meterNum = meterNumberInput.value.trim();
             const disco = discoSelect.value;
