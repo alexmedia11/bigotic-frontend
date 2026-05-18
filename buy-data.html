@@ -28,6 +28,11 @@
                 <form id="dataForm" class="space-y-6">
                     
                     <div>
+                        <label class="text-[10px] text-blue-400 mb-1.5 block uppercase font-black tracking-[0.1em]">Recipient Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="e.g. 08123456789" maxlength="11" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold">
+                    </div>
+
+                    <div>
                         <label class="text-[10px] text-blue-400 mb-1.5 block uppercase font-black tracking-[0.1em]">Select Network</label>
                         <select id="network" required class="w-full bg-[#111827] border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold appearance-none">
                             <option value="">-- Choose Network --</option>
@@ -43,11 +48,6 @@
                         <select id="dataPlan" required disabled class="w-full bg-[#111827] border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold appearance-none">
                             <option value="">-- Select Network First --</option>
                         </select>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] text-blue-400 mb-1.5 block uppercase font-black tracking-[0.1em]">Recipient Phone Number</label>
-                        <input type="tel" id="phone" required placeholder="e.g. 08123456789" maxlength="11" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm outline-none focus:border-blue-500 transition-all font-semibold">
                     </div>
 
                     <div id="priceDisplayBox" class="hidden bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 text-center">
@@ -72,61 +72,82 @@
         const calculatedPriceSpan = document.getElementById('calculatedPrice');
         const dataForm = document.getElementById('dataForm');
         const submitBtn = document.getElementById('submitBtn');
+        const phoneInput = document.getElementById('phone');
 
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
 
         let cachedPlans = [];
-        const PROFIT_MARGIN_SME = 30;
-        const PROFIT_MARGIN_OTHERS = 50;
+
+        // Nigerian Network Carrier Prefix Mapping Configuration
+        const PREFIX_MAP = {
+            '1': ['0803','0806','0810','0813','0814','0816','0903','0906','0913','0916','0703','0706','0702','0704','0205'], // MTN
+            '2': ['0802','0808','0812','0901','0902','0904','0907','0912','0911','0701','0708'], // Airtel
+            '3': ['0805','0807','0811','0815','0905','0915','0705'], // Glo
+            '4': ['0809','0817','0818','0908','0909'] // 9Mobile
+        };
 
         window.onload = function() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) {
-        window.location.href = "login.html";
-        return;
-    }
-
-    // UPDATED FETCH LOGIC
-    fetch(`${BACKEND_URL}/get-data-plans`)
-        .then(res => res.json())
-        .then(data => {
-            // Your server sends the array directly, so 'data' IS the list of plans
-            if (Array.isArray(data)) {
-                cachedPlans = data;
-                console.log("Plans loaded successfully:", cachedPlans.length);
-            } else if (data.plans) {
-                // This covers you if you ever change the backend to { plans: [...] }
-                cachedPlans = data.plans;
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                window.location.href = "login.html";
+                return;
             }
-        })
-        .catch(err => {
-            console.error("Error loading network specifications:", err);
-            alert("Could not load data plans. Check if the server is awake.");
+
+            fetch(`${BACKEND_URL}/get-data-plans`)
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        cachedPlans = data;
+                        console.log("Plans loaded successfully:", cachedPlans.length);
+                    } else if (data.plans) {
+                        cachedPlans = data.plans;
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading network specifications:", err);
+                    alert("Could not load data plans. Check if the server is awake.");
+                });
+        };
+
+        // Real-time Mobile Number Detection Logic
+        phoneInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            if (val.length >= 4) {
+                const inputPrefix = val.substring(0, 4);
+                for (const networkId in PREFIX_MAP) {
+                    if (PREFIX_MAP[networkId].includes(inputPrefix)) {
+                        if (networkSelect.value !== networkId) {
+                            networkSelect.value = networkId;
+                            networkSelect.dispatchEvent(new Event('change'));
+                        }
+                        break;
+                    }
+                }
+            }
         });
-};
 
         networkSelect.addEventListener('change', function() {
-    const networkId = parseInt(this.value);
-    planSelect.innerHTML = '<option value="">-- Select Package --</option>';
-    
-    if (!networkId) {
-        planSelect.disabled = true;
-        return;
-    }
+            const networkId = parseInt(this.value);
+            planSelect.innerHTML = '<option value="">-- Select Package --</option>';
+            priceBox.classList.add('hidden');
+            
+            if (!networkId) {
+                planSelect.disabled = true;
+                return;
+            }
 
-    const filtered = cachedPlans.filter(p => p.network === networkId);
-    
-    filtered.forEach(plan => {
-        const option = document.createElement('option');
-        option.value = plan.id;
-        option.dataset.cost = plan.price;
-        // This line adds the validity period so the user knows how long it lasts
-        option.innerText = `${plan.name} (${plan.type}) - ₦${plan.price} [${plan.validity || 'Standard'}]`;
-        planSelect.appendChild(option);
-    });
+            const filtered = cachedPlans.filter(p => p.network === networkId);
+            
+            filtered.forEach(plan => {
+                const option = document.createElement('option');
+                option.value = plan.id;
+                option.dataset.cost = plan.price;
+                option.innerText = `${plan.name} (${plan.type}) - ₦${plan.price} [${plan.validity || 'Standard'}]`;
+                planSelect.appendChild(option);
+            });
 
-    planSelect.disabled = false;
-});
+            planSelect.disabled = false;
+        });
 
         planSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
@@ -146,9 +167,10 @@
             const user = JSON.parse(localStorage.getItem('user'));
             const network = networkSelect.value;
             const dataPlan = planSelect.value;
-            const phone = document.getElementById('phone').value.trim();
+            const phone = phoneInput.value.trim();
 
-            if (phone.length < 11 || isNaN(phone)) {
+            // FIXED: Full strict verification engine safeguard (Must be EXACTLY 11 digits)
+            if (phone.length !== 11 || isNaN(phone)) {
                 alert("Please write a valid 11 digit mobile contact value.");
                 return;
             }
@@ -168,19 +190,17 @@
             })
             .then(res => res.json())
             .then(data => {
-    if (data.success) { // Check for the success boolean we added to server.js
-        user.balance = data.newBalance;
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        // Better success message
-        alert("✅ Purchase Successful!\nYour data bundle has been sent.");
-        window.location.href = "dashboard.html";
-    } else {
-        // Shows the actual error from the provider (e.g., "Insufficient Fund")
-        alert("❌ Transaction Failed: " + (data.error || "Unknown Error"));
-        resetSubmitButton();
-    }
-})
+                if (data.success) {
+                    user.balance = data.newBalance;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    alert("✅ Purchase Successful!\nYour data bundle has been sent.");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("❌ Transaction Failed: " + (data.error || "Unknown Error"));
+                    resetSubmitButton();
+                }
+            })
             .catch(err => {
                 console.error(err);
                 alert("System processing fault encountered. Please check server logs.");
