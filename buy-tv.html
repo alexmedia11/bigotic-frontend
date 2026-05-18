@@ -79,6 +79,7 @@
                         <input type="number" id="smartCardNumber" required placeholder="e.g. 1023456789" class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold placeholder-slate-700">
                         <i data-lucide="credit-card" class="absolute right-5 top-5 w-5 h-5 text-slate-600 pointer-events-none"></i>
                     </div>
+                    <div id="verificationBox" class="hidden mt-3 px-4 py-3 rounded-xl text-xs font-bold transition-all"></div>
                 </div>
 
             </div>
@@ -90,10 +91,10 @@
     </main>
 
     <script>
-        // Init Lucide Icons
         lucide.createIcons();
 
-        // Exact plans mapped using MobileSub actual pricing structure
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+
         const cablePlans = {
             "dstv": [
                 { id: "dstv-padi", name: "DSTv Padi - ₦4,400" },
@@ -123,11 +124,16 @@
 
         const providerSelect = document.getElementById('cablename');
         const planSelect = document.getElementById('cableplan');
+        const iucInput = document.getElementById('smartCardNumber');
+        const verificationBox = document.getElementById('verificationBox');
+        const submitBtn = document.getElementById('submitBtn');
 
-        // Dynamic select updates
+        let isVerified = false;
+
         providerSelect.addEventListener('change', () => {
             const provider = providerSelect.value;
             planSelect.innerHTML = '<option value="" disabled selected>-- Select Plan --</option>';
+            resetVerification();
             
             if (cablePlans[provider]) {
                 cablePlans[provider].forEach(plan => {
@@ -140,7 +146,56 @@
             }
         });
 
-        // Toast System
+        // Trigger dynamic IUC profile verification check
+        iucInput.addEventListener('input', () => {
+            const iuc = iucInput.value.trim();
+            const provider = providerSelect.value;
+            
+            if (!provider) return;
+
+            // Run verification once IUC reaches target length boundaries
+            if (iuc.length === 10 || iuc.length === 11) {
+                performIUCVerification(iuc, provider);
+            } else {
+                resetVerification();
+            }
+        });
+
+        async function performIUCVerification(iuc, provider) {
+            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
+            verificationBox.innerText = "Verifying SmartCard Owner Account...";
+            verificationBox.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-iuc`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cablename: provider, smartCardNumber: iuc })
+                });
+                const data = await response.json();
+
+                if (data.success && data.customerName) {
+                    isVerified = true;
+                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
+                    verificationBox.innerText = `✅ Verified: ${data.customerName}`;
+                } else {
+                    isVerified = false;
+                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-500/20";
+                    verificationBox.innerText = `❌ Account Not Found: ${data.error || 'Check details'}`;
+                }
+            } catch (err) {
+                console.error(err);
+                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
+                verificationBox.innerText = "⚠️ Verification connection timed out.";
+            }
+        }
+
+        function resetVerification() {
+            isVerified = false;
+            verificationBox.classList.add('hidden');
+            verificationBox.innerText = "";
+        }
+
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -159,35 +214,36 @@
             }, 5000);
         }
 
-        // Form Submit
         document.getElementById('cableForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const currentUser = JSON.parse(localStorage.getItem('user'));
-            const submitBtn = document.getElementById('submitBtn');
 
             if (!currentUser) {
                 return showNotification("Please log in to continue.");
+            }
+
+            if (!isVerified) {
+                return showNotification("Please enter a valid, verifiable SmartCard details before attempting payment.");
             }
 
             submitBtn.innerText = "PROCESSING PAYMENT...";
             submitBtn.disabled = true;
 
             try {
-                const response = await fetch('https://bigoticdata-backend.onrender.com/buy-cable', {
+                const response = await fetch(`${BACKEND_URL}/buy-cable`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: currentUser.email,
                         cablename: providerSelect.value,
                         cableplan: planSelect.value,
-                        smartCardNumber: document.getElementById('smartCardNumber').value.trim()
+                        smartCardNumber: iucInput.value.trim()
                     })
                 });
 
                 const data = await response.json();
                 
-                if (response.ok) {
-                    // Update frontend storage balance immediately
+                if (response.ok && data.success) {
                     currentUser.balance = data.newBalance;
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     

@@ -65,6 +65,7 @@
                 <div>
                     <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Meter Number</label>
                     <input type="text" id="meterNumber" required placeholder="Enter Meter Number" class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold placeholder-slate-700">
+                    <div id="verificationBox" class="hidden mt-3 px-4 py-3 rounded-xl text-xs font-bold transition-all"></div>
                 </div>
 
                 <div>
@@ -96,6 +97,15 @@
     <script>
         lucide.createIcons();
 
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+
+        const discoSelect = document.getElementById('disco');
+        const meterNumberInput = document.getElementById('meterNumber');
+        const verificationBox = document.getElementById('verificationBox');
+        const submitBtn = document.getElementById('submitBtn');
+
+        let isMeterVerified = false;
+
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -106,12 +116,71 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
         }
 
+        // Trigger reset handlers upon changing options configuration
+        discoSelect.addEventListener('change', resetMeterVerification);
+        document.querySelectorAll('input[name="meterType"]').forEach(radio => {
+            radio.addEventListener('change', resetMeterVerification);
+        });
+
+        // Track key entry to match standard Nigerian meter lengths dynamically (typically 11-13 digits)
+        meterNumberInput.addEventListener('input', () => {
+            const meterNum = meterNumberInput.value.trim();
+            const disco = discoSelect.value;
+            const meterType = document.querySelector('input[name="meterType"]:checked').value;
+
+            if (!disco) return;
+
+            if (meterNum.length >= 10 && meterNum.length <= 15) {
+                performMeterVerification(meterNum, disco, meterType);
+            } else {
+                resetMeterVerification();
+            }
+        });
+
+        async function performMeterVerification(meterNum, disco, meterType) {
+            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
+            verificationBox.innerText = "Verifying Meter Account Properties...";
+            verificationBox.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-meter`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ disco, meterNumber: meterNum, meterType })
+                });
+                const data = await response.json();
+
+                if (data.success && data.customerName) {
+                    isMeterVerified = true;
+                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
+                    verificationBox.innerText = `✅ Meter Name: ${data.customerName}`;
+                } else {
+                    isMeterVerified = false;
+                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-500/20";
+                    verificationBox.innerText = `❌ Invalid Meter: ${data.error || 'Check inputs'}`;
+                }
+            } catch (err) {
+                console.error(err);
+                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
+                verificationBox.innerText = "⚠️ Validation processing connection timed out.";
+            }
+        }
+
+        function resetMeterVerification() {
+            isMeterVerified = false;
+            verificationBox.classList.add('hidden');
+            verificationBox.innerText = "";
+        }
+
         document.getElementById('electricityForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const currentUser = JSON.parse(localStorage.getItem('user'));
-            const submitBtn = document.getElementById('submitBtn');
 
             if (!currentUser) return showNotification("Please log in.");
+
+            if (!isMeterVerified) {
+                return showNotification("Please supply a valid verified account meter reference structure first.");
+            }
 
             submitBtn.innerText = "PROCESSING...";
             submitBtn.disabled = true;
@@ -119,20 +188,20 @@
             const selectedMeterType = document.querySelector('input[name="meterType"]:checked').value;
 
             try {
-                const response = await fetch('https://bigoticdata-backend.onrender.com/buy-electricity', {
+                const response = await fetch(`${BACKEND_URL}/buy-electricity`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: currentUser.email,
-                        disco: document.getElementById('disco').value,
+                        disco: discoSelect.value,
                         meterType: selectedMeterType,
-                        meterNumber: document.getElementById('meterNumber').value.trim(),
+                        meterNumber: meterNumberInput.value.trim(),
                         amount: document.getElementById('amount').value.trim()
                     })
                 });
 
                 const data = await response.json();
-                if (response.ok) {
+                if (response.ok && data.success) {
                     currentUser.balance = data.newBalance;
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     
@@ -141,7 +210,7 @@
                         document.getElementById('tokenModal').classList.remove('hidden');
                         document.getElementById('tokenModal').classList.add('flex');
                     } else {
-                        showNotification("Bill paid successfully!", "success");
+                        showNotification("Bill paid successfully! 🎉", "success");
                         setTimeout(() => location.href = 'dashboard.html', 2000);
                     }
                 } else {
@@ -151,6 +220,7 @@
                 }
             } catch (err) {
                 showNotification("Connection error.");
+                submitBtn.innerText = "Pay Bill";
                 submitBtn.disabled = false;
             }
         });
