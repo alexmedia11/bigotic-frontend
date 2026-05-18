@@ -40,12 +40,13 @@
                         <option value="1">Ikeja Electricity (IKEDC)</option>
                         <option value="2">Eko Electricity (EKEDC)</option>
                         <option value="3">Kano Electricity (KEDCO)</option>
-                        <option value="4">Port Harcourt Electricity (PHED)</option>
                         <option value="5">Jos Electricity (JED)</option>
                         <option value="6">Ibadan Electricity (IBEDC)</option>
                         <option value="7">Kaduna Electricity (KAEDCO)</option>
                         <option value="8">Abuja Electricity (AEDC)</option>
                         <option value="9">Enugu Electric (EEDC)</option>
+                        <option value="10">Benin Electric (BEDC)</option>
+                        <option value="12">Aba Electric (APLE)</option>
                     </select>
                 </div>
 
@@ -117,24 +118,39 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
         }
 
-        discoSelect.addEventListener('change', resetMeterVerification);
-        document.querySelectorAll('input[name="meterType"]').forEach(radio => {
-            radio.addEventListener('change', resetMeterVerification);
+        // Auto check if parameters change after user typed meter number
+        [discoSelect, ...document.querySelectorAll('input[name="meterType"]')].forEach(element => {
+            element.addEventListener('change', () => {
+                resetMeterVerification();
+                const meterNum = meterNumberInput.value.trim();
+                if (meterNum.length >= 9) {
+                    triggerVerification();
+                }
+            });
         });
 
         meterNumberInput.addEventListener('input', () => {
             const meterNum = meterNumberInput.value.trim();
-            const disco = discoSelect.value;
-            const meterType = document.querySelector('input[name="meterType"]:checked').value;
-
-            if (!disco) return;
-
-            if (meterNum.length >= 10 && meterNum.length <= 15) {
-                performMeterVerification(meterNum, disco, meterType);
+            if (meterNum.length >= 9 && meterNum.length <= 15) {
+                triggerVerification();
             } else {
                 resetMeterVerification();
             }
         });
+
+        function triggerVerification() {
+            const meterNum = meterNumberInput.value.trim();
+            const disco = discoSelect.value;
+            const meterType = document.querySelector('input[name="meterType"]:checked').value;
+
+            if (!disco) {
+                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
+                verificationBox.innerText = "Please choose a Distribution Company (DISCO) first.";
+                verificationBox.classList.remove('hidden');
+                return;
+            }
+            performMeterVerification(meterNum, disco, meterType);
+        }
 
         async function performMeterVerification(meterNum, disco, meterType) {
             verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
@@ -204,7 +220,7 @@
                     currentUser.balance = data.newBalance;
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     
-                    if (selectedMeterType === 'prepaid' && data.token && data.token !== 'N/A') {
+                    if (selectedMeterType === 'prepaid' && data.token && data.token !== 'N/A' && data.token !== 'Processed Successfully') {
                         document.getElementById('tokenDisplay').innerText = data.token;
                         document.getElementById('tokenModal').classList.remove('hidden');
                         document.getElementById('tokenModal').classList.add('flex');
