@@ -168,10 +168,10 @@
 
             try {
                 const response = await fetch(`${BACKEND_URL}/verify-iuc`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cablename: provider, smartCardNumber: iuc })
-                });
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cable: provider, iuc: iuc }) // Changed keys to 'cable' and 'iuc'
+});
                 const data = await response.json();
 
                 if (data.success && data.customerName) {
