@@ -144,13 +144,11 @@
                 });
                 planSelect.disabled = false;
             }
-            // If IUC input already has value, trigger verification for new provider selection
             if(iucInput.value.trim().length >= 8) {
                 performIUCVerification(iucInput.value.trim(), provider);
             }
         });
 
-        // Safe evaluation triggering verification across dynamic character lengths
         iucInput.addEventListener('input', () => {
             const iuc = iucInput.value.trim();
             const provider = providerSelect.value;
@@ -238,7 +236,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: currentUser.email,
-                        cablename: providerSelect.value,
+                        cable: providerSelect.value, //  FIXED: changed key from 'cablename' to 'cable'
                         cableplan: planSelect.value,
                         smartCardNumber: iucInput.value.trim()
                     })
