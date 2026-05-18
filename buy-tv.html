@@ -55,9 +55,9 @@
                     <div class="relative">
                         <select id="cablename" required class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold appearance-none">
                             <option value="" disabled selected>-- Choose Provider --</option>
-                            <option value="dstv">DSTV</option>
-                            <option value="gotv">GOTV</option>
-                            <option value="startimes">STARTIMES</option>
+                            <option value="2">DSTV</option>
+                            <option value="1">GOTV</option>
+                            <option value="3">STARTIMES</option>
                         </select>
                         <i data-lucide="tv" class="absolute right-5 top-5 w-5 h-5 text-slate-600 pointer-events-none"></i>
                     </div>
@@ -93,174 +93,180 @@
     <script>
         lucide.createIcons();
 
-        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
 
-        const cablePlans = {
-            "dstv": [
-                { id: "dstv-padi", name: "DSTv Padi - ₦4,400" },
-                { id: "dstv-yanga", name: "DSTv Yanga - ₦6,000" },
-                { id: "dstv-confam", name: "DSTv Confam - ₦11,400" },
-                { id: "dstv-compact", name: "DSTv Compact - ₦19,000" },
-                { id: "dstv-compact-plus", name: "DSTv Compact Plus - ₦30,000" }
-            ],
-            "gotv": [
-                { id: "gotv-supa", name: "GOTv Supa (Monthly) - ₦11,400" },
-                { id: "gotv-max", name: "GOTv Max (Monthly) - ₦8,500" },
-                { id: "gotv-jolli", name: "GOTv Jolli (Monthly) - ₦5,800" },
-                { id: "gotv-jinja", name: "GOTv Jinja (Monthly) - ₦3,900" },
-                { id: "gotv-smallie", name: "GOTv Smallie (Monthly) - ₦1,900" }
-            ],
-            "startimes": [
-                { id: "startimes-nova-month", name: "Nova (1 Month) - ₦2,000" },
-                { id: "startimes-basic-month", name: "Basic Antenna (1 Month) - ₦3,800" },
-                { id: "startimes-classic-month", name: "Classic Antenna (1 Month) - ₦5,500" },
-                { id: "startimes-nova-week", name: "Nova (1 Week) - ₦650" },
-                { id: "startimes-basic-week", name: "Basic Antenna (1 Week) - ₦1,550" },
-                { id: "startimes-smart-week", name: "Smart Dish (1 Week) - ₦3,000" },
-                { id: "startimes-classic-week", name: "Classic Antenna (1 Week) - ₦2,300" },
-                { id: "startimes-super-week", name: "Super Dish (1 Week) - ₦3,000" }
-            ]
-        };
+// Updated: IDs changed to match Mobilesub's expected values
+const cablePlans = {
+    "2": [ // DSTV
+        { id: "dstv-padi", name: "DSTv Padi - ₦4,400" },
+        { id: "dstv-yanga", name: "DSTv Yanga - ₦6,000" },
+        { id: "dstv-confam", name: "DSTv Confam - ₦11,400" },
+        { id: "dstv-compact", name: "DSTv Compact - ₦19,000" },
+        { id: "dstv-compact-plus", name: "DSTv Compact Plus - ₦30,000" }
+    ],
+    "1": [ // GOTV
+        { id: "gotv-supa", name: "GOTv Supa (Monthly) - ₦11,400" },
+        { id: "gotv-max", name: "GOTv Max (Monthly) - ₦8,500" },
+        { id: "gotv-jolli", name: "GOTv Jolli (Monthly) - ₦5,800" },
+        { id: "gotv-jinja", name: "GOTv Jinja (Monthly) - ₦3,900" },
+        { id: "gotv-smallie", name: "GOTv Smallie (Monthly) - ₦1,900" }
+    ],
+    "3": [ // STARTIMES
+        { id: "startimes-nova-month", name: "Nova (1 Month) - ₦2,000" },
+        { id: "startimes-basic-month", name: "Basic Antenna (1 Month) - ₦3,800" },
+        { id: "startimes-classic-month", name: "Classic Antenna (1 Month) - ₦5,500" },
+        { id: "startimes-nova-week", name: "Nova (1 Week) - ₦650" },
+        { id: "startimes-basic-week", name: "Basic Antenna (1 Week) - ₦1,550" },
+        { id: "startimes-smart-week", name: "Smart Dish (1 Week) - ₦3,000" },
+        { id: "startimes-classic-week", name: "Classic Antenna (1 Week) - ₦2,300" },
+        { id: "startimes-super-week", name: "Super Dish (1 Week) - ₦3,000" }
+    ]
+};
 
-        const providerSelect = document.getElementById('cablename');
-        const planSelect = document.getElementById('cableplan');
-        const iucInput = document.getElementById('smartCardNumber');
-        const verificationBox = document.getElementById('verificationBox');
-        const submitBtn = document.getElementById('submitBtn');
+const providerSelect = document.getElementById('cablename');
+const planSelect = document.getElementById('cableplan');
+const iucInput = document.getElementById('smartCardNumber');
+const verificationBox = document.getElementById('verificationBox');
+const submitBtn = document.getElementById('submitBtn');
 
-        let isVerified = false;
+let isVerified = false;
 
-        providerSelect.addEventListener('change', () => {
-            const provider = providerSelect.value;
-            planSelect.innerHTML = '<option value="" disabled selected>-- Select Plan --</option>';
-            resetVerification();
-            
-            if (cablePlans[provider]) {
-                cablePlans[provider].forEach(plan => {
-                    const opt = document.createElement('option');
-                    opt.value = plan.id;
-                    opt.innerText = plan.name;
-                    planSelect.appendChild(opt);
-                });
-                planSelect.disabled = false;
-            }
-            if(iucInput.value.trim().length >= 8) {
-                performIUCVerification(iucInput.value.trim(), provider);
-            }
+// Dynamically update drop-down select option values in your HTML to:
+// <option value="2">DSTV</option>
+// <option value="1">GOTV</option>
+// <option value="3">STARTIMES</option>
+
+providerSelect.addEventListener('change', () => {
+    const provider = providerSelect.value;
+    planSelect.innerHTML = '<option value="" disabled selected>-- Choose Plan --</option>';
+    resetVerification();
+    
+    if (cablePlans[provider]) {
+        cablePlans[provider].forEach(plan => {
+            const opt = document.createElement('option');
+            opt.value = plan.id;
+            opt.innerText = plan.name;
+            planSelect.appendChild(opt);
         });
+        planSelect.disabled = false;
+    }
+    if(iucInput.value.trim().length >= 8) {
+        performIUCVerification(iucInput.value.trim(), provider);
+    }
+});
 
-        iucInput.addEventListener('input', () => {
-            const iuc = iucInput.value.trim();
-            const provider = providerSelect.value;
-            
-            if (!provider) return;
+iucInput.addEventListener('input', () => {
+    const iuc = iucInput.value.trim();
+    const provider = providerSelect.value;
+    
+    if (!provider) return;
 
-            if (iuc.length >= 8 && iuc.length <= 12) {
-                performIUCVerification(iuc, provider);
-            } else {
-                resetVerification();
-            }
+    if (iuc.length >= 8 && iuc.length <= 12) {
+        performIUCVerification(iuc, provider);
+    } else {
+        resetVerification();
+    }
+});
+
+async function performIUCVerification(iuc, provider) {
+    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
+    verificationBox.innerText = "Verifying SmartCard Owner Account...";
+    verificationBox.classList.remove('hidden');
+
+    try {
+        const response = await fetch(`${BACKEND_URL}/verify-iuc`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cable: provider, iuc: iuc })
         });
+        const data = await response.json();
 
-        async function performIUCVerification(iuc, provider) {
-            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
-            verificationBox.innerText = "Verifying SmartCard Owner Account...";
-            verificationBox.classList.remove('hidden');
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/verify-iuc`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cable: provider, iuc: iuc })
-                });
-                const data = await response.json();
-
-                if (response.ok && data.success && data.customerName) {
-                    isVerified = true;
-                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
-                    verificationBox.innerText = `✅ Verified: ${data.customerName}`;
-                } else {
-                    isVerified = false;
-                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-500/20";
-                    verificationBox.innerText = `❌ Account Not Found: ${data.error || 'Check details'}`;
-                }
-            } catch (err) {
-                console.error(err);
-                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
-                verificationBox.innerText = "⚠️ Verification connection timed out.";
-            }
-        }
-
-        function resetVerification() {
+        if (response.ok && data.success && data.customerName) {
+            isVerified = true;
+            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
+            verificationBox.innerText = `✅ Verified: ${data.customerName}`;
+        } else {
             isVerified = false;
-            verificationBox.classList.add('hidden');
-            verificationBox.innerText = "";
+            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-500/20";
+            verificationBox.innerText = `❌ Account Not Found: ${data.error || 'Check details'}`;
         }
+    } catch (err) {
+        console.error(err);
+        verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
+        verificationBox.innerText = "⚠️ Verification connection timed out.";
+    }
+}
 
-        function showNotification(message, type = 'error') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-300 ${
-                type === 'success' ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-200' : 'bg-rose-950/90 border-rose-500/30 text-rose-200'
-            }`;
-            toast.innerHTML = `
-                <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 flex-shrink-0"></i>
-                <p class="text-xs font-bold">${message}</p>
-            `;
-            container.appendChild(toast);
-            lucide.createIcons();
-            setTimeout(() => { 
-                toast.style.opacity = '0'; 
-                setTimeout(() => toast.remove(), 300); 
-            }, 5000);
-        }
+function resetVerification() {
+    isVerified = false;
+    verificationBox.classList.add('hidden');
+    verificationBox.innerText = "";
+}
 
-        document.getElementById('cableForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const currentUser = JSON.parse(localStorage.getItem('user'));
+function showNotification(message, type = 'error') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-300 ${
+        type === 'success' ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-200' : 'bg-rose-950/90 border-rose-500/30 text-rose-200'
+    }`;
+    toast.innerHTML = `
+        <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 flex-shrink-0"></i>
+        <p class="text-xs font-bold">${message}</p>
+    `;
+    container.appendChild(toast);
+    lucide.createIcons();
+    setTimeout(() => { 
+        toast.style.opacity = '0'; 
+        setTimeout(() => toast.remove(), 300); 
+    }, 5000);
+}
 
-            if (!currentUser) {
-                return showNotification("Please log in to continue.");
-            }
+document.getElementById('cableForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const currentUser = JSON.parse(localStorage.getItem('user'));
 
-            if (!isVerified) {
-                return showNotification("Please enter valid, verified SmartCard details before attempting payment.");
-            }
+    if (!currentUser) {
+        return showNotification("Please log in to continue.");
+    }
 
-            submitBtn.innerText = "PROCESSING PAYMENT...";
-            submitBtn.disabled = true;
+    if (!isVerified) {
+        return showNotification("Please enter valid, verified SmartCard details before attempting payment.");
+    }
 
-            try {
-                const response = await fetch(`${BACKEND_URL}/buy-cable`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: currentUser.email,
-                        cable: providerSelect.value, //  FIXED: changed key from 'cablename' to 'cable'
-                        cableplan: planSelect.value,
-                        smartCardNumber: iucInput.value.trim()
-                    })
-                });
+    submitBtn.innerText = "PROCESSING PAYMENT...";
+    submitBtn.disabled = true;
 
-                const data = await response.json();
-                
-                if (response.ok && data.success) {
-                    currentUser.balance = data.newBalance;
-                    localStorage.setItem('user', JSON.stringify(currentUser));
-                    
-                    showNotification("Subscription successfully active! 🎉", "success");
-                    setTimeout(() => location.href = 'dashboard.html', 2500);
-                } else {
-                    showNotification(data.error || "Subscription processing failed.");
-                    submitBtn.innerText = "Activate Subscription";
-                    submitBtn.disabled = false;
-                }
-            } catch (err) {
-                showNotification("A network connection error occurred.");
-                submitBtn.innerText = "Activate Subscription";
-                submitBtn.disabled = false;
-            }
+    try {
+        const response = await fetch(`${BACKEND_URL}/buy-cable`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: currentUser.email,
+                cablename: providerSelect.value, // Keep 'cablename' here so it matches the purchase API payload expectation
+                cableplan: planSelect.value,
+                smartCardNumber: iucInput.value.trim()
+            })
         });
+
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            currentUser.balance = data.newBalance;
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            
+            showNotification("Subscription successfully active! 🎉", "success");
+            setTimeout(() => location.href = 'dashboard.html', 2500);
+        } else {
+            showNotification(data.error || "Subscription processing failed.");
+            submitBtn.innerText = "Activate Subscription";
+            submitBtn.disabled = false;
+        }
+    } catch (err) {
+        showNotification("A network connection error occurred.");
+        submitBtn.innerText = "Activate Subscription";
+        submitBtn.disabled = false;
+    }
+});
     </script>
 </body>
 </html>
