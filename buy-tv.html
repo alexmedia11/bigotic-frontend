@@ -144,17 +144,20 @@
                 });
                 planSelect.disabled = false;
             }
+            // If IUC input already has value, trigger verification for new provider selection
+            if(iucInput.value.trim().length >= 8) {
+                performIUCVerification(iucInput.value.trim(), provider);
+            }
         });
 
-        // Trigger dynamic IUC profile verification check
+        // Safe evaluation triggering verification across dynamic character lengths
         iucInput.addEventListener('input', () => {
             const iuc = iucInput.value.trim();
             const provider = providerSelect.value;
             
             if (!provider) return;
 
-            // Run verification once IUC reaches target length boundaries
-            if (iuc.length === 10 || iuc.length === 11) {
+            if (iuc.length >= 8 && iuc.length <= 12) {
                 performIUCVerification(iuc, provider);
             } else {
                 resetVerification();
@@ -168,13 +171,13 @@
 
             try {
                 const response = await fetch(`${BACKEND_URL}/verify-iuc`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cable: provider, iuc: iuc }) // Changed keys to 'cable' and 'iuc'
-});
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cable: provider, iuc: iuc })
+                });
                 const data = await response.json();
 
-                if (data.success && data.customerName) {
+                if (response.ok && data.success && data.customerName) {
                     isVerified = true;
                     verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
                     verificationBox.innerText = `✅ Verified: ${data.customerName}`;
@@ -223,7 +226,7 @@
             }
 
             if (!isVerified) {
-                return showNotification("Please enter a valid, verifiable SmartCard details before attempting payment.");
+                return showNotification("Please enter valid, verified SmartCard details before attempting payment.");
             }
 
             submitBtn.innerText = "PROCESSING PAYMENT...";
