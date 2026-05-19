@@ -153,9 +153,10 @@
         }
 
         async function performMeterVerification(meterNum, disco, meterType) {
+            // Force display visible before network dispatch to keep UI updated natively
+            verificationBox.classList.remove('hidden');
             verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
             verificationBox.innerText = "Verifying Meter Account Properties...";
-            verificationBox.classList.remove('hidden');
 
             try {
                 const response = await fetch(`${BACKEND_URL}/verify-meter`, {
@@ -163,19 +164,21 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ disco, meterNumber: meterNum, meterType })
                 });
+                
                 const data = await response.json();
 
-                if (data.success && data.customerName) {
+                if (response.ok && data.success && data.customerName) {
                     isMeterVerified = true;
                     verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
                     verificationBox.innerText = `✅ Meter Name: ${data.customerName}`;
                 } else {
                     isMeterVerified = false;
                     verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-500/20";
-                    verificationBox.innerText = `❌ Invalid Meter: ${data.error || 'Check inputs'}`;
+                    verificationBox.innerText = `❌ Invalid Meter: ${data.error || 'Check inputs or credentials'}`;
                 }
             } catch (err) {
                 console.error(err);
+                isMeterVerified = false;
                 verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
                 verificationBox.innerText = "⚠️ Validation processing connection timed out.";
             }
