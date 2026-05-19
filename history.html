@@ -78,7 +78,7 @@
                 if (allTransactions && allTransactions.length > 0) {
                     container.innerHTML = '';
                     allTransactions.forEach(tx => {
-                        const isDeduction = tx.type !== "Wallet Funding";
+                        const isDeduction = tx.type !== "Wallet Funding" && tx.type !== "Fund";
                         
                         // Fallback logic for old transactions missing 'details'
                         const displayDetails = tx.details || `${tx.type} to ${tx.recipient || 'Account'}`;
