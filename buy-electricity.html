@@ -118,17 +118,17 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
         }
 
-        // Auto check if parameters change after user typed meter number
+        // Dropdown or type change: Only trigger verification if a valid length exists, don't clear instantly
         [discoSelect, ...document.querySelectorAll('input[name="meterType"]')].forEach(element => {
             element.addEventListener('change', () => {
-                resetMeterVerification();
                 const meterNum = meterNumberInput.value.trim();
-                if (meterNum.length >= 9) {
+                if (meterNum.length >= 9 && meterNum.length <= 15) {
                     triggerVerification();
                 }
             });
         });
 
+        // Typing event: trigger verification when character parameters are hit
         meterNumberInput.addEventListener('input', () => {
             const meterNum = meterNumberInput.value.trim();
             if (meterNum.length >= 9 && meterNum.length <= 15) {
@@ -153,7 +153,6 @@
         }
 
         async function performMeterVerification(meterNum, disco, meterType) {
-            // Force display visible before network dispatch to keep UI updated natively
             verificationBox.classList.remove('hidden');
             verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
             verificationBox.innerText = "Verifying Meter Account Properties...";
