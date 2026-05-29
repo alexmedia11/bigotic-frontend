@@ -5,167 +5,244 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bigotic Data | Dashboard</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0b0f19; color: white; min-height: 100vh;}
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .premium-card { 
+            background: #FFFFFF; 
+            border: 1px solid #E2E8F0; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+        .brand-gradient { 
+            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeUpOut {
+            0% { transform: translateY(0); opacity: 1; }
+            80% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; pointer-events: none; }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-greeting {
+            animation: fadeUpOut 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-nav-icons {
+            opacity: 0;
+            animation: fadeIn 0.4s ease-out 2.8s forwards;
+        }
     </style>
 </head>
-<body class="pb-28">
+<body class="pb-28 antialiased">
 
-    <div id="coming-soon-toast" class="fixed top-[-100px] left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm transition-all duration-500 ease-out pointer-events-none">
-        <div class="glass bg-[#0f172a]/90 border border-blue-500/30 rounded-2xl p-4 flex items-center space-x-3 shadow-[0_20px_40px_rgba(0,0,0,0.7),0_0_20px_rgba(59,130,246,0.15)]">
-            <div class="w-10 h-10 bg-blue-500/10 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-400 shrink-0">
-                <i data-lucide="construction" class="w-5 h-5"></i>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleSidebar()"></div>
+    
+    <div id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 sidebar-transition -translate-x-full shadow-2xl flex flex-col justify-between border-r border-slate-100">
+        <div class="overflow-y-auto flex-1">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <div class="text-lg font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></div>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[#0F172A] cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
-            <div>
-                <h4 class="text-xs font-black uppercase tracking-wider text-white">Feature Coming Soon</h4>
-                <p class="text-[10px] text-gray-400 mt-0.5 font-semibold">We are optimizing this service for you.</p>
+            
+            <div class="m-4 p-4 bg-slate-50 rounded-2xl flex items-center gap-3 border border-slate-200">
+                <div class="w-10 h-10 rounded-full brand-gradient flex items-center justify-center text-white font-bold text-sm" id="sidebar-initial">B</div>
+                <div class="text-left">
+                    <h4 class="text-xs font-extrabold uppercase text-[#0F172A]" id="sidebar-username">User</h4>
+                    <span class="text-[9px] bg-blue-100 text-[#0052FF] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Special Account</span>
+                </div>
             </div>
+
+            <div class="px-4 py-2 space-y-1 text-left">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">General Menu</p>
+                <a href="#" onclick="toggleSidebar(); return false;" class="flex items-center gap-3 px-3 py-3 rounded-xl bg-blue-50 text-[#0052FF] font-bold text-xs uppercase tracking-wider"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a>
+                <a href="buy-data.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wifi" class="w-4 h-4"></i> Buy Data</a>
+                <a href="buy-airtime.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="phone" class="w-4 h-4"></i> Buy Airtime</a>
+                <a href="buy-tv.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="tv" class="w-4 h-4"></i> Cable Sub</a>
+                <a href="fund.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wallet" class="w-4 h-4"></i> Fund Wallet</a>
+                <a href="history.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="history" class="w-4 h-4"></i> History</a>
+                
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 pt-4 mb-2">Management</p>
+                <a href="settings.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <button onclick="logOutAction()" class="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors border border-rose-200 cursor-pointer">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+            </button>
         </div>
     </div>
 
-    <nav class="flex justify-between items-center px-6 py-5 sticky top-0 z-50 bg-[#0b0f19]/80 backdrop-blur-md">
-        <div class="text-xl font-black tracking-tighter text-blue-500">BIGOTIC<span class="text-white">DATA</span></div>
-        <div class="flex items-center space-x-3">
-            <div class="text-right">
-                <p class="text-[9px] text-gray-500 uppercase font-bold leading-none">Hi,</p>
-                <p id="username-display" class="text-xs font-extrabold uppercase">User</p>
+    <nav class="flex justify-between items-center px-6 sticky top-0 z-40 bg-white border-b border-slate-200 h-16 w-full">
+        <button onclick="toggleSidebar()" class="text-[#0F172A] p-2 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center cursor-pointer">
+            <i data-lucide="more-vertical" class="w-6 h-6"></i>
+        </button>
+
+        <div class="relative w-48 h-10 flex items-center justify-end overflow-hidden">
+            <div id="greeting-wrapper" class="absolute inset-0 flex items-center justify-end text-right pr-1 animate-greeting">
+                <div>
+                    <p id="time-greeting-text" class="text-[9px] text-slate-400 uppercase font-black leading-none">Good day,</p>
+                    <p id="username-display" class="text-xs font-black uppercase text-[#0F172A] tracking-tight truncate max-w-[130px]">User</p>
+                </div>
             </div>
-            <div onclick="location.href='settings.html'" class="w-10 h-10 rounded-full border-2 border-blue-500/30 flex items-center justify-center bg-blue-500/10 cursor-pointer">
-                <span id="user-initial" class="text-blue-500 font-bold uppercase">U</span>
+
+            <div class="flex items-center gap-3 animate-nav-icons">
+                <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data%2C%20I%20need%20assistance%20with%20my%20account." target="_blank" class="w-9 h-9 rounded-full border border-emerald-200 flex items-center justify-center bg-emerald-50 text-emerald-500 hover:bg-emerald-100 transition-all">
+                    <i data-lucide="message-circle" class="w-4 h-4 fill-emerald-500"></i>
+                </a>
+                
+                <button onclick="scrollToNotifications()" class="w-9 h-9 rounded-full border border-slate-200 flex items-center justify-center bg-slate-50 text-slate-600 relative hover:bg-slate-100 transition-all cursor-pointer">
+                    <i data-lucide="bell" class="w-4 h-4 fill-slate-400"></i>
+                    <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
+                </button>
+
+                <div onclick="toggleSidebar()" class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center">
+                    <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="px-5">
-        <div class="blue-gradient rounded-[2.5rem] p-8 mb-8 shadow-[0_20px_50px_rgba(30,64,175,0.3)] relative overflow-hidden">
+    <main class="px-5 max-w-md mx-auto mt-6">
+
+        <div id="admin-broadcast-hub" class="premium-card rounded-2xl p-4 mb-6 border-l-4 border-l-[#0052FF] flex gap-3 items-start bg-blue-50/30 transition-transform duration-300">
+            <div class="text-[#0052FF] mt-0.5 flex-shrink-0">
+                <i data-lucide="megaphone" class="w-4 h-4"></i>
+            </div>
+            <div class="flex-1 text-left">
+                <h3 class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 leading-none mb-1">Network System Update</h3>
+                <p id="broadcast-message-area" class="text-xs text-slate-700 font-semibold leading-relaxed">
+                    Welcome to Bigotic Data! MTN Airtime & Funding Channels are currently 100% fast and functional. Enjoy trading.
+                </p>
+            </div>
+        </div>
+        
+        <div class="brand-gradient rounded-[2rem] p-7 mb-8 shadow-[0_20px_40px_rgba(0,82,255,0.08)] relative overflow-hidden text-white text-left">
             <div class="relative z-10">
-                <div class="flex justify-between items-start mb-8">
+                <div class="flex justify-between items-start mb-6">
                     <div>
-                        <p class="text-[10px] text-white/70 uppercase font-bold tracking-[0.2em]">Account Balance</p>
-                        <h1 class="text-4xl font-black mt-2 tracking-tight">₦<span id="balance">0.00</span></h1>
+                        <p class="text-[10px] text-blue-100/80 uppercase font-bold tracking-[0.15em]">Account Balance</p>
+                        <h1 class="text-3xl font-black mt-1.5 tracking-tight">₦<span id="balance">0.00</span></h1>
                     </div>
-                    <div class="bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider">Level: Smart</div>
+                    <div class="bg-white/10 backdrop-blur-md px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider border border-white/10">Level: Smart</div>
                 </div>
 
                 <div class="flex">
-                    <button onclick="location.href='fund.html'" class="w-full bg-white text-blue-700 py-4 rounded-2xl font-black text-xs uppercase shadow-xl active:scale-95 transition-all">Fund Wallet</button>
+                    <button onclick="location.href='fund.html'" class="w-full bg-white text-[#0052FF] py-3.5 rounded-xl font-bold text-xs uppercase shadow-sm transition-all tracking-wider cursor-pointer">Fund Wallet</button>
                 </div>
             </div>
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
         </div>
 
-        <h2 class="text-[11px] font-black text-gray-500 uppercase tracking-[0.3em] mb-6 px-2">Services</h2>
-        <div class="grid grid-cols-4 gap-y-8 gap-x-4 mb-10 text-center">
-            
+        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-4 px-1 text-left">Core Utilities</h2>
+        
+        <div class="grid grid-cols-4 gap-y-6 gap-x-4 mb-8 text-center">
             <div onclick="location.href='buy-data.html'" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400 border border-blue-500/30">
-                    <i data-lucide="wifi" class="w-6 h-6"></i>
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="wifi" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Data</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Data</p>
             </div>
 
             <div onclick="location.href='buy-airtime.html'" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400 border border-blue-500/30">
-                    <i data-lucide="phone" class="w-6 h-6"></i>
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="phone" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Airtime</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Airtime</p>
             </div>
 
             <div onclick="location.href='buy-electricity.html'" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400 border border-blue-500/30">
-                    <i data-lucide="zap" class="w-6 h-6"></i>
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Electric</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Electric</p>
             </div>
 
             <div onclick="location.href='buy-tv.html'" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400 border border-blue-500/30">
-                    <i data-lucide="tv" class="w-6 h-6"></i>
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="tv" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">TV Cable</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">TV Cable</p>
             </div>
 
-            <div onclick="showComingSoonNotice()" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400/50 border border-blue-500/10">
-                    <i data-lucide="message-square" class="w-6 h-6"></i>
+            <div onclick="scrollToNotifications()" class="group cursor-pointer">
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Bulk SMS</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Bulk SMS</p>
             </div>
 
-            <div onclick="showComingSoonNotice()" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400/50 border border-blue-500/10">
-                    <i data-lucide="tag" class="w-6 h-6"></i>
+            <div onclick="scrollToNotifications()" class="group cursor-pointer">
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="tag" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Coupons</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Coupons</p>
             </div>
 
             <div onclick="location.href='fund.html'" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400 border border-blue-500/30">
-                    <i data-lucide="wallet" class="w-6 h-6"></i>
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="wallet" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Fund</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">Fund</p>
             </div>
 
             <div onclick="location.href='history.html'" class="group cursor-pointer">
-                <div class="w-16 h-16 glass rounded-[1.5rem] mx-auto flex items-center justify-center mb-3 group-active:scale-90 transition-all shadow-lg text-blue-400 border border-blue-500/30">
-                    <i data-lucide="history" class="w-6 h-6"></i>
+                <div class="w-14 h-14 premium-card rounded-2xl mx-auto flex items-center justify-center mb-2 text-[#0052FF] hover:border-blue-200 transition-all">
+                    <i data-lucide="history" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">History</p>
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-tight">History</p>
             </div>
         </div>
 
-        <h2 class="text-[11px] font-black text-gray-500 uppercase tracking-[0.3em] mb-4 px-2">Promotions</h2>
-        <div class="swiper swiper-promo w-full rounded-3xl border border-blue-500/20 bg-blue-500/5 mb-8 h-40 overflow-hidden relative">
+        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-3 px-1 text-left">Exclusive Offers</h2>
+        <div class="swiper swiper-promo w-full rounded-2xl border border-slate-200 bg-white mb-8 h-36 overflow-hidden relative shadow-sm">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <img src="Promo1.jpg" alt="Promo 1" class="w-full h-full object-cover">
-                </div>
-                <div class="swiper-slide">
-                    <img src="Promo2.jpg" alt="Promo 2" class="w-full h-full object-cover">
-                </div>
-                <div class="swiper-slide">
-                    <img src="Promo3.jpg" alt="Promo 3" class="w-full h-full object-cover">
-                </div>
+                <div class="swiper-slide"><img src="Promo1.jpg" alt="Promo 1" class="w-full h-full object-cover"></div>
+                <div class="swiper-slide"><img src="Promo2.jpg" alt="Promo 2" class="w-full h-full object-cover"></div>
+                <div class="swiper-slide"><img src="Promo3.jpg" alt="Promo 3" class="w-full h-full object-cover"></div>
             </div>
             <div class="swiper-pagination"></div>
         </div>
     </main>
 
-    <div class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 md:hidden">
-        <div class="bg-slate-950/95 backdrop-blur-md border border-white/5 rounded-3xl h-20 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] flex items-center justify-around relative px-2">
-            
-            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400 hover:text-blue-500 transition-colors">
-                <i data-lucide="phone" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold tracking-wider uppercase">Airtime</span>
+    <div class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden">
+        <div class="bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl h-16 shadow-[0_-10px_30px_rgba(15,23,42,0.05)] flex items-center justify-around relative px-2">
+            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="phone" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Airtime</span>
             </a>
-
-            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400 hover:text-blue-500 transition-colors">
-                <i data-lucide="wifi" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold tracking-wider uppercase">Data</span>
+            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="wifi" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Data</span>
             </a>
-
-            <div class="relative -top-5">
-                <div class="absolute inset-0 bg-blue-600 rounded-2xl blur-lg opacity-40"></div>
-                <a href="dashboard.html" class="relative w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg border border-blue-400/20 active:scale-90 transition-all">
-                    <i data-lucide="home" class="w-6 h-6"></i>
+            <div class="relative -top-4">
+                <div class="absolute inset-0 bg-[#0052FF] rounded-xl blur-md opacity-30"></div>
+                <a href="dashboard.html" class="relative w-12 h-12 bg-gradient-to-tr from-[#0052FF] to-[#003FE6] rounded-xl flex items-center justify-center text-white shadow-md border border-blue-400/20">
+                    <i data-lucide="home" class="w-5 h-5"></i>
                 </a>
             </div>
-
-            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400 hover:text-blue-500 transition-colors">
-                <i data-lucide="clock" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold tracking-wider uppercase">History</span>
+            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="clock" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">History</span>
             </a>
-
-            <a href="settings.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400 hover:text-blue-500 transition-colors">
-                <i data-lucide="settings" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold tracking-wider uppercase">Settings</span>
-            </a>
-
+            <button onclick="toggleSidebar()" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer">
+                <i data-lucide="more-vertical" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Menu</span>
+            </button>
         </div>
     </div>
 
@@ -180,6 +257,29 @@
             pagination: { el: '.swiper-pagination', clickable: true },
         });
 
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-menu');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function scrollToNotifications() {
+            const hub = document.getElementById('admin-broadcast-hub');
+            hub.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function logOutAction() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
         function updateBalanceUI(balanceValue) {
             const rawBalance = parseFloat(balanceValue) || 0;
             document.getElementById('balance').innerText = rawBalance.toLocaleString('en-NG', { 
@@ -188,24 +288,23 @@
             });
         }
 
-        // PREMIUM APP ENGINE ANNOUNCEMENT TOAST FUNCTIONALITY
-        let toastTimeout;
-        function showComingSoonNotice() {
-            const toast = document.getElementById('coming-soon-toast');
+        function compileTimeGreeting() {
+            const currentHour = new Date().getHours();
+            let greetingString = "Good Day,";
             
-            // Clear any active transitions if running
-            clearTimeout(toastTimeout);
-            
-            // Bring toast into user context view smoothly
-            toast.style.top = "24px";
-            
-            // Leave visible for premium engagement then slide out securely
-            toastTimeout = setTimeout(() => {
-                toast.style.top = "-100px";
-            }, 3000);
+            if (currentHour >= 0 && currentHour < 12) {
+                greetingString = "Good morning,";
+            } else if (currentHour >= 12 && currentHour < 16) {
+                greetingString = "Good afternoon,";
+            } else {
+                greetingString = "Good evening,";
+            }
+            document.getElementById('time-greeting-text').innerText = greetingString;
         }
 
         window.onload = async function() {
+            compileTimeGreeting();
+
             const user = JSON.parse(localStorage.getItem('user'));
             
             if (!user) {
@@ -214,8 +313,13 @@
             }
 
             const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
+            
             document.getElementById('username-display').innerText = dynamicDisplayName;
-            document.getElementById('user-initial').innerText = dynamicDisplayName.charAt(0).toUpperCase();
+            document.getElementById('sidebar-username').innerText = dynamicDisplayName;
+            
+            const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = baseChar;
+            document.getElementById('sidebar-initial').innerText = baseChar;
 
             updateBalanceUI(user.balance);
 
@@ -237,7 +341,7 @@
                         }
                     }
                 } catch (err) {
-                    console.log("Realtime wallet background sync paused.", err);
+                    console.log("Realtime background sync paused.", err);
                 }
             }
         };
