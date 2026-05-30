@@ -5,12 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .bg-gradient { background: radial-gradient(circle at bottom left, #1e3a8a, #0f172a, #000000); min-height: 100vh; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            min-height: 100vh;
+        }
+        .premium-card { 
+            background: #FFFFFF; 
+            border: 1px solid #E2E8F0; 
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04);
+        }
+        .brand-gradient { 
+            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
+        }
+        .spinner { 
+            border: 2px solid rgba(15, 23, 42, 0.1); 
+            border-left-color: #FFFFFF; 
+            border-radius: 50%; 
+            width: 18px; 
+            height: 18px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
         @keyframes slideIn {
             from { transform: translateY(-1rem); opacity: 0; }
@@ -21,39 +41,40 @@
         }
     </style>
 </head>
-<body class="bg-gradient text-white flex items-center justify-center p-6 relative">
+<body class="flex flex-col items-center justify-center p-6 antialiased">
 
     <div id="toastContainer" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
 
     <div class="max-w-md w-full">
         <div class="text-center mb-8">
-            <a href="index.html" class="text-3xl font-black tracking-tighter text-blue-400">BIGOTIC<span class="text-white">DATA</span></a>
+            <a href="index.html" class="text-2xl font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></a>
         </div>
 
-        <div class="glass p-8 rounded-[2rem] shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6">Welcome Back</h2>
+        <div class="premium-card p-8 rounded-[2.5rem]">
+            <h2 class="text-xl font-extrabold mb-1 text-slate-900 text-left tracking-tight">Welcome Back</h2>
+            <p class="text-xs text-slate-400 mb-6 text-left">Access your secure automated distribution dashboard panel.</p>
             
-            <form id="loginForm" class="space-y-5">
+            <form id="loginForm" class="space-y-5 text-left">
                 <div>
-                    <label class="text-xs text-gray-400 mb-1 block uppercase font-bold tracking-wider">Email</label>
-                    <input type="email" id="email" required placeholder="Enter your email" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-blue-500 transition-all">
+                    <label class="text-[10px] text-slate-400 mb-1.5 block uppercase font-black tracking-wider">Email Address</label>
+                    <input type="email" id="email" required placeholder="name@domain.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-semibold outline-none focus:border-[#0052FF] focus:bg-white text-slate-900 transition-all placeholder:text-slate-300">
                 </div>
 
                 <div>
-                    <div class="flex justify-between">
-                        <label class="text-xs text-gray-400 mb-1 block uppercase font-bold tracking-wider">Password</label>
-                        <a href="#" class="text-[10px] text-blue-400 uppercase font-bold hover:underline">Forgot?</a>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-[10px] text-slate-400 block uppercase font-black tracking-wider">Account Password</label>
+                        <a href="#" class="text-[9px] text-[#0052FF] uppercase font-extrabold tracking-wider hover:underline">Forgot?</a>
                     </div>
-                    <input type="password" id="password" required placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-sm outline-none focus:border-blue-500 transition-all">
+                    <input type="password" id="password" required minlength="6" placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-bold tracking-widest outline-none focus:border-[#0052FF] focus:bg-white text-slate-900 transition-all placeholder:text-slate-300">
                 </div>
 
-                <button type="submit" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold shadow-lg shadow-blue-600/20 transition-all flex justify-center items-center">
+                <button type="submit" id="loginBtn" class="w-full brand-gradient text-white py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md shadow-blue-600/10 transition-all flex justify-center items-center active:scale-[0.98] cursor-pointer">
                     Login to Dashboard
                 </button>
             </form>
 
-            <p class="text-center text-gray-400 text-sm mt-8">
-                New to Bigotic? <a href="signup.html" class="text-blue-400 font-bold hover:text-blue-300">Sign Up</a>
+            <p class="text-center text-slate-400 text-xs font-semibold mt-8">
+                New to Bigotic Platform? <a href="signup.html" class="text-[#0052FF] font-extrabold hover:opacity-80">Sign Up Free</a>
             </p>
         </div>
     </div>
@@ -68,17 +89,17 @@
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             
-            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-300 ${
+            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-xl border backdrop-blur-md shadow-lg transition-all duration-300 ${
                 type === 'success' 
-                ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-200' 
-                : 'bg-rose-950/80 border-rose-500/30 text-rose-200'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                : 'bg-rose-50 border-rose-200 text-rose-800'
             }`;
 
             const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
             
             toast.innerHTML = `
-                <i data-lucide="${iconName}" class="w-5 h-5 flex-shrink-0"></i>
-                <p class="text-xs font-semibold leading-relaxed">${message}</p>
+                <i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i>
+                <p class="text-xs font-bold leading-tight">${message}</p>
             `;
             
             container.appendChild(toast);
@@ -94,11 +115,18 @@
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            loginBtn.innerText = "Authenticating...";
-            loginBtn.disabled = true;
-
             const emailVal = document.getElementById('email').value.trim();
             const passwordVal = document.getElementById('password').value;
+
+            // Secondary double-check verification safeguard overlay logic
+            if (passwordVal.length < 6) {
+                showNotification("Security policy check failed. Passwords require a minimum length metric bounds of 6 characters.");
+                return;
+            }
+            
+            loginBtn.innerHTML = `<div class="spinner"></div>`;
+            loginBtn.disabled = true;
+
             const liveUrl = 'https://bigoticdata-backend.onrender.com/login';
 
             try {
@@ -111,23 +139,19 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // This data variable contains everything the server found in the DB
-                    // (fullName, username, phone, balance, etc.)
-                    
-                    // SAVE ALL DATA, NOT JUST EMAIL
                     localStorage.setItem('user', JSON.stringify(data)); 
                     
-                    showNotification("Login Successful! Redirecting... 🔓", "success");
+                    showNotification("Identity Authenticated! Entering system dashboard... 🔓", "success");
                     
                     setTimeout(() => {
                         window.location.href = "dashboard.html";
                     }, 1500);
                 } else {
-                    showNotification(data.error || "Invalid Credentials. Please check details.");
+                    showNotification(data.error || "Authentication failed. Cross-verify email name and security keys.");
                 }
             } catch (err) {
                 console.error("LOGIN SYSTEM NETWORK FAILURE:", err);
-                showNotification("Could not connect to server. It might be sleeping—please wait a minute and try again.");
+                showNotification("Unable to reach authentication matrix server endpoints. Please retry momentarily.");
             } finally {
                 loginBtn.innerText = "Login to Dashboard";
                 loginBtn.disabled = false;

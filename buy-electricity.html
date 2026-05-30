@@ -3,98 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electricity | Bigotic Data</title>
+    <title>Electricity Bill | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: white; min-height: 100vh; }
-        .dark-card { background: linear-gradient(145deg, #0f172a 0%, #020617 100%); border: 1px solid rgba(59, 130, 246, 0.1); }
-        .premium-gradient { background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .premium-card { 
+            background: #FFFFFF; 
+            border: 1px solid #E2E8F0; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+        .brand-gradient { 
+            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .spinner { 
+            border: 2px solid rgba(15, 23, 42, 0.1); 
+            border-left-color: #0052FF; 
+            border-radius: 50%; 
+            width: 20px; 
+            height: 20px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideIn { from { transform: translateY(-1rem); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .toast-animate { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
-<body class="pb-28">
-    <div id="toastContainer" class="fixed top-24 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+<body class="pb-28 antialiased">
 
-    <nav class="flex justify-between items-center px-6 py-5 bg-[#020617]/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50">
-        <button onclick="location.href='dashboard.html'" class="flex items-center text-sm font-bold text-blue-500">
-            <i data-lucide="chevron-left" class="w-5 h-5 mr-1"></i> Back
+    <div id="toastContainer" class="fixed top-20 right-6 z-[60] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleSidebar()"></div>
+    
+    <div id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 sidebar-transition -translate-x-full shadow-2xl flex flex-col justify-between border-r border-slate-100">
+        <div class="overflow-y-auto flex-1">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <div class="text-lg font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></div>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[#0F172A] cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="m-4 p-4 bg-slate-50 rounded-2xl flex items-center gap-3 border border-slate-200">
+                <div class="w-10 h-10 rounded-full brand-gradient flex items-center justify-center text-white font-bold text-sm" id="sidebar-initial">B</div>
+                <div class="text-left">
+                    <h4 class="text-xs font-extrabold uppercase text-[#0F172A]" id="sidebar-username">User</h4>
+                    <span class="text-[9px] bg-blue-100 text-[#0052FF] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Special Account</span>
+                </div>
+            </div>
+
+            <div class="px-4 py-2 space-y-1 text-left">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">General Menu</p>
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a>
+                <a href="buy-data.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wifi" class="w-4 h-4"></i> Buy Data</a>
+                <a href="buy-airtime.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="phone" class="w-4 h-4"></i> Buy Airtime</a>
+                <a href="buy-tv.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="tv" class="w-4 h-4"></i> Cable Sub</a>
+                <a href="fund.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wallet" class="w-4 h-4"></i> Fund Wallet</a>
+                <a href="history.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="history" class="w-4 h-4"></i> History</a>
+                
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 pt-4 mb-2">Management</p>
+                <a href="settings.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <button onclick="logOutAction()" class="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors border border-rose-200 cursor-pointer">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+            </button>
+        </div>
+    </div>
+
+    <nav class="flex justify-between items-center px-6 sticky top-0 z-40 bg-white border-b border-slate-200 h-16 w-full">
+        <button onclick="toggleSidebar()" class="text-[#0F172A] p-2 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center cursor-pointer">
+            <i data-lucide="more-vertical" class="w-6 h-6"></i>
         </button>
-        <div class="text-lg font-black tracking-tighter text-blue-600">BIGOTIC<span class="text-white">DATA</span></div>
+
+        <div class="text-xs font-extrabold uppercase tracking-widest text-[#0F172A] flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-[#0052FF]"></i> Electricity Utility
+        </div>
+
+        <div class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center" onclick="toggleSidebar()">
+            <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
+        </div>
     </nav>
 
-    <main class="px-5 max-w-md mx-auto mt-8">
-        <header class="mb-8">
-            <h1 class="text-3xl font-black tracking-tight">Electricity</h1>
-            <p class="text-sm text-slate-400 mt-1">Buy prepaid tokens or pay post-paid bills instantly.</p>
-        </header>
+    <main class="px-5 max-w-md mx-auto mt-6">
+        <div class="flex items-center justify-between mb-6 px-1">
+            <a href="dashboard.html" class="flex items-center gap-1.5 text-[#0052FF] text-xs font-extrabold uppercase tracking-wider hover:opacity-80 transition-all">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+            </a>
+            <span class="text-[10px] font-bold bg-slate-200 text-slate-600 px-2.5 py-1 rounded-full uppercase tracking-wider">Meters & Tokens</span>
+        </div>
 
         <form id="electricityForm" class="space-y-6">
-            <div class="dark-card p-7 rounded-[2rem] shadow-2xl space-y-6">
+            <div class="premium-card p-6 rounded-[2rem] bg-white space-y-5 text-left">
+                
                 <div>
-                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Distribution Company (DISCO)</label>
-                    <select id="disco" required class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold appearance-none">
-                        <option value="" disabled selected>-- Select Disco --</option>
-                        <option value="1">Ikeja Electricity (IKEDC)</option>
-                        <option value="2">Eko Electricity (EKEDC)</option>
-                        <option value="3">Kano Electricity (KEDCO)</option>
-                        <option value="5">Jos Electricity (JED)</option>
-                        <option value="6">Ibadan Electricity (IBEDC)</option>
-                        <option value="7">Kaduna Electricity (KAEDCO)</option>
-                        <option value="8">Abuja Electricity (AEDC)</option>
-                        <option value="9">Enugu Electric (EEDC)</option>
-                        <option value="10">Benin Electric (BEDC)</option>
-                        <option value="12">Aba Electric (APLE)</option>
-                    </select>
+                    <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Distribution Company (DISCO)</label>
+                    <div class="relative">
+                        <select id="disco" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-800 outline-none focus:border-[#0052FF] focus:bg-white transition-all font-bold appearance-none cursor-pointer text-sm">
+                            <option value="" disabled selected>-- Select Disco Company --</option>
+                            <option value="1">Ikeja Electricity (IKEDC)</option>
+                            <option value="2">Eko Electricity (EKEDC)</option>
+                            <option value="3">Kano Electricity (KEDCO)</option>
+                            <option value="5">Jos Electricity (JED)</option>
+                            <option value="6">Ibadan Electricity (IBEDC)</option>
+                            <option value="7">Kaduna Electricity (KAEDCO)</option>
+                            <option value="8">Abuja Electricity (AEDC)</option>
+                            <option value="9">Enugu Electric (EEDC)</option>
+                            <option value="10">Benin Electric (BEDC)</option>
+                            <option value="12">Aba Electric (APLE)</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="absolute right-4 top-4.5 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Meter Type</label>
-                    <div class="grid grid-cols-2 gap-4">
+                    <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Meter Type Class</label>
+                    <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer">
                             <input type="radio" name="meterType" value="prepaid" checked class="sr-only peer">
-                            <div class="border border-white/10 peer-checked:border-blue-500 peer-checked:bg-blue-950/20 text-center py-4 rounded-xl font-bold text-xs transition-all">Prepaid</div>
+                            <div class="border border-slate-200 text-slate-600 bg-slate-50 peer-checked:border-[#0052FF] peer-checked:text-[#0052FF] peer-checked:bg-blue-50 text-center py-3.5 rounded-xl font-bold text-xs uppercase tracking-wide transition-all">Prepaid</div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="radio" name="meterType" value="postpaid" class="sr-only peer">
-                            <div class="border border-white/10 peer-checked:border-blue-500 peer-checked:bg-blue-950/20 text-center py-4 rounded-xl font-bold text-xs transition-all">Postpaid</div>
+                            <div class="border border-slate-200 text-slate-600 bg-slate-50 peer-checked:border-[#0052FF] peer-checked:text-[#0052FF] peer-checked:bg-blue-50 text-center py-3.5 rounded-xl font-bold text-xs uppercase tracking-wide transition-all">Postpaid</div>
                         </label>
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Meter Number</label>
-                    <input type="text" id="meterNumber" required placeholder="Enter Meter Number" class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold placeholder-slate-700">
-                    <div id="verificationBox" class="hidden mt-3 px-4 py-3 rounded-xl text-xs font-bold transition-all"></div>
+                    <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Meter Reference Card Number</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="meterNumber" required placeholder="Enter Meter Number" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-800 outline-none focus:border-[#0052FF] focus:bg-white transition-all font-bold tracking-wide text-sm placeholder:text-slate-300">
+                        <button type="button" id="verifyBtn" onclick="triggerManualVerification()" class="bg-[#0F172A] text-white px-4 rounded-xl font-bold text-xs uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer flex items-center gap-1">Verify</button>
+                    </div>
+                    <div id="verificationBox" class="hidden mt-3 px-4 py-3 rounded-xl text-xs font-bold transition-all border"></div>
                 </div>
 
                 <div>
-                    <label class="text-[10px] text-blue-500 uppercase tracking-[0.2em] font-black block mb-3 ml-1">Amount (₦)</label>
-                    <input type="number" id="amount" min="100" required placeholder="e.g. 2000" class="w-full bg-slate-900/50 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-blue-600 transition-all font-semibold placeholder-slate-700">
+                    <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Purchase Token Amount (₦)</label>
+                    <div class="relative">
+                        <input type="number" id="amount" min="100" required placeholder="e.g. 2000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 pr-12 text-slate-800 outline-none focus:border-[#0052FF] focus:bg-white transition-all font-black text-sm placeholder:text-slate-300">
+                        <span class="absolute right-4 top-4.5 font-extrabold text-[10px] bg-slate-200 text-slate-500 px-1.5 py-0.5 rounded tracking-wide uppercase">NGN</span>
+                    </div>
                 </div>
+
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full premium-gradient py-5 rounded-2xl font-black text-sm uppercase shadow-2xl tracking-widest text-white active:scale-95 transition-all">
-                Pay Bill
+            <button type="submit" id="submitBtn" class="w-full brand-gradient hover:opacity-95 text-white py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md transition-all flex justify-center items-center active:scale-[0.98] cursor-pointer">
+                Pay Electricity Bill
             </button>
         </form>
 
-        <div id="tokenModal" class="fixed inset-0 bg-[#020617]/90 backdrop-blur-md hidden items-center justify-center p-6 z-50">
-            <div class="dark-card p-8 rounded-[2rem] max-w-sm w-full text-center space-y-6">
-                <i data-lucide="zap" class="w-12 h-12 text-yellow-500 mx-auto animate-bounce"></i>
-                <h3 class="text-xl font-black">Electricity Purchased!</h3>
-                <p class="text-xs text-slate-400">Copy your meter recharge token below:</p>
-                <div class="bg-slate-900/80 p-5 rounded-2xl border border-white/10 text-xl font-black tracking-widest text-blue-400 select-all" id="tokenDisplay">
+        <div id="tokenModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-6 z-50">
+            <div class="bg-white p-8 rounded-[2rem] max-w-sm w-full text-center space-y-5 shadow-2xl border border-slate-100">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center">
+                    <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+                </div>
+                <h3 class="text-base font-black text-slate-900 tracking-tight">Electricity Token Generated!</h3>
+                <p class="text-xs text-slate-500">Copy your prepaid token reference to load onto your meter terminal unit box:</p>
+                <div class="bg-slate-50 p-4.5 rounded-xl border border-slate-200 text-lg font-black tracking-widest text-[#0052FF] select-all font-mono" id="tokenDisplay">
                     ---- ---- ---- ----
                 </div>
-                <button onclick="location.href='dashboard.html'" class="w-full bg-blue-600 py-4 rounded-xl font-bold text-sm">
+                <button onclick="location.href='dashboard.html'" class="w-full bg-[#0F172A] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer">
                     Back to Dashboard
                 </button>
             </div>
         </div>
     </main>
+
+    <div id="pinGateModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closePinGate()"></div>
+        <div class="bg-white max-w-xs w-full p-6 rounded-[2rem] text-center relative z-10 border border-slate-100 shadow-2xl">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#0052FF] mx-auto mb-3 flex items-center justify-center">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-base font-black text-slate-900 mb-1 tracking-tight">Security Verification</h3>
+            <p class="text-[11px] text-slate-500 mb-4">Enter your 4-digit transaction pin to finalize purchase action.</p>
+            
+            <form id="pinAuthForm" class="space-y-4">
+                <input type="password" id="txPin" required maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-center text-xl tracking-[0.5em] outline-none focus:border-[#0052FF] focus:bg-white font-black text-slate-900 transition-all">
+                <div class="flex gap-2">
+                    <button type="submit" id="confirmPayBtn" class="flex-1 brand-gradient text-white py-3 rounded-lg font-bold text-xs uppercase tracking-wider cursor-pointer">Confirm</button>
+                    <button type="button" onclick="closePinGate()" class="flex-1 bg-slate-100 text-slate-500 py-3 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-slate-200 cursor-pointer">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden">
+        <div class="bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl h-16 shadow-[0_-10px_30px_rgba(15,23,42,0.05)] flex items-center justify-around relative px-2">
+            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="phone" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Airtime</span>
+            </a>
+            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="wifi" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Data</span>
+            </a>
+            <div class="relative -top-4">
+                <div class="absolute inset-0 bg-[#0052FF] rounded-xl blur-md opacity-30"></div>
+                <a href="dashboard.html" class="relative w-12 h-12 bg-gradient-to-tr from-[#0052FF] to-[#003FE6] rounded-xl flex items-center justify-center text-white shadow-md border border-blue-400/20">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </a>
+            </div>
+            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="clock" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">History</span>
+            </a>
+            <button onclick="toggleSidebar()" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer">
+                <i data-lucide="more-vertical" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Menu</span>
+            </button>
+        </div>
+    </div>
 
     <script>
         lucide.createIcons();
@@ -104,58 +237,84 @@
         const discoSelect = document.getElementById('disco');
         const meterNumberInput = document.getElementById('meterNumber');
         const verificationBox = document.getElementById('verificationBox');
+        const verifyBtn = document.getElementById('verifyBtn');
         const submitBtn = document.getElementById('submitBtn');
+        const pinGateModal = document.getElementById('pinGateModal');
+        const pinAuthForm = document.getElementById('pinAuthForm');
 
         let isMeterVerified = false;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-menu');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function logOutAction() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        function openPinGate() {
+            pinGateModal.classList.remove('hidden');
+            document.getElementById('txPin').focus();
+        }
+
+        function closePinGate() {
+            pinGateModal.classList.add('hidden');
+            document.getElementById('txPin').value = '';
+        }
 
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-300 ${type === 'success' ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-200' : 'bg-rose-950/90 border-rose-500/30 text-rose-200'}`;
-            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 flex-shrink-0"></i><p class="text-xs font-bold">${message}</p>`;
+            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-xl border backdrop-blur-md shadow-lg transition-all duration-300 ${type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}`;
+            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-4 h-4 flex-shrink-0"></i><p class="text-xs font-bold leading-tight">${message}</p>`;
             container.appendChild(toast);
             lucide.createIcons();
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
-        // Dropdown or type change: Only trigger verification if a valid length exists, don't clear instantly
-        [discoSelect, ...document.querySelectorAll('input[name="meterType"]')].forEach(element => {
-            element.addEventListener('change', () => {
-                const meterNum = meterNumberInput.value.trim();
-                if (meterNum.length >= 9 && meterNum.length <= 15) {
-                    triggerVerification();
-                }
-            });
+        // Reset tracking states cleanly whenever critical configuration parameters are altered
+        [discoSelect, meterNumberInput, ...document.querySelectorAll('input[name="meterType"]')].forEach(element => {
+            element.addEventListener('input', resetMeterVerification);
+            element.addEventListener('change', resetMeterVerification);
         });
 
-        // Typing event: trigger verification when character parameters are hit
-        meterNumberInput.addEventListener('input', () => {
-            const meterNum = meterNumberInput.value.trim();
-            if (meterNum.length >= 9 && meterNum.length <= 15) {
-                triggerVerification();
-            } else {
-                resetMeterVerification();
-            }
-        });
-
-        function triggerVerification() {
+        // SPECIAL FIXED FUNCTIONALITY: Manual Verification Handler Logic Routine
+        function triggerManualVerification() {
             const meterNum = meterNumberInput.value.trim();
             const disco = discoSelect.value;
             const meterType = document.querySelector('input[name="meterType"]:checked').value;
 
             if (!disco) {
-                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
+                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 text-left";
                 verificationBox.innerText = "Please choose a Distribution Company (DISCO) first.";
                 verificationBox.classList.remove('hidden');
                 return;
             }
+
+            if (meterNum.length < 9 || meterNum.length > 15) {
+                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 text-left";
+                verificationBox.innerText = "Meter characters length bounds must measure within 9 to 15 digits.";
+                verificationBox.classList.remove('hidden');
+                return;
+            }
+
             performMeterVerification(meterNum, disco, meterType);
         }
 
         async function performMeterVerification(meterNum, disco, meterType) {
             verificationBox.classList.remove('hidden');
-            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-950/40 text-blue-400 border border-blue-500/20";
+            verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 text-left";
             verificationBox.innerText = "Verifying Meter Account Properties...";
+            verifyBtn.disabled = true;
 
             try {
                 const response = await fetch(`${BACKEND_URL}/verify-meter`, {
@@ -168,19 +327,20 @@
 
                 if (response.ok && data.success && data.customerName) {
                     isMeterVerified = true;
-                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-500/20";
+                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 text-left";
                     verificationBox.innerText = `✅ Meter Name: ${data.customerName}`;
                 } else {
                     isMeterVerified = false;
-                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-500/20";
-                    verificationBox.innerText = `❌ Invalid Meter: ${data.error || 'Check inputs or credentials'}`;
+                    verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 text-left";
+                    verificationBox.innerText = `❌ Invalid Meter: ${data.error || 'Check selection inputs'}`;
                 }
             } catch (err) {
                 console.error(err);
                 isMeterVerified = false;
-                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-950/40 text-amber-400 border border-amber-500/20";
+                verificationBox.className = "mt-3 px-4 py-3 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 text-left";
                 verificationBox.innerText = "⚠️ Validation processing connection timed out.";
             }
+            verifyBtn.disabled = false;
         }
 
         function resetMeterVerification() {
@@ -189,20 +349,31 @@
             verificationBox.innerText = "";
         }
 
-        document.getElementById('electricityForm').addEventListener('submit', async (e) => {
+        // Intercept primary submission wrapper stack execution to call transaction PIN pad first
+        document.getElementById('electricityForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const currentUser = JSON.parse(localStorage.getItem('user'));
 
             if (!currentUser) return showNotification("Please log in.");
 
             if (!isMeterVerified) {
-                return showNotification("Please supply a valid verified account meter reference structure first.");
+                return showNotification("Please complete manual meter validation checks successfully first.");
             }
 
-            submitBtn.innerText = "PROCESSING...";
-            submitBtn.disabled = true;
+            openPinGate();
+        });
 
+        // Secure PIN processing confirmation handling layer
+        pinAuthForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const currentUser = JSON.parse(localStorage.getItem('user'));
             const selectedMeterType = document.querySelector('input[name="meterType"]:checked').value;
+            const pinVal = document.getElementById('txPin').value;
+
+            closePinGate();
+            submitBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
+            submitBtn.disabled = true;
 
             try {
                 const response = await fetch(`${BACKEND_URL}/buy-electricity`, {
@@ -213,7 +384,8 @@
                         disco: discoSelect.value,
                         meterType: selectedMeterType,
                         meterNumber: meterNumberInput.value.trim(),
-                        amount: document.getElementById('amount').value.trim()
+                        amount: document.getElementById('amount').value.trim(),
+                        pin: pinVal
                     })
                 });
 
@@ -227,20 +399,31 @@
                         document.getElementById('tokenModal').classList.remove('hidden');
                         document.getElementById('tokenModal').classList.add('flex');
                     } else {
-                        showNotification("Bill paid successfully! 🎉", "success");
+                        showNotification("Utility bill paid successfully! 🎉", "success");
                         setTimeout(() => location.href = 'dashboard.html', 2000);
                     }
                 } else {
-                    showNotification(data.error || "Payment failed.");
-                    submitBtn.innerText = "Pay Bill";
+                    showNotification(data.error || "Transaction pin authentication failed.");
+                    submitBtn.innerText = "Pay Electricity Bill";
                     submitBtn.disabled = false;
                 }
             } catch (err) {
-                showNotification("Connection error.");
-                submitBtn.innerText = "Pay Bill";
+                showNotification("Communication connection breakdown.");
+                submitBtn.innerText = "Pay Electricity Bill";
                 submitBtn.disabled = false;
             }
         });
+
+        window.onload = function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
+                document.getElementById('sidebar-username').innerText = dynamicDisplayName;
+                const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
+                document.getElementById('avatar-initial').innerText = baseChar;
+                document.getElementById('sidebar-initial').innerText = baseChar;
+            }
+        }
     </script>
 </body>
 </html>

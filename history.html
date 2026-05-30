@@ -5,68 +5,228 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction History | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .receipt-gradient { background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .premium-card { 
+            background: #FFFFFF; 
+            border: 1px solid #E2E8F0; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+        .brand-gradient { 
+            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .receipt-gradient { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
+        }
+        
+        /* Official Security Stamp Styling */
+        .official-stamp {
+            position: absolute;
+            top: 32%;
+            right: 8%;
+            width: 110px;
+            height: 110px;
+            border: 3px dashed rgba(0, 82, 255, 0.25);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-18deg);
+            font-family: 'Courier New', Courier, monospace;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(1px);
+            box-shadow: inset 0 0 4px rgba(0, 82, 255, 0.05);
+        }
+        .stamp-inner {
+            border: 1px solid rgba(0, 82, 255, 0.25);
+            border-radius: 50%;
+            width: 94px;
+            height: 94px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+
         /* Print styles to only print the receipt card */
         @media print {
             body * { visibility: hidden; }
             #receipt-card, #receipt-card * { visibility: visible; }
-            #receipt-card { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none; }
+            #receipt-card { position: absolute; left: 0; top: 0; width: 100%; border: none; box-shadow: none; }
+            .no-print { display: none !important; }
+            .official-stamp { border: 3px dashed rgba(0, 82, 255, 0.5) !important; }
+            .stamp-inner { border: 1px solid rgba(0, 82, 255, 0.5) !important; }
         }
     </style>
 </head>
-<body class="p-4 md:p-6">
-    <div class="max-w-2xl mx-auto">
-        <div class="flex justify-between items-center mb-8">
-            <a href="dashboard.html" class="text-blue-400 text-xs font-bold uppercase tracking-widest hover:text-blue-300 transition-colors">← Dashboard</a>
-            <h2 class="text-xl font-black">Transaction <span class="text-blue-400">Log</span></h2>
+<body class="pb-28 antialiased">
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleSidebar()"></div>
+    
+    <div id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 sidebar-transition -translate-x-full shadow-2xl flex flex-col justify-between border-r border-slate-100">
+        <div class="overflow-y-auto flex-1">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <div class="text-lg font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></div>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[#0F172A] cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="m-4 p-4 bg-slate-50 rounded-2xl flex items-center gap-3 border border-slate-200">
+                <div class="w-10 h-10 rounded-full brand-gradient flex items-center justify-center text-white font-bold text-sm" id="sidebar-initial">B</div>
+                <div class="text-left">
+                    <h4 class="text-xs font-extrabold uppercase text-[#0F172A]" id="sidebar-username">User</h4>
+                    <span class="text-[9px] bg-blue-100 text-[#0052FF] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Special Account</span>
+                </div>
+            </div>
+
+            <div class="px-4 py-2 space-y-1 text-left">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">General Menu</p>
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a>
+                <a href="buy-data.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wifi" class="w-4 h-4"></i> Buy Data</a>
+                <a href="buy-airtime.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="phone" class="w-4 h-4"></i> Buy Airtime</a>
+                <a href="buy-tv.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="tv" class="w-4 h-4"></i> Cable Sub</a>
+                <a href="fund.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wallet" class="w-4 h-4"></i> Fund Wallet</a>
+                <a href="#" onclick="toggleSidebar(); return false;" class="flex items-center gap-3 px-3 py-3 rounded-xl bg-blue-50 text-[#0052FF] font-bold text-xs uppercase tracking-wider"><i data-lucide="history" class="w-4 h-4"></i> History</a>
+                
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 pt-4 mb-2">Management</p>
+                <a href="settings.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <button onclick="logOutAction()" class="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors border border-rose-200 cursor-pointer">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+            </button>
+        </div>
+    </div>
+
+    <nav class="flex justify-between items-center px-6 sticky top-0 z-40 bg-white border-b border-slate-200 h-16 w-full no-print">
+        <button onclick="toggleSidebar()" class="text-[#0F172A] p-2 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center cursor-pointer">
+            <i data-lucide="more-vertical" class="w-6 h-6"></i>
+        </button>
+
+        <div class="text-xs font-extrabold uppercase tracking-widest text-[#0F172A] flex items-center gap-2">
+            <i data-lucide="history" class="w-4 h-4 text-[#0052FF]"></i> Transaction Log
+        </div>
+
+        <div class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center" onclick="toggleSidebar()">
+            <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
+        </div>
+    </nav>
+
+    <main class="px-5 max-w-md mx-auto mt-6 no-print">
+        <div class="flex items-center justify-between mb-6 px-1">
+            <a href="dashboard.html" class="flex items-center gap-1.5 text-[#0052FF] text-xs font-extrabold uppercase tracking-wider hover:opacity-80 transition-all">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+            </a>
+            <span id="log-count" class="text-[10px] font-bold bg-slate-200 text-slate-600 px-2.5 py-1 rounded-full uppercase tracking-wider">Syncing...</span>
         </div>
 
         <div id="history-container" class="space-y-4">
-            <div class="text-center py-10 opacity-50">
-                <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-400 rounded-full mb-2" role="status"></div>
-                <p>Loading your history...</p>
+            <div class="premium-card rounded-2xl p-8 text-center opacity-60">
+                <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-[#0052FF] rounded-full mb-3" role="status"></div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Retrieving Transaction Log...</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="receipt-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div id="receipt-card" class="receipt-gradient text-slate-900 w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl scale-95 transition-transform duration-300 border border-slate-200 relative">
+            <div class="p-6 text-center border-b border-slate-100 bg-white">
+                <div class="w-14 h-14 brand-gradient rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md">
+                    <span class="text-white font-black text-xl tracking-tighter">B</span>
+                </div>
+                <h3 class="font-black text-lg tracking-tight text-[#0052FF]">BIGOTIC <span class="text-[#0F172A]">DATA</span></h3>
+                <p class="text-[9px] uppercase font-extrabold text-slate-400 tracking-widest mt-1">Official Digital Receipt</p>
+            </div>
+
+            <div id="receipt-details" class="p-6 space-y-4 text-xs font-semibold text-slate-700 bg-white/50 relative">
+                </div>
+
+            <div class="p-6 pt-2 flex gap-3 no-print bg-slate-50 border-t border-slate-100">
+                <button onclick="window.print()" class="flex-1 bg-[#0F172A] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer flex items-center justify-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5"></i> Save / PDF</button>
+                <button onclick="closeReceipt()" class="flex-1 bg-slate-200 text-slate-600 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-300 transition-all cursor-pointer">Close</button>
             </div>
         </div>
     </div>
 
-    <div id="receipt-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div id="receipt-card" class="receipt-gradient text-slate-900 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl scale-95 transition-transform duration-300">
-            <div class="p-6 text-center border-b border-slate-200">
-                <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
-                    <span class="text-white font-black text-xl">B</span>
-                </div>
-                <h3 class="font-black text-xl tracking-tight">BIGOTIC DATA</h3>
-                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1">Official Transaction Receipt</p>
+    <div class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden no-print">
+        <div class="bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl h-16 shadow-[0_-10px_30px_rgba(15,23,42,0.05)] flex items-center justify-around relative px-2">
+            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="phone" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Airtime</span>
+            </a>
+            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="wifi" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Data</span>
+            </a>
+            <div class="relative -top-4">
+                <div class="absolute inset-0 bg-[#0052FF] rounded-xl blur-md opacity-30"></div>
+                <a href="dashboard.html" class="relative w-12 h-12 bg-gradient-to-tr from-[#0052FF] to-[#003FE6] rounded-xl flex items-center justify-center text-white shadow-md border border-blue-400/20">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </a>
             </div>
-
-            <div id="receipt-details" class="p-6 space-y-4 text-sm">
-                </div>
-
-            <div class="p-6 pt-0 flex gap-3 no-print">
-                <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-3 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-slate-800 transition-all">Print / PDF</button>
-                <button onclick="closeReceipt()" class="flex-1 bg-slate-200 text-slate-600 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-slate-300 transition-all">Close</button>
-            </div>
+            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-[#0052FF] transition-colors">
+                <i data-lucide="clock" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">History</span>
+            </a>
+            <button onclick="toggleSidebar()" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer">
+                <i data-lucide="more-vertical" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Menu</span>
+            </button>
         </div>
     </div>
 
     <script>
         let allTransactions = [];
 
-        window.onload = async function() {
-            let userEmail = localStorage.getItem('userEmail');
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-menu');
+            const overlay = document.getElementById('sidebar-overlay');
             
-            if (!userEmail) {
-                const currentUser = JSON.parse(localStorage.getItem('user'));
-                if (currentUser && currentUser.email) userEmail = currentUser.email;
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function logOutAction() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        window.onload = async function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
             }
 
-            if (!userEmail) return window.location.href = 'login.html';
+            const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
+            document.getElementById('sidebar-username').innerText = dynamicDisplayName;
+            const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = baseChar;
+            document.getElementById('sidebar-initial').innerText = baseChar;
 
+            let userEmail = localStorage.getItem('userEmail') || user.email;
             const container = document.getElementById('history-container');
 
             try {
@@ -74,37 +234,41 @@
                 if (!response.ok) throw new Error("Fetch failed");
 
                 allTransactions = await response.json();
+                lucide.createIcons();
 
                 if (allTransactions && allTransactions.length > 0) {
                     container.innerHTML = '';
+                    document.getElementById('log-count').innerText = `${allTransactions.length} Items`;
+                    
                     allTransactions.forEach(tx => {
                         const isDeduction = tx.type !== "Wallet Funding" && tx.type !== "Fund";
-                        
-                        // Fallback logic for old transactions missing 'details'
                         const displayDetails = tx.details || `${tx.type} to ${tx.recipient || 'Account'}`;
 
                         container.innerHTML += `
-                            <div class="glass p-5 rounded-3xl flex justify-between items-center border-l-4 ${isDeduction ? 'border-red-500/50' : 'border-green-500/50'} hover:bg-white/10 transition-all cursor-pointer" onclick="openReceipt('${tx.reference}')">
-                                <div class="flex-1 pr-4">
-                                    <p class="text-[10px] font-black uppercase text-gray-500 tracking-widest">${tx.type || 'Transaction'}</p>
-                                    <p class="text-sm font-bold mt-1 text-white leading-tight">${displayDetails}</p>
-                                    <p class="text-[10px] text-gray-500 mt-2 font-medium">${new Date(tx.date).toLocaleString()}</p>
+                            <div class="premium-card p-4 rounded-2xl flex justify-between items-center border-l-4 ${isDeduction ? 'border-rose-500' : 'border-emerald-500'} hover:border-slate-300 transition-all cursor-pointer bg-white" onclick="openReceipt('${tx.reference}')">
+                                <div class="flex-1 pr-3 text-left">
+                                    <p class="text-[9px] font-extrabold uppercase text-slate-400 tracking-wider">${tx.type || 'Transaction'}</p>
+                                    <p class="text-xs font-bold mt-0.5 text-slate-800 leading-tight truncate max-w-[220px]">${displayDetails}</p>
+                                    <p class="text-[9px] text-slate-400 mt-1 font-semibold">${new Date(tx.date).toLocaleString()}</p>
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-black ${isDeduction ? 'text-red-400' : 'text-green-400'}">
-                                        ${isDeduction ? '-' : '+'}₦${Number(tx.amount).toLocaleString()}
+                                <div class="text-right flex-shrink-0">
+                                    <p class="text-sm font-black tracking-tight ${isDeduction ? 'text-rose-600' : 'text-emerald-600'}">
+                                        ${isDeduction ? '-' : '+'}₦${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}
                                     </p>
-                                    <span class="text-[9px] bg-white/5 px-2 py-1 rounded-lg uppercase font-black text-blue-400">View Receipt</span>
+                                    <span class="text-[8px] bg-slate-100 px-1.5 py-0.5 rounded font-bold uppercase text-[#0052FF] tracking-wider mt-1 inline-block">Receipt</span>
                                 </div>
                             </div>
                         `;
                     });
                 } else {
-                    container.innerHTML = '<div class="glass p-10 rounded-3xl text-center opacity-50 italic">No transactions found.</div>';
+                    container.innerHTML = '<div class="premium-card p-10 rounded-2xl text-center text-slate-400 font-bold text-xs uppercase tracking-wider bg-white">No transactions found.</div>';
+                    document.getElementById('log-count').innerText = '0 Items';
                 }
             } catch (err) {
-                container.innerHTML = '<div class="text-red-400 text-center py-10">Connection error. Please refresh.</div>';
+                container.innerHTML = '<div class="text-rose-600 font-bold text-xs uppercase tracking-wider text-center py-10 bg-white rounded-2xl border border-slate-200">Connection error. Please refresh.</div>';
+                document.getElementById('log-count').innerText = 'Error';
             }
+            lucide.createIcons();
         };
 
         function openReceipt(ref) {
@@ -115,32 +279,42 @@
             const details = document.getElementById('receipt-details');
 
             details.innerHTML = `
-                <div class="flex justify-between items-center pb-2 border-b border-dashed border-slate-300">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Status</span>
-                    <span class="bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-black text-[10px] uppercase">Successful</span>
+                <div class="official-stamp">
+                    <div class="stamp-inner text-center">
+                        <span class="text-[7px] font-black tracking-tight text-[#0052FF]/60 uppercase leading-none">APPROVED</span>
+                        <span class="text-[6px] font-bold text-[#0F172A]/40 my-0.5">✦ OFFICIAL ✦</span>
+                        <span class="text-[6px] font-black tracking-tighter text-[#0052FF]/50 uppercase leading-none">bigoticdata.com.ng</span>
+                    </div>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Service</span>
-                    <span class="font-bold text-right">${tx.type}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Beneficiary</span>
-                    <span class="font-bold text-right">${tx.recipient || 'N/A'}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Amount</span>
-                    <span class="font-black text-lg">₦${Number(tx.amount).toLocaleString()}</span>
-                </div>
-                <div class="pt-2">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Reference Number</span>
-                    <p class="font-mono text-[11px] break-all bg-slate-100 p-2 rounded-lg mt-1 text-slate-500">${tx.reference}</p>
-                </div>
-                <div class="flex justify-between pt-2">
-                    <span class="text-slate-400 font-bold uppercase text-[10px]">Date & Time</span>
-                    <span class="font-bold text-[11px]">${new Date(tx.date).toLocaleString()}</span>
-                </div>
-                <div class="mt-6 text-center">
-                    <p class="text-[10px] text-slate-400 font-bold italic">Thank you for using Bigotic Data!</p>
+
+                <div class="relative z-10 space-y-4 text-left">
+                    <div class="flex justify-between items-center pb-3 border-b border-dashed border-slate-200">
+                        <span class="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">Status</span>
+                        <span class="bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-extrabold text-[9px] uppercase tracking-wider">Successful</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">Transaction Type</span>
+                        <span class="font-bold text-slate-800 text-right">${tx.type}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">Beneficiary</span>
+                        <span class="font-bold text-slate-800 text-right truncate max-w-[160px]">${tx.recipient || 'N/A'}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-3 border-b border-dashed border-slate-200">
+                        <span class="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">Total Amount</span>
+                        <span class="font-black text-base text-[#0052FF]">₦${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                    <div class="pt-1">
+                        <span class="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">Reference String</span>
+                        <p class="font-mono text-[10px] break-all bg-slate-50 p-2.5 rounded-xl mt-1 text-slate-500 border border-slate-200">${tx.reference}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-slate-400 font-extrabold uppercase text-[9px] tracking-wider">Timestamp</span>
+                        <span class="font-bold text-slate-600 text-[10px]">${new Date(tx.date).toLocaleString()}</span>
+                    </div>
+                    <div class="mt-6 text-center border-t border-slate-100 pt-4">
+                        <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest">Thank you for choosing Bigotic Data</p>
+                    </div>
                 </div>
             `;
 
@@ -148,6 +322,7 @@
             setTimeout(() => {
                 document.getElementById('receipt-card').style.transform = 'scale(1)';
             }, 10);
+            lucide.createIcons();
         }
 
         function closeReceipt() {

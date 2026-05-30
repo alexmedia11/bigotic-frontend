@@ -5,155 +5,267 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0b0f19; color: white; min-height: 100vh; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .premium-card { 
+            background: #FFFFFF; 
+            border: 1px solid #E2E8F0; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+        .brand-gradient { 
+            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
+        }
+        .sidebar-transition {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .spinner { 
+            border: 2px solid rgba(15, 23, 42, 0.1); 
+            border-left-color: #0052FF; 
+            border-radius: 50%; 
+            width: 18px; 
+            height: 18px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="p-5 pb-28 flex justify-center">
+<body class="pb-28 antialiased">
 
-    <div id="coming-soon-toast" class="fixed top-[-100px] left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm transition-all duration-500 ease-out pointer-events-none">
-        <div class="glass bg-[#0f172a]/90 border border-blue-500/30 rounded-2xl p-4 flex items-center space-x-3 shadow-[0_20px_40px_rgba(0,0,0,0.7),0_0_20px_rgba(59,130,246,0.15)]">
-            <div class="w-10 h-10 bg-blue-500/10 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-400 shrink-0">
-                <i data-lucide="construction" class="w-5 h-5"></i>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleSidebar()"></div>
+    
+    <div id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 sidebar-transition -translate-x-full shadow-2xl flex flex-col justify-between border-r border-slate-100">
+        <div class="overflow-y-auto flex-1">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <div class="text-lg font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></div>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[#0F172A] cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
-            <div>
-                <h4 class="text-xs font-black uppercase tracking-wider text-white">Feature Coming Soon</h4>
-                <p class="text-[10px] text-gray-400 mt-0.5 font-semibold">We are optimizing this service for you.</p>
+            
+            <div class="m-4 p-4 bg-slate-50 rounded-2xl flex items-center gap-3 border border-slate-200">
+                <div class="w-10 h-10 rounded-full brand-gradient flex items-center justify-center text-white font-bold text-sm" id="sidebar-initial">B</div>
+                <div class="text-left">
+                    <h4 class="text-xs font-extrabold uppercase text-[#0F172A]" id="sidebar-username">User</h4>
+                    <span class="text-[9px] bg-blue-100 text-[#0052FF] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Special Account</span>
+                </div>
             </div>
+
+            <div class="px-4 py-2 space-y-1 text-left">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">General Menu</p>
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a>
+                <a href="buy-data.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wifi" class="w-4 h-4"></i> Buy Data</a>
+                <a href="buy-airtime.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="phone" class="w-4 h-4"></i> Buy Airtime</a>
+                <a href="buy-tv.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="tv" class="w-4 h-4"></i> Cable Sub</a>
+                <a href="fund.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="wallet" class="w-4 h-4"></i> Fund Wallet</a>
+                <a href="history.html" class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-bold text-xs uppercase tracking-wider"><i data-lucide="history" class="w-4 h-4"></i> History</a>
+                
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 pt-4 mb-2">Management</p>
+                <a href="#" onclick="toggleSidebar(); return false;" class="flex items-center gap-3 px-3 py-3 rounded-xl bg-blue-50 text-[#0052FF] font-bold text-xs uppercase tracking-wider"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors border border-rose-200 cursor-pointer">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+            </button>
         </div>
     </div>
 
-    <div class="max-w-md w-full">
-        <div class="flex items-center mb-8 relative">
-            <button onclick="location.href='dashboard.html'" class="absolute left-0 w-10 h-10 glass rounded-full flex items-center justify-center text-blue-400 border border-blue-500/20 active:scale-90 transition-all">
-                <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            </button>
-            <div class="w-full text-center">
-                <h1 id="header-name" class="text-xl font-black tracking-tight mb-1 capitalize">Loading...</h1>
-                <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-full inline-flex items-center">
-                    <span class="w-1.5 h-1.5 bg-blue-400 rounded-full mr-1.5"></span> Smart User
-                </span>
-            </div>
+    <nav class="flex justify-between items-center px-6 sticky top-0 z-40 bg-white border-b border-slate-200 h-16 w-full">
+        <button onclick="toggleSidebar()" class="text-[#0F172A] p-2 rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center cursor-pointer">
+            <i data-lucide="more-vertical" class="w-6 h-6"></i>
+        </button>
+
+        <div class="text-xs font-extrabold uppercase tracking-widest text-[#0F172A] flex items-center gap-2">
+            <i data-lucide="settings" class="w-4 h-4 text-[#0052FF]"></i> Account Management
         </div>
 
-        <div class="grid grid-cols-3 gap-3 mb-8">
-            <button onclick="showComingSoonNotice()" class="glass rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
-                <i data-lucide="user-pen" class="w-5 h-5 text-blue-400 mb-2"></i>
-                <span class="text-[8px] font-bold uppercase text-gray-400">Edit<br>Profile</span>
-            </button>
-            <button onclick="showComingSoonNotice()" class="glass rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
-                <i data-lucide="key" class="w-5 h-5 text-blue-400 mb-2"></i>
-                <span class="text-[8px] font-bold uppercase text-gray-400">Change<br>Pin</span>
-            </button>
-            <button onclick="showComingSoonNotice()" class="glass rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:bg-white/5 active:scale-95 transition-all">
-                <i data-lucide="lock" class="w-5 h-5 text-blue-400 mb-2"></i>
-                <span class="text-[8px] font-bold uppercase text-gray-400">Change<br>Password</span>
-            </button>
+        <div class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center" onclick="toggleSidebar()">
+            <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
+        </div>
+    </nav>
+
+    <main class="px-5 max-w-md mx-auto mt-6 space-y-6">
+        <div class="flex items-center justify-between px-1">
+            <a href="dashboard.html" class="flex items-center gap-1.5 text-[#0052FF] text-xs font-extrabold uppercase tracking-wider hover:opacity-80 transition-all">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+            </a>
+            <span id="header-name" class="text-[10px] font-black bg-slate-200 text-slate-700 px-3 py-1 rounded-full uppercase tracking-wider">User</span>
         </div>
 
-        <div class="glass p-6 rounded-[2rem] border border-white/5 relative overflow-hidden space-y-6">
-            <h3 class="text-gray-400 text-[10px] uppercase font-black tracking-[0.2em] flex items-center border-b border-white/5 pb-4">
-                <i data-lucide="shield" class="w-4 h-4 mr-2 text-blue-400"></i> Account Details
+        <div class="premium-card p-6 rounded-[2rem] bg-white space-y-4">
+            <h3 class="text-slate-400 text-[9px] uppercase font-black tracking-widest flex items-center border-b border-slate-100 pb-3 text-left">
+                <i data-lucide="shield-check" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Identity Overview
             </h3>
             
-            <div class="space-y-5">
-                <div class="flex items-center space-x-4">
-                    <i data-lucide="user" class="w-5 h-5 text-gray-500"></i>
+            <div class="space-y-4 text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><i data-lucide="user" class="w-4 h-4"></i></div>
                     <div>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Full Name</p>
-                        <p id="prof-fullname" class="text-sm font-bold text-white">Not Provided</p>
+                        <p class="text-[8px] text-slate-400 font-extrabold uppercase tracking-wider">Account Fullname</p>
+                        <p id="prof-fullname" class="text-xs font-bold text-slate-800">Not Set</p>
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4 bg-white/5 p-3 rounded-xl -mx-3">
-                    <i data-lucide="mail" class="w-5 h-5 text-gray-500"></i>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><i data-lucide="mail" class="w-4 h-4"></i></div>
                     <div>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Email Address</p>
-                        <p id="prof-email" class="text-sm font-semibold text-white">Loading...</p>
+                        <p class="text-[8px] text-slate-400 font-extrabold uppercase tracking-wider">Email Address</p>
+                        <p id="prof-email" class="text-xs font-bold text-slate-800">Loading...</p>
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4">
-                    <i data-lucide="phone" class="w-5 h-5 text-gray-500"></i>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><i data-lucide="phone" class="w-4 h-4"></i></div>
                     <div>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Phone Number</p>
-                        <p id="prof-phone" class="text-sm font-bold text-white">Not Set</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center space-x-4">
-                    <i data-lucide="calendar" class="w-5 h-5 text-gray-500"></i>
-                    <div>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Account Status</p>
-                        <p class="text-xs font-semibold text-green-400">Verified Active</p>
+                        <p class="text-[8px] text-slate-400 font-extrabold uppercase tracking-wider">Mobile Line</p>
+                        <p id="prof-phone" class="text-xs font-bold text-slate-800">Not Set</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mt-6 space-y-3">
-            <button onclick="handleLogout()" class="w-full glass hover:bg-red-500/10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-red-400 border border-red-500/20 transition-all flex justify-center items-center active:scale-95">
-                <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Sign Out
+        <div class="premium-card p-6 rounded-[2rem] bg-white space-y-4">
+            <h3 class="text-slate-400 text-[9px] uppercase font-black tracking-widest flex items-center border-b border-slate-100 pb-3 text-left">
+                <i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Transaction Pin
+            </h3>
+            <form id="pinForm" class="space-y-4 text-left">
+                <div>
+                    <label class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1.5">New 4-Digit Security Pin</label>
+                    <input type="password" id="newPin" required maxlength="4" pattern="[0-9]{4}" placeholder="••••" inputmode="numeric" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-center text-lg tracking-[0.5em] outline-none focus:border-[#0052FF] focus:bg-white font-black text-slate-900 transition-all">
+                </div>
+                <button type="submit" id="pinBtn" class="w-full brand-gradient text-white py-3.5 rounded-xl font-black text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer">Update Security Pin</button>
+            </form>
+        </div>
+
+        <div class="premium-card p-6 rounded-[2rem] bg-white space-y-4">
+            <h3 class="text-slate-400 text-[9px] uppercase font-black tracking-widest flex items-center border-b border-slate-100 pb-3 text-left">
+                <i data-lucide="lock" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Account Password
+            </h3>
+            <form id="passwordForm" class="space-y-4 text-left">
+                <div>
+                    <label class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1.5">New Account Password</label>
+                    <input type="password" id="newPassword" required minlength="6" placeholder="Minimum 6 characters" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052FF] focus:bg-white font-bold text-slate-900 transition-all">
+                </div>
+                <button type="submit" id="passBtn" class="w-full brand-gradient text-white py-3.5 rounded-xl font-black text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer">Update Password</button>
+            </form>
+        </div>
+
+        <div class="space-y-3 pb-8">
+            <button onclick="handleLogout()" class="w-full bg-rose-50 hover:bg-rose-100 py-4 rounded-xl font-black text-xs uppercase tracking-wider text-rose-600 border border-rose-200 transition-all flex justify-center items-center cursor-pointer">
+                <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Close Session & Sign Out
             </button>
 
             <div id="admin-gate-box" class="hidden">
-                <button onclick="location.href='admin-dashboard.html'" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-orange-600/20 transition-all flex justify-center items-center active:scale-95">
-                    <i data-lucide="sliders" class="w-4 h-4 mr-2"></i> Open Admin Control Panel
+                <button onclick="location.href='admin-dashboard.html'" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 py-4 rounded-xl font-black text-xs uppercase tracking-wider text-white shadow-md transition-all flex justify-center items-center cursor-pointer">
+                    <i data-lucide="sliders" class="w-4 h-4 mr-2"></i> Open System Admin Dashboard
                 </button>
             </div>
         </div>
+    </main>
+
+    <div id="statusModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="statusModal.classList.add('hidden')"></div>
+        <div class="bg-white max-w-xs w-full p-8 rounded-[2rem] text-center relative z-10 border border-slate-100 shadow-2xl">
+            <div id="modalIcon" class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"></div>
+            <h3 id="modalTitle" class="text-base font-black text-slate-900 mb-1.5 tracking-tight"></h3>
+            <p id="modalMsg" class="text-xs text-slate-500 leading-relaxed mb-5 px-1"></p>
+            <button id="modalBtn" onclick="statusModal.classList.add('hidden')" class="w-full bg-[#0F172A] text-white py-3.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-pointer"></button>
+        </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 md:hidden">
-        <div class="bg-slate-950/95 backdrop-blur-md border border-white/5 rounded-3xl h-20 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] flex items-center justify-around relative px-2">
-            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400">
-                <i data-lucide="phone" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold uppercase">Airtime</span>
+    <div class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden">
+        <div class="bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl h-16 shadow-[0_-10px_30px_rgba(15,23,42,0.05)] flex items-center justify-around relative px-2">
+            <a href="buy-airtime.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="phone" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Airtime</span>
             </a>
-            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400">
-                <i data-lucide="wifi" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold uppercase">Data</span>
+            <a href="buy-data.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="wifi" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Data</span>
             </a>
-            <a href="dashboard.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400">
-                <i data-lucide="home" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold uppercase">Home</span>
-            </a>
-            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-gray-400">
-                <i data-lucide="layout-grid" class="w-5 h-5 mb-1"></i>
-                <span class="text-[9px] font-bold uppercase">Services</span>
-            </a>
-            <div class="relative -top-5">
-                <div class="absolute inset-0 bg-blue-600 rounded-2xl blur-lg opacity-40"></div>
-                <a href="settings.html" class="relative w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white border border-blue-400/20 active:scale-90">
-                    <i data-lucide="user" class="w-6 h-6"></i>
+            <div class="relative -top-4">
+                <div class="absolute inset-0 bg-[#0052FF] rounded-xl blur-md opacity-30"></div>
+                <a href="dashboard.html" class="relative w-12 h-12 bg-gradient-to-tr from-[#0052FF] to-[#003FE6] rounded-xl flex items-center justify-center text-white shadow-md border border-blue-400/20">
+                    <i data-lucide="home" class="w-5 h-5"></i>
                 </a>
             </div>
+            <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
+                <i data-lucide="clock" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">History</span>
+            </a>
+            <button onclick="toggleSidebar()" class="flex flex-col items-center justify-center w-14 h-full text-[#0052FF] transition-colors cursor-pointer">
+                <i data-lucide="more-vertical" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Menu</span>
+            </button>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
 
-        // Admin Security Check
         const ADMIN_EMAIL = "ichinonso650@gmail.com";
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+        const statusModal = document.getElementById('statusModal');
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-menu');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('user');
+            window.location.href = "login.html";
+        }
+
+        function showNotification(type, title, msg) {
+            const iconBox = document.getElementById('modalIcon');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMsg').innerText = msg;
+            
+            iconBox.className = "w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center ";
+            if(type === 'success') {
+                iconBox.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i>`;
+                iconBox.classList.add('bg-emerald-50');
+            } else {
+                iconBox.innerHTML = `<i data-lucide="alert-circle" class="w-6 h-6 text-rose-600"></i>`;
+                iconBox.classList.add('bg-rose-50');
+            }
+            statusModal.classList.remove('hidden');
+            lucide.createIcons();
+        }
 
         window.onload = function() {
             const user = JSON.parse(localStorage.getItem('user'));
-            
             if (!user || !user.email) {
                 window.location.href = "login.html";
                 return;
             }
 
             const displayName = user.fullName || user.username || user.email.split('@')[0];
-
             document.getElementById('header-name').innerText = displayName;
+            document.getElementById('sidebar-username').innerText = displayName;
             document.getElementById('prof-fullname').innerText = displayName;
             document.getElementById('prof-email').innerText = user.email;
+            
+            const baseChar = displayName.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = baseChar;
+            document.getElementById('sidebar-initial').innerText = baseChar;
             
             if(user.phone && user.phone !== "Not Set") {
                 document.getElementById('prof-phone').innerText = user.phone;
@@ -164,21 +276,75 @@
             }
         };
 
-        // PREMIUM APP ENGINE ANNOUNCEMENT TOAST FUNCTIONALITY
-        let toastTimeout;
-        function showComingSoonNotice() {
-            const toast = document.getElementById('coming-soon-toast');
-            clearTimeout(toastTimeout);
-            toast.style.top = "24px";
-            toastTimeout = setTimeout(() => {
-                toast.style.top = "-100px";
-            }, 3000);
-        }
+        // Pin Update Execution Route
+        document.getElementById('pinForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const pinBtn = document.getElementById('pinBtn');
+            const pinValue = document.getElementById('newPin').value;
+            const user = JSON.parse(localStorage.getItem('user'));
 
-        function handleLogout() {
-            localStorage.removeItem('user');
-            window.location.href = "login.html";
-        }
+            if (!/^\d{4}$/.test(pinValue)) {
+                showNotification('error', 'Invalid Input', 'Pin sequence must be exactly 4 numerical digits.');
+                return;
+            }
+
+            pinBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
+            pinBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/update-pin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email, pin: pinValue })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('success', 'Security Pin Saved', 'Your unique transaction authorization pin has been securely synchronized.');
+                    document.getElementById('newPin').value = '';
+                } else {
+                    showNotification('error', 'Processing Error', data.message || 'Unable to update transaction pin details.');
+                }
+            } catch {
+                showNotification('error', 'Network Error', 'Check your internet configuration profiles and re-attempt submission.');
+            }
+            pinBtn.innerText = "Update Security Pin";
+            pinBtn.disabled = false;
+        });
+
+        // Password Update Execution Route
+        document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const passBtn = document.getElementById('passBtn');
+            const passwordValue = document.getElementById('newPassword').value;
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (passwordValue.length < 6) {
+                showNotification('error', 'Security Alert', 'Passwords must contain a minimum count length of 6 characters.');
+                return;
+            }
+
+            passBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
+            passBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/update-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email, password: passwordValue })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showNotification('success', 'Password Updated', 'Your identity configuration login credential parameters have modified securely.');
+                    document.getElementById('newPassword').value = '';
+                } else {
+                    showNotification('error', 'Processing Error', data.message || 'Failed to apply new authorization profile modifications.');
+                }
+            } catch {
+                showNotification('error', 'Network Error', 'Connection failed. Verify server access routes.');
+            }
+            passBtn.innerText = "Update Password";
+            passBtn.disabled = false;
+        });
     </script>
 </body>
 </html>
