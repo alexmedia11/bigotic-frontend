@@ -177,12 +177,12 @@
     </main>
 
     <div id="statusModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="statusModal.classList.add('hidden')"></div>
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeStatusModal()"></div>
         <div class="bg-white max-w-xs w-full p-8 rounded-[2rem] text-center relative z-10 border border-slate-100 shadow-2xl">
             <div id="modalIcon" class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"></div>
             <h3 id="modalTitle" class="text-base font-black text-slate-900 mb-1.5 tracking-tight"></h3>
             <p id="modalMsg" class="text-xs text-slate-500 leading-relaxed mb-5 px-1"></p>
-            <button id="modalBtn" class="w-full bg-[#0F172A] text-white py-3.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-pointer"></button>
+            <button id="modalBtn" onclick="closeStatusModal()" class="w-full bg-[#0F172A] text-white py-3.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-pointer">Acknowledge</button>
         </div>
     </div>
 
@@ -220,7 +220,10 @@
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
         const statusModal = document.getElementById('statusModal');
 
-        document.getElementById('modalBtn').addEventListener('click', () => statusModal.classList.add('hidden'));
+        // FIXED: Replaced brittle event bindings with an explicit functional control declaration line
+        function closeStatusModal() {
+            statusModal.classList.add('hidden');
+        }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
@@ -274,7 +277,7 @@
             document.getElementById('avatar-initial').innerText = baseChar;
             document.getElementById('sidebar-initial').innerText = baseChar;
             
-            // CAREFUL STABILITY FALLBACK PARSING: Enforces explicit placeholder handling for the profile view rendering
+            // CAREFUL STABILITY FALLBACK PARSING: Guarantees full phone line structural security coverage
             if (user.phone && String(user.phone).trim() !== "" && String(user.phone).trim() !== "undefined") {
                 document.getElementById('prof-phone').innerText = String(user.phone).trim();
             } else {
@@ -310,6 +313,11 @@
                 const data = await response.json();
                 if (data.success) {
                     showNotification('success', 'Security Pin Saved', 'Your unique transaction authorization pin has been securely synchronized.');
+                    
+                    // FIXED: Synchronize local state memory array attributes
+                    user.pin = pinValue;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
                     document.getElementById('newPin').value = '';
                 } else {
                     showNotification('error', 'Processing Error', data.message || 'Unable to update transaction pin details.');
@@ -350,6 +358,11 @@
                 const data = await response.json();
                 if (response.ok && data.success) {
                     showNotification('success', 'Password Updated', 'Your account security credentials have been updated securely.');
+                    
+                    // FIXED: Synchronize password session state parameters cleanly
+                    user.password = passwordValue;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
                     document.getElementById('oldPassword').value = '';
                     document.getElementById('newPassword').value = '';
                 } else {
