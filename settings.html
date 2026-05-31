@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2=family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { 
@@ -135,7 +135,7 @@
 
         <div class="premium-card p-6 rounded-[2rem] bg-white space-y-4">
             <h3 class="text-slate-400 text-[9px] uppercase font-black tracking-widest flex items-center border-b border-slate-100 pb-3 text-left">
-                <i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Transaction Pin
+                <i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Create / Change Pin
             </h3>
             <form id="pinForm" class="space-y-4 text-left">
                 <div>
@@ -151,6 +151,10 @@
                 <i data-lucide="lock" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Account Password
             </h3>
             <form id="passwordForm" class="space-y-4 text-left">
+                <div>
+                    <label class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1.5">Current Password</label>
+                    <input type="password" id="oldPassword" required placeholder="Enter current password" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052FF] focus:bg-white font-bold text-slate-900 transition-all mb-2">
+                </div>
                 <div>
                     <label class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1.5">New Account Password</label>
                     <input type="password" id="newPassword" required minlength="6" placeholder="Minimum 6 characters" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052FF] focus:bg-white font-bold text-slate-900 transition-all">
@@ -216,6 +220,9 @@
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
         const statusModal = document.getElementById('statusModal');
 
+        // Added modal close listener integration
+        document.getElementById('modalBtn').addEventListener('click', () => statusModal.classList.add('hidden'));
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
             const overlay = document.getElementById('sidebar-overlay');
@@ -246,6 +253,7 @@
                 iconBox.innerHTML = `<i data-lucide="alert-circle" class="w-6 h-6 text-rose-600"></i>`;
                 iconBox.classList.add('bg-rose-50');
             }
+            document.getElementById('modalBtn').innerText = "Acknowledge";
             statusModal.classList.remove('hidden');
             lucide.createIcons();
         }
@@ -311,10 +319,11 @@
             pinBtn.disabled = false;
         });
 
-        // Password Update Execution Route
+        // Password Update Execution Route with Old Password payload tracking
         document.getElementById('passwordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const passBtn = document.getElementById('passBtn');
+            const oldPasswordValue = document.getElementById('oldPassword').value;
             const passwordValue = document.getElementById('newPassword').value;
             const user = JSON.parse(localStorage.getItem('user'));
 
@@ -330,14 +339,19 @@
                 const response = await fetch(`${BACKEND_URL}/update-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email, password: passwordValue })
+                    body: JSON.stringify({ 
+                        email: user.email, 
+                        oldPassword: oldPasswordValue, 
+                        password: passwordValue 
+                    })
                 });
                 const data = await response.json();
-                if (data.success) {
-                    showNotification('success', 'Password Updated', 'Your identity configuration login credential parameters have modified securely.');
+                if (response.ok && data.success) {
+                    showNotification('success', 'Password Updated', 'Your account security credentials have been updated securely.');
+                    document.getElementById('oldPassword').value = '';
                     document.getElementById('newPassword').value = '';
                 } else {
-                    showNotification('error', 'Processing Error', data.message || 'Failed to apply new authorization profile modifications.');
+                    showNotification('error', 'Authentication Failure', data.error || data.message || 'The current password provided is incorrect.');
                 }
             } catch {
                 showNotification('error', 'Network Error', 'Connection failed. Verify server access routes.');
