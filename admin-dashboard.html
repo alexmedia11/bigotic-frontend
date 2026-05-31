@@ -5,101 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Command Center | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: white; min-height: 100vh; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .blue-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            min-height: 100vh;
+        }
+        .premium-card { 
+            background: #FFFFFF; 
+            border: 1px solid #E2E8F0; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+        .brand-gradient { 
+            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
+        }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .spinner { 
+            border: 2px solid rgba(15, 23, 42, 0.1); 
+            border-left-color: #0052FF; 
+            border-radius: 50%; 
+            width: 20px; 
+            height: 20px; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="flex h-screen overflow-hidden antialiased">
 
-    <aside class="w-64 glass border-r border-white/5 hidden md:flex flex-col">
-        <div class="p-6 border-b border-white/5">
-            <h1 class="text-xl font-black text-blue-400 tracking-tighter">BIGOTIC<span class="text-white">ADMIN</span></h1>
+    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col justify-between">
+        <div>
+            <div class="px-6 py-5 border-b border-slate-200">
+                <div class="text-lg font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">ADMIN</span></div>
+                <p class="text-[9px] uppercase font-extrabold tracking-widest text-slate-400 mt-0.5">Central Management Control</p>
+            </div>
+            <nav class="p-4 space-y-1 text-left">
+                <button id="btn-overview" onclick="switchTab('overview')" class="w-full flex items-center px-4 py-3.5 rounded-xl bg-blue-50 text-[#0052FF] font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 mr-3"></i> System Overview
+                </button>
+                <button id="btn-users" onclick="switchTab('users')" class="w-full flex items-center px-4 py-3.5 rounded-xl text-slate-600 hover:bg-slate-50 font-black text-xs uppercase tracking-wider transition-all cursor-pointer">
+                    <i data-lucide="users" class="w-4 h-4 mr-3"></i> Manage Accounts
+                </button>
+            </nav>
         </div>
-        <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('overview')" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 transition text-blue-400 font-bold text-sm">
-                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Overview
-            </button>
-            <button onclick="switchTab('users')" class="w-full flex items-center p-3 rounded-xl hover:bg-white/5 transition text-gray-400 font-bold text-sm">
-                <i data-lucide="users" class="w-5 h-5 mr-3"></i> Manage Users
-            </button>
-        </nav>
-        <div class="p-4 border-t border-white/5">
-            <a href="dashboard.html" class="w-full flex items-center justify-center p-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition font-bold text-sm">
-                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Exit Admin
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <a href="dashboard.html" class="w-full flex items-center justify-center py-3.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 font-black text-xs uppercase tracking-wider transition-all">
+                <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Exit Command Console
             </a>
         </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto p-8 relative">
-        <div id="overview" class="tab-content active max-w-6xl mx-auto">
-            <h2 class="text-2xl font-black mb-6">Platform Overview</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                <div class="glass p-6 rounded-3xl border-t border-blue-500/30">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Total Users</p>
-                    <h2 id="metric-users" class="text-3xl font-black mt-2">0</h2>
+    <main class="flex-1 overflow-y-auto p-6 md:p-8 relative">
+        
+        <div id="overview" class="tab-content active max-w-5xl mx-auto space-y-8">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight">System Analytics Overview</h2>
+                <button onclick="loadData()" class="p-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 shadow-sm transition-all cursor-pointer"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="premium-card p-5 rounded-2xl text-left border-l-4 border-blue-500">
+                    <p class="text-slate-400 text-[9px] font-extrabold uppercase tracking-widest">Registered Profiles</p>
+                    <h2 id="metric-users" class="text-2xl font-black text-slate-900 mt-1">...</h2>
                 </div>
-                <div class="glass p-6 rounded-3xl border-t border-orange-500/30">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Wallet Liability</p>
-                    <h2 id="metric-liability" class="text-2xl font-black mt-2 text-orange-400">₦0</h2>
+                <div class="premium-card p-5 rounded-2xl text-left border-l-4 border-amber-500">
+                    <p class="text-slate-400 text-[9px] font-extrabold uppercase tracking-widest">Aggregate Liability</p>
+                    <h2 id="metric-liability" class="text-2xl font-black text-amber-600 mt-1">₦0.00</h2>
                 </div>
-                <div class="glass p-6 rounded-3xl border-t border-purple-500/30">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Total Sales</p>
-                    <h2 id="metric-sales" class="text-2xl font-black mt-2 text-purple-400">₦0</h2>
+                <div class="premium-card p-5 rounded-2xl text-left border-l-4 border-purple-500">
+                    <p class="text-slate-400 text-[9px] font-extrabold uppercase tracking-widest">Gross Sales Turnover</p>
+                    <h2 id="metric-sales" class="text-2xl font-black text-purple-600 mt-1">₦0.00</h2>
                 </div>
-                <div class="blue-gradient p-6 rounded-3xl shadow-xl">
-                    <p class="text-white/70 text-[10px] font-bold uppercase tracking-widest">Total Profit</p>
-                    <h2 id="metric-profit" class="text-3xl font-black mt-2 text-white">₦0</h2>
+                <div class="premium-card p-5 rounded-2xl text-left brand-gradient border-none shadow-md shadow-blue-600/10">
+                    <p class="text-white/70 text-[9px] font-extrabold uppercase tracking-widest">Platform Net Profit</p>
+                    <h2 id="metric-profit" class="text-2xl font-black text-white mt-1">₦0.00</h2>
                 </div>
             </div>
 
-            <h3 class="text-sm font-bold text-gray-500 uppercase mb-4 tracking-widest px-1">Recent Transactions</h3>
-            <div class="glass rounded-[2rem] overflow-hidden border border-white/5">
-                <table class="w-full text-left">
-                    <thead class="bg-white/5">
-                        <tr>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">User</th>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">Service</th>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">Amount</th>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 text-right">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recent-transactions-body" class="divide-y divide-white/5 text-sm text-gray-300">
-                        <tr><td colspan="4" class="p-10 text-center">Fetching transactions...</td></tr>
-                    </tbody>
-                </table>
+            <div class="space-y-3">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider text-left px-1">Global System Logs (Last 10 Actions)</h3>
+                <div class="premium-card rounded-2xl overflow-hidden bg-white">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead class="bg-slate-50 border-b border-slate-100 text-[9px] font-black uppercase text-slate-400 tracking-wider">
+                                <tr>
+                                    <th class="p-4">Subscriber Identity</th>
+                                    <th class="p-4">Utility Type</th>
+                                    <th class="p-4">Settlement Cost</th>
+                                    <th class="p-4 text-right">Timestamp String</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-transactions-body" class="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+                                <tr><td colspan="4" class="p-10 text-center text-slate-400 font-bold uppercase tracking-wider">Synchronizing platform data log rows...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="users" class="tab-content max-w-6xl mx-auto">
-            <h2 class="text-2xl font-black mb-6">User Management</h2>
-            <div class="glass rounded-[2rem] overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-white/5">
-                        <tr>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">User Email</th>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400">Balance</th>
-                            <th class="p-4 text-[10px] font-bold uppercase text-gray-400 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-user-table" class="divide-y divide-white/5"></tbody>
-                </table>
+        <div id="users" class="tab-content max-w-5xl mx-auto space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight text-left">Account Control Matrix</h2>
+                <div class="relative max-w-xs w-full">
+                    <input type="text" id="userSearch" oninput="filterUserTable()" placeholder="Search fullname or email address..." class="w-full bg-white border border-slate-200 rounded-xl p-3 pl-9 text-xs outline-none focus:border-[#0052FF] font-semibold shadow-sm transition-all text-slate-900 placeholder:text-slate-300">
+                    <i data-lucide="search" class="absolute left-3 top-3.5 w-4 h-4 text-slate-400"></i>
+                </div>
+            </div>
+
+            <div class="premium-card rounded-2xl overflow-hidden bg-white">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <thead class="bg-slate-50 border-b border-slate-100 text-[9px] font-black uppercase text-slate-400 tracking-wider">
+                            <tr>
+                                <th class="p-4">Account Full Name</th>
+                                <th class="p-4">Registered Email Address</th>
+                                <th class="p-4">Wallet Balance</th>
+                                <th class="p-4 text-right">Adjustment Actions Menu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-user-table" class="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+                            <tr><td colspan="4" class="p-10 text-center text-slate-400 font-bold uppercase tracking-wider">Loading user account arrays...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
 
-    <div id="fundModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#111827] border border-white/10 rounded-[2rem] p-8 max-w-sm w-full relative">
-            <h3 class="text-xl font-black mb-1">Fund Wallet</h3>
-            <p id="fund-target-email" class="text-xs text-blue-400 mb-6 font-bold"></p>
-            <input type="number" id="fund-amount" placeholder="Amount (₦)" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 mb-4 outline-none">
-            <button onclick="executeFunding()" id="fund-btn" class="w-full blue-gradient py-4 rounded-xl font-black text-xs uppercase">Add Funds</button>
-            <button onclick="closeFundModal()" class="w-full mt-2 text-gray-500 text-xs">Cancel</button>
+    <div id="fundModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden harms-overlay items-center justify-center p-4">
+        <div class="bg-white border border-slate-100 rounded-[2rem] p-6 max-w-sm w-full relative shadow-2xl scale-100 transition-transform">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#0052FF] mx-auto mb-3 flex items-center justify-center">
+                <i data-lucide="sliders" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-base font-black text-slate-900 mb-0.5 tracking-tight">Modify Capital Reserve</h3>
+            <p id="fund-target-name" class="text-xs font-bold text-slate-800 leading-tight"></p>
+            <p id="fund-target-email" class="text-[10px] font-mono text-slate-400 mt-0.5 mb-5"></p>
+            
+            <div class="mb-4">
+                <label class="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-1.5 text-left">Adjustment Flow Type</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" id="toggle-add" onclick="setAdjustmentMode('ADD')" class="py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wide border-2 border-[#0052FF] bg-blue-50 text-[#0052FF] transition-all cursor-pointer">Add Capital</button>
+                    <button type="button" id="toggle-deduct" onclick="setAdjustmentMode('DEDUCT')" class="py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wide border border-slate-200 bg-slate-50 text-slate-500 transition-all cursor-pointer">Clear / Deduct</button>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-1.5">Adjustment Value (₦)</label>
+                    <input type="number" id="fund-amount" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 font-black text-slate-900 text-sm outline-none focus:border-[#0052FF] focus:bg-white transition-all placeholder:text-slate-300">
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button onclick="executeFundingAdjustment()" id="fund-btn" class="flex-1 brand-gradient text-white py-3 rounded-xl font-black text-xs uppercase tracking-wider transition-all cursor-pointer shadow-sm">Apply Adjustment</button>
+                    <button onclick="closeFundModal()" class="flex-1 bg-slate-100 text-slate-500 py-3 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-200 transition-all cursor-pointer">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-4 md:hidden">
+        <div class="bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl h-16 shadow-[0_-10px_30px_rgba(15,23,42,0.05)] flex items-center justify-around relative px-2">
+            <button onclick="switchTab('overview')" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer">
+                <i data-lucide="layout-dashboard" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Overview</span>
+            </button>
+            <button onclick="switchTab('users')" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer">
+                <i data-lucide="users" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Users</span>
+            </button>
+            <a href="dashboard.html" class="flex flex-col items-center justify-center w-14 h-full text-rose-600 transition-colors">
+                <i data-lucide="log-out" class="w-4 h-4 mb-1"></i>
+                <span class="text-[8px] font-bold tracking-wider uppercase">Exit</span>
+            </a>
         </div>
     </div>
 
@@ -108,91 +190,178 @@
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
         const ADMIN_EMAIL = "ichinonso650@gmail.com";
 
+        let localUsersCache = [];
+        let adjustmentMode = 'ADD'; // Operational parameters enum state trackers: 'ADD' or 'DEDUCT'
+        let currentFundEmail = '';
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
+            
+            // Adjust styles of sidebar tabs accordingly to represent selection active tracking indicators 
+            const isOverview = tabId === 'overview';
+            document.getElementById('btn-overview').className = `w-full flex items-center px-4 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all cursor-pointer ${isOverview ? 'bg-blue-50 text-[#0052FF]' : 'text-slate-600 hover:bg-slate-50'}`;
+            document.getElementById('btn-users').className = `w-full flex items-center px-4 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all cursor-pointer ${!isOverview ? 'bg-blue-50 text-[#0052FF]' : 'text-slate-600 hover:bg-slate-50'}`;
         }
 
         async function loadData() {
             try {
-                // Fetch Users
+                // Assert valid authenticated supervisor route constraints
+                const adminCheck = JSON.parse(localStorage.getItem('user'));
+                if(!adminCheck || adminCheck.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()){
+                    alert("Unauthorized administrative security access bounds. Evicting session route.");
+                    window.location.href = "dashboard.html";
+                    return;
+                }
+
                 const userRes = await fetch(`${BACKEND_URL}/admin/users`, {
                     headers: { 'admin-email': ADMIN_EMAIL }
                 });
-                const users = await userRes.json();
+                localUsersCache = await userRes.json();
                 
-                // Fetch Transactions
                 const txRes = await fetch(`${BACKEND_URL}/admin/transactions`, {
                     headers: { 'admin-email': ADMIN_EMAIL }
                 });
                 const txs = await txRes.json();
 
-                renderStats(users, txs);
-                renderUsers(users);
+                renderStats(localUsersCache, txs);
+                renderUsers(localUsersCache);
                 renderTransactions(txs);
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error("ADMIN CONSOLE CORE ERROR SYNCHRONIZATION SYNC FAULT:", e); 
+            }
         }
 
         function renderStats(users, txs) {
-            let liability = users.reduce((acc, u) => acc + (u.balance || 0), 0);
-            let profit = txs.reduce((acc, t) => acc + (t.profit || 0), 0);
+            let liability = users.reduce((acc, u) => acc + (parseFloat(u.balance) || 0), 0);
+            let profit = txs.reduce((acc, t) => acc + (parseFloat(t.profit) || 0), 0);
             let sales = txs.filter(t => t.type !== 'Wallet Funding' && t.type !== 'Admin Funding')
-                           .reduce((acc, t) => acc + t.amount, 0);
+                           .reduce((acc, t) => acc + (parseFloat(t.amount) || 0), 0);
 
-            document.getElementById('metric-users').innerText = users.length;
-            document.getElementById('metric-liability').innerText = `₦${liability.toLocaleString()}`;
-            document.getElementById('metric-sales').innerText = `₦${sales.toLocaleString()}`;
-            document.getElementById('metric-profit').innerText = `₦${profit.toLocaleString()}`;
+            document.getElementById('metric-users').innerText = users.length.toLocaleString();
+            document.getElementById('metric-liability').innerText = `₦${liability.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('metric-sales').innerText = `₦${sales.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('metric-profit').innerText = `₦${profit.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
         function renderUsers(users) {
             const tbody = document.getElementById('admin-user-table');
-            tbody.innerHTML = users.map(user => `
-                <tr class="hover:bg-white/5">
-                    <td class="p-4 text-sm">${user.email}</td>
-                    <td class="p-4 text-emerald-400 font-bold">₦${(user.balance || 0).toLocaleString()}</td>
-                    <td class="p-4 text-right">
-                        <button onclick="openFundModal('${user.email}')" class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-lg text-[10px] font-bold">FUND</button>
-                    </td>
-                </tr>
-            `).join('');
+            if(!users || users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400 uppercase tracking-wider font-extrabold">No associated accounts matches found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                // FIXED EXTRAORDINARY ADDITION: Compute dynamic context resolution formatting to display Full Name explicitly
+                const computedName = user.fullName || user.username || 'Not Provided';
+                return `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="p-4 font-bold text-slate-900 truncate max-w-[180px]">${computedName}</td>
+                        <td class="p-4 font-mono text-slate-500">${user.email}</td>
+                        <td class="p-4 text-emerald-700 font-black">₦${(parseFloat(user.balance) || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
+                        <td class="p-4 text-right">
+                            <button onclick="openFundModal('${user.email}', '${escape(computedName)}')" class="bg-[#0052FF]/10 text-[#0052FF] hover:bg-[#0052FF]/20 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer">Adjust Capital</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function renderTransactions(txs) {
             const tbody = document.getElementById('recent-transactions-body');
+            if(!txs || txs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400 uppercase tracking-wider font-extrabold">No platform execution actions logs found.</td></tr>`;
+                return;
+            }
+
             tbody.innerHTML = txs.slice(0, 10).map(tx => `
-                <tr class="border-b border-white/5">
-                    <td class="p-4 text-[11px]">${tx.email}</td>
-                    <td class="p-4"><span class="bg-white/10 px-2 py-1 rounded text-[10px]">${tx.type}</span></td>
-                    <td class="p-4 font-bold text-blue-400">₦${tx.amount}</td>
-                    <td class="p-4 text-right text-gray-500 text-[10px]">${new Date(tx.date).toLocaleDateString()}</td>
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="p-4 font-mono text-slate-600 truncate max-w-[180px]">${tx.email}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-700 font-extrabold px-2 py-0.5 rounded text-[9px] uppercase tracking-wide border border-slate-200">${tx.type || 'VTU Order'}</span></td>
+                    <td class="p-4 font-black text-[#0052FF]">₦${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
+                    <td class="p-4 text-right text-slate-400 text-[10px] font-bold">${new Date(tx.date).toLocaleDateString()}</td>
                 </tr>
             `).join('');
         }
 
-        let currentFundEmail = '';
-        function openFundModal(email) {
-            currentFundEmail = email;
-            document.getElementById('fund-target-email').innerText = email;
-            document.getElementById('fundModal').classList.remove('hidden');
-        }
-        function closeFundModal() { document.getElementById('fundModal').classList.add('hidden'); }
-
-        async function executeFunding() {
-            const amount = document.getElementById('fund-amount').value;
-            const btn = document.getElementById('fund-btn');
-            btn.innerText = "WAIT...";
-            
-            const res = await fetch(`${BACKEND_URL}/admin/fund-wallet`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'admin-email': ADMIN_EMAIL },
-                body: JSON.stringify({ email: currentFundEmail, amount })
-            });
-            const data = await res.json();
-            if(data.success) {
-                alert("Funded!");
-                location.reload();
+        function filterUserTable() {
+            const searchVal = document.getElementById('userSearch').value.toLowerCase().trim();
+            if(!searchVal) {
+                renderUsers(localUsersCache);
+                return;
             }
+            const filtered = localUsersCache.filter(u => {
+                const name = (u.fullName || u.username || '').toLowerCase();
+                const email = (u.email || '').toLowerCase();
+                return name.includes(searchVal) || email.includes(searchVal);
+            });
+            renderUsers(filtered);
+        }
+
+        function setAdjustmentMode(mode) {
+            adjustmentMode = mode;
+            const btnAdd = document.getElementById('toggle-add');
+            const btnDeduct = document.getElementById('toggle-deduct');
+            
+            if(mode === 'ADD') {
+                btnAdd.className = "py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wide border-2 border-[#0052FF] bg-blue-50 text-[#0052FF] transition-all cursor-pointer";
+                btnDeduct.className = "py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wide border border-slate-200 bg-slate-50 text-slate-500 transition-all cursor-pointer";
+            } else {
+                btnAdd.className = "py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wide border border-slate-200 bg-slate-50 text-slate-500 transition-all cursor-pointer";
+                btnDeduct.className = "py-2.5 rounded-lg text-[10px] font-black uppercase tracking-wide border-2 border-rose-500 bg-rose-50 text-rose-600 transition-all cursor-pointer";
+            }
+        }
+
+        function openFundModal(email, escapedName) {
+            currentFundEmail = email;
+            document.getElementById('fund-target-name').innerText = unescape(escapedName);
+            document.getElementById('fund-target-email').innerText = email;
+            setAdjustmentMode('ADD'); // default to add mode container parameters layout configuration setup 
+            document.getElementById('fund-amount').value = '';
+            document.getElementById('fundModal').classList.remove('hidden');
+            document.getElementById('fundModal').classList.add('flex');
+        }
+
+        function closeFundModal() { 
+            document.getElementById('fundModal').classList.add('hidden'); 
+            document.getElementById('fundModal').classList.remove('flex'); 
+        }
+
+        async function executeFundingAdjustment() {
+            const amountInput = document.getElementById('fund-amount').value;
+            const amount = parseFloat(amountInput);
+            const btn = document.getElementById('fund-btn');
+
+            if(!amountInput || isNaN(amount) || amount <= 0) {
+                alert("Please declare a valid, positive currency valuation parameter metric.");
+                return;
+            }
+
+            btn.innerHTML = `<div class="spinner !border-left-color-white mx-auto"></div>`;
+            btn.disabled = true;
+
+            // FIXED EXTRAORDINARY OPERATION ROUTE: Calculate adjustment multiplier depending on selection enum state trackers
+            const validatedAmountPayload = adjustmentMode === 'ADD' ? amount : (amount * -1);
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/admin/fund-wallet`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'admin-email': ADMIN_EMAIL },
+                    body: JSON.stringify({ email: currentFundEmail, amount: validatedAmountPayload })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    alert(`Balance adjustment configuration of ₦${amount.toLocaleString()} synchronized successfully!`);
+                    closeFundModal();
+                    loadData();
+                } else {
+                    alert(data.message || "Failed to process balance reserve updates onto the system database registry.");
+                }
+            } catch {
+                alert("Server connection timeout route fault encountered.");
+            }
+            btn.innerText = "Apply Adjustment";
+            btn.disabled = false;
         }
 
         window.onload = loadData;
