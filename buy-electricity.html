@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electricity Bill | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { 
@@ -181,6 +181,18 @@
                 </button>
             </div>
         </div>
+
+        <div id="successResponseModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeSuccessModal()"></div>
+            <div class="bg-white max-w-xs w-full p-8 rounded-[2rem] text-center relative z-10 border border-slate-100 shadow-2xl">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto mb-4 flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-base font-black text-slate-900 mb-1 tracking-tight">Payment Successful!</h3>
+                <p id="successModalMsg" class="text-xs text-slate-500 leading-relaxed mb-6 px-1">Your postpaid utility bill settlement balance was updated successfully.</p>
+                <button onclick="closeSuccessModal()" class="w-full bg-[#0F172A] text-white py-3.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-pointer">Acknowledge</button>
+            </div>
+        </div>
     </main>
 
     <div id="pinGateModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
@@ -241,6 +253,7 @@
         const submitBtn = document.getElementById('submitBtn');
         const pinGateModal = document.getElementById('pinGateModal');
         const pinAuthForm = document.getElementById('pinAuthForm');
+        const successResponseModal = document.getElementById('successResponseModal');
 
         let isMeterVerified = false;
 
@@ -271,6 +284,11 @@
             document.getElementById('txPin').value = '';
         }
 
+        function closeSuccessModal() {
+            successResponseModal.classList.add('hidden');
+            window.location.href = "dashboard.html";
+        }
+
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -281,13 +299,11 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
-        // Reset tracking states cleanly whenever critical configuration parameters are altered
         [discoSelect, meterNumberInput, ...document.querySelectorAll('input[name="meterType"]')].forEach(element => {
             element.addEventListener('input', resetMeterVerification);
             element.addEventListener('change', resetMeterVerification);
         });
 
-        // SPECIAL FIXED FUNCTIONALITY: Manual Verification Handler Logic Routine
         function triggerManualVerification() {
             const meterNum = meterNumberInput.value.trim();
             const disco = discoSelect.value;
@@ -349,7 +365,6 @@
             verificationBox.innerText = "";
         }
 
-        // Intercept primary submission wrapper stack execution to call transaction PIN pad first
         document.getElementById('electricityForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -363,13 +378,14 @@
             openPinGate();
         });
 
-        // Secure PIN processing confirmation handling layer
         pinAuthForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const currentUser = JSON.parse(localStorage.getItem('user'));
             const selectedMeterType = document.querySelector('input[name="meterType"]:checked').value;
             const pinVal = document.getElementById('txPin').value;
+            const amountVal = document.getElementById('amount').value.trim();
+            const meterNumVal = meterNumberInput.value.trim();
 
             closePinGate();
             submitBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
@@ -383,8 +399,8 @@
                         email: currentUser.email,
                         disco: discoSelect.value,
                         meterType: selectedMeterType,
-                        meterNumber: meterNumberInput.value.trim(),
-                        amount: document.getElementById('amount').value.trim(),
+                        meterNumber: meterNumVal,
+                        amount: amountVal,
                         pin: pinVal
                     })
                 });
@@ -399,8 +415,8 @@
                         document.getElementById('tokenModal').classList.remove('hidden');
                         document.getElementById('tokenModal').classList.add('flex');
                     } else {
-                        showNotification("Utility bill paid successfully! 🎉", "success");
-                        setTimeout(() => location.href = 'dashboard.html', 2000);
+                        document.getElementById('successModalMsg').innerText = `Success! Bill payment of ₦${parseFloat(amountVal).toLocaleString()} for Meter #${meterNumVal} processed safely.`;
+                        successResponseModal.classList.remove('hidden');
                     }
                 } else {
                     showNotification(data.error || "Transaction pin authentication failed.");
