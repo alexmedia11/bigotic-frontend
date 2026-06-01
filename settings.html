@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile | Bigotic Data</title>
     <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { 
@@ -135,7 +135,8 @@
 
         <div class="premium-card p-6 rounded-[2rem] bg-white space-y-4">
             <h3 class="text-slate-400 text-[9px] uppercase font-black tracking-widest flex items-center border-b border-slate-100 pb-3 text-left">
-                <i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> Create / Change Pin
+                <i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#0052FF]"></i> 
+                <span id="pinCardTitle">Create Security Pin</span>
             </h3>
             <form id="pinForm" class="space-y-4 text-left">
                 <div>
@@ -174,7 +175,7 @@
                 </button>
             </div>
         </div>
-    </main>
+    </nav>
 
     <div id="statusModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeStatusModal()"></div>
@@ -220,7 +221,6 @@
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
         const statusModal = document.getElementById('statusModal');
 
-        // FIXED: Replaced brittle event bindings with an explicit functional control declaration line
         function closeStatusModal() {
             statusModal.classList.add('hidden');
         }
@@ -260,6 +260,18 @@
             lucide.createIcons();
         }
 
+        // Functional evaluation module for updating text values cleanly
+        function evaluatePinTitleText(userObject) {
+            const titleSpan = document.getElementById('pinCardTitle');
+            if (!titleSpan) return;
+            
+            if (userObject && userObject.pin && String(userObject.pin).trim() !== "") {
+                titleSpan.innerText = "Change Security Pin";
+            } else {
+                titleSpan.innerText = "Create Security Pin";
+            }
+        }
+
         window.onload = function() {
             const user = JSON.parse(localStorage.getItem('user'));
             if (!user || !user.email) {
@@ -277,7 +289,9 @@
             document.getElementById('avatar-initial').innerText = baseChar;
             document.getElementById('sidebar-initial').innerText = baseChar;
             
-            // CAREFUL STABILITY FALLBACK PARSING: Guarantees full phone line structural security coverage
+            // Execute state verification checks on initial setup load properties
+            evaluatePinTitleText(user);
+
             if (user.phone && String(user.phone).trim() !== "" && String(user.phone).trim() !== "undefined") {
                 document.getElementById('prof-phone').innerText = String(user.phone).trim();
             } else {
@@ -314,9 +328,11 @@
                 if (data.success) {
                     showNotification('success', 'Security Pin Saved', 'Your unique transaction authorization pin has been securely synchronized.');
                     
-                    // FIXED: Synchronize local state memory array attributes
                     user.pin = pinValue;
                     localStorage.setItem('user', JSON.stringify(user));
+                    
+                    // Instantly trigger re-evaluation after user updates properties locally
+                    evaluatePinTitleText(user);
                     
                     document.getElementById('newPin').value = '';
                 } else {
@@ -329,7 +345,7 @@
             pinBtn.disabled = false;
         });
 
-        // Password Update Execution Route with Old Password payload tracking
+        // Password Update Execution Route 
         document.getElementById('passwordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const passBtn = document.getElementById('passBtn');
@@ -359,7 +375,6 @@
                 if (response.ok && data.success) {
                     showNotification('success', 'Password Updated', 'Your account security credentials have been updated securely.');
                     
-                    // FIXED: Synchronize password session state parameters cleanly
                     user.password = passwordValue;
                     localStorage.setItem('user', JSON.stringify(user));
                     
