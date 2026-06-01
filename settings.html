@@ -347,12 +347,6 @@
             const oldPinField = document.getElementById('oldPin');
             const user = JSON.parse(localStorage.getItem('user'));
 
-            // If user has a pin config profile active, ensure verify input isn't blank
-            if (user.pin && oldPinField.value.trim() !== user.pin) {
-                showNotification('error', 'Verification Failed', 'The current transaction security PIN provided is incorrect.');
-                return;
-            }
-
             if (!/^\d{4}$/.test(pinValue)) {
                 showNotification('error', 'Invalid Input', 'PIN sequence must measure exactly 4 numerical digits.');
                 return;
@@ -362,10 +356,15 @@
             pinBtn.disabled = true;
 
             try {
+                // FIXED: Packed the old PIN value explicitly inside the query payload framework
                 const response = await fetch(`${BACKEND_URL}/update-pin`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email, pin: pinValue })
+                    body: JSON.stringify({ 
+                        email: user.email, 
+                        pin: pinValue,
+                        oldPin: oldPinField.value.trim() 
+                    })
                 });
                 const data = await response.json();
                 if (data.success) {
