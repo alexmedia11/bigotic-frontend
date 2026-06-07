@@ -43,6 +43,17 @@
         .toast-animate {
             animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* Premium Radio/Grid Card Selection States */
+        .network-card, .plan-type-card {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+        .network-card.active, .plan-type-card.active {
+            border-color: #0052FF;
+            background-color: #EFF6FF;
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body class="pb-28 antialiased">
@@ -124,23 +135,33 @@
 
                 <div>
                     <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Select Network Provider</label>
-                    <div class="relative">
-                        <select id="network" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-800 outline-none focus:border-[#0052FF] focus:bg-white transition-all font-bold appearance-none cursor-pointer text-sm">
-                            <option value="">-- Choose Network --</option>
-                            <option value="1">MTN Nigeria</option>
-                            <option value="2">Airtel Telecom</option>
-                            <option value="3">Globacom (Glo)</option>
-                            <option value="4">9Mobile</option>
-                        </select>
-                        <i data-lucide="chevron-down" class="absolute right-4 top-4.5 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                    <div class="grid grid-cols-4 gap-2" id="networkGrid">
+                        <div class="network-card border border-slate-200 rounded-xl p-3 text-center flex flex-col items-center justify-center bg-slate-50" data-[#0052FF] data-value="1">
+                            <span class="text-xs font-black text-slate-700 tracking-tight">MTN</span>
+                        </div>
+                        <div class="network-card border border-slate-200 rounded-xl p-3 text-center flex flex-col items-center justify-center bg-slate-50" data-value="2">
+                            <span class="text-xs font-black text-slate-700 tracking-tight">AIRTEL</span>
+                        </div>
+                        <div class="network-card border border-slate-200 rounded-xl p-3 text-center flex flex-col items-center justify-center bg-slate-50" data-value="3">
+                            <span class="text-xs font-black text-slate-700 tracking-tight">GLO</span>
+                        </div>
+                        <div class="network-card border border-slate-200 rounded-xl p-3 text-center flex flex-col items-center justify-center bg-slate-50" data-value="4">
+                            <span class="text-xs font-black text-slate-700 tracking-tight">9MOBILE</span>
+                        </div>
                     </div>
                 </div>
 
-                <div>
+                <div id="planTypeSection" class="hidden">
+                    <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Select Plan Type</label>
+                    <div class="grid grid-cols-2 gap-3" id="planTypeGrid">
+                        </div>
+                </div>
+
+                <div id="dataPackageSection" class="hidden">
                     <label class="text-[10px] text-[#0052FF] uppercase tracking-wider font-black block mb-2 ml-0.5">Select Data Package</label>
                     <div class="relative">
-                        <select id="dataPlan" required disabled class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-800 outline-none focus:border-[#0052FF] focus:bg-white transition-all font-bold appearance-none cursor-pointer text-sm disabled:opacity-60">
-                            <option value="">-- Select Network First --</option>
+                        <select id="dataPlan" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-800 outline-none focus:border-[#0052FF] focus:bg-white transition-all font-bold appearance-none cursor-pointer text-sm">
+                            <option value="">-- Select Package --</option>
                         </select>
                         <i data-lucide="chevron-down" class="absolute right-4 top-4.5 w-4 h-4 text-slate-400 pointer-events-none"></i>
                     </div>
@@ -232,7 +253,7 @@
     <script>
         lucide.createIcons();
 
-        const networkSelect = document.getElementById('network');
+        // Target Form Reference Fields
         const planSelect = document.getElementById('dataPlan');
         const priceBox = document.getElementById('priceDisplayBox');
         const calculatedPriceSpan = document.getElementById('calculatedPrice');
@@ -241,18 +262,35 @@
         const phoneInput = document.getElementById('phone');
         const pinGateModal = document.getElementById('pinGateModal');
         const pinAuthForm = document.getElementById('pinAuthForm');
-        
         const successResponseModal = document.getElementById('successResponseModal');
         const errorResponseModal = document.getElementById('errorResponseModal');
 
+        // Layout Containers
+        const planTypeSection = document.getElementById('planTypeSection');
+        const planTypeGrid = document.getElementById('planTypeGrid');
+        const dataPackageSection = document.getElementById('dataPackageSection');
+
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
         let cachedPlans = [];
+        
+        // Active Internal Processing App States
+        let selectedNetworkId = null;
+        let selectedPlanType = null;
 
+        // Brand Profile Mapping Rules
         const PREFIX_MAP = {
             '1': ['0803','0806','0810','0813','0814','0816','0903','0906','0913','0916','0703','0706','0702','0704','0205'], 
             '2': ['0802','0808','0812','0901','0902','0904','0907','0912','0911','0701','0708'], 
             '3': ['0805','0807','0811','0815','0905','0915','0705'], 
             '4': ['0809','0817','0818','0908','0909'] 
+        };
+
+        // Complete Filtering Logic Matrix
+        const NETWORK_PLANS_ALLOWED = {
+            '1': ['SME', 'COOPERATE GIFTING', 'GIFTING'], // MTN
+            '2': ['COOPERATE GIFTING'],                    // Airtel
+            '3': ['COOPERATE GIFTING', 'GIFTING'],          // Glo
+            '4': ['COOPERATE GIFTING']                    // 9Mobile
         };
 
         function toggleSidebar() {
@@ -317,17 +355,108 @@
                     console.error("Error loading network specifications:", err);
                     showNotification("Could not sync with product bundles data array.", "error");
                 });
+
+            setupNetworkGridListeners();
         };
 
+        // Wire click selectors to Premium Grid View Items
+        function setupNetworkGridListeners() {
+            const cards = document.querySelectorAll('.network-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    cards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const netId = this.getAttribute('data-value');
+                    handleNetworkChange(netId);
+                });
+            });
+        }
+
+        // Logic routing on Network configuration adjustment
+        function handleNetworkChange(networkId) {
+            selectedNetworkId = parseInt(networkId);
+            selectedPlanType = null;
+            
+            // Clear Downstream selections cleanly
+            planSelect.innerHTML = '<option value="">-- Select Package --</option>';
+            dataPackageSection.classList.add('hidden');
+            priceBox.classList.add('hidden');
+
+            if (!selectedNetworkId) {
+                planTypeSection.classList.add('hidden');
+                return;
+            }
+
+            // Reference filtering rules matrix dynamically
+            const allowedTypes = NETWORK_PLANS_ALLOWED[String(selectedNetworkId)] || [];
+            planTypeGrid.innerHTML = '';
+
+            allowedTypes.forEach(type => {
+                const card = document.createElement('div');
+                card.className = 'plan-type-card border border-slate-200 rounded-xl p-4 text-center flex flex-col items-center justify-center bg-slate-50';
+                card.setAttribute('data-type', type);
+                card.innerHTML = `
+                    <span class="text-[18px] font-black text-slate-400 mb-1">₦</span>
+                    <span class="text-[10px] font-extrabold uppercase text-slate-700 tracking-tight leading-tight">${type}</span>
+                `;
+                
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.plan-type-card').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    handlePlanTypeChange(this.getAttribute('data-type'));
+                });
+
+                planTypeGrid.appendChild(card);
+            });
+
+            planTypeSection.classList.remove('hidden');
+        }
+
+        // Filter package list items based on selected types
+        function handlePlanTypeChange(typeStr) {
+            selectedPlanType = typeStr;
+            planSelect.innerHTML = '<option value="">-- Select Package --</option>';
+            priceBox.classList.add('hidden');
+
+            if (!selectedPlanType) {
+                dataPackageSection.classList.add('hidden');
+                return;
+            }
+
+            // Deep match parameters across backend cached bundle array
+            const filteredPlans = cachedPlans.filter(p => {
+                const networkMatch = p.network === selectedNetworkId;
+                // String validation loop checking casing/trim states
+                const typeMatch = p.type && p.type.replace(/_/g, ' ').toUpperCase().trim() === selectedPlanType.toUpperCase().trim();
+                return networkMatch && typeMatch;
+            });
+
+            if(filteredPlans.length === 0) {
+                planSelect.innerHTML = '<option value="">No packages active for this type</option>';
+            } else {
+                filteredPlans.forEach(plan => {
+                    const option = document.createElement('option');
+                    option.value = plan.id;
+                    option.dataset.cost = plan.price;
+                    option.innerText = `${plan.name} - ₦${parseFloat(plan.price).toLocaleString()} [${plan.validity || 'Standard'}]`;
+                    planSelect.appendChild(option);
+                });
+            }
+
+            dataPackageSection.classList.remove('hidden');
+        }
+
+        // Automatic Phone Prefix Recognition
         phoneInput.addEventListener('input', function() {
             const val = this.value.trim();
             if (val.length >= 4) {
                 const inputPrefix = val.substring(0, 4);
                 for (const networkId in PREFIX_MAP) {
                     if (PREFIX_MAP[networkId].includes(inputPrefix)) {
-                        if (networkSelect.value !== networkId) {
-                            networkSelect.value = networkId;
-                            networkSelect.dispatchEvent(new Event('change'));
+                        const targetCard = document.querySelector(`.network-card[data-value="${networkId}"]`);
+                        if (targetCard && !targetCard.classList.contains('active')) {
+                            targetCard.click(); // Fires premium state tracking cleanly
                         }
                         break;
                     }
@@ -335,32 +464,9 @@
             }
         });
 
-        networkSelect.addEventListener('change', function() {
-            const networkId = parseInt(this.value);
-            planSelect.innerHTML = '<option value="">-- Select Package --</option>';
-            priceBox.classList.add('hidden');
-            
-            if (!networkId) {
-                planSelect.disabled = true;
-                return;
-            }
-
-            const filtered = cachedPlans.filter(p => p.network === networkId);
-            
-            filtered.forEach(plan => {
-                const option = document.createElement('option');
-                option.value = plan.id;
-                option.dataset.cost = plan.price;
-                option.innerText = `${plan.name} (${plan.type}) - ₦${parseFloat(plan.price).toLocaleString()} [${plan.validity || 'Standard'}]`;
-                planSelect.appendChild(option);
-            });
-
-            planSelect.disabled = false;
-        });
-
         planSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            const cost = selectedOption.dataset.cost;
+            const cost = selectedOption ? selectedOption.dataset.cost : null;
 
             if (cost) {
                 calculatedPriceSpan.innerText = parseFloat(cost).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -400,6 +506,14 @@
             e.preventDefault();
             const phone = phoneInput.value.trim();
 
+            if (!selectedNetworkId) {
+                showNotification("Please select a network provider card.", "error");
+                return;
+            }
+            if (!selectedPlanType) {
+                showNotification("Please select a database plan type option.", "error");
+                return;
+            }
             if (phone.length !== 11 || isNaN(phone)) {
                 showNotification("Please specify a valid 11-digit mobile numerical string.", "error");
                 return;
@@ -411,7 +525,6 @@
             e.preventDefault();
 
             const user = JSON.parse(localStorage.getItem('user'));
-            const network = networkSelect.value;
             const dataPlan = planSelect.value;
             const phone = phoneInput.value.trim();
             const pinVal = document.getElementById('txPin').value;
@@ -425,7 +538,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email: user.email,
-                    network: network,
+                    network: selectedNetworkId,
                     dataPlan: dataPlan,
                     phone: phone,
                     pin: pinVal
