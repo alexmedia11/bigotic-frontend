@@ -138,6 +138,10 @@
     <script>
         lucide.createIcons();
 
+        // AUTOMATED URL CAPTURE: Look for referral queries string data parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const referralCode = urlParams.get('ref'); 
+
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -183,7 +187,10 @@
                 username: document.getElementById('username').value,
                 phone: document.getElementById('phoneNumber').value, 
                 email: document.getElementById('email').value,
-                password: passwordVal
+                password: passwordVal,
+                
+                // PASS DYNAMIC AFFILIATE DATA TO LINK TO REFERRER
+                referredBy: referralCode || null
             };
 
             try {

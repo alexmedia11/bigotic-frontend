@@ -209,13 +209,32 @@
         </div>
 
         <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-3 px-1 text-left">Exclusive Offers</h2>
-        <div class="swiper swiper-promo w-full rounded-2xl border border-slate-200 bg-white mb-8 h-36 overflow-hidden relative shadow-sm">
+        <div class="swiper swiper-promo w-full rounded-2xl border border-slate-200 bg-white mb-6 h-36 overflow-hidden relative shadow-sm">
             <div class="swiper-wrapper">
                 <div class="swiper-slide"><img src="Promo1.jpg" alt="Promo 1" class="w-full h-full object-cover"></div>
                 <div class="swiper-slide"><img src="Promo2.jpg" alt="Promo 2" class="w-full h-full object-cover"></div>
                 <div class="swiper-slide"><img src="Promo3.jpg" alt="Promo 3" class="w-full h-full object-cover"></div>
             </div>
             <div class="swiper-pagination"></div>
+        </div>
+
+        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-4 px-1 text-left">Affiliate Network</h2>
+        <div class="premium-card p-5 rounded-[2rem] bg-white border border-slate-200 mb-8 text-left">
+            <div class="flex items-center gap-2.5 text-[#0052FF]">
+                <i data-lucide="gift" class="w-4 h-4 fill-blue-100"></i>
+                <h3 class="text-xs font-black text-slate-900 uppercase tracking-tight">Invite Friends & Earn</h3>
+            </div>
+            <p class="text-[10px] text-slate-400 font-semibold mt-1 leading-relaxed">
+                Get an instant <span class="text-[#0052FF] font-extrabold">5% wallet bonus</span> credited directly to your account the moment your referred client completes their first payment deposit.
+            </p>
+            
+            <div class="flex gap-2 mt-4 relative">
+                <input type="text" id="ref-link-display" readonly value="Loading referral string tokens..." 
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 pr-12 text-[11px] font-mono font-bold text-slate-500 outline-none select-all truncate">
+                <button onclick="copyReferralLink()" class="absolute right-2 top-2 bg-[#0052FF] text-white w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[#003FE6] active:scale-95 transition-all cursor-pointer shadow-sm" title="Copy Referral Link">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+            </div>
         </div>
     </main>
 
@@ -302,6 +321,18 @@
             document.getElementById('time-greeting-text').innerText = greetingString;
         }
 
+        // ================= NEW CLIPBOARD COPY ENGINE IMPLEMENTATION =================
+        function copyReferralLink() {
+            const copyText = document.getElementById('ref-link-display');
+            if (copyText.value.includes("Loading")) return;
+            
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // Native backup mobile scoping container parameters
+            navigator.clipboard.writeText(copyText.value);
+            
+            alert("Referral link copied successfully! Share it to start earning commissions. 🚀💰");
+        }
+
         window.onload = async function() {
             compileTimeGreeting();
 
@@ -322,6 +353,13 @@
             document.getElementById('sidebar-initial').innerText = baseChar;
 
             updateBalanceUI(user.balance);
+
+            // ================= GENERATE USER UNIQUE REFERRAL TOKEN LINK =================
+            if (user.username) {
+                document.getElementById('ref-link-display').value = `https://bigoticdata.com.ng/signup.html?ref=${user.username.trim()}`;
+            } else {
+                document.getElementById('ref-link-display').value = "Please update username to obtain link";
+            }
 
             if (user.email) {
                 try {
