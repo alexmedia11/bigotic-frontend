@@ -321,16 +321,18 @@
             document.getElementById('time-greeting-text').innerText = greetingString;
         }
 
-        // ================= NEW CLIPBOARD COPY ENGINE IMPLEMENTATION =================
+        // ================= CLEAN ONE-TAP NATIVE COPIER IMPLEMENTATION =================
         function copyReferralLink() {
             const copyText = document.getElementById('ref-link-display');
-            if (copyText.value.includes("Loading")) return;
+            if (copyText.value.includes("Loading") || copyText.value.includes("update")) return;
             
+            // Native cross-browser clipboard copy protocol execution
             copyText.select();
-            copyText.setSelectionRange(0, 99999); // Native backup mobile scoping container parameters
+            copyText.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(copyText.value);
             
-            alert("Referral link copied successfully! Share it to start earning commissions. 🚀💰");
+            // Clean dynamic interface toast substitution
+            alert("Success! Your unique affiliate partner link has been copied safely to your clipboard.");
         }
 
         window.onload = async function() {
@@ -354,11 +356,11 @@
 
             updateBalanceUI(user.balance);
 
-            // ================= GENERATE USER UNIQUE REFERRAL TOKEN LINK =================
+            // ================= PREMIUM LOGICAL STRIPPING FOR PRETTY URLS =================
             if (user.username) {
-                document.getElementById('ref-link-display').value = `https://bigoticdata.com.ng/signup.html?ref=${user.username.trim()}`;
+                document.getElementById('ref-link-display').value = `https://bigoticdata.com.ng/signup?ref=${user.username.trim()}`;
             } else {
-                document.getElementById('ref-link-display').value = "Please update username to obtain link";
+                document.getElementById('ref-link-display').value = "Please update your username to activate links";
             }
 
             if (user.email) {
