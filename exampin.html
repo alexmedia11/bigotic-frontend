@@ -3,111 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bigotic Data - Buy Exam Pins</title>
+    <title>Bigotic Data | Buy Exam Pins</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { margin: 0; padding: 0; box-box: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding: 20px; }
-        .container { max-width: 500px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h2 { margin-bottom: 20px; color: #1a1a1a; font-size: 24px; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #555; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
-        select:focus, input:focus { border-color: #2563eb; }
-        .price-display { background: #eff6ff; padding: 12px; border-radius: 8px; color: #1e40af; font-weight: bold; margin-bottom: 20px; text-align: center; font-size: 15px; }
-        button { width: 100%; padding: 14px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #1d4ed8; }
-        .result-box { margin-top: 25px; padding: 15px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; display: none; }
-        .result-title { color: #065f46; font-weight: bold; margin-bottom: 8px; }
-        .pin-data { font-family: monospace; background: #fff; padding: 10px; border: 1px dashed #059669; border-radius: 6px; font-size: 16px; color: #047857; text-align: center; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .brand-gradient { background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); }
+        .premium-card { background: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); }
+        .step-line { height: 2px; background-color: #E2E8F0; flex-grow: 1; margin: 0 8px; }
+        .step-line.active { background-color: #0052FF; }
     </style>
 </head>
-<body>
+<body class="pb-12 antialiased">
 
-<div class="container">
-    <h2>Buy Exam Scratch Cards</h2>
-    
-    <div class="form-group">
-        <label for="examType">Select Examination Type</label>
-        <select id="examType" onchange="updatePrice()">
-            <option value="waec">WAEC Result Checker — ₦4,200</option>
-            <option value="neco">NECO Token — ₦1,800</option>
-            <option value="nabteb">NABTEB Pin — ₦1,800</option>
-        </select>
-    </div>
+    <nav class="flex items-center px-6 bg-white border-b border-slate-200 h-16 w-full mb-6">
+        <a href="dashboard.html" class="text-slate-600 hover:text-[#0052FF] p-2 rounded-lg transition-colors mr-2">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+        <div class="text-md font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></div>
+    </nav>
 
-    <div class="form-group">
-        <label for="quantity">Quantity</label>
-        <input type="number" id="quantity" value="1" min="1" oninput="updatePrice()">
-    </div>
+    <main class="px-5 max-w-md mx-auto">
+        <div class="premium-card rounded-3xl p-6 mb-6">
+            <h2 class="text-xl font-black tracking-tight text-slate-900 mb-6 text-center">Purchase Result Checker</h2>
 
-    <div class="form-group">
-        <label for="transactionPin">4-Digit Transaction PIN</label>
-        <input type="password" id="transactionPin" placeholder="Enter your PIN" maxlength="4">
-    </div>
+            <div class="flex items-center justify-between mb-8 px-2">
+                <div class="flex flex-col items-center">
+                    <div id="step-dot-1" class="w-7 h-7 rounded-full brand-gradient text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">1</div>
+                    <span class="text-[9px] font-bold uppercase mt-1 text-[#0052FF]">Exam</span>
+                </div>
+                <div id="step-line-1" class="step-line"></div>
+                <div class="flex flex-col items-center">
+                    <div id="step-dot-2" class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-bold">2</div>
+                    <span class="text-[9px] font-bold uppercase mt-1 text-slate-400">Quantity</span>
+                </div>
+                <div id="step-line-2" class="step-line"></div>
+                <div class="flex flex-col items-center">
+                    <div id="step-dot-3" class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-bold">3</div>
+                    <span class="text-[9px] font-bold uppercase mt-1 text-slate-400">Review</span>
+                </div>
+            </div>
 
-    <div class="price-display" id="totalPriceDisplay">
-        Total Amount: ₦4,200
-    </div>
+            <div id="pane-1" class="space-y-4">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Select Exam Type</h3>
+                
+                <div onclick="selectExamCard('waec')" id="card-waec" class="border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-blue-300 transition-all bg-slate-50/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center font-bold text-blue-600">W</div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-900">WAEC</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Result Checker Pin</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-sm font-black text-[#0052FF]">₦4,200</span>
+                    </div>
+                </div>
 
-    <button id="buyBtn" onclick="processExamPinPurchase()">Purchase Pin Now</button>
+                <div onclick="selectExamCard('neco')" id="card-neco" class="border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-blue-300 transition-all bg-slate-50/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center font-bold text-emerald-600">N</div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-900">NECO</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Result Token</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-sm font-black text-[#0052FF]">₦1,800</span>
+                    </div>
+                </div>
 
-    <div class="result-box" id="resultBox">
-        <div class="result-title">🎉 Purchase Successful! Your Pin:</div>
-        <div class="pin-data" id="pinOutput"></div>
-    </div>
-</div>
+                <div onclick="selectExamCard('nabteb')" id="card-nabteb" class="border-2 border-slate-200 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-blue-300 transition-all bg-slate-50/50">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center font-bold text-amber-600">N</div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-900">NABTEB</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Scratch Card Pin</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-sm font-black text-[#0052FF]">₦1,800</span>
+                    </div>
+                </div>
 
-<script>
-    // Price configurations matching your backend settings
-    const prices = { waec: 4200, neco: 1800, nabteb: 1800 };
+                <button onclick="goToStep(2)" id="next-btn-1" disabled class="w-full mt-6 bg-slate-200 text-slate-400 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all cursor-not-allowed">Select An Exam Option</button>
+            </div>
 
-    function updatePrice() {
-        const exam = document.getElementById('examType').value;
-        const qty = parseInt(document.getElementById('quantity').value) || 1;
-        const total = prices[exam] * qty;
-        document.getElementById('totalPriceDisplay').innerText = `Total Amount: ₦${total.toLocaleString()}`;
-    }
+            <div id="pane-2" class="hidden space-y-5">
+                <div class="text-left">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Enter Quantity</label>
+                    <input type="number" id="pin-quantity" value="1" min="1" oninput="calculateTotal()" class="w-full mt-1.5 bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm font-bold text-slate-900 outline-none focus:border-[#0052FF] transition-colors">
+                </div>
 
-    async function processExamPinPurchase() {
-        // Retrieve logged-in user email from localStorage
-        const userEmail = localStorage.getItem('userEmail'); 
-        const examType = document.getElementById('examType').value;
-        const quantity = document.getElementById('quantity').value;
-        const pin = document.getElementById('transactionPin').value;
-        const buyBtn = document.getElementById('buyBtn');
+                <div class="text-left">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Cost Amount</label>
+                    <div class="w-full mt-1.5 bg-blue-50/50 border border-blue-100 rounded-xl p-4 text-base font-black text-[#0052FF]">
+                        ₦<span id="cost-display">0.00</span>
+                    </div>
+                </div>
 
-        if(!pin || pin.length !== 4) {
-            alert("Please enter a valid 4-digit transaction PIN.");
-            return;
-        }
+                <div class="flex gap-3 pt-4">
+                    <button onclick="goToStep(1)" class="w-1/3 border border-slate-200 text-slate-600 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 cursor-pointer">Back</button>
+                    <button onclick="goToStep(3)" class="w-2/3 brand-gradient text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-md active:scale-98 transition-all cursor-pointer">Continue</button>
+                </div>
+            </div>
 
-        buyBtn.disabled = true;
-        buyBtn.innerText = "Processing transaction...";
+            <div id="pane-3" class="hidden space-y-5">
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 text-sm text-left">
+                    <div class="flex justify-between"><span class="text-slate-400 font-semibold">Service Type:</span><span id="summary-name" class="font-bold text-slate-900 uppercase">WAEC</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400 font-semibold">Quantity Ordered:</span><span id="summary-qty" class="font-bold text-slate-900">1 Units</span></div>
+                    <div class="border-t border-slate-200 pt-3 flex justify-between"><span class="text-slate-900 font-bold">Total Bill:</span><span id="summary-total" class="font-black text-[#0052FF] text-base">₦0.00</span></div>
+                </div>
 
-        try {
-            const response = await fetch('https://your-render-backend-url.onrender.com/buy-exampin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: userEmail, examType, quantity, pin })
+                <div class="text-left">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">4-Digit Security Authorization PIN</label>
+                    <input type="password" id="transaction-pin" placeholder="••••" maxlength="4" class="w-full mt-1.5 bg-slate-50 border border-slate-200 rounded-xl p-4 text-center text-lg font-mono font-bold text-slate-900 tracking-widest outline-none focus:border-[#0052FF] transition-colors">
+                </div>
+
+                <button id="final-buy-btn" onclick="executePurchase()" class="w-full brand-gradient text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-md active:scale-98 transition-all cursor-pointer">Authorize Purchase</button>
+                
+                <button onclick="goToStep(2)" id="back-btn-3" class="w-full text-center text-xs font-bold text-slate-400 uppercase hover:text-slate-600 transition-colors pt-2 block">Go Back Adjust Parameters</button>
+            </div>
+
+            <div id="pane-success" class="hidden text-center space-y-4 py-4">
+                <div class="w-16 h-16 rounded-full bg-emerald-50 text-emerald-500 border border-emerald-200 flex items-center justify-center mx-auto mb-2 shadow-sm">
+                    <i data-lucide="check-circle" class="w-8 h-8"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Pin Fulfill Completed!</h3>
+                    <p class="text-xs font-semibold text-slate-400 mt-0.5">Copy your secure result voucher parameters below.</p>
+                </div>
+                <div class="bg-emerald-50/50 border border-dashed border-emerald-300 rounded-2xl p-4 font-mono text-sm font-bold text-emerald-700 select-all break-all" id="pin-output-block">
+                    pin1<=>serial1
+                </div>
+                <button onclick="location.href='dashboard.html'" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-colors">Return Dashboard</button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        const priceSheet = { waec: 4200, neco: 1800, nabteb: 1800 };
+        let selectedExam = null;
+
+        function selectExamCard(exam) {
+            selectedExam = exam;
+            ['waec', 'neco', 'nabteb'].forEach(id => {
+                const card = document.getElementById(`card-${id}`);
+                if(id === exam) {
+                    card.classList.remove('border-slate-200', 'bg-slate-50/50');
+                    card.classList.add('border-[#0052FF]', 'bg-blue-50/10');
+                } else {
+                    card.classList.remove('border-[#0052FF]', 'bg-blue-50/10');
+                    card.classList.add('border-slate-200', 'bg-slate-50/50');
+                }
             });
 
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                document.getElementById('pinOutput').innerText = data.pins;
-                document.getElementById('resultBox').style.display = 'block';
-                alert("Pin purchased successfully!");
-            } else {
-                alert(data.error || "Transaction failed. Please verify credentials.");
-            }
-        } catch (error) {
-            alert("Network connection failure trying to communicate with server.");
-        } finally {
-            buyBtn.disabled = false;
-            buyBtn.innerText = "Purchase Pin Now";
+            const nextBtn = document.getElementById('next-btn-1');
+            nextBtn.removeAttribute('disabled');
+            nextBtn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+            nextBtn.classList.add('brand-gradient', 'text-white', 'cursor-pointer');
+            nextBtn.innerText = `Continue with ${exam.toUpperCase()}`;
+            calculateTotal();
         }
-    }
-</script>
 
+        function calculateTotal() {
+            if(!selectedExam) return;
+            const qty = parseInt(document.getElementById('pin-quantity').value) || 1;
+            const total = priceSheet[selectedExam] * qty;
+            document.getElementById('cost-display').innerText = total.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+            
+            document.getElementById('summary-name').innerText = selectedExam.toUpperCase();
+            document.getElementById('summary-qty').innerText = `${qty} Units`;
+            document.getElementById('summary-total').innerText = `₦${total.toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+        }
+
+        function goToStep(step) {
+            ['pane-1', 'pane-2', 'pane-3'].forEach((id, index) => {
+                document.getElementById(id).classList.add('hidden');
+                const dot = document.getElementById(`step-dot-${index+1}`);
+                const label = dot.nextElementSibling;
+                if(index + 1 < step) {
+                    dot.className = "w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold";
+                    dot.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i>`;
+                    label.className = "text-[9px] font-bold uppercase mt-1 text-emerald-500";
+                } else if(index + 1 === step) {
+                    dot.className = "w-7 h-7 rounded-full brand-gradient text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100";
+                    dot.innerText = index + 1;
+                    label.className = "text-[9px] font-bold uppercase mt-1 text-[#0052FF]";
+                } else {
+                    dot.className = "w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-bold";
+                    dot.innerText = index + 1;
+                    label.className = "text-[9px] font-bold uppercase mt-1 text-slate-400";
+                }
+            });
+
+            // Handle step lines
+            document.getElementById('step-line-1').className = step >= 2 ? "step-line active" : "step-line";
+            document.getElementById('step-line-2').className = step === 3 ? "step-line active" : "step-line";
+
+            document.getElementById(`pane-${step}`).classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        async function executePurchase() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const pinValue = document.getElementById('transaction-pin').value;
+            const qty = document.getElementById('pin-quantity').value;
+            const submitBtn = document.getElementById('final-buy-btn');
+
+            if (!user || !user.email) {
+                alert("Authorization payload missing. Please restart registration.");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (!pinValue || pinValue.length !== 4) {
+                alert("Please declare your complete 4-digit security PIN.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing transactional framework...";
+
+            try {
+                const response = await fetch('https://bigoticdata-backend.onrender.com/buy-exampin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email, examType: selectedExam, quantity: Number(qty), pin: pinValue })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('pane-3').classList.add('hidden');
+                    document.getElementById('pin-output-block').innerText = data.pins;
+                    document.getElementById('pane-success').classList.remove('hidden');
+                    
+                    // Sync up balance elements in background storage profiles
+                    if (data.newBalance !== undefined) {
+                        user.balance = data.newBalance;
+                        localStorage.setItem('user', JSON.stringify(user));
+                    }
+                } else {
+                    alert(data.error || "Fulfillment architecture engine error.");
+                }
+            } catch (err) {
+                alert("Internal backend handshake link connection timed out.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Authorize Purchase";
+            }
+        }
+    </script>
 </body>
 </html>
