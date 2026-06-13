@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigotic Data - Bulk SMS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding: 20px; }
+        .container { max-width: 500px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 20px; color: #1a1a1a; font-size: 24px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #555; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; resize: none; }
+        input:focus, textarea:focus { border-color: #10b981; }
+        .counter-info { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-top: 5px; padding: 0 2px; }
+        .price-display { background: #ecfdf5; padding: 12px; border-radius: 8px; color: #065f46; font-weight: bold; margin-bottom: 20px; text-align: center; font-size: 15px; border: 1px solid #a7f3d0; }
+        button { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #059669; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Send Bulk SMS</h2>
+    
+    <div class="form-group">
+        <label for="senderName">Sender ID (Max 11 Characters)</label>
+        <input type="text" id="senderName" placeholder="e.g., BIGOTIC" maxlength="11">
+    </div>
+
+    <div class="form-group">
+        <label for="recipientNumber">Recipient Phone Number</label>
+        <input type="tel" id="recipientNumber" placeholder="e.g., 08031234567">
+    </div>
+
+    <div class="form-group">
+        <label for="smsMessage">Message Content</label>
+        <textarea id="smsMessage" rows="5" placeholder="Type your message here..." oninput="calculateSmsCost()"></textarea>
+        <div class="counter-info">
+            <span id="charCount">Characters: 0</span>
+            <span id="pageCount">Pages: 1</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="transactionPin">4-Digit Transaction PIN</label>
+        <input type="password" id="transactionPin" placeholder="Enter your PIN" maxlength="4">
+    </div>
+
+    <div class="price-display" id="smsPriceDisplay">
+        Estimated Cost: ₦5.00
+    </div>
+
+    <button id="sendBtn" onclick="processBulkSmsSend()">Send Message Now</button>
+</div>
+
+<script>
+    const ratePerPage = 5.00;
+
+    function calculateSmsCost() {
+        const text = document.getElementById('smsMessage').value;
+        const charCount = text.length;
+        
+        // 1 page = 160 characters
+        const pages = charCount === 0 ? 1 : Math.ceil(charCount / 160);
+        const totalCost = pages * ratePerPage;
+
+        document.getElementById('charCount').innerText = `Characters: ${charCount}`;
+        document.getElementById('pageCount').innerText = `Pages: ${pages}`;
+        document.getElementById('smsPriceDisplay').innerText = `Estimated Cost: ₦${totalCost.toFixed(2)}`;
+    }
+
+    async function processBulkSmsSend() {
+        const userEmail = localStorage.getItem('userEmail'); 
+        const senderName = document.getElementById('senderName').value.trim();
+        const recipientNumber = document.getElementById('recipientNumber').value.trim();
+        const message = document.getElementById('smsMessage').value.trim();
+        const pin = document.getElementById('transactionPin').value;
+        const sendBtn = document.getElementById('sendBtn');
+
+        if (!senderName || !recipientNumber || !message) {
+            alert("Please fill in all the required text fields.");
+            return;
+        }
+
+        if (!pin || pin.length !== 4) {
+            alert("Please enter a valid 4-digit transaction PIN.");
+            return;
+        }
+
+        sendBtn.disabled = true;
+        sendBtn.innerText = "Dispatching message threads...";
+
+        try {
+            const response = await fetch('https://your-render-backend-url.onrender.com/send-bulksms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, senderName, recipientNumber, message, pin })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                alert("Bulk SMS completely processed and dispatched successfully!");
+                // Clear out message fields on success
+                document.getElementById('smsMessage').value = "";
+                calculateSmsCost();
+            } else {
+                alert(data.error || "Broadcast delivery pipeline rejected transaction payload.");
+            }
+        } catch (error) {
+            alert("Network connection failure communicating with server architecture.");
+        } finally {
+            sendBtn.disabled = false;
+            sendBtn.innerText = "Send Message Now";
+        }
+    }
+</script>
+
+</body>
+</html>

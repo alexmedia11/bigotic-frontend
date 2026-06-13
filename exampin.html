@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigotic Data - Buy Exam Pins</title>
+    <style>
+        * { margin: 0; padding: 0; box-box: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding: 20px; }
+        .container { max-width: 500px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 20px; color: #1a1a1a; font-size: 24px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #555; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
+        select:focus, input:focus { border-color: #2563eb; }
+        .price-display { background: #eff6ff; padding: 12px; border-radius: 8px; color: #1e40af; font-weight: bold; margin-bottom: 20px; text-align: center; font-size: 15px; }
+        button { width: 100%; padding: 14px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #1d4ed8; }
+        .result-box { margin-top: 25px; padding: 15px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; display: none; }
+        .result-title { color: #065f46; font-weight: bold; margin-bottom: 8px; }
+        .pin-data { font-family: monospace; background: #fff; padding: 10px; border: 1px dashed #059669; border-radius: 6px; font-size: 16px; color: #047857; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Buy Exam Scratch Cards</h2>
+    
+    <div class="form-group">
+        <label for="examType">Select Examination Type</label>
+        <select id="examType" onchange="updatePrice()">
+            <option value="waec">WAEC Result Checker — ₦4,200</option>
+            <option value="neco">NECO Token — ₦1,800</option>
+            <option value="nabteb">NABTEB Pin — ₦1,800</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" value="1" min="1" oninput="updatePrice()">
+    </div>
+
+    <div class="form-group">
+        <label for="transactionPin">4-Digit Transaction PIN</label>
+        <input type="password" id="transactionPin" placeholder="Enter your PIN" maxlength="4">
+    </div>
+
+    <div class="price-display" id="totalPriceDisplay">
+        Total Amount: ₦4,200
+    </div>
+
+    <button id="buyBtn" onclick="processExamPinPurchase()">Purchase Pin Now</button>
+
+    <div class="result-box" id="resultBox">
+        <div class="result-title">🎉 Purchase Successful! Your Pin:</div>
+        <div class="pin-data" id="pinOutput"></div>
+    </div>
+</div>
+
+<script>
+    // Price configurations matching your backend settings
+    const prices = { waec: 4200, neco: 1800, nabteb: 1800 };
+
+    function updatePrice() {
+        const exam = document.getElementById('examType').value;
+        const qty = parseInt(document.getElementById('quantity').value) || 1;
+        const total = prices[exam] * qty;
+        document.getElementById('totalPriceDisplay').innerText = `Total Amount: ₦${total.toLocaleString()}`;
+    }
+
+    async function processExamPinPurchase() {
+        // Retrieve logged-in user email from localStorage
+        const userEmail = localStorage.getItem('userEmail'); 
+        const examType = document.getElementById('examType').value;
+        const quantity = document.getElementById('quantity').value;
+        const pin = document.getElementById('transactionPin').value;
+        const buyBtn = document.getElementById('buyBtn');
+
+        if(!pin || pin.length !== 4) {
+            alert("Please enter a valid 4-digit transaction PIN.");
+            return;
+        }
+
+        buyBtn.disabled = true;
+        buyBtn.innerText = "Processing transaction...";
+
+        try {
+            const response = await fetch('https://your-render-backend-url.onrender.com/buy-exampin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, examType, quantity, pin })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                document.getElementById('pinOutput').innerText = data.pins;
+                document.getElementById('resultBox').style.display = 'block';
+                alert("Pin purchased successfully!");
+            } else {
+                alert(data.error || "Transaction failed. Please verify credentials.");
+            }
+        } catch (error) {
+            alert("Network connection failure trying to communicate with server.");
+        } finally {
+            buyBtn.disabled = false;
+            buyBtn.innerText = "Purchase Pin Now";
+        }
+    }
+</script>
+
+</body>
+</html>
