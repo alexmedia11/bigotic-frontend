@@ -317,6 +317,17 @@
 
         airtimeForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            const phone = phoneInput.value.trim();
+            const networkVal = networkSelect.value;
+
+            if (!networkVal) {
+                showNotification("Please select a mobile carrier.", "error");
+                return;
+            }
+            if (phone.length !== 11 || isNaN(phone)) {
+                showNotification("Please enter a valid 11-digit phone number.", "error");
+                return;
+            }
             openPinGate();
         });
 
@@ -328,7 +339,6 @@
             const phoneVal = phoneInput.value.trim();
             const amountVal = parseInt(document.getElementById('amount').value);
             const pinVal = document.getElementById('txPin').value;
-            const confirmPayBtn = document.getElementById('confirmPayBtn');
 
             if (!currentUser || !currentUser.email) {
                 showNotification("Session expired. Access denied.");
@@ -361,7 +371,6 @@
                     currentUser.balance = data.newBalance;
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     
-                    // Trigger beautiful custom confirmation view frame logic
                     document.getElementById('successModalMsg').innerText = `Success! ₦${amountVal.toLocaleString()} Airtime has been dispatched cleanly to ${phoneVal}.`;
                     successResponseModal.classList.remove('hidden');
                 } else {
@@ -378,13 +387,15 @@
 
         window.onload = function() {
             const user = JSON.parse(localStorage.getItem('user'));
-            if (user) {
-                const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
-                document.getElementById('sidebar-username').innerText = dynamicDisplayName;
-                const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
-                document.getElementById('avatar-initial').innerText = baseChar;
-                document.getElementById('sidebar-initial').innerText = baseChar;
+            if (!user) {
+                window.location.href = "login.html";
+                return;
             }
+            const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
+            document.getElementById('sidebar-username').innerText = dynamicDisplayName;
+            const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = baseChar;
+            document.getElementById('sidebar-initial').innerText = baseChar;
         }
     </script>
 </body>
