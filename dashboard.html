@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bigotic Data | Dashboard</title>
+    <link rel="icon" type="image/png" href="../Bigoticdata.com.ng.png">
+    <link rel="apple-touch-icon" href="../Bigoticdata.com.ng.png">
     <link rel="stylesheet" href="output.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -117,8 +119,11 @@
                     <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
                 </button>
 
-                <div onclick="toggleSidebar()" class="w-10 h-10 rounded-xl border border-slate-200 p-1.5 cursor-pointer bg-white flex items-center justify-center shadow-sm hover:border-blue-200 transition-all">
-                    <img src="Bigoticdata.com.ng.png" alt="BD" class="w-full h-full object-contain">
+                <div onclick="toggleSidebar()" class="w-10 h-10 rounded-xl border border-slate-200 p-1 cursor-pointer bg-white flex items-center justify-center shadow-sm hover:border-blue-200 transition-all active:scale-95">
+                    <div class="w-full h-full rounded-lg bg-[#0F172A] flex items-center justify-center relative overflow-hidden">
+                        <span class="absolute inset-x-0 bottom-1 opacity-20 text-[6px] text-blue-400 text-center font-mono select-none pointer-events-none">~/~</span>
+                        <span class="text-white text-[11px] font-black tracking-tight select-none">B<span class="text-[#0052FF]">D</span></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,7 +160,7 @@
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
         </div>
 
-        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-3 px-1 text-left">Dedicated Funding Account</h2>
+        <div class="text-left"><h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-3 px-1">Dedicated Funding Account</h2></div>
         <div class="premium-card p-4 rounded-[1.5rem] bg-white border border-slate-200 mb-8 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[#0052FF]">
@@ -171,7 +176,7 @@
             </button>
         </div>
 
-        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-4 px-1 text-left">Core Utilities</h2>
+        <div class="text-left"><h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-4 px-1">Core Utilities</h2></div>
         
         <div class="grid grid-cols-4 gap-y-6 gap-x-4 mb-8 text-center">
             <div onclick="location.href='buy-data.html'" class="group cursor-pointer">
@@ -231,7 +236,7 @@
             </div>
         </div>
 
-        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-3 px-1 text-left">Exclusive Offers</h2>
+        <div class="text-left"><h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-3 px-1">Exclusive Offers</h2></div>
         <div class="swiper swiper-promo w-full rounded-2xl border border-slate-200 bg-white mb-6 h-36 overflow-hidden relative shadow-sm">
             <div class="swiper-wrapper">
                 <div class="swiper-slide"><img src="Promo1.jpg" alt="Promo 1" class="w-full h-full object-cover"></div>
@@ -241,7 +246,7 @@
             <div class="swiper-pagination"></div>
         </div>
 
-        <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-4 px-1 text-left">Affiliate Network</h2>
+        <div class="text-left"><h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] mb-4 px-1">Affiliate Network</h2></div>
         <div class="premium-card p-5 rounded-[2rem] bg-white border border-slate-200 mb-8 text-left">
             <div class="flex items-center gap-2.5 text-[#0052FF]">
                 <i data-lucide="gift" class="w-4 h-4 fill-blue-100"></i>
@@ -372,14 +377,13 @@
                 return;
             }
 
-            const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
+            const dynamicDisplayName = user.fullName || user.username || (user.email ? user.email.split('@')[0] : 'User');
             
             document.getElementById('username-display').innerText = dynamicDisplayName;
             document.getElementById('sidebar-username').innerText = dynamicDisplayName;
             document.getElementById('virtual-account-name').innerText = dynamicDisplayName;
             
             const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
-            document.getElementById('avatar-initial').innerText = baseChar;
             document.getElementById('sidebar-initial').innerText = baseChar;
 
             updateBalanceUI(user.balance);
