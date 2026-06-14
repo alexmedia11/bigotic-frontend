@@ -148,11 +148,17 @@
     <div id="receipt-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
         <div id="receipt-card" class="receipt-gradient text-slate-900 w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl scale-95 transition-transform duration-300 border border-slate-200 relative">
             <div class="p-6 text-center border-b border-slate-100 bg-white">
-                <div class="w-14 h-14 brand-gradient rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md">
-                    <span class="text-white font-black text-xl tracking-tighter">B</span>
+                <div class="w-16 h-16 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner relative overflow-hidden">
+                    <div class="flex items-center justify-center gap-1 w-full px-2">
+                        <span class="w-1 bg-[#0052FF] rounded-full" style="height: 10px;"></span>
+                        <span class="w-1 bg-[#0052FF] rounded-full" style="height: 22px;"></span>
+                        <span class="w-1 bg-[#003FE6] rounded-full font-black text-xs text-white flex items-center justify-center" style="height: 36px; min-width: 14px; background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); border-radius: 4px;">B</span>
+                        <span class="w-1 bg-[#0052FF] rounded-full" style="height: 22px;"></span>
+                        <span class="w-1 bg-[#0052FF] rounded-full" style="height: 10px;"></span>
+                    </div>
                 </div>
-                <h3 class="font-black text-lg tracking-tight text-[#0052FF]">BIGOTIC <span class="text-[#0F172A]">DATA</span></h3>
-                <p class="text-[9px] uppercase font-extrabold text-slate-400 tracking-widest mt-1">Official Digital Receipt</p>
+                <h3 class="font-black text-lg tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></h3>
+                <p class="text-[9px] uppercase font-black text-slate-400 tracking-[0.2em] mt-0.5">Official Digital Receipt</p>
             </div>
 
             <div id="receipt-details" class="p-6 space-y-4 text-xs font-semibold text-slate-700 bg-white/50 relative">
