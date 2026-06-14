@@ -51,9 +51,11 @@
     
     <div id="sidebar-menu" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 sidebar-transition -translate-x-full shadow-2xl flex flex-col justify-between border-r border-slate-100">
         <div class="overflow-y-auto flex-1">
-            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                <div class="text-lg font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></div>
-                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[#0F172A] cursor-pointer">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <div class="w-36 h-auto">
+                    <img src="Bigoticdata.com.ng.png" alt="Bigotic Data" class="w-full h-full object-contain">
+                </div>
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-[#0F172A] cursor-pointer p-1 rounded-lg hover:bg-slate-50">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -115,8 +117,8 @@
                     <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
                 </button>
 
-                <div onclick="toggleSidebar()" class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center">
-                    <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
+                <div onclick="toggleSidebar()" class="w-10 h-10 rounded-xl border border-slate-200 p-1.5 cursor-pointer bg-white flex items-center justify-center shadow-sm hover:border-blue-200 transition-all">
+                    <img src="Bigoticdata.com.ng.png" alt="BD" class="w-full h-full object-contain">
                 </div>
             </div>
         </div>
@@ -388,7 +390,6 @@
                 document.getElementById('ref-link-display').value = "Please update your username to activate links";
             }
 
-            // Bind real database Monnify string elements if they exist
             if (user.virtualAccountNumber) {
                 document.getElementById('virtual-account-number').innerText = user.virtualAccountNumber;
                 if (user.virtualBankName) {
@@ -412,7 +413,6 @@
                             updateBalanceUI(freshBalance);
                         }
 
-                        // Real-time update live virtual account parameters if Monnify background engine finishes verification loop
                         if (result.virtualAccountNumber) {
                             user.virtualAccountNumber = result.virtualAccountNumber;
                             user.virtualBankName = result.virtualBankName || "Wema Bank";
