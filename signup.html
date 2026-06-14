@@ -50,15 +50,53 @@
         .toast-animate {
             animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* Rebranding Waveform Animations */
+        @keyframes waveBarGrowth {
+            0%, 100% { height: 6px; transform: scaleY(1); }
+            50% { height: 24px; transform: scaleY(1.3); background-color: #0052FF; }
+        }
+        @keyframes logoGentlyBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-wave-bar {
+            animation: waveBarGrowth 0.8s ease-in-out infinite;
+        }
+        .animate-logo-bounce {
+            animation: logoGentlyBounce 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-6 antialiased">
 
+    <div id="brand-loader-overlay" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
+        <div class="relative flex flex-col items-center max-w-xs text-center px-4">
+            
+            <div class="relative w-48 h-48 flex items-center justify-center mb-2">
+                <div class="absolute w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
+                <img src="Bigoticdata.com.ng.png" alt="Bigotic Data Logo" class="relative z-10 w-full h-auto object-contain animate-logo-bounce">
+            </div>
+
+            <div class="flex items-center justify-center gap-1 w-32 h-6 mb-4">
+                <span class="w-1.5 bg-[#0052FF] rounded-full animate-wave-bar" style="animation-delay: 0.1s; height: 4px;"></span>
+                <span class="w-1.5 bg-[#0052FF] rounded-full animate-wave-bar" style="animation-delay: 0.2s; height: 12px;"></span>
+                <span class="w-1.5 bg-[#003FE6] rounded-full animate-wave-bar" style="animation-delay: 0.3s; height: 20px;"></span>
+                <span class="w-1.5 bg-[#0052FF] rounded-full animate-wave-bar" style="animation-delay: 0.4s; height: 14px;"></span>
+                <span class="w-1.5 bg-[#003FE6] rounded-full animate-wave-bar" style="animation-delay: 0.5s; height: 4px;"></span>
+            </div>
+
+            <p id="loader-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] pl-1 animate-pulse">Securing Node Connection...</p>
+        </div>
+    </div>
+
     <div id="toastContainer" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
 
     <div class="max-w-md w-full space-y-6">
-        <div class="text-center">
-            <a href="index.html" class="text-2xl font-black tracking-tighter text-[#0052FF]">BIGOTIC<span class="text-[#0F172A]">DATA</span></a>
+        <div class="flex justify-center items-center">
+            <a href="index.html" class="block w-44 h-auto">
+                <img src="Bigoticdata.com.ng.png" alt="Bigotic Data Logo" class="w-full h-full object-contain">
+            </a>
         </div>
 
         <div class="premium-card p-8 rounded-[2.5rem]">
@@ -138,7 +176,6 @@
     <script>
         lucide.createIcons();
 
-        // AUTOMATED URL CAPTURE: Look for referral queries string data parameters
         const urlParams = new URLSearchParams(window.location.search);
         const referralCode = urlParams.get('ref'); 
 
@@ -188,8 +225,6 @@
                 phone: document.getElementById('phoneNumber').value, 
                 email: document.getElementById('email').value,
                 password: passwordVal,
-                
-                // PASS DYNAMIC AFFILIATE DATA TO LINK TO REFERRER
                 referredBy: referralCode || null
             };
 
@@ -203,10 +238,17 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showNotification("Registration Successful! Redirecting to login panel... 🎉", "success");
+                    showNotification("Account registered successfully! Initiating handshake...", "success");
+                    
+                    // Trigger the Custom Premium Brand Pulse Transition Wave
+                    document.getElementById('loader-status-text').innerText = "Generating Account Matrix...";
+                    const overlay = document.getElementById('brand-loader-overlay');
+                    overlay.classList.remove('opacity-0', 'pointer-events-none');
+                    overlay.classList.add('opacity-100');
+
                     setTimeout(() => {
                         window.location.href = "login.html";
-                    }, 2000);
+                    }, 2500);
                 } else {
                     showNotification(data.error || "Signup configuration parameters rejected.");
                     submitBtn.innerText = "Create My Account";
