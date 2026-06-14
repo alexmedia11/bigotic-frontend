@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fund Wallet | Bigotic Data</title>
+    <link rel="icon" type="image/png" href="../Bigoticdata.com.ng.png">
+    <link rel="apple-touch-icon" href="../Bigoticdata.com.ng.png">
     <link rel="stylesheet" href="output.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -89,8 +91,11 @@
             <i data-lucide="wallet" class="w-4 h-4 text-[#0052FF]"></i> Fund Wallet
         </div>
 
-        <div class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center" onclick="toggleSidebar()">
-            <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
+        <div onclick="toggleSidebar()" class="w-10 h-10 rounded-xl border border-slate-200 p-1 cursor-pointer bg-white flex items-center justify-center shadow-sm hover:border-blue-200 transition-all active:scale-95">
+            <div class="w-full h-full rounded-lg bg-[#0F172A] flex items-center justify-center relative overflow-hidden">
+                <span class="absolute inset-x-0 bottom-1 opacity-20 text-[6px] text-blue-400 text-center font-mono select-none pointer-events-none">~/~</span>
+                <span class="text-white text-[11px] font-black tracking-tight select-none">B<span class="text-[#0052FF]">D</span></span>
+            </div>
         </div>
     </nav>
 
@@ -275,16 +280,17 @@
             payBtn.disabled = false;
         }
 
-        // Setup base dynamic display identity structures on initial window parse cycle load execution loops
         window.onload = function() {
             const user = JSON.parse(localStorage.getItem('user'));
-            if (user) {
-                const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
-                document.getElementById('sidebar-username').innerText = dynamicDisplayName;
-                const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
-                document.getElementById('avatar-initial').innerText = baseChar;
-                document.getElementById('sidebar-initial').innerText = baseChar;
+            if (!user) {
+                window.location.href = "login.html";
+                return;
             }
+            const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
+            document.getElementById('sidebar-username').innerText = dynamicDisplayName;
+            const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = baseChar;
+            document.getElementById('sidebar-initial').innerText = baseChar;
         }
     </script>
 </body>
