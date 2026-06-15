@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Data | Bigotic Data</title>
-    <link rel="icon" type="image/png" href="../Bigoticdata.com.ng.png">
-    <link rel="apple-touch-icon" href="../Bigoticdata.com.ng.png">
     <link rel="stylesheet" href="output.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -111,11 +109,8 @@
             <i data-lucide="wifi" class="w-4 h-4 text-[#0052FF]"></i> Buy Data Bundle
         </div>
 
-        <div onclick="toggleSidebar()" class="w-10 h-10 rounded-xl border border-slate-200 p-1 cursor-pointer bg-white flex items-center justify-center shadow-sm hover:border-blue-200 transition-all active:scale-95">
-            <div class="w-full h-full rounded-lg bg-[#0F172A] flex items-center justify-center relative overflow-hidden">
-                <span class="absolute inset-x-0 bottom-1 opacity-20 text-[6px] text-blue-400 text-center font-mono select-none pointer-events-none">~/~</span>
-                <span class="text-white text-[11px] font-black tracking-tight select-none">B<span class="text-[#0052FF]">D</span></span>
-            </div>
+        <div class="w-9 h-9 rounded-full border-2 border-[#0052FF]/30 p-0.5 cursor-pointer bg-slate-100 flex items-center justify-center" onclick="toggleSidebar()">
+            <div class="w-full h-full rounded-full brand-gradient flex items-center justify-center text-white text-[10px] font-black uppercase" id="avatar-initial">B</div>
         </div>
     </nav>
 
@@ -241,7 +236,7 @@
             <div class="relative -top-4">
                 <div class="absolute inset-0 bg-[#0052FF] rounded-xl blur-md opacity-30"></div>
                 <a href="dashboard.html" class="relative w-12 h-12 bg-gradient-to-tr from-[#0052FF] to-[#003FE6] rounded-xl flex items-center justify-center text-white shadow-md border border-blue-400/20">
-                    <i data-lucide="home" class="relative w-5 h-5"></i>
+                    <i data-lucide="home" class="w-5 h-5"></i>
                 </a>
             </div>
             <a href="history.html" class="flex flex-col items-center justify-center w-14 h-full text-slate-400 hover:text-[#0052FF] transition-colors">
@@ -344,6 +339,7 @@
             const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
             document.getElementById('sidebar-username').innerText = dynamicDisplayName;
             const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
+            document.getElementById('avatar-initial').innerText = baseChar;
             document.getElementById('sidebar-initial').innerText = baseChar;
 
             fetch(`${BACKEND_URL}/get-data-plans`)
@@ -582,5 +578,4 @@
         }
     </script>
 </body>
-</html> 
- 
+</html>
