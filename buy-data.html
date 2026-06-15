@@ -344,7 +344,6 @@
             const dynamicDisplayName = user.fullName || user.username || user.email.split('@')[0];
             document.getElementById('sidebar-username').innerText = dynamicDisplayName;
             const baseChar = dynamicDisplayName.charAt(0).toUpperCase();
-            document.getElementById('avatar-initial').innerText = baseChar;
             document.getElementById('sidebar-initial').innerText = baseChar;
 
             fetch(`${BACKEND_URL}/get-data-plans`)
