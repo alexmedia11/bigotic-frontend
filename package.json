@@ -4,7 +4,7 @@
   "description": "Bigotic Data Frontend Platform",
   "main": "index.js",
   "scripts": {
-    "build": "tailwindcss -i ./input.css -o ./output.css --content \"./*.html\" --minify"
+    "build": "echo 'Skipping custom build block for static deployment'"
   },
   "repository": {
     "type": "git",
