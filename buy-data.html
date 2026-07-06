@@ -286,12 +286,11 @@
             '4': ['0809','0817','0818','0908','0909'] 
         };
 
-        // Complete Filtering Logic Matrix
         const NETWORK_PLANS_ALLOWED = {
-            '1': ['SME', 'COOPERATE GIFTING', 'GIFTING'], // MTN
-            '2': ['COOPERATE GIFTING'],                    // Airtel
-            '3': ['COOPERATE GIFTING', 'GIFTING'],          // Glo
-            '4': ['COOPERATE GIFTING']                    // 9Mobile
+            '1': ['SME', 'COOPERATE GIFTING', 'GIFTING'], 
+            '2': ['COOPERATE GIFTING'],                    
+            '3': ['COOPERATE GIFTING', 'GIFTING'],          
+            '4': ['COOPERATE GIFTING']                    
         };
 
         function toggleSidebar() {
@@ -360,7 +359,6 @@
             setupNetworkGridListeners();
         };
 
-        // Wire click selectors to Premium Grid View Items
         function setupNetworkGridListeners() {
             const cards = document.querySelectorAll('.network-card');
             cards.forEach(card => {
@@ -374,12 +372,10 @@
             });
         }
 
-        // Logic routing on Network configuration adjustment
         function handleNetworkChange(networkId) {
             selectedNetworkId = parseInt(networkId);
             selectedPlanType = null;
             
-            // Clear Downstream selections cleanly
             planSelect.innerHTML = '<option value="">-- Select Package --</option>';
             dataPackageSection.classList.add('hidden');
             priceBox.classList.add('hidden');
@@ -389,7 +385,6 @@
                 return;
             }
 
-            // Reference filtering rules matrix dynamically
             const allowedTypes = NETWORK_PLANS_ALLOWED[String(selectedNetworkId)] || [];
             planTypeGrid.innerHTML = '';
 
@@ -414,7 +409,6 @@
             planTypeSection.classList.remove('hidden');
         }
 
-        // Filter package list items based on selected types
         function handlePlanTypeChange(typeStr) {
             selectedPlanType = typeStr;
             planSelect.innerHTML = '<option value="">-- Select Package --</option>';
@@ -425,13 +419,11 @@
                 return;
             }
 
-            // Translate button text to match your server backend array strings ("CG")
             let searchType = selectedPlanType.toUpperCase().trim();
             if (searchType === 'COOPERATE GIFTING' || searchType === 'CORPORATE GIFTING') {
                 searchType = 'CG';
             }
 
-            // Deep match parameters across backend cached bundle array
             const filteredPlans = cachedPlans.filter(p => {
                 const networkMatch = p.network === selectedNetworkId;
                 const backendType = p.type ? p.type.toUpperCase().trim() : '';
@@ -445,7 +437,7 @@
                     const option = document.createElement('option');
                     option.value = plan.id;
                     option.dataset.cost = plan.price;
-                    option.innerText = `${plan.name} - ₦${parseFloat(plan.price).toLocaleString()} [${plan.validity || 'Standard'}]`;
+                    option.innerText = `${plan.name} - ₦${parseFloat(plan.price).toLocaleString()}`;
                     planSelect.appendChild(option);
                 });
             }
@@ -453,11 +445,9 @@
             dataPackageSection.classList.remove('hidden');
         }
 
-        // Automatic Phone Prefix Recognition with International Scrubbing Fixes
         phoneInput.addEventListener('input', function() {
             let val = this.value.trim();
             
-            // Normalize +234 or 234 into standard local 0-prefix structures
             if (val.startsWith('+234')) {
                 val = '0' + val.substring(4);
             } else if (val.startsWith('234') && val.length > 3) {
@@ -474,7 +464,7 @@
                     if (PREFIX_MAP[networkId].includes(inputPrefix)) {
                         const targetCard = document.querySelector(`.network-card[data-value="${networkId}"]`);
                         if (targetCard && !targetCard.classList.contains('active')) {
-                            targetCard.click(); // Fires premium state tracking cleanly
+                            targetCard.click();
                         }
                         break;
                     }
@@ -551,20 +541,31 @@
             submitBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
             submitBtn.disabled = true;
 
+            // Debug Payload payload profile right in the console before making the request
+            const debuggingPayload = {
+                email: user ? user.email : null,
+                network: selectedNetworkId, // Sent as an Integer
+                dataPlan: dataPlan,         // Sent as plan ID string/int
+                phone: phone,
+                pin: pinVal
+            };
+            console.log("OUTBOUND DATA PAYLOAD:', debuggingPayload);
+
             fetch(`${BACKEND_URL}/buy-data`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: user.email,
-                    network: selectedNetworkId,
-                    dataPlan: dataPlan,
-                    phone: phone,
-                    pin: pinVal
-                })
+                body: JSON.stringify(debuggingPayload)
             })
-            .then(res => res.json())
+            .then(async res => {
+                // Read response text directly if backend throws an error message payload layout
+                if (!res.ok) {
+                    const rawErrText = await res.text();
+                    console.error("Backend Rejected Payload with Status:", res.status, rawErrText);
+                    throw new Error(rawErrText || "Fulfillment Failed");
+                }
+                return res.json();
+            })
             .then(data => {
-                // Instantly wipe security token values out of state memory allocation loops
                 txPinInput.value = '';
 
                 if (data.success) {
@@ -581,9 +582,9 @@
                 }
             })
             .catch(err => {
-                console.error(err);
+                console.error("Catch Exception Block:", err);
                 txPinInput.value = '';
-                document.getElementById('errorModalMsg').innerText = "Gateway communication error. Check your server routing configuration profiles.";
+                document.getElementById('errorModalMsg').innerText = err.message || "Gateway communication error.";
                 errorResponseModal.classList.remove('hidden');
                 resetSubmitButton();
             });
