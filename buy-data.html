@@ -541,15 +541,15 @@
             submitBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
             submitBtn.disabled = true;
 
-            // Debug Payload payload profile right in the console before making the request
+            // Fixed the quote structure syntax error here
             const debuggingPayload = {
                 email: user ? user.email : null,
-                network: selectedNetworkId, // Sent as an Integer
-                dataPlan: dataPlan,         // Sent as plan ID string/int
+                network: selectedNetworkId,
+                dataPlan: dataPlan,         
                 phone: phone,
                 pin: pinVal
             };
-            console.log("OUTBOUND DATA PAYLOAD:', debuggingPayload);
+            console.log("OUTBOUND DATA PAYLOAD:", debuggingPayload);
 
             fetch(`${BACKEND_URL}/buy-data`, {
                 method: 'POST',
@@ -557,7 +557,6 @@
                 body: JSON.stringify(debuggingPayload)
             })
             .then(async res => {
-                // Read response text directly if backend throws an error message payload layout
                 if (!res.ok) {
                     const rawErrText = await res.text();
                     console.error("Backend Rejected Payload with Status:", res.status, rawErrText);
