@@ -262,6 +262,7 @@
         const phoneInput = document.getElementById('phone');
         const pinGateModal = document.getElementById('pinGateModal');
         const pinAuthForm = document.getElementById('pinAuthForm');
+        const txPinInput = document.getElementById('txPin');
         const successResponseModal = document.getElementById('successResponseModal');
         const errorResponseModal = document.getElementById('errorResponseModal');
 
@@ -312,12 +313,12 @@
 
         function openPinGate() {
             pinGateModal.classList.remove('hidden');
-            document.getElementById('txPin').focus();
+            txPinInput.focus();
         }
 
         function closePinGate() {
             pinGateModal.classList.add('hidden');
-            document.getElementById('txPin').value = '';
+            txPinInput.value = '';
         }
 
         function closeSuccessModal() {
@@ -452,9 +453,21 @@
             dataPackageSection.classList.remove('hidden');
         }
 
-        // Automatic Phone Prefix Recognition
+        // Automatic Phone Prefix Recognition with International Scrubbing Fixes
         phoneInput.addEventListener('input', function() {
-            const val = this.value.trim();
+            let val = this.value.trim();
+            
+            // Normalize +234 or 234 into standard local 0-prefix structures
+            if (val.startsWith('+234')) {
+                val = '0' + val.substring(4);
+            } else if (val.startsWith('234') && val.length > 3) {
+                val = '0' + val.substring(3);
+            }
+            
+            if (this.value !== val) {
+                this.value = val;
+            }
+
             if (val.length >= 4) {
                 const inputPrefix = val.substring(0, 4);
                 for (const networkId in PREFIX_MAP) {
@@ -532,7 +545,7 @@
             const user = JSON.parse(localStorage.getItem('user'));
             const dataPlan = planSelect.value;
             const phone = phoneInput.value.trim();
-            const pinVal = document.getElementById('txPin').value;
+            const pinVal = txPinInput.value;
 
             closePinGate();
             submitBtn.innerHTML = `<div class="spinner mx-auto"></div>`;
@@ -551,6 +564,9 @@
             })
             .then(res => res.json())
             .then(data => {
+                // Instantly wipe security token values out of state memory allocation loops
+                txPinInput.value = '';
+
                 if (data.success) {
                     user.balance = data.newBalance;
                     localStorage.setItem('user', JSON.stringify(user));
@@ -566,6 +582,7 @@
             })
             .catch(err => {
                 console.error(err);
+                txPinInput.value = '';
                 document.getElementById('errorModalMsg').innerText = "Gateway communication error. Check your server routing configuration profiles.";
                 errorResponseModal.classList.remove('hidden');
                 resetSubmitButton();
