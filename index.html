@@ -97,7 +97,7 @@
         /* ---------- nav ---------- */
         .site-nav{
             position:sticky; top:0; z-index:40;
-            background:rgba(6,9,21,0.72);
+            background:rgba(6,9,21,0.85);
             backdrop-filter: blur(14px);
             border-bottom:1px solid var(--panel-line);
         }
@@ -112,7 +112,7 @@
             padding:12px 26px; border-radius:12px; border:none; cursor:pointer;
             box-shadow:0 10px 24px rgba(59,107,255,.35);
             transition: transform .2s ease, box-shadow .2s ease;
-            display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+            display:inline-flex; align-items:center; justify-content:center; gap:8px; text-decoration:none;
         }
         .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 16px 32px rgba(59,107,255,.45); }
         .btn-primary:active{ transform:translateY(0) scale(.98); }
@@ -120,7 +120,7 @@
         .btn-ghost{
             border:1px solid var(--panel-line); color:var(--text-hi); background:transparent;
             font-weight:700; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
-            padding:12px 26px; border-radius:12px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+            padding:12px 26px; border-radius:12px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px;
             transition:border-color .2s ease, background .2s ease;
         }
         .btn-ghost:hover{ background:rgba(255,255,255,.05); border-color:var(--electric-soft); }
@@ -144,7 +144,7 @@
             position:relative; background:radial-gradient(circle at 20% -10%, #142055 0%, var(--ink) 55%);
             overflow:hidden;
         }
-        #heroCanvas{ position:absolute; inset:0; width:100%; height:100%; opacity:.9; }
+        #heroCanvas{ position:absolute; inset:0; width:100%; height:100%; opacity:.9; pointer-events:none; }
         .hero-inner{ position:relative; z-index:2; }
         .eyebrow{
             display:inline-flex; align-items:center; gap:8px;
@@ -283,10 +283,25 @@
         }
         @keyframes spin{ to{ transform:rotate(360deg); } }
 
-        /* utility layout classes (hand-rolled, no framework) */
+        /* utility layout classes */
         .wrap{ max-width:1180px; margin:0 auto; padding-left:24px; padding-right:24px; }
         .section{ padding-top:88px; padding-bottom:88px; }
-        @media (max-width:768px){ .section{ padding-top:56px; padding-bottom:56px; } }
+
+        /* Grid Layouts Responsive */
+        .why-grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:center; }
+        .contact-grid { padding:44px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+        .metrics-grid { padding-top:36px; padding-bottom:36px; display:grid; grid-template-columns:repeat(4, 1fr); gap:28px; }
+
+        @media (max-width:992px){
+            .metrics-grid { grid-template-columns:repeat(2, 1fr); }
+        }
+
+        @media (max-width:768px){ 
+            .section{ padding-top:56px; padding-bottom:56px; } 
+            .why-grid { grid-template-columns: 1fr; gap:36px; }
+            .contact-grid { grid-template-columns: 1fr; gap:32px; padding:24px; }
+            .package-section { border-radius: 20px; padding: 36px 16px !important; }
+        }
     </style>
 </head>
 <body>
@@ -348,7 +363,7 @@
         <div class="wrap hero-inner" style="padding-top:90px;padding-bottom:110px;">
             <div style="max-width:640px;">
                 <span class="eyebrow"><span class="dot"></span> Live network &mdash; transactions settling now</span>
-                <h1 class="font-display reveal" style="font-size:clamp(2.4rem,6vw,4.2rem);font-weight:700;margin-top:22px;margin-bottom:0;">
+                <h1 class="font-display reveal" style="font-size:clamp(2.2rem,5vw,4.2rem);font-weight:700;margin-top:22px;margin-bottom:0;line-height:1.15;">
                     Your data, <span class="grad">airtime & bills</span> &mdash; alive in seconds.
                 </h1>
                 <p class="reveal reveal-delay-1" style="color:var(--text-mid);margin-top:20px;font-size:15px;max-width:480px;line-height:1.7;">
@@ -364,7 +379,7 @@
 
     <!-- Metrics -->
     <section class="metrics-strip">
-        <div class="wrap" style="padding-top:36px;padding-bottom:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:28px;">
+        <div class="wrap metrics-grid">
             <div>
                 <div class="font-mono metric-num" style="font-size:26px;font-weight:700;"><span id="live-user-ticker">0</span>+</div>
                 <div class="metric-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-top:4px;">Active Clients</div>
@@ -446,8 +461,8 @@
                         </ul>
                     </div>
                     <div style="display:flex;flex-direction:column;gap:10px;">
-                        <button onclick="payWithPaystack('Platinum Web Consulting Package', 9000)" class="btn-primary" style="width:100%;justify-content:center;">Pay ₦9,000 via Paystack <i data-lucide="credit-card" style="width:15px;height:15px;"></i></button>
-                        <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20want%20to%20order%20the%20Platinum%20Web%20Consulting%20Package%20(₦9,000)." target="_blank" class="btn-ghost" style="width:100%;justify-content:center;">Order via WhatsApp <i data-lucide="message-square" style="width:15px;height:15px;color:#25D366;"></i></a>
+                        <button onclick="payWithPaystack('Platinum Web Consulting Package', 9000)" class="btn-primary" style="width:100%;">Pay ₦9,000 via Paystack <i data-lucide="credit-card" style="width:15px;height:15px;"></i></button>
+                        <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20want%20to%20order%20the%20Platinum%20Web%20Consulting%20Package%20(₦9,000)." target="_blank" class="btn-ghost" style="width:100%;">Order via WhatsApp <i data-lucide="message-square" style="width:15px;height:15px;color:#25D366;"></i></a>
                     </div>
                 </div>
 
@@ -469,8 +484,8 @@
                         </ul>
                     </div>
                     <div style="display:flex;flex-direction:column;gap:10px;">
-                        <button onclick="payWithPaystack('Gold Growth & Ad Tracking Setup', 14500)" class="btn-primary" style="width:100%;justify-content:center;">Pay ₦14,500 via Paystack <i data-lucide="credit-card" style="width:15px;height:15px;"></i></button>
-                        <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20want%20to%20order%20the%20Gold%20Growth%20%26%20Ad%20Tracking%20Setup%20(₦14,500)." target="_blank" class="btn-ghost" style="width:100%;justify-content:center;">Order via WhatsApp <i data-lucide="message-square" style="width:15px;height:15px;color:#25D366;"></i></a>
+                        <button onclick="payWithPaystack('Gold Growth & Ad Tracking Setup', 14500)" class="btn-primary" style="width:100%;">Pay ₦14,500 via Paystack <i data-lucide="credit-card" style="width:15px;height:15px;"></i></button>
+                        <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20want%20to%20order%20the%20Gold%20Growth%20%26%20Ad%20Tracking%20Setup%20(₦14,500)." target="_blank" class="btn-ghost" style="width:100%;">Order via WhatsApp <i data-lucide="message-square" style="width:15px;height:15px;color:#25D366;"></i></a>
                     </div>
                 </div>
             </div>
@@ -479,7 +494,7 @@
 
     <!-- Why Choose Us -->
     <section id="about" class="section">
-        <div class="wrap" style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;" id="whyGrid">
+        <div class="wrap why-grid">
             <div class="reveal">
                 <span style="color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;">Why Bigotic Data</span>
                 <h2 class="font-display" style="font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:700;margin-top:10px;line-height:1.15;">Designed for Regular Users & Developers</h2>
@@ -503,7 +518,7 @@
             </div>
 
             <div class="reveal reveal-delay-1" style="display:flex;justify-content:center;">
-                <div class="terminal-card" id="tiltCard" style="padding:24px;max-width:300px;width:100%;">
+                <div class="terminal-card" id="tiltCard" style="padding:24px;max-width:320px;width:100%;">
                     <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-dim);font-weight:700;letter-spacing:.14em;">
                         <span>TRANSACTION LOG</span>
                         <span class="status-pill" style="padding:3px 10px;border-radius:999px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Success</span>
@@ -536,9 +551,9 @@
     <!-- Contact Hub -->
     <section id="contact" class="section">
         <div class="wrap">
-            <div class="contact-card reveal" style="padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+            <div class="contact-card contact-grid reveal">
                 <div>
-                    <h2 class="font-display" style="font-size:22px;font-weight:700;">Need Help? Reach Out</h2>
+                    <h2 class="font-display" style="font-size:22px;font-weight:700;margin:0;">Need Help? Reach Out</h2>
                     <p style="color:var(--slate-500);margin-top:14px;font-size:13px;line-height:1.7;">Experiencing a late delivery issue, or want to make inquiries about custom digital agency services? Our team handles responses quickly.</p>
                     <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;font-weight:600;">
                         <div style="display:flex;align-items:center;gap:10px;"><i data-lucide="mail" style="width:15px;height:15px;color:var(--electric);"></i> support@bigoticdata.com</div>
@@ -547,19 +562,19 @@
                 </div>
 
                 <div>
-                    <h4 style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--slate-500);margin-bottom:16px;">Join our communities</h4>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <h4 style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--slate-500);margin-bottom:16px;margin-top:0;">Join our communities</h4>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:14px;">
                         <a href="https://wa.me/2349159436827" target="_blank" class="contact-link" style="padding:16px;display:flex;align-items:center;gap:10px;text-decoration:none;">
                             <i data-lucide="message-square" style="color:#25D366;width:19px;height:19px;"></i>
                             <div>
-                                <div style="font-weight:700;font-size:12px;color:var(--slate-900);">WhatsApp Support</div>
+                                <div style="font-weight:700;font-size:12px;color:var(--slate-900);">WhatsApp</div>
                                 <div style="font-size:10px;color:var(--slate-500);margin-top:2px;">Message Directly</div>
                             </div>
                         </a>
                         <a href="#" class="contact-link" style="padding:16px;display:flex;align-items:center;gap:10px;text-decoration:none;">
                             <i data-lucide="send" style="color:#0ea5e9;width:19px;height:19px;"></i>
                             <div>
-                                <div style="font-weight:700;font-size:12px;color:var(--slate-900);">Telegram Hub</div>
+                                <div style="font-weight:700;font-size:12px;color:var(--slate-900);">Telegram</div>
                                 <div style="font-size:10px;color:var(--slate-500);margin-top:2px;">Join Group Channel</div>
                             </div>
                         </a>
@@ -574,13 +589,13 @@
         <div class="wrap" style="padding-top:40px;padding-bottom:40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;color:var(--text-dim);font-size:12px;">
             <div>
                 <div class="font-display" style="font-size:20px;font-weight:700;color:var(--text-hi);margin-bottom:6px;">BIGOTIC<span style="color:var(--text-dim);font-weight:400;">DATA</span></div>
-                <p style="font-size:11px;">Automated tech ecosystem for digital utility & growth distribution.</p>
+                <p style="font-size:11px;margin:0;">Automated tech ecosystem for digital utility & growth distribution.</p>
             </div>
-            <div style="display:flex;gap:24px;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">
+            <div style="display:flex;gap:24px;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;align-items:center;">
                 <a href="#" style="color:var(--text-dim);text-decoration:none;">Terms of Service</a>
                 <a href="#" style="color:var(--text-dim);text-decoration:none;">Privacy Policy</a>
             </div>
-            <div style="text-align:right;font-size:11px;display:flex;flex-direction:column;gap:3px;">
+            <div style="font-size:11px;display:flex;flex-direction:column;gap:3px;">
                 <p style="margin:0;">© 2026 All rights reserved</p>
                 <p style="margin:0;">Developed by <a href="https://wa.me/2349159436827" target="_blank" style="color:var(--electric-soft);font-weight:700;">Bigotic Enterprise</a></p>
                 <p style="margin:0;font-size:10px;">Powered and Owned by Gabriel Chinonso Igwe</p>
@@ -608,7 +623,7 @@
                 <input id="checkoutEmailInput" class="modal-input" type="email" placeholder="you@example.com" autocomplete="email" />
                 <div class="modal-error" id="checkoutEmailError"></div>
 
-                <button id="checkoutPayBtn" class="btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="submitCheckoutEmail()">
+                <button id="checkoutPayBtn" class="btn-primary" style="width:100%;margin-top:6px;" onclick="submitCheckoutEmail()">
                     <span id="checkoutPayBtnLabel">Continue to Paystack</span>
                 </button>
                 <p style="color:var(--text-dim);font-size:10.5px;text-align:center;margin:14px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;">
@@ -621,7 +636,7 @@
                 <div class="modal-icon" id="checkoutResultIcon"></div>
                 <h3 class="font-display" style="color:var(--text-hi);font-size:18px;font-weight:700;margin:0 0 6px;" id="checkoutResultTitle">&mdash;</h3>
                 <p style="color:var(--text-mid);font-size:12.5px;margin:0 0 22px;line-height:1.6;" id="checkoutResultMessage">&mdash;</p>
-                <button class="btn-primary" style="width:100%;justify-content:center;" onclick="closeCheckoutModal()">Done</button>
+                <button class="btn-primary" style="width:100%;" onclick="closeCheckoutModal()">Done</button>
             </div>
         </div>
     </div>
@@ -678,7 +693,7 @@
             card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(700px) rotateY(0) rotateX(0)'; });
         }
 
-        // Reviews data + render (duplicated once for seamless marquee loop)
+        // Reviews data + render
         const REVIEWS = [
             { name:"Chiamaka O.", city:"Lagos", rating:5, text:"Data lands in under a minute every single time. I moved my whole business over to Bigotic after the third failed order elsewhere.", tx:"₦2,000 SME Data" },
             { name:"Tunde A.", city:"Ibadan", rating:5, text:"The wallet funding is genuinely instant. I fund my account and buy airtime for my shop customers back-to-back without ever refreshing the page.", tx:"₦500 Airtime" },
@@ -699,7 +714,7 @@
         function renderReviews(){
             const track = document.getElementById('reviewTrack');
             const palette = ['#3b6bff','#28e0d6','#f4b740','#34d399','#8b5cf6','#f97066'];
-            const list = [...REVIEWS, ...REVIEWS]; // duplicate for seamless loop
+            const list = [...REVIEWS, ...REVIEWS];
             track.innerHTML = list.map((r, idx) => {
                 const initials = r.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
                 const color = palette[idx % palette.length];
@@ -727,7 +742,7 @@
         function initHero3D(){
             const canvas = document.getElementById('heroCanvas');
             const header = canvas.parentElement;
-            if (!window.THREE) return;
+            if (!window.THREE || !canvas) return;
 
             const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
             const scene = new THREE.Scene();
@@ -744,8 +759,7 @@
             resize();
             window.addEventListener('resize', resize);
 
-            // Node cloud arranged on a sphere (represents the live nationwide network)
-            const NODE_COUNT = 130;
+            const NODE_COUNT = window.innerWidth < 768 ? 70 : 130;
             const radius = 3.6;
             const nodePositions = [];
             for (let i = 0; i < NODE_COUNT; i++){
@@ -762,11 +776,10 @@
             const nodePoints = new THREE.Points(nodeGeo, nodeMat);
             scene.add(nodePoints);
 
-            // Connections between nearby nodes (network links)
             const linkPositions = [];
             for (let i = 0; i < nodePositions.length; i++){
                 for (let j = i + 1; j < nodePositions.length; j++){
-                    if (nodePositions[i].distanceTo(nodePositions[j]) < 1.15){
+                    if (nodePositions[i].distanceTo(nodePositions[j]) < 1.25){
                         linkPositions.push(nodePositions[i].x, nodePositions[i].y, nodePositions[i].z);
                         linkPositions.push(nodePositions[j].x, nodePositions[j].y, nodePositions[j].z);
                     }
@@ -778,11 +791,10 @@
             const links = new THREE.LineSegments(linkGeo, linkMat);
             scene.add(links);
 
-            // Glowing pulse travelers riding a few links (transaction pulses)
             const pulseGeo = new THREE.SphereGeometry(0.045, 8, 8);
             const pulseMat = new THREE.MeshBasicMaterial({ color: 0x28e0d6 });
             const pulses = [];
-            const pulseCount = 10;
+            const pulseCount = 8;
             for (let i = 0; i < pulseCount; i++){
                 const a = nodePositions[Math.floor(Math.random() * nodePositions.length)];
                 const b = nodePositions[Math.floor(Math.random() * nodePositions.length)];
@@ -834,7 +846,7 @@
         });
 
         // ---------------- Premium Checkout Modal Engine ----------------
-        let checkoutPending = null; // { packageName, amountInNaira }
+        let checkoutPending = null;
 
         function formatNaira(n){
             return '₦' + n.toLocaleString('en-NG');
