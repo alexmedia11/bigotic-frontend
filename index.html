@@ -4,359 +4,953 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bigotic Data | Instant VTU, Cheap Data & Bill Payments in Nigeria</title>
+    <title>Bigotic Data | Automated Utility & Digital Growth Services</title>
     <link rel="icon" type="image/png" href="Bigoticdata.com.ng.png">
-    <link class="rounded-xl" rel="apple-touch-icon" href="Bigoticdata.com.ng.png">
-    <meta name="title" content="Bigotic Data | Instant VTU, Cheap Data & Bill Payments in Nigeria">
-    <meta name="description" content="Buy cheap MTN, Airtel, Glo, and 9mobile data bundles instantly. Recharge airtime, renew cable subscriptions, and generate electricity tokens automatically 24/7 on Bigotic Data.">
-    <meta name="keywords" content="vtu nigeria, cheap data, buy data bundle, buy airtime online, mtn sbe data, airtel corporate gifting, glo gifting, electricity token, bigotic data, bigoticdata.com.ng">
+    <link rel="apple-touch-icon" href="Bigoticdata.com.ng.png">
+    <meta name="title" content="Bigotic Data | Automated Utility & Digital Growth Services">
+    <meta name="description" content="Buy cheap MTN, Airtel, Glo, and 9mobile data bundles instantly. Recharge airtime, pay utility bills, and access premium digital consulting & ad setup packages on Bigotic Data.">
+    <meta name="keywords" content="vtu nigeria, cheap data, buy data bundle, web consulting, digital ad setups, electricity token, bigotic data, bigoticdata.com.ng">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Bigotic Data Engine">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bigoticdata.com.ng/">
-    <meta property="og:title" content="Bigotic Data | Absolute Automation Utility Ecosystem">
-    <meta property="og:description" content="Get low-cost internet data, instant airtime distribution, and automated bill payment fulfillment with zero lag.">
+    <meta property="og:title" content="Bigotic Data | Absolute Automation & Digital Solutions Ecosystem">
+    <meta property="og:description" content="Get low-cost internet data, instant airtime distribution, and premium web & business growth services.">
     <meta property="og:image" content="https://bigoticdata.com.ng/Promo1.png">
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://bigoticdata.com.ng/">
-    <meta property="twitter:title" content="Bigotic Data | Instant VTU & Bills">
-    <meta property="twitter:description" content="The fastest way to buy Airtime, Data, and pay Utility bills in Nigeria. Secure transactions, delivered instantly 24/7.">
+    <meta property="twitter:title" content="Bigotic Data | Instant VTU & Digital Services">
+    <meta property="twitter:description" content="The fastest way to buy Airtime, Data, and pay Utility bills or scale your digital business in Nigeria.">
     <meta property="twitter:image" content="https://bigoticdata.com.ng/Promo1.png">
 
-    <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <!-- Paystack Inline SDK Integration -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #1e293b; }
-        .surface-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); }
-        .bg-premium-light { background: radial-gradient(circle at top center, #f1f5f9 0%, #ffffff 75%); }
-        .sidebar-transition { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .carousel-track { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* High-Contrast Luxury Dim Corporate Blue Accent Engine */
-        .brand-blue-bg { background-color: #1e3a8a; }
-        .brand-blue-bg-hover:hover { background-color: #172554; }
-        .brand-blue-text { color: #1e3a8a; }
-        .brand-blue-border { border-color: #1e3a8a; }
-        .brand-blue-light-bg { background-color: #eff6ff; }
-        .brand-blue-light-border { border-color: #bfdbfe; }
+        :root{
+            --ink:#060915;
+            --ink-soft:#0d1330;
+            --panel:#0f1638;
+            --panel-line: rgba(148,163,255,0.14);
+            --paper:#f6f7fb;
+            --paper-line:#e4e7f5;
+            --text-hi:#eef1ff;
+            --text-mid:#aab0d6;
+            --text-dim:#6b71a0;
+            --slate-900:#0f172a;
+            --slate-500:#64748b;
+            --electric:#3b6bff;
+            --electric-soft:#7c9bff;
+            --cyan:#28e0d6;
+            --gold:#f4b740;
+            --emerald:#34d399;
+        }
+        *{box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{
+            margin:0;
+            font-family:'Inter',sans-serif;
+            background:var(--paper);
+            color:var(--slate-900);
+            overflow-x:hidden;
+        }
+        .font-display{font-family:'Space Grotesk',sans-serif;}
+        .font-mono{font-family:'JetBrains Mono',monospace;}
+
+        ::selection{ background: var(--electric); color:#fff; }
+
+        /* ---------- reveal-on-scroll ---------- */
+        .reveal{ opacity:0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+        .reveal.is-in{ opacity:1; transform:translateY(0); }
+        .reveal-delay-1{ transition-delay:.08s; }
+        .reveal-delay-2{ transition-delay:.16s; }
+        .reveal-delay-3{ transition-delay:.24s; }
+
+        @media (prefers-reduced-motion: reduce){
+            .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+            *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; }
+        }
+
+        a:focus-visible, button:focus-visible{ outline:2px solid var(--electric); outline-offset:3px; border-radius:6px; }
+
+        /* ---------- floating whatsapp ---------- */
+        .wa-fab{
+            position:fixed; bottom:22px; right:22px; z-index:50;
+            width:58px; height:58px; border-radius:18px;
+            background:#20ba5a; display:flex; align-items:center; justify-content:center;
+            box-shadow:0 12px 28px rgba(32,186,90,.35);
+            animation: wa-breathe 2.6s ease-in-out infinite;
+        }
+        .wa-fab:hover{ transform: scale(1.08); }
+        @keyframes wa-breathe{
+            0%,100%{ box-shadow:0 12px 28px rgba(32,186,90,.35); }
+            50%{ box-shadow:0 12px 40px rgba(32,186,90,.55); }
+        }
+
+        /* ---------- nav ---------- */
+        .site-nav{
+            position:sticky; top:0; z-index:40;
+            background:rgba(6,9,21,0.72);
+            backdrop-filter: blur(14px);
+            border-bottom:1px solid var(--panel-line);
+        }
+        .nav-link{ color:var(--text-mid); font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; text-decoration:none; position:relative; padding-bottom:3px; }
+        .nav-link::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--cyan); transition:width .25s ease; }
+        .nav-link:hover{ color:var(--text-hi); }
+        .nav-link:hover::after{ width:100%; }
+
+        .btn-primary{
+            background: linear-gradient(135deg, var(--electric), #1d3fbf);
+            color:#fff; font-weight:700; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+            padding:12px 26px; border-radius:12px; border:none; cursor:pointer;
+            box-shadow:0 10px 24px rgba(59,107,255,.35);
+            transition: transform .2s ease, box-shadow .2s ease;
+            display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+        }
+        .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 16px 32px rgba(59,107,255,.45); }
+        .btn-primary:active{ transform:translateY(0) scale(.98); }
+
+        .btn-ghost{
+            border:1px solid var(--panel-line); color:var(--text-hi); background:transparent;
+            font-weight:700; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+            padding:12px 26px; border-radius:12px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+            transition:border-color .2s ease, background .2s ease;
+        }
+        .btn-ghost:hover{ background:rgba(255,255,255,.05); border-color:var(--electric-soft); }
+
+        /* ---------- mobile menu ---------- */
+        .menu-panel{
+            position:fixed; top:0; right:0; bottom:0; width:280px; z-index:50;
+            background:var(--ink-soft); border-left:1px solid var(--panel-line);
+            transform:translateX(100%); transition:transform .35s cubic-bezier(.16,1,.3,1);
+            padding:26px; display:flex; flex-direction:column; justify-content:space-between;
+        }
+        .menu-panel.open{ transform:translateX(0); }
+        .menu-overlay{
+            position:fixed; inset:0; z-index:45; background:rgba(4,6,16,.55); backdrop-filter:blur(3px);
+            opacity:0; pointer-events:none; transition:opacity .3s ease;
+        }
+        .menu-overlay.open{ opacity:1; pointer-events:auto; }
+
+        /* ---------- hero + 3d canvas ---------- */
+        .hero{
+            position:relative; background:radial-gradient(circle at 20% -10%, #142055 0%, var(--ink) 55%);
+            overflow:hidden;
+        }
+        #heroCanvas{ position:absolute; inset:0; width:100%; height:100%; opacity:.9; }
+        .hero-inner{ position:relative; z-index:2; }
+        .eyebrow{
+            display:inline-flex; align-items:center; gap:8px;
+            border:1px solid rgba(124,155,255,.35); background:rgba(59,107,255,.1); color:var(--electric-soft);
+            font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+            padding:7px 16px; border-radius:999px;
+        }
+        .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--cyan); animation:pulse-dot 1.6s ease-in-out infinite; }
+        @keyframes pulse-dot{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(1.6);} }
+
+        .hero h1{ color:var(--text-hi); letter-spacing:-0.02em; }
+        .hero h1 .grad{
+            background:linear-gradient(100deg, var(--cyan), var(--electric-soft) 60%);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+        }
+
+        /* ---------- metrics ticker ---------- */
+        .metrics-strip{ background:var(--ink-soft); border-top:1px solid var(--panel-line); border-bottom:1px solid var(--panel-line); }
+        .metric-num{ color:var(--text-hi); }
+        .metric-label{ color:var(--text-dim); }
+
+        /* ---------- surface cards ---------- */
+        .surface{
+            background:#fff; border:1px solid var(--paper-line); border-radius:22px;
+            box-shadow:0 2px 0 rgba(15,23,42,.02);
+            transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease, border-color .35s ease;
+        }
+        .surface:hover{ transform: translateY(-6px); box-shadow:0 24px 48px -18px rgba(30,58,138,.22); border-color:#c6d3ff; }
+
+        .icon-tile{
+            width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+            background:linear-gradient(140deg, #eef2ff, #dbe4ff); color:var(--electric);
+        }
+
+        /* ---------- packages (dark section) ---------- */
+        .package-section{
+            position:relative; background:var(--ink); border-radius:36px; overflow:hidden;
+        }
+        .package-section::before{
+            content:''; position:absolute; inset:-40% -10% auto -10%; height:70%;
+            background:radial-gradient(circle, rgba(59,107,255,.28), transparent 60%);
+            filter:blur(10px); pointer-events:none;
+        }
+        .pkg-card{
+            position:relative; background:var(--panel); border:1px solid var(--panel-line); border-radius:24px;
+            transition: transform .3s ease, border-color .3s ease;
+        }
+        .pkg-card:hover{ transform:translateY(-6px); border-color:rgba(124,155,255,.5); }
+        .pkg-card.featured{ border-color:var(--electric-soft); box-shadow:0 0 0 1px rgba(124,155,255,.25), 0 30px 60px -20px rgba(59,107,255,.4); }
+        .pkg-tag{ font-size:10px; letter-spacing:.14em; font-weight:800; text-transform:uppercase; padding:5px 12px; border-radius:999px; }
+        .pkg-price{ color:var(--text-hi); }
+        .pkg-check{ color:var(--cyan); flex-shrink:0; }
+        .pkg-list li{ color:var(--text-mid); }
+
+        /* ---------- why choose ---------- */
+        .feature-dot{
+            width:26px;height:26px;border-radius:9px;background:#eef2ff;color:var(--electric);
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+        }
+        .terminal-card{
+            background:var(--ink); border:1px solid var(--panel-line); border-radius:20px; color:var(--text-hi);
+            box-shadow:0 40px 80px -30px rgba(15,23,42,.45);
+        }
+        .terminal-card .status-pill{ background:rgba(52,211,153,.12); color:var(--emerald); border:1px solid rgba(52,211,153,.3); }
+
+        /* ---------- reviews ---------- */
+        .reviews-section{ background:var(--paper); }
+        .review-track-wrap{ overflow:hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+        .review-track{ display:flex; gap:20px; width:max-content; animation: scroll-reviews 42s linear infinite; }
+        .review-track:hover{ animation-play-state: paused; }
+        @keyframes scroll-reviews{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+        .review-card{
+            width:300px; flex-shrink:0; background:#fff; border:1px solid var(--paper-line); border-radius:20px; padding:22px;
+            box-shadow:0 2px 0 rgba(15,23,42,.02);
+        }
+        .review-avatar{
+            width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+            font-weight:800; font-size:13px; color:#fff; flex-shrink:0;
+        }
+        .stars i{ width:13px; height:13px; color:var(--gold); fill:var(--gold); }
+        .verified-badge{ font-size:10px; font-weight:700; color:var(--emerald); letter-spacing:.04em; }
+
+        /* ---------- contact ---------- */
+        .contact-card{ background:linear-gradient(160deg,#fff, #f2f5ff); border:1px solid var(--paper-line); border-radius:28px; }
+        .contact-link{ background:#fff; border:1px solid var(--paper-line); border-radius:16px; transition: transform .25s ease, border-color .25s ease; }
+        .contact-link:hover{ transform:translateY(-3px); border-color:#c6d3ff; }
+
+        footer{ background:var(--ink-soft); border-top:1px solid var(--panel-line); }
+
+        /* ---------- premium modal ---------- */
+        .modal-overlay{
+            position:fixed; inset:0; z-index:80; background:rgba(5,7,18,.6); backdrop-filter:blur(6px);
+            display:flex; align-items:center; justify-content:center; padding:20px;
+            opacity:0; pointer-events:none; transition:opacity .28s ease;
+        }
+        .modal-overlay.open{ opacity:1; pointer-events:auto; }
+        .modal-card{
+            width:100%; max-width:400px; background:linear-gradient(165deg, var(--panel), var(--ink));
+            border:1px solid var(--panel-line); border-radius:22px; padding:32px;
+            box-shadow:0 40px 100px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(124,155,255,.06);
+            transform:translateY(18px) scale(.97); transition:transform .32s cubic-bezier(.16,1,.3,1);
+            position:relative; overflow:hidden;
+        }
+        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
+        .modal-card::before{
+            content:''; position:absolute; top:-60%; left:-20%; width:140%; height:140%;
+            background:radial-gradient(circle, rgba(59,107,255,.16), transparent 60%); pointer-events:none;
+        }
+        .modal-icon{
+            width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+            margin-bottom:18px; position:relative; z-index:1;
+        }
+        .modal-close{
+            position:absolute; top:18px; right:18px; color:var(--text-dim); background:none; border:none; cursor:pointer;
+            padding:6px; border-radius:8px; transition:color .2s ease, background .2s ease; z-index:2;
+        }
+        .modal-close:hover{ color:var(--text-hi); background:rgba(255,255,255,.06); }
+        .modal-label{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); display:block; margin-bottom:8px; }
+        .modal-input{
+            width:100%; background:rgba(255,255,255,.04); border:1px solid var(--panel-line); border-radius:12px;
+            padding:13px 15px; color:var(--text-hi); font-size:13.5px; font-family:'Inter',sans-serif;
+            transition:border-color .2s ease, background .2s ease; margin-bottom:6px;
+        }
+        .modal-input::placeholder{ color:var(--text-dim); }
+        .modal-input:focus{ outline:none; border-color:var(--electric-soft); background:rgba(255,255,255,.06); }
+        .modal-input.err{ border-color:#f97066; }
+        .modal-error{ color:#f97066; font-size:11.5px; min-height:16px; margin-bottom:10px; }
+        .modal-summary{
+            background:rgba(255,255,255,.03); border:1px solid var(--panel-line); border-radius:14px;
+            padding:14px 16px; margin-bottom:20px; font-size:12.5px; color:var(--text-mid);
+            display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1;
+        }
+        .spinner{
+            width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+            animation:spin .7s linear infinite; display:inline-block;
+        }
+        @keyframes spin{ to{ transform:rotate(360deg); } }
+
+        /* utility layout classes (hand-rolled, no framework) */
+        .wrap{ max-width:1180px; margin:0 auto; padding-left:24px; padding-right:24px; }
+        .section{ padding-top:88px; padding-bottom:88px; }
+        @media (max-width:768px){ .section{ padding-top:56px; padding-bottom:56px; } }
     </style>
 </head>
-<body class="bg-premium-light min-h-screen flex flex-col justify-between scroll-smooth relative antialiased tracking-tight">
+<body>
 
-    <a href="https://wa.me/2349159436827" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#20ba5a] p-4 rounded-2xl shadow-[0_10px_30px_rgba(37,211,102,0.25)] transition-all duration-300 hover:scale-105 active:scale-95 z-50 flex items-center justify-center group">
-        <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 24 24">
+    <!-- Floating WhatsApp Action -->
+    <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20have%20an%20inquiry%20regarding%20your%20services." target="_blank" rel="noopener noreferrer" class="wa-fab" aria-label="Contact Support on WhatsApp">
+        <svg class="w-6 h-6" style="width:26px;height:26px;color:#fff;fill:currentColor" viewBox="0 0 24 24">
             <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397 0 12.008 0c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 12.004-11.952 12.004-.003 0-.005 0-.008 0-2.005-.001-3.975-.493-5.732-1.424L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-1.005-5.048-2.839-6.884-1.833-1.836-4.271-2.846-6.877-2.847-5.437 0-9.863 4.373-9.867 9.743-.001 1.704.457 3.366 1.325 4.814l-.993 3.626 3.73-.969zM16.4 13.572c-.303-.151-1.793-.884-2.071-.984-.278-.101-.48-.151-.68.151-.2.302-.776.984-.951 1.186-.176.201-.351.226-.654.075-.303-.151-1.281-.473-2.44-1.507-.901-.804-1.51-1.796-1.687-2.098-.176-.302-.019-.465.132-.615.136-.135.303-.352.454-.528.151-.176.201-.302.303-.503.101-.201.05-.377-.025-.528-.075-.151-.68-1.637-.932-2.246-.247-.591-.497-.512-.68-.521-.176-.009-.377-.01-.578-.01-.201 0-.528.075-.804.377-.277.302-1.056 1.03-1.056 2.512 0 1.482 1.081 2.913 1.232 3.114.151.201 2.128 3.248 5.155 4.555.72.311 1.281.497 1.721.638.723.23 1.381.197 1.901.12.579-.087 1.794-.734 2.046-1.443.251-.708.251-1.317.176-1.442-.075-.126-.278-.201-.581-.352z"/>
         </svg>
     </a>
 
-    <div id="landing-overlay" class="fixed inset-0 bg-slate-900/30 z-40 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm" onclick="toggleMenu()"></div>
+    <!-- Overlay Navigation -->
+    <div id="landing-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
-    <div id="landing-menu" class="fixed top-0 right-0 bottom-0 w-64 bg-white border-l border-slate-100 z-50 sidebar-transition translate-x-full p-6 flex flex-col justify-between shadow-2xl">
+    <div id="landing-menu" class="menu-panel">
         <div>
-            <div class="flex justify-between items-center mb-10">
-                <div class="text-xl font-extrabold tracking-tighter brand-blue-text">BIGOTIC<span class="text-slate-800 font-normal">DATA</span></div>
-                <button onclick="toggleMenu()" class="text-slate-400 hover:text-slate-800 cursor-pointer p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
+                <div class="font-display" style="font-size:20px;font-weight:700;color:var(--text-hi);letter-spacing:-0.02em;">BIGOTIC<span style="color:var(--text-dim);font-weight:400;">DATA</span></div>
+                <button onclick="toggleMenu()" style="color:var(--text-dim);background:none;border:none;cursor:pointer;padding:4px;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
             </div>
-            <div class="flex flex-col space-y-6 text-sm font-semibold tracking-wide text-slate-600">
-                <a href="#services" onclick="toggleMenu()" class="hover:brand-blue-text transition">Services</a>
-                <a href="#about" onclick="toggleMenu()" class="hover:brand-blue-text transition">Why Choose Us</a>
-                <a href="#contact" onclick="toggleMenu()" class="hover:brand-blue-text transition">Contact Hub</a>
-                <a href="#" onclick="toggleMenu()" class="hover:brand-blue-text transition">Developer API</a>
+            <div style="display:flex;flex-direction:column;gap:24px;">
+                <a href="#services" onclick="toggleMenu()" class="nav-link">VTU Ecosystem</a>
+                <a href="#digital-services" onclick="toggleMenu()" class="nav-link">Growth & Web Services</a>
+                <a href="#about" onclick="toggleMenu()" class="nav-link">Why Choose Us</a>
+                <a href="#reviews" onclick="toggleMenu()" class="nav-link">Reviews</a>
+                <a href="#contact" onclick="toggleMenu()" class="nav-link">Contact Hub</a>
             </div>
         </div>
-        <div class="flex flex-col gap-3">
-            <a href="login.html" class="w-full text-center py-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition tracking-wider">LOGIN</a>
-            <a href="signup.html" class="w-full text-center py-3 rounded-xl brand-blue-bg text-white text-xs font-extrabold brand-blue-bg-hover transition tracking-wider shadow-md">GET STARTED</a>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <a href="login.html" class="btn-ghost" style="justify-content:center;">LOGIN</a>
+            <a href="signup.html" class="btn-primary" style="justify-content:center;">GET STARTED</a>
         </div>
     </div>
 
-    <nav class="flex justify-between items-center px-6 py-5 max-w-7xl w-full mx-auto z-40">
-        <div class="text-2xl font-extrabold tracking-tighter brand-blue-text">BIGOTIC<span class="text-slate-800 font-normal">DATA</span></div>
-        <div class="hidden md:flex space-x-8 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            <a href="#services" class="hover:brand-blue-text transition">Services</a>
-            <a href="#about" class="hover:brand-blue-text transition">Why Choose Us</a>
-            <a href="#contact" class="hover:brand-blue-text transition">Contact</a>
-            <a href="#" class="hover:brand-blue-text transition">API Docs</a>
+    <!-- Main Navigation Header -->
+    <nav class="site-nav">
+        <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;padding-top:18px;padding-bottom:18px;">
+            <div class="font-display" style="font-size:22px;font-weight:700;color:var(--text-hi);letter-spacing:-0.02em;">BIGOTIC<span style="color:var(--text-dim);font-weight:400;">DATA</span></div>
+            <div style="display:flex;gap:34px;" class="nav-desktop">
+                <a href="#services" class="nav-link">VTU Services</a>
+                <a href="#digital-services" class="nav-link">Digital & Web Packages</a>
+                <a href="#about" class="nav-link">Why Choose Us</a>
+                <a href="#reviews" class="nav-link">Reviews</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div style="display:flex;gap:16px;align-items:center;" class="nav-desktop">
+                <a href="login.html" class="nav-link" style="text-transform:uppercase;">Login</a>
+                <a href="signup.html" class="btn-primary">Get Started</a>
+            </div>
+            <button onclick="toggleMenu()" class="nav-mobile-btn" style="display:none;color:var(--text-hi);padding:10px;border-radius:12px;border:1px solid var(--panel-line);background:rgba(255,255,255,.03);cursor:pointer;">
+                <i data-lucide="menu" style="width:19px;height:19px;"></i>
+            </button>
         </div>
-        <div class="hidden md:flex space-x-4 items-center">
-            <a href="login.html" class="text-xs font-bold text-slate-500 hover:brand-blue-text transition uppercase tracking-wider">Login</a>
-            <a href="signup.html" class="brand-blue-bg brand-blue-bg-hover text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-sm">Get Started</a>
-        </div>
-        <button onclick="toggleMenu()" class="md:hidden text-slate-800 p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition flex items-center justify-center">
-            <i data-lucide="menu" class="w-5 h-5 brand-blue-text"></i>
-        </button>
     </nav>
 
-    <header class="max-w-7xl mx-auto px-6 pt-4 pb-20 grid lg:grid-cols-2 gap-12 items-center w-full relative">
-        <div class="text-left">
-            <span class="brand-blue-light-bg brand-blue-text border brand-blue-light-border px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest">Fast & Automated System</span>
-            <h1 class="text-4xl lg:text-6xl font-extrabold mt-6 leading-tight tracking-tight text-slate-900">
-                Empower Your <span class="brand-blue-text">Digital Life</span> 
-            </h1>
-            <p class="text-slate-500 mt-5 text-sm lg:text-base max-w-md font-medium leading-relaxed">
-                The fastest way to buy Airtime, Data, and pay Utility bills in Nigeria. Secure transactions, delivered instantly 24/7.
-            </p>
-            <div class="mt-8 flex flex-wrap gap-4">
-                <a href="signup.html" class="brand-blue-bg brand-blue-bg-hover text-white px-8 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 active:scale-95">
-                    Sign Up Now <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-                <a href="login.html" class="surface-card px-8 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 text-slate-700 transition flex items-center gap-2 active:scale-95">
-                    Access Dashboard
-                </a>
-            </div>
-        </div>
-
-        <div class="relative rounded-3xl overflow-hidden border border-slate-100 bg-white p-2 shadow-xl w-full max-w-md mx-auto">
-            <div class="overflow-hidden rounded-2xl relative w-full aspect-[4/5] bg-slate-50">
-                <div id="carouselTrack" class="carousel-track w-full h-full">
-                    <img src="Promo1.png" alt="Slide 1" class="w-full h-full object-contain bg-white flex-shrink-0">
-                    <img src="Promo2.png" alt="Slide 2" class="w-full h-full object-contain bg-white flex-shrink-0">
-                    <img src="Promo3.png" alt="Slide 3" class="w-full h-full object-contain bg-white flex-shrink-0">
-                    <img src="Promo4.png" alt="Slide 4" class="w-full h-full object-contain bg-white flex-shrink-0">
-                    <img src="Promo5.png" alt="Slide 5" class="w-full h-full object-contain bg-white flex-shrink-0">
+    <!-- Hero Section -->
+    <header class="hero">
+        <canvas id="heroCanvas"></canvas>
+        <div class="wrap hero-inner" style="padding-top:90px;padding-bottom:110px;">
+            <div style="max-width:640px;">
+                <span class="eyebrow"><span class="dot"></span> Live network &mdash; transactions settling now</span>
+                <h1 class="font-display reveal" style="font-size:clamp(2.4rem,6vw,4.2rem);font-weight:700;margin-top:22px;margin-bottom:0;">
+                    Your data, <span class="grad">airtime & bills</span> &mdash; alive in seconds.
+                </h1>
+                <p class="reveal reveal-delay-1" style="color:var(--text-mid);margin-top:20px;font-size:15px;max-width:480px;line-height:1.7;">
+                    The fastest hub to buy Airtime, Data, pay Utility bills, and order web setup & consulting packages in Nigeria. Every order runs through a live, automated engine &mdash; delivered with absolute accuracy 24/7.
+                </p>
+                <div class="reveal reveal-delay-2" style="margin-top:34px;display:flex;flex-wrap:wrap;gap:14px;">
+                    <a href="signup.html" class="btn-primary">Sign Up Now <i data-lucide="arrow-right" style="width:15px;height:15px;"></i></a>
+                    <a href="#digital-services" class="btn-ghost">View Web Services</a>
                 </div>
-            </div>
-            <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
-                <span class="dot w-1.5 h-1.5 brand-blue-bg rounded-full transition-all duration-300"></span>
-                <span class="dot w-1.5 h-1.5 bg-slate-300 rounded-full transition-all duration-300"></span>
-                <span class="dot w-1.5 h-1.5 bg-slate-300 rounded-full transition-all duration-300"></span>
-                <span class="dot w-1.5 h-1.5 bg-slate-300 rounded-full transition-all duration-300"></span>
-                <span class="dot w-1.5 h-1.5 bg-slate-300 rounded-full transition-all duration-300"></span>
             </div>
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-6 py-10 border-t border-b border-slate-100 w-full bg-slate-50/50">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="text-center md:text-left">
-                <div class="text-2xl font-extrabold brand-blue-text"><span id="live-user-ticker">0</span>+</div>
-                <div class="text-slate-500 text-[10px] uppercase mt-1 tracking-widest font-bold">Active Clients</div>
+    <!-- Metrics -->
+    <section class="metrics-strip">
+        <div class="wrap" style="padding-top:36px;padding-bottom:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:28px;">
+            <div>
+                <div class="font-mono metric-num" style="font-size:26px;font-weight:700;"><span id="live-user-ticker">0</span>+</div>
+                <div class="metric-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-top:4px;">Active Clients</div>
             </div>
-            <div class="text-center md:text-left">
-                <div class="text-2xl font-extrabold text-slate-800">200k+</div>
-                <div class="text-slate-500 text-[10px] uppercase mt-1 tracking-widest font-bold">Processed Orders</div>
+            <div>
+                <div class="font-mono metric-num" style="font-size:26px;font-weight:700;">200k+</div>
+                <div class="metric-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-top:4px;">Processed Orders</div>
             </div>
-            <div class="text-center md:text-left">
-                <div class="text-2xl font-extrabold brand-blue-text">99.9%</div>
-                <div class="text-slate-500 text-[10px] uppercase mt-1 tracking-widest font-bold">API Uptime</div>
+            <div>
+                <div class="font-mono metric-num" style="font-size:26px;font-weight:700;">99.9%</div>
+                <div class="metric-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-top:4px;">API Uptime</div>
             </div>
-            <div class="text-center md:text-left">
-                <div class="text-2xl font-extrabold text-slate-800">24/7</div>
-                <div class="text-slate-500 text-[10px] uppercase mt-1 tracking-widest font-bold">Automated Support</div>
-            </div>
-        </div>
-    </section>
-
-    <section id="services" class="max-w-7xl mx-auto px-6 py-20 w-full">
-        <div class="text-center max-w-xl mx-auto mb-12">
-            <span class="brand-blue-text text-[11px] font-bold uppercase tracking-widest">Our Ecosystem</span>
-            <h2 class="text-2xl md:text-3xl font-extrabold mt-2 text-slate-900">Services Built For Convenience</h2>
-            <p class="text-slate-500 mt-3 text-xs md:text-sm font-normal">We provide wholesale rates for retail actions. Everything is lightning fast and fully automated.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div class="surface-card p-6 rounded-2xl transition-all duration-300 hover:brand-blue-light-border">
-                <div class="w-10 h-10 brand-blue-light-bg brand-blue-text rounded-xl flex items-center justify-center mb-5">
-                    <i data-lucide="wifi" class="w-5 h-5"></i>
-                </div>
-                <h3 class="text-base font-bold mb-2 text-slate-900">Cheap Data Bundles</h3>
-                <p class="text-slate-500 text-xs leading-relaxed mb-5 font-normal">
-                    Get low-cost SME, Gifting, and Corporate data variants for MTN, Airtel, Glo, and 9mobile instantly.
-                </p>
-                <a href="login.html" class="brand-blue-light-bg text-brand-blue-text hover:opacity-90 text-[11px] font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl inline-flex items-center gap-1 transition-all active:scale-[0.96]">Buy Data <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></a>
-            </div>
-
-            <div class="surface-card p-6 rounded-2xl transition-all duration-300 hover:brand-blue-light-border">
-                <div class="w-10 h-10 brand-blue-light-bg brand-blue-text rounded-xl flex items-center justify-center mb-5">
-                    <i data-lucide="phone" class="w-5 h-5"></i>
-                </div>
-                <h3 class="text-base font-bold mb-2 text-slate-900">Instant VTU Airtime</h3>
-                <p class="text-slate-500 text-xs leading-relaxed mb-5 font-normal">
-                    Top up your cellular credit lines with zero delays. Enjoy discounts on every recharge value you purchase.
-                </p>
-                <a href="login.html" class="brand-blue-light-bg text-brand-blue-text hover:opacity-90 text-[11px] font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl inline-flex items-center gap-1 transition-all active:scale-[0.96]">Buy Airtime <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></a>
-            </div>
-
-            <div class="surface-card p-6 rounded-2xl transition-all duration-300 hover:brand-blue-light-border">
-                <div class="w-10 h-10 brand-blue-light-bg brand-blue-text rounded-xl flex items-center justify-center mb-5">
-                    <i data-lucide="tv" class="w-5 h-5"></i>
-                </div>
-                <h3 class="text-base font-bold mb-2 text-slate-900">Utility & Cable Bills</h3>
-                <p class="text-slate-500 text-xs leading-relaxed mb-5 font-normal">
-                    Renew your DSTV, GOTV, and Startimes packages or generate prepaid electricity tokens automatically.
-                </p>
-                <a href="login.html" class="brand-blue-light-bg text-brand-blue-text hover:opacity-90 text-[11px] font-bold uppercase tracking-wider py-2.5 px-4 rounded-xl inline-flex items-center gap-1 transition-all active:scale-[0.96]">Pay Bills <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></a>
+            <div>
+                <div class="font-mono metric-num" style="font-size:26px;font-weight:700;">24/7</div>
+                <div class="metric-label" style="font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-top:4px;">Automated Support</div>
             </div>
         </div>
     </section>
 
-    <section id="about" class="max-w-7xl mx-auto px-6 py-12 w-full grid lg:grid-cols-2 gap-12 items-center">
-        <div class="text-left">
-            <span class="brand-blue-text text-[11px] font-bold uppercase tracking-widest">Why Bigotic Data</span>
-            <h2 class="text-2xl md:text-4xl font-extrabold mt-3 leading-tight tracking-tight text-slate-900">Designed for Regular Users & Developers</h2>
-            <p class="text-slate-500 mt-4 leading-relaxed text-xs lg:text-sm font-normal">
-                Whether you just want to load a personal device cheaply or you run a custom platform requiring high-volume VTU API delivery setups, Bigotic Data provides a rugged structure that ensures zero failure rates.
-            </p>
-            <div class="mt-6 space-y-3">
-                <div class="flex items-start gap-3">
-                    <div class="mt-0.5 brand-blue-light-bg brand-blue-text p-1 rounded-lg border brand-blue-light-border"><i data-lucide="check" class="w-3.5 h-3.5"></i></div>
+    <!-- Services Ecosystem -->
+    <section id="services" class="section">
+        <div class="wrap">
+            <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto 48px;">
+                <span style="color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;">Our Ecosystem</span>
+                <h2 class="font-display" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-top:8px;color:var(--slate-900);">Automated Utility Services</h2>
+                <p style="color:var(--slate-500);margin-top:12px;font-size:13px;">We provide wholesale rates for retail actions. Everything is lightning fast and fully automated.</p>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;">
+                <div class="surface reveal" style="padding:26px;">
+                    <div class="icon-tile"><i data-lucide="wifi" style="width:20px;height:20px;"></i></div>
+                    <h3 class="font-display" style="font-size:16px;font-weight:700;margin-top:18px;margin-bottom:8px;">Cheap Data Bundles</h3>
+                    <p style="color:var(--slate-500);font-size:12.5px;line-height:1.6;margin-bottom:20px;">Get low-cost SME, Gifting, and Corporate data variants for MTN, Airtel, Glo, and 9mobile instantly.</p>
+                    <a href="login.html" style="background:#eef2ff;color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;text-decoration:none;">Buy Data <i data-lucide="chevron-right" style="width:13px;height:13px;"></i></a>
+                </div>
+
+                <div class="surface reveal reveal-delay-1" style="padding:26px;">
+                    <div class="icon-tile"><i data-lucide="phone" style="width:20px;height:20px;"></i></div>
+                    <h3 class="font-display" style="font-size:16px;font-weight:700;margin-top:18px;margin-bottom:8px;">Instant VTU Airtime</h3>
+                    <p style="color:var(--slate-500);font-size:12.5px;line-height:1.6;margin-bottom:20px;">Top up your cellular credit lines with zero delays. Enjoy discounts on every recharge value you purchase.</p>
+                    <a href="login.html" style="background:#eef2ff;color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;text-decoration:none;">Buy Airtime <i data-lucide="chevron-right" style="width:13px;height:13px;"></i></a>
+                </div>
+
+                <div class="surface reveal reveal-delay-2" style="padding:26px;">
+                    <div class="icon-tile"><i data-lucide="tv" style="width:20px;height:20px;"></i></div>
+                    <h3 class="font-display" style="font-size:16px;font-weight:700;margin-top:18px;margin-bottom:8px;">Utility & Cable Bills</h3>
+                    <p style="color:var(--slate-500);font-size:12.5px;line-height:1.6;margin-bottom:20px;">Renew your DSTV, GOTV, and Startimes packages or generate prepaid electricity tokens automatically.</p>
+                    <a href="login.html" style="background:#eef2ff;color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:10px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;text-decoration:none;">Pay Bills <i data-lucide="chevron-right" style="width:13px;height:13px;"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Web Consulting & Digital Solutions Tiers -->
+    <section id="digital-services" class="section">
+        <div class="wrap package-section" style="padding:64px 28px;">
+            <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto 48px;position:relative;z-index:2;">
+                <span style="color:var(--cyan);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;">Digital Agency & Growth</span>
+                <h2 class="font-display" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-top:8px;color:var(--text-hi);">Web Setup & Business Packages</h2>
+                <p style="color:var(--text-mid);margin-top:12px;font-size:13px;">Order customized digital solutions, ad pixel setups, and premium web consulting directly online or via WhatsApp.</p>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;max-width:820px;margin:0 auto;position:relative;z-index:2;">
+
+                <!-- Platinum Plan Card -->
+                <div class="pkg-card reveal" style="padding:32px;display:flex;flex-direction:column;justify-content:space-between;">
                     <div>
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800">Automated Wallet Funding</h4>
-                        <p class="text-slate-500 text-xs mt-0.5 font-normal">Get your personalized static bank account numbers for immediate automatic wallet funding.</p>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                            <span class="pkg-tag" style="background:rgba(255,255,255,.06);color:var(--text-mid);border:1px solid var(--panel-line);">Platinum Tier</span>
+                            <i data-lucide="code" style="width:22px;height:22px;color:var(--electric-soft);"></i>
+                        </div>
+                        <h3 class="font-display" style="font-size:19px;font-weight:700;color:var(--text-hi);margin-bottom:8px;">Web Consulting & Setup</h3>
+                        <p style="color:var(--text-mid);font-size:12.5px;line-height:1.6;margin-bottom:22px;">Comprehensive consultation for digital website setups, domain integrations, and basic platform configurations.</p>
+                        <div class="font-mono pkg-price" style="font-size:30px;font-weight:700;margin-bottom:22px;">₦9,000 <span style="font-size:11px;font-weight:600;color:var(--text-dim);">/ project</span></div>
+                        <ul class="pkg-list" style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:11px;font-size:12.5px;font-weight:500;">
+                            <li style="display:flex;align-items:center;gap:9px;"><i data-lucide="check-circle-2" style="width:15px;height:15px;" class="pkg-check"></i> Website Architecture & Frontend Setup</li>
+                            <li style="display:flex;align-items:center;gap:9px;"><i data-lucide="check-circle-2" style="width:15px;height:15px;" class="pkg-check"></i> Domain & Hosting Integration Support</li>
+                            <li style="display:flex;align-items:center;gap:9px;"><i data-lucide="check-circle-2" style="width:15px;height:15px;" class="pkg-check"></i> Standard Technical Consultation</li>
+                        </ul>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <button onclick="payWithPaystack('Platinum Web Consulting Package', 9000)" class="btn-primary" style="width:100%;justify-content:center;">Pay ₦9,000 via Paystack <i data-lucide="credit-card" style="width:15px;height:15px;"></i></button>
+                        <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20want%20to%20order%20the%20Platinum%20Web%20Consulting%20Package%20(₦9,000)." target="_blank" class="btn-ghost" style="width:100%;justify-content:center;">Order via WhatsApp <i data-lucide="message-square" style="width:15px;height:15px;color:#25D366;"></i></a>
                     </div>
                 </div>
-                <div class="flex items-start gap-3">
-                    <div class="mt-0.5 brand-blue-light-bg brand-blue-text p-1 rounded-lg border brand-blue-light-border"><i data-lucide="check" class="w-3.5 h-3.5"></i></div>
+
+                <!-- Gold Plan Card -->
+                <div class="pkg-card featured reveal reveal-delay-1" style="padding:32px;display:flex;flex-direction:column;justify-content:space-between;">
+                    <div style="position:absolute;top:-14px;right:24px;background:linear-gradient(135deg,var(--electric),#1d3fbf);color:#fff;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border-radius:999px;box-shadow:0 8px 18px rgba(59,107,255,.4);">Most Popular</div>
                     <div>
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800">Developer Friendly API</h4>
-                        <p class="text-slate-500 text-xs mt-0.5 font-normal">Integrate our ultra-fast endpoints into your own script setups to resell effortlessly.</p>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                            <span class="pkg-tag" style="background:rgba(59,107,255,.14);color:var(--electric-soft);border:1px solid rgba(124,155,255,.35);">Gold Tier</span>
+                            <i data-lucide="target" style="width:22px;height:22px;color:var(--cyan);"></i>
+                        </div>
+                        <h3 class="font-display" style="font-size:19px;font-weight:700;color:var(--text-hi);margin-bottom:8px;">Growth & Ad Tracking Setup</h3>
+                        <p style="color:var(--text-mid);font-size:12.5px;line-height:1.6;margin-bottom:22px;">Advanced lead generation configuration, Meta Pixel event tracking, and website conversion optimization.</p>
+                        <div class="font-mono pkg-price" style="font-size:30px;font-weight:700;margin-bottom:22px;">₦14,500 <span style="font-size:11px;font-weight:600;color:var(--text-dim);">/ package</span></div>
+                        <ul class="pkg-list" style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:11px;font-size:12.5px;font-weight:500;">
+                            <li style="display:flex;align-items:center;gap:9px;"><i data-lucide="check-circle-2" style="width:15px;height:15px;" class="pkg-check"></i> Full Meta Pixel & Event Setup</li>
+                            <li style="display:flex;align-items:center;gap:9px;"><i data-lucide="check-circle-2" style="width:15px;height:15px;" class="pkg-check"></i> Landing Page UI Upgrade & Integration</li>
+                            <li style="display:flex;align-items:center;gap:9px;"><i data-lucide="check-circle-2" style="width:15px;height:15px;" class="pkg-check"></i> Conversion Ad Copy Guidance</li>
+                        </ul>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="relative flex justify-center">
-            <div class="absolute inset-0 bg-blue-500/5 blur-3xl rounded-full"></div>
-            <div class="surface-card p-6 rounded-2xl max-w-xs w-full relative z-10 space-y-4 text-left border-slate-100">
-                <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold tracking-widest">
-                    <span>TRANSACTION LOG</span>
-                    <span class="text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-emerald-100">Success</span>
-                </div>
-                <div class="text-2xl font-extrabold tracking-tight text-slate-900">₦4,500.00</div>
-                <div class="text-xs text-slate-500 border-t border-slate-100 pt-3 space-y-2 font-medium">
-                    <div class="flex justify-between"><span>Product:</span><span class="text-slate-800 font-semibold">MTN 10GB Corporate</span></div>
-                    <div class="flex justify-between"><span>Status:</span><span class="text-slate-800 font-semibold">Delivered Instantly</span></div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <button onclick="payWithPaystack('Gold Growth & Ad Tracking Setup', 14500)" class="btn-primary" style="width:100%;justify-content:center;">Pay ₦14,500 via Paystack <i data-lucide="credit-card" style="width:15px;height:15px;"></i></button>
+                        <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data,%20I%20want%20to%20order%20the%20Gold%20Growth%20%26%20Ad%20Tracking%20Setup%20(₦14,500)." target="_blank" class="btn-ghost" style="width:100%;justify-content:center;">Order via WhatsApp <i data-lucide="message-square" style="width:15px;height:15px;color:#25D366;"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="max-w-7xl mx-auto px-6 py-24 w-full">
-        <div class="surface-card rounded-3xl p-8 md:p-12 grid md:grid-cols-2 gap-12 items-center relative overflow-hidden bg-slate-50/30">
-            <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 blur-3xl rounded-full"></div>
-            <div class="text-left">
-                <h2 class="text-2xl font-extrabold tracking-tight text-slate-900">Need Help? Reach Out</h2>
-                <p class="text-slate-500 mt-4 text-xs md:text-sm leading-relaxed font-normal">
-                    Experiencing a late delivery issue, or want to make inquiries about our reseller API rates? Our team handles responses quickly.
-                </p>
-                <div class="mt-6 space-y-2.5 text-xs font-semibold text-slate-700">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="mail" class="brand-blue-text w-4 h-4"></i> support@bigoticdata.com
+    <!-- Why Choose Us -->
+    <section id="about" class="section">
+        <div class="wrap" style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;" id="whyGrid">
+            <div class="reveal">
+                <span style="color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;">Why Bigotic Data</span>
+                <h2 class="font-display" style="font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:700;margin-top:10px;line-height:1.15;">Designed for Regular Users & Developers</h2>
+                <p style="color:var(--slate-500);margin-top:14px;font-size:13px;line-height:1.7;">Whether you just want to load personal devices cheaply or you require digital business solutions and high-volume VTU API setups, Bigotic Data provides a rugged structure that ensures zero failure rates.</p>
+                <div style="margin-top:24px;display:flex;flex-direction:column;gap:16px;">
+                    <div style="display:flex;align-items:flex-start;gap:12px;">
+                        <div class="feature-dot"><i data-lucide="check" style="width:13px;height:13px;"></i></div>
+                        <div>
+                            <h4 style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin:0;">Automated Wallet Funding</h4>
+                            <p style="color:var(--slate-500);font-size:12.5px;margin:3px 0 0;">Get your personalized static bank account numbers for immediate automatic wallet funding.</p>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="phone" class="brand-blue-text w-4 h-4"></i> +234 915 943 6827
+                    <div style="display:flex;align-items:flex-start;gap:12px;">
+                        <div class="feature-dot"><i data-lucide="check" style="width:13px;height:13px;"></i></div>
+                        <div>
+                            <h4 style="font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin:0;">Developer Friendly API</h4>
+                            <p style="color:var(--slate-500);font-size:12.5px;margin:3px 0 0;">Integrate our ultra-fast endpoints into your own script setups to resell effortlessly.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="space-y-4 text-left">
-                <h4 class="font-extrabold text-[10px] tracking-widest uppercase text-slate-400">Join our communities</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <a href="https://wa.me/2349159436827" target="_blank" class="bg-white border border-slate-200 hover:brand-blue-light-border p-4 rounded-xl flex items-center gap-3 transition shadow-sm active:scale-[0.97]">
-                        <i data-lucide="message-square" class="text-emerald-500 w-5 h-5"></i>
-                        <div>
-                            <div class="font-bold text-xs text-slate-800">WhatsApp Support</div>
-                            <div class="text-[10px] text-slate-400 mt-0.5">Message Directly</div>
-                        </div>
-                    </a>
-                    <a href="#" class="bg-white border border-slate-200 hover:brand-blue-light-border p-4 rounded-xl flex items-center gap-3 transition shadow-sm active:scale-[0.97]">
-                        <i data-lucide="send" class="text-sky-500 w-5 h-5"></i>
-                        <div>
-                            <div class="font-bold text-xs text-slate-800">Telegram Hub</div>
-                            <div class="text-[10px] text-slate-400 mt-0.5">Join Group Channel</div>
-                        </div>
-                    </a>
+
+            <div class="reveal reveal-delay-1" style="display:flex;justify-content:center;">
+                <div class="terminal-card" id="tiltCard" style="padding:24px;max-width:300px;width:100%;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-dim);font-weight:700;letter-spacing:.14em;">
+                        <span>TRANSACTION LOG</span>
+                        <span class="status-pill" style="padding:3px 10px;border-radius:999px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Success</span>
+                    </div>
+                    <div class="font-mono" style="font-size:26px;font-weight:700;margin-top:14px;">₦14,500.00</div>
+                    <div style="font-size:12px;color:var(--text-mid);border-top:1px solid var(--panel-line);padding-top:14px;margin-top:14px;display:flex;flex-direction:column;gap:8px;font-weight:500;">
+                        <div style="display:flex;justify-content:space-between;"><span>Product:</span><span style="color:var(--text-hi);font-weight:600;">Gold Ad Setup Plan</span></div>
+                        <div style="display:flex;justify-content:space-between;"><span>Status:</span><span style="color:var(--text-hi);font-weight:600;">Fulfilling</span></div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="border-t border-slate-100 bg-slate-50 w-full">
-        <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-400">
-            <div class="text-left w-full md:w-auto">
-                <div class="text-xl font-extrabold brand-blue-text tracking-tighter mb-1">BIGOTIC<span class="text-slate-800 font-normal">DATA</span></div>
-                <p class="text-[11px] text-slate-500 font-medium">Automated tech ecosystem for digital utility distribution.</p>
+    <!-- Reviews -->
+    <section id="reviews" class="section reviews-section">
+        <div class="wrap">
+            <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto 40px;">
+                <span style="color:var(--electric);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;">Customer Voices</span>
+                <h2 class="font-display" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-top:8px;">What People Are Saying</h2>
+                <p style="color:var(--slate-500);margin-top:12px;font-size:13px;">Real feedback from users moving data, airtime, bills, and web projects through Bigotic Data every day.</p>
             </div>
-            <div class="flex space-x-6 font-semibold tracking-wider text-[10px] uppercase text-slate-500">
-                <a href="#" class="hover:brand-blue-text transition">Terms of Service</a>
-                <a href="#" class="hover:brand-blue-text transition">Privacy Policy</a>
+        </div>
+
+        <div class="review-track-wrap reveal reveal-delay-1">
+            <div class="review-track" id="reviewTrack"></div>
+        </div>
+    </section>
+
+    <!-- Contact Hub -->
+    <section id="contact" class="section">
+        <div class="wrap">
+            <div class="contact-card reveal" style="padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+                <div>
+                    <h2 class="font-display" style="font-size:22px;font-weight:700;">Need Help? Reach Out</h2>
+                    <p style="color:var(--slate-500);margin-top:14px;font-size:13px;line-height:1.7;">Experiencing a late delivery issue, or want to make inquiries about custom digital agency services? Our team handles responses quickly.</p>
+                    <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;font-weight:600;">
+                        <div style="display:flex;align-items:center;gap:10px;"><i data-lucide="mail" style="width:15px;height:15px;color:var(--electric);"></i> support@bigoticdata.com</div>
+                        <div style="display:flex;align-items:center;gap:10px;"><i data-lucide="phone" style="width:15px;height:15px;color:var(--electric);"></i> +234 915 943 6827</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--slate-500);margin-bottom:16px;">Join our communities</h4>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                        <a href="https://wa.me/2349159436827" target="_blank" class="contact-link" style="padding:16px;display:flex;align-items:center;gap:10px;text-decoration:none;">
+                            <i data-lucide="message-square" style="color:#25D366;width:19px;height:19px;"></i>
+                            <div>
+                                <div style="font-weight:700;font-size:12px;color:var(--slate-900);">WhatsApp Support</div>
+                                <div style="font-size:10px;color:var(--slate-500);margin-top:2px;">Message Directly</div>
+                            </div>
+                        </a>
+                        <a href="#" class="contact-link" style="padding:16px;display:flex;align-items:center;gap:10px;text-decoration:none;">
+                            <i data-lucide="send" style="color:#0ea5e9;width:19px;height:19px;"></i>
+                            <div>
+                                <div style="font-weight:700;font-size:12px;color:var(--slate-900);">Telegram Hub</div>
+                                <div style="font-size:10px;color:var(--slate-500);margin-top:2px;">Join Group Channel</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="text-center md:text-right text-[11px] text-slate-400 space-y-1 font-normal">
-                <p>© 2026 All rights reserved</p>
-                <p>Developed by <a href="https://wa.me/2349159436827" target="_blank" class="brand-blue-text font-bold hover:underline">Bigotic Enterprise</a></p>
-                <p class="text-[10px] text-slate-400 pt-0.5">Powered and Owned by Gabriel Chinonso Igwe</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="wrap" style="padding-top:40px;padding-bottom:40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;color:var(--text-dim);font-size:12px;">
+            <div>
+                <div class="font-display" style="font-size:20px;font-weight:700;color:var(--text-hi);margin-bottom:6px;">BIGOTIC<span style="color:var(--text-dim);font-weight:400;">DATA</span></div>
+                <p style="font-size:11px;">Automated tech ecosystem for digital utility & growth distribution.</p>
+            </div>
+            <div style="display:flex;gap:24px;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;">
+                <a href="#" style="color:var(--text-dim);text-decoration:none;">Terms of Service</a>
+                <a href="#" style="color:var(--text-dim);text-decoration:none;">Privacy Policy</a>
+            </div>
+            <div style="text-align:right;font-size:11px;display:flex;flex-direction:column;gap:3px;">
+                <p style="margin:0;">© 2026 All rights reserved</p>
+                <p style="margin:0;">Developed by <a href="https://wa.me/2349159436827" target="_blank" style="color:var(--electric-soft);font-weight:700;">Bigotic Enterprise</a></p>
+                <p style="margin:0;font-size:10px;">Powered and Owned by Gabriel Chinonso Igwe</p>
             </div>
         </div>
     </footer>
 
+    <!-- Premium Checkout Modal -->
+    <div id="checkoutOverlay" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeCheckoutModal()" aria-label="Close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+
+            <!-- Step: email capture -->
+            <div id="checkoutStepEmail">
+                <div class="modal-icon" style="background:rgba(59,107,255,.14);color:var(--electric-soft);"><i data-lucide="credit-card" style="width:21px;height:21px;"></i></div>
+                <h3 class="font-display" style="color:var(--text-hi);font-size:18px;font-weight:700;margin:0 0 6px;">Confirm your order</h3>
+                <p style="color:var(--text-mid);font-size:12.5px;margin:0 0 20px;line-height:1.6;">We'll send your Paystack receipt and order updates to this email.</p>
+
+                <div class="modal-summary">
+                    <span id="checkoutPlanName">&mdash;</span>
+                    <span class="font-mono" style="color:var(--text-hi);font-weight:700;" id="checkoutPlanPrice">&mdash;</span>
+                </div>
+
+                <label class="modal-label" for="checkoutEmailInput">Email address</label>
+                <input id="checkoutEmailInput" class="modal-input" type="email" placeholder="you@example.com" autocomplete="email" />
+                <div class="modal-error" id="checkoutEmailError"></div>
+
+                <button id="checkoutPayBtn" class="btn-primary" style="width:100%;justify-content:center;margin-top:6px;" onclick="submitCheckoutEmail()">
+                    <span id="checkoutPayBtnLabel">Continue to Paystack</span>
+                </button>
+                <p style="color:var(--text-dim);font-size:10.5px;text-align:center;margin:14px 0 0;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <i data-lucide="shield-check" style="width:12px;height:12px;"></i> Secured &amp; encrypted by Paystack
+                </p>
+            </div>
+
+            <!-- Step: result (success / cancel / error) -->
+            <div id="checkoutStepResult" style="display:none;">
+                <div class="modal-icon" id="checkoutResultIcon"></div>
+                <h3 class="font-display" style="color:var(--text-hi);font-size:18px;font-weight:700;margin:0 0 6px;" id="checkoutResultTitle">&mdash;</h3>
+                <p style="color:var(--text-mid);font-size:12.5px;margin:0 0 22px;line-height:1.6;" id="checkoutResultMessage">&mdash;</p>
+                <button class="btn-primary" style="width:100%;justify-content:center;" onclick="closeCheckoutModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Scripts -->
     <script>
         lucide.createIcons();
 
         function toggleMenu() {
-            const menu = document.getElementById('landing-menu');
-            const overlay = document.getElementById('landing-overlay');
-            if (menu.classList.contains('translate-x-full')) {
-                menu.classList.remove('translate-x-full');
-                overlay.classList.remove('opacity-0', 'pointer-events-none');
-            } else {
-                menu.classList.add('translate-x-full');
-                overlay.classList.add('opacity-0', 'pointer-events-none');
-            }
+            document.getElementById('landing-menu').classList.toggle('open');
+            document.getElementById('landing-overlay').classList.toggle('open');
         }
+
+        function updateNavForWidth(){
+            const isMobile = window.innerWidth < 768;
+            document.querySelectorAll('.nav-desktop').forEach(el => el.style.display = isMobile ? 'none' : 'flex');
+            document.querySelector('.nav-mobile-btn').style.display = isMobile ? 'flex' : 'none';
+        }
+        window.addEventListener('resize', updateNavForWidth);
+        updateNavForWidth();
 
         // Live Metric Counters
         function initCounterAnimation() {
             const tickerElement = document.getElementById('live-user-ticker');
             const limit = 400;
-            const runtimeDuration = 1800; 
-            const stepsInterval = Math.floor(runtimeDuration / limit);
-            let absoluteStart = 0;
-
-            const incrementTimer = setInterval(() => {
-                absoluteStart += 2; 
-                if (absoluteStart >= limit) {
-                    tickerElement.innerText = limit;
-                    clearInterval(incrementTimer);
-                } else {
-                    tickerElement.innerText = absoluteStart;
-                }
-            }, stepsInterval * 2);
+            let current = 0;
+            const timer = setInterval(() => {
+                current += 4;
+                if (current >= limit) { tickerElement.innerText = limit; clearInterval(timer); }
+                else { tickerElement.innerText = current; }
+            }, 18);
         }
 
-        // Hardware-Accelerated 5-Image Slider Core Engine
-        function initAutomatedCarousel() {
-            const track = document.getElementById('carouselTrack');
-            const dots = document.querySelectorAll('.dot');
-            const totalSlides = 5;
-            let currentSlideIndex = 0;
+        // Scroll reveal
+        function initReveal(){
+            const items = document.querySelectorAll('.reveal');
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+            }, { threshold: 0.15 });
+            items.forEach(i => io.observe(i));
+        }
 
-            function slideTo(index) {
-                track.style.transform = `translateX(-${index * 100}%)`;
-                dots.forEach((dot, idx) => {
-                    if(idx === index) {
-                        dot.classList.remove('bg-slate-300');
-                        dot.classList.add('brand-blue-bg', 'w-3');
-                    } else {
-                        dot.classList.remove('brand-blue-bg', 'w-3');
-                        dot.classList.add('bg-slate-300');
-                    }
-                });
+        // Subtle tilt on the transaction terminal card
+        function initTilt(){
+            const card = document.getElementById('tiltCard');
+            if (!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            card.style.transition = 'transform .2s ease';
+            card.addEventListener('mousemove', (e) => {
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left) / r.width - 0.5;
+                const y = (e.clientY - r.top) / r.height - 0.5;
+                card.style.transform = `perspective(700px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-2px)`;
+            });
+            card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(700px) rotateY(0) rotateX(0)'; });
+        }
+
+        // Reviews data + render (duplicated once for seamless marquee loop)
+        const REVIEWS = [
+            { name:"Chiamaka O.", city:"Lagos", rating:5, text:"Data lands in under a minute every single time. I moved my whole business over to Bigotic after the third failed order elsewhere.", tx:"₦2,000 SME Data" },
+            { name:"Tunde A.", city:"Ibadan", rating:5, text:"The wallet funding is genuinely instant. I fund my account and buy airtime for my shop customers back-to-back without ever refreshing the page.", tx:"₦500 Airtime" },
+            { name:"Ngozi E.", city:"Abuja", rating:4, text:"Electricity tokens generate fast even at night. Only wish the Startimes renewal had a reminder, but support sorted me out on WhatsApp quickly.", tx:"Prepaid Token" },
+            { name:"Ifeanyi K.", city:"Enugu", rating:5, text:"Took the Gold Ad Tracking package for my store's Facebook page. My Pixel setup was clean and my cost per lead actually dropped that same week.", tx:"Gold Ad Setup" },
+            { name:"Blessing U.", city:"Port Harcourt", rating:5, text:"I resell data to about 40 people from my phone using their API. Zero failed orders in two months. This is the most reliable VTU I've used.", tx:"API Reseller" },
+            { name:"Segun O.", city:"Lagos", rating:5, text:"Customer support on WhatsApp replies in minutes, not hours. Got my Platinum web setup delivered ahead of schedule too.", tx:"Platinum Web Setup" }
+        ];
+
+        function starsHtml(rating){
+            let out = '';
+            for (let i=0;i<5;i++){
+                out += `<i data-lucide="star" style="${i < rating ? '' : 'opacity:.25;'}"></i>`;
+            }
+            return out;
+        }
+
+        function renderReviews(){
+            const track = document.getElementById('reviewTrack');
+            const palette = ['#3b6bff','#28e0d6','#f4b740','#34d399','#8b5cf6','#f97066'];
+            const list = [...REVIEWS, ...REVIEWS]; // duplicate for seamless loop
+            track.innerHTML = list.map((r, idx) => {
+                const initials = r.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+                const color = palette[idx % palette.length];
+                return `
+                <div class="review-card">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div class="review-avatar" style="background:${color};">${initials}</div>
+                            <div>
+                                <div style="font-weight:700;font-size:12.5px;color:var(--slate-900);">${r.name}</div>
+                                <div style="font-size:10.5px;color:var(--slate-500);">${r.city}</div>
+                            </div>
+                        </div>
+                        <div class="verified-badge">VERIFIED</div>
+                    </div>
+                    <div class="stars" style="display:flex;gap:2px;margin-bottom:10px;">${starsHtml(r.rating)}</div>
+                    <p style="font-size:12.5px;line-height:1.65;color:var(--slate-500);margin:0 0 14px;">&ldquo;${r.text}&rdquo;</p>
+                    <div class="font-mono" style="font-size:10.5px;color:var(--slate-500);border-top:1px solid var(--paper-line);padding-top:10px;">Order: ${r.tx}</div>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        // ---------------- 3D Living Network Hero ----------------
+        function initHero3D(){
+            const canvas = document.getElementById('heroCanvas');
+            const header = canvas.parentElement;
+            if (!window.THREE) return;
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(52, header.clientWidth / header.clientHeight, 0.1, 100);
+            camera.position.set(0, 0, 9);
+
+            function resize(){
+                const w = header.clientWidth, h = header.clientHeight;
+                renderer.setSize(w, h);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Node cloud arranged on a sphere (represents the live nationwide network)
+            const NODE_COUNT = 130;
+            const radius = 3.6;
+            const nodePositions = [];
+            for (let i = 0; i < NODE_COUNT; i++){
+                const phi = Math.acos(1 - 2 * (i + 0.5) / NODE_COUNT);
+                const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+                const x = Math.cos(theta) * Math.sin(phi) * radius;
+                const y = Math.sin(theta) * Math.sin(phi) * radius;
+                const z = Math.cos(phi) * radius;
+                nodePositions.push(new THREE.Vector3(x, y, z));
             }
 
-            setInterval(() => {
-                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-                slideTo(currentSlideIndex);
-            }, 3000);
+            const nodeGeo = new THREE.BufferGeometry().setFromPoints(nodePositions);
+            const nodeMat = new THREE.PointsMaterial({ color: 0x7c9bff, size: 0.07, transparent:true, opacity:0.9 });
+            const nodePoints = new THREE.Points(nodeGeo, nodeMat);
+            scene.add(nodePoints);
 
-            slideTo(0);
+            // Connections between nearby nodes (network links)
+            const linkPositions = [];
+            for (let i = 0; i < nodePositions.length; i++){
+                for (let j = i + 1; j < nodePositions.length; j++){
+                    if (nodePositions[i].distanceTo(nodePositions[j]) < 1.15){
+                        linkPositions.push(nodePositions[i].x, nodePositions[i].y, nodePositions[i].z);
+                        linkPositions.push(nodePositions[j].x, nodePositions[j].y, nodePositions[j].z);
+                    }
+                }
+            }
+            const linkGeo = new THREE.BufferGeometry();
+            linkGeo.setAttribute('position', new THREE.Float32BufferAttribute(linkPositions, 3));
+            const linkMat = new THREE.LineBasicMaterial({ color: 0x2a3a8f, transparent:true, opacity:0.35 });
+            const links = new THREE.LineSegments(linkGeo, linkMat);
+            scene.add(links);
+
+            // Glowing pulse travelers riding a few links (transaction pulses)
+            const pulseGeo = new THREE.SphereGeometry(0.045, 8, 8);
+            const pulseMat = new THREE.MeshBasicMaterial({ color: 0x28e0d6 });
+            const pulses = [];
+            const pulseCount = 10;
+            for (let i = 0; i < pulseCount; i++){
+                const a = nodePositions[Math.floor(Math.random() * nodePositions.length)];
+                const b = nodePositions[Math.floor(Math.random() * nodePositions.length)];
+                const mesh = new THREE.Mesh(pulseGeo, pulseMat);
+                scene.add(mesh);
+                pulses.push({ mesh, a, b, t: Math.random(), speed: 0.004 + Math.random() * 0.006 });
+            }
+
+            const group = new THREE.Group();
+            group.add(nodePoints, links);
+            scene.add(group);
+
+            let mouseX = 0, mouseY = 0;
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5);
+                mouseY = (e.clientY / window.innerHeight - 0.5);
+            });
+
+            const clock = new THREE.Clock();
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            function animate(){
+                requestAnimationFrame(animate);
+                const dt = clock.getDelta();
+
+                if (!reduceMotion){
+                    group.rotation.y += dt * 0.08;
+                    group.rotation.x += (mouseY * 0.3 - group.rotation.x) * 0.02;
+                    group.rotation.y += (mouseX * 0.15) * 0.01;
+
+                    pulses.forEach(p => {
+                        p.t += p.speed;
+                        if (p.t > 1){ p.t = 0; p.a = nodePositions[Math.floor(Math.random()*nodePositions.length)]; p.b = nodePositions[Math.floor(Math.random()*nodePositions.length)]; }
+                        p.mesh.position.lerpVectors(p.a, p.b, p.t).applyEuler(group.rotation);
+                    });
+                }
+
+                renderer.render(scene, camera);
+            }
+            animate();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             initCounterAnimation();
-            initAutomatedCarousel();
+            initReveal();
+            initTilt();
+            renderReviews();
+            initHero3D();
+        });
+
+        // ---------------- Premium Checkout Modal Engine ----------------
+        let checkoutPending = null; // { packageName, amountInNaira }
+
+        function formatNaira(n){
+            return '₦' + n.toLocaleString('en-NG');
+        }
+
+        function payWithPaystack(packageName, amountInNaira) {
+            checkoutPending = { packageName, amountInNaira };
+            document.getElementById('checkoutPlanName').textContent = packageName;
+            document.getElementById('checkoutPlanPrice').textContent = formatNaira(amountInNaira);
+            document.getElementById('checkoutEmailInput').value = '';
+            document.getElementById('checkoutEmailError').textContent = '';
+            document.getElementById('checkoutEmailInput').classList.remove('err');
+            document.getElementById('checkoutStepEmail').style.display = 'block';
+            document.getElementById('checkoutStepResult').style.display = 'none';
+            resetPayButton();
+
+            const overlay = document.getElementById('checkoutOverlay');
+            overlay.classList.add('open');
+            lucide.createIcons();
+            setTimeout(() => document.getElementById('checkoutEmailInput').focus(), 250);
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutOverlay').classList.remove('open');
+        }
+
+        function resetPayButton(){
+            const btn = document.getElementById('checkoutPayBtn');
+            btn.disabled = false;
+            document.getElementById('checkoutPayBtnLabel').innerHTML = 'Continue to Paystack';
+        }
+
+        function isValidEmail(email){
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function submitCheckoutEmail(){
+            const input = document.getElementById('checkoutEmailInput');
+            const errorEl = document.getElementById('checkoutEmailError');
+            const email = input.value.trim();
+
+            if (!isValidEmail(email)){
+                input.classList.add('err');
+                errorEl.textContent = 'Enter a valid email address to continue.';
+                input.focus();
+                return;
+            }
+            input.classList.remove('err');
+            errorEl.textContent = '';
+
+            const btn = document.getElementById('checkoutPayBtn');
+            btn.disabled = true;
+            document.getElementById('checkoutPayBtnLabel').innerHTML = '<span class="spinner"></span> Opening Paystack&hellip;';
+
+            const { packageName, amountInNaira } = checkoutPending;
+
+            let handler = PaystackPop.setup({
+                key: 'pk_live_8b224c134d4236b808b2d779e4a5dd9d33c7adc2',
+                email: email,
+                amount: amountInNaira * 100,
+                currency: 'NGN',
+                ref: 'BGD_' + Math.floor((Math.random() * 1000000000) + 1),
+                metadata: {
+                    custom_fields: [
+                        { display_name: "Service Plan", variable_name: "service_plan", value: packageName }
+                    ]
+                },
+                callback: function(response) {
+                    showCheckoutResult({
+                        variant: 'success',
+                        icon: 'check-circle-2',
+                        title: 'Payment successful',
+                        message: `Reference ${response.reference}. We'll reach out shortly via email and WhatsApp with your order details.`
+                    });
+                },
+                onClose: function() {
+                    resetPayButton();
+                    showCheckoutResult({
+                        variant: 'cancel',
+                        icon: 'info',
+                        title: 'Transaction canceled',
+                        message: 'No charge was made. You can restart checkout any time from the package cards.'
+                    });
+                }
+            });
+
+            handler.openIframe();
+        }
+
+        function showCheckoutResult({ variant, icon, title, message }){
+            const iconColors = {
+                success: { bg:'rgba(52,211,153,.14)', color:'var(--emerald)' },
+                cancel:  { bg:'rgba(148,163,255,.14)', color:'var(--text-mid)' },
+                error:   { bg:'rgba(249,112,102,.14)', color:'#f97066' }
+            };
+            const c = iconColors[variant] || iconColors.cancel;
+
+            document.getElementById('checkoutStepEmail').style.display = 'none';
+            const resultStep = document.getElementById('checkoutStepResult');
+            resultStep.style.display = 'block';
+
+            const iconEl = document.getElementById('checkoutResultIcon');
+            iconEl.style.background = c.bg;
+            iconEl.style.color = c.color;
+            iconEl.innerHTML = `<i data-lucide="${icon}" style="width:21px;height:21px;"></i>`;
+
+            document.getElementById('checkoutResultTitle').textContent = title;
+            document.getElementById('checkoutResultMessage').textContent = message;
+            lucide.createIcons();
+        }
+
+        document.getElementById('checkoutEmailInput')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitCheckoutEmail();
+        });
+        document.getElementById('checkoutOverlay')?.addEventListener('click', (e) => {
+            if (e.target.id === 'checkoutOverlay') closeCheckoutModal();
         });
     </script>
 </body>
