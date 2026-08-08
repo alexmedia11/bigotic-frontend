@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Create Account | Bigotic Data Free Automated Enrollment Portal</title>
     <meta name="title" content="Create Account | Bigotic Data Free Automated Enrollment Portal">
     <meta name="description" content="Join thousands of smart digital traders. Create your free Bigotic Data account today for instant wholesale VTU airtime distribution, cheap internet bundles, and lightning-fast billing.">
@@ -15,215 +15,388 @@
     <meta property="og:description" content="Register your details instantly to experience absolute data automation and automated transaction delivery loops 24/7.">
     <meta property="og:image" content="https://bigoticdata.com.ng/Promo1.jpg">
 
-    <link rel="stylesheet" href="output.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #F8FAFC; 
-            color: #0F172A; 
-            min-height: 100vh;
-        }
-        .premium-card { 
-            background: #FFFFFF; 
-            border: 1px solid #E2E8F0; 
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04);
-        }
-        .brand-gradient { 
-            background: linear-gradient(135deg, #0052FF 0%, #003FE6 100%); 
-        }
-        .spinner { 
-            border: 2px solid rgba(15, 23, 42, 0.1); 
-            border-left-color: #FFFFFF; 
-            border-radius: 50%; 
-            width: 18px; 
-            height: 18px; 
-            animation: spin 1s linear infinite; 
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        @keyframes slideIn {
-            from { transform: translateY(-1rem); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .toast-animate {
-            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
 
-        /* Rebranding Waveform Animations */
-        @keyframes waveBarGrowth {
-            0%, 100% { height: 6px; transform: scaleY(1); }
-            50% { height: 24px; transform: scaleY(1.3); background-color: #0052FF; }
+    <style>
+        :root{
+            --ink:#060915;
+            --ink-soft:#0d1330;
+            --panel:#0f1638;
+            --panel-line: rgba(148,163,255,0.14);
+            --text-hi:#eef1ff;
+            --text-mid:#aab0d6;
+            --text-dim:#6b71a0;
+            --electric:#3b6bff;
+            --electric-soft:#7c9bff;
+            --cyan:#28e0d6;
+            --emerald:#34d399;
+            --rose:#f97066;
         }
-        @keyframes logoGentlyBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
+        *{ box-sizing:border-box; }
+        body{
+            margin:0; min-height:100vh; font-family:'Inter',sans-serif; color:var(--text-hi);
+            background:radial-gradient(circle at 18% 8%, #142055 0%, var(--ink) 55%);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            padding:28px; position:relative; overflow-x:hidden;
         }
-        .animate-wave-bar {
-            animation: waveBarGrowth 0.8s ease-in-out infinite;
+        .font-display{ font-family:'Space Grotesk',sans-serif; }
+        .font-mono{ font-family:'JetBrains Mono',monospace; }
+
+        /* ambient living background */
+        .blob{ position:fixed; border-radius:50%; filter:blur(90px); pointer-events:none; z-index:0; opacity:.5; }
+        .blob-1{ width:420px; height:420px; background:radial-gradient(circle, rgba(59,107,255,.5), transparent 70%); top:-140px; left:-120px; animation: drift1 16s ease-in-out infinite; }
+        .blob-2{ width:360px; height:360px; background:radial-gradient(circle, rgba(40,224,214,.35), transparent 70%); bottom:-140px; right:-100px; animation: drift2 19s ease-in-out infinite; }
+        @keyframes drift1{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(40px,30px); } }
+        @keyframes drift2{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-30px,-40px); } }
+
+        .particles{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+        .particle{ position:absolute; width:3px; height:3px; border-radius:50%; background:var(--cyan); opacity:.5; animation: rise linear infinite; }
+        @keyframes rise{ from{ transform:translateY(0); opacity:0; } 10%{ opacity:.6; } 90%{ opacity:.4; } to{ transform:translateY(-100vh); opacity:0; } }
+
+        @media (prefers-reduced-motion: reduce){ *{ animation:none !important; } }
+
+        .wrap{ position:relative; z-index:2; max-width:420px; width:100%; }
+
+        .brand-logo{
+            display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:26px; text-decoration:none;
         }
-        .animate-logo-bounce {
-            animation: logoGentlyBounce 2s ease-in-out infinite;
+        .brand-logo .mark{
+            width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--electric),var(--cyan));
+            display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(59,107,255,.35);
         }
+        .brand-logo .word{ font-size:19px; font-weight:700; color:var(--text-hi); letter-spacing:-.02em; }
+        .brand-logo .word span{ color:var(--text-dim); font-weight:400; }
+
+        .card{
+            background:linear-gradient(165deg, var(--panel), var(--ink-soft));
+            border:1px solid var(--panel-line); border-radius:26px; padding:36px 30px;
+            box-shadow:0 40px 100px -20px rgba(0,0,0,.55), 0 0 0 1px rgba(124,155,255,.05);
+            position:relative; overflow:hidden;
+        }
+        .card::before{
+            content:''; position:absolute; top:-70%; left:-10%; width:130%; height:130%;
+            background:radial-gradient(circle, rgba(59,107,255,.14), transparent 60%); pointer-events:none;
+        }
+        .card > *{ position:relative; z-index:1; }
+
+        .card h2{ font-size:21px; font-weight:700; margin:0 0 4px; }
+        .card .sub{ color:var(--text-mid); font-size:12.5px; margin:0 0 26px; line-height:1.6; }
+
+        .field{ margin-bottom:18px; }
+        .field label{
+            display:block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.09em;
+            color:var(--text-dim); margin-bottom:8px;
+        }
+        .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .input-wrap{ position:relative; }
+        .input-wrap i{ position:absolute; left:14px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-dim); }
+        .input-wrap input{
+            width:100%; background:rgba(255,255,255,.03); border:1px solid var(--panel-line); border-radius:12px;
+            padding:13px 14px 13px 40px; color:var(--text-hi); font-size:13px; font-family:'Inter',sans-serif;
+            transition:border-color .2s ease, background .2s ease; outline:none;
+        }
+        .input-wrap input::placeholder{ color:var(--text-dim); }
+        .input-wrap input:focus{ border-color:var(--electric-soft); background:rgba(255,255,255,.05); }
+        .input-wrap input.err{ border-color:var(--rose); }
+        .field-error{ color:var(--rose); font-size:11px; margin-top:6px; min-height:14px; }
+
+        .submit-btn{
+            width:100%; border:none; cursor:pointer; margin-top:6px;
+            background:linear-gradient(135deg, var(--electric), #1d3fbf); color:#fff;
+            padding:15px; border-radius:13px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+            display:flex; align-items:center; justify-content:center; gap:9px;
+            box-shadow:0 14px 30px rgba(59,107,255,.35);
+            transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+        }
+        .submit-btn:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 18px 36px rgba(59,107,255,.45); }
+        .submit-btn:active:not(:disabled){ transform:translateY(0) scale(.98); }
+        .submit-btn:disabled{ opacity:.75; cursor:progress; }
+
+        .spinner{
+            width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+            animation:spin .7s linear infinite;
+        }
+        @keyframes spin{ to{ transform:rotate(360deg); } }
+
+        .switch-line{ text-align:center; font-size:12px; color:var(--text-mid); margin-top:22px; }
+        .switch-line a{ color:var(--electric-soft); font-weight:700; text-decoration:none; }
+        .switch-line a:hover{ text-decoration:underline; }
+
+        .trust-row{
+            display:flex; align-items:center; justify-content:center; gap:6px; margin-top:22px;
+            color:var(--text-dim); font-size:10.5px;
+        }
+        .trust-row i{ width:12px; height:12px; }
+
+        /* toasts — premium treatment */
+        #toastContainer{ position:fixed; top:22px; right:22px; z-index:60; display:flex; flex-direction:column; gap:12px; max-width:360px; width:calc(100% - 44px); pointer-events:none; }
+        .toast{
+            pointer-events:auto; position:relative; overflow:hidden;
+            display:flex; align-items:flex-start; gap:12px; padding:16px 18px 15px;
+            border-radius:16px; background:linear-gradient(165deg, var(--panel), var(--ink-soft));
+            border:1px solid var(--panel-line);
+            box-shadow:0 24px 60px -14px rgba(0,0,0,.6), 0 0 0 1px rgba(124,155,255,.04);
+            transform:translateY(-16px) scale(.96); opacity:0;
+            transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .35s ease, box-shadow .3s ease;
+        }
+        .toast.show{ transform:translateY(0) scale(1); opacity:1; }
+        .toast::before{
+            content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+        }
+        .toast.success::before{ background:linear-gradient(180deg,var(--emerald),#1fae7d); box-shadow:0 0 14px rgba(52,211,153,.6); }
+        .toast.error::before{ background:linear-gradient(180deg,var(--rose),#c8362a); box-shadow:0 0 14px rgba(249,112,102,.55); }
+        .toast::after{
+            content:''; position:absolute; left:0; bottom:0; height:2px; width:100%;
+            transform-origin:left; animation: toast-countdown 4.2s linear forwards;
+        }
+        .toast:hover::after{ animation-play-state:paused; }
+        .toast.success::after{ background:linear-gradient(90deg,var(--emerald),transparent); }
+        .toast.error::after{ background:linear-gradient(90deg,var(--rose),transparent); }
+        @keyframes toast-countdown{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
+        .toast .icon{
+            width:32px; height:32px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+            position:relative;
+        }
+        .toast .icon::before{
+            content:''; position:absolute; inset:-4px; border-radius:12px; opacity:.5;
+            animation: icon-pulse 1.8s ease-out infinite;
+        }
+        .toast.success .icon{ background:rgba(52,211,153,.16); color:var(--emerald); }
+        .toast.success .icon::before{ box-shadow:0 0 0 1px rgba(52,211,153,.5); }
+        .toast.error .icon{ background:rgba(249,112,102,.16); color:var(--rose); }
+        .toast.error .icon::before{ box-shadow:0 0 0 1px rgba(249,112,102,.5); }
+        @keyframes icon-pulse{ 0%{ opacity:.5; transform:scale(1); } 100%{ opacity:0; transform:scale(1.35); } }
+        .toast .body{ flex:1; padding-top:1px; }
+        .toast .title{ margin:0 0 2px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+        .toast.success .title{ color:var(--emerald); }
+        .toast.error .title{ color:var(--rose); }
+        .toast p{ margin:0; font-size:12px; font-weight:500; color:var(--text-mid); line-height:1.55; }
+        .toast .dismiss{
+            background:none; border:none; color:var(--text-dim); cursor:pointer; padding:3px; border-radius:6px;
+            flex-shrink:0; margin-top:1px; transition:color .2s ease, background .2s ease;
+        }
+        .toast .dismiss:hover{ color:var(--text-hi); background:rgba(255,255,255,.06); }
+
+        /* full-screen brand loader */
+        #brand-loader-overlay{
+            position:fixed; inset:0; z-index:9999; background:var(--ink);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            opacity:0; pointer-events:none; transition:opacity .5s ease;
+        }
+        #brand-loader-overlay.on{ opacity:1; pointer-events:auto; }
+        .loader-mark{
+            width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg,var(--electric),var(--cyan));
+            display:flex; align-items:center; justify-content:center; margin-bottom:22px;
+            box-shadow:0 20px 50px rgba(59,107,255,.4); animation: logo-bounce 2s ease-in-out infinite;
+        }
+        @keyframes logo-bounce{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
+        .wave-bars{ display:flex; align-items:flex-end; gap:5px; height:26px; margin-bottom:16px; }
+        .wave-bars span{ width:5px; border-radius:3px; background:linear-gradient(180deg,var(--cyan),var(--electric)); animation:wave-grow .8s ease-in-out infinite; }
+        @keyframes wave-grow{ 0%,100%{ height:5px; } 50%{ height:24px; } }
+        #loader-status-text{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.22em; color:var(--text-dim); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6 antialiased">
+<body>
 
-    <div id="brand-loader-overlay" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
-        <div class="relative flex flex-col items-center max-w-xs text-center px-4">
-            
-            <div class="relative w-48 h-48 flex items-center justify-center mb-2">
-                <div class="absolute w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
-                <img src="Bigoticdata.com.ng.png" alt="Bigotic Data Logo" class="relative z-10 w-full h-auto object-contain animate-logo-bounce">
-            </div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="particles" id="particles"></div>
 
-            <div class="flex items-center justify-center gap-1 w-32 h-6 mb-4">
-                <span class="w-1.5 bg-[#0052FF] rounded-full animate-wave-bar" style="animation-delay: 0.1s; height: 4px;"></span>
-                <span class="w-1.5 bg-[#0052FF] rounded-full animate-wave-bar" style="animation-delay: 0.2s; height: 12px;"></span>
-                <span class="w-1.5 bg-[#003FE6] rounded-full animate-wave-bar" style="animation-delay: 0.3s; height: 20px;"></span>
-                <span class="w-1.5 bg-[#0052FF] rounded-full animate-wave-bar" style="animation-delay: 0.4s; height: 14px;"></span>
-                <span class="w-1.5 bg-[#003FE6] rounded-full animate-wave-bar" style="animation-delay: 0.5s; height: 4px;"></span>
-            </div>
-
-            <p id="loader-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] pl-1 animate-pulse">Securing Node Connection...</p>
+    <div id="brand-loader-overlay">
+        <div class="loader-mark"><i data-lucide="zap" style="width:28px;height:28px;color:#fff;"></i></div>
+        <div class="wave-bars">
+            <span style="animation-delay:.0s;"></span>
+            <span style="animation-delay:.1s;"></span>
+            <span style="animation-delay:.2s;"></span>
+            <span style="animation-delay:.3s;"></span>
+            <span style="animation-delay:.4s;"></span>
         </div>
+        <p id="loader-status-text">Securing node connection&hellip;</p>
     </div>
 
-    <div id="toastContainer" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+    <div id="toastContainer"></div>
 
-    <div class="max-w-md w-full space-y-6">
-        <div class="flex justify-center items-center">
-            <a href="index.html" class="block w-44 h-auto">
-                <img src="Bigoticdata.com.ng.png" alt="Bigotic Data Logo" class="w-full h-full object-contain">
-            </a>
-        </div>
+    <div class="wrap">
+        <a href="index.html" class="brand-logo">
+            <span class="mark"><i data-lucide="zap" style="width:18px;height:18px;color:#fff;"></i></span>
+            <span class="font-display word">BIGOTIC<span>DATA</span></span>
+        </a>
 
-        <div class="premium-card p-8 rounded-[2.5rem]">
-            <h2 class="text-xl font-extrabold mb-1 text-slate-900 text-left tracking-tight">Create Account</h2>
-            <p class="text-xs text-slate-400 mb-6 text-left">Join thousands of smart users. Automated utility delivery begins instantly.</p>
+        <div class="card">
+            <h2 class="font-display">Create your account</h2>
+            <p class="sub">Join thousands of smart users. Automated utility delivery begins the moment you sign up.</p>
 
-            <form id="signupForm" class="space-y-5 text-left">
-                <div>
-                    <label class="text-[10px] text-slate-400 mb-1.5 block uppercase font-black tracking-wider">Full Name</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                            <i data-lucide="user" class="w-4 h-4"></i>
-                        </span>
-                        <input type="text" id="fullName" required placeholder="John Doe" 
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-xs font-semibold text-slate-900 placeholder:text-slate-300 outline-none focus:border-[#0052FF] focus:bg-white transition-all">
+            <form id="signupForm" novalidate>
+                <div class="field">
+                    <label for="fullName">Full name</label>
+                    <div class="input-wrap">
+                        <i data-lucide="user"></i>
+                        <input type="text" id="fullName" required placeholder="John Doe">
                     </div>
+                    <div class="field-error" data-error-for="fullName"></div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] text-slate-400 mb-1.5 block uppercase font-black tracking-wider">Username</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                                <i data-lucide="at-sign" class="w-4 h-4"></i>
-                            </span>
-                            <input type="text" id="username" required placeholder="johndoe" 
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-xs font-semibold text-slate-900 placeholder:text-slate-300 outline-none focus:border-[#0052FF] focus:bg-white transition-all">
+                <div class="field-row">
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <div class="input-wrap">
+                            <i data-lucide="at-sign"></i>
+                            <input type="text" id="username" required placeholder="johndoe">
                         </div>
+                        <div class="field-error" data-error-for="username"></div>
                     </div>
-                    <div>
-                        <label class="text-[10px] text-slate-400 mb-1.5 block uppercase font-black tracking-wider">Phone Number</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                                <i data-lucide="phone" class="w-4 h-4"></i>
-                            </span>
-                            <input type="tel" id="phoneNumber" required placeholder="08012345678" maxlength="11"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-xs font-semibold text-slate-900 placeholder:text-slate-300 outline-none focus:border-[#0052FF] focus:bg-white transition-all">
+                    <div class="field">
+                        <label for="phoneNumber">Phone number</label>
+                        <div class="input-wrap">
+                            <i data-lucide="phone"></i>
+                            <input type="tel" id="phoneNumber" required placeholder="08012345678" maxlength="11">
                         </div>
+                        <div class="field-error" data-error-for="phoneNumber"></div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="text-[10px] text-slate-400 mb-1.5 block uppercase font-black tracking-wider">Email Address</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                            <i data-lucide="mail" class="w-4 h-4"></i>
-                        </span>
-                        <input type="email" id="email" required placeholder="johndoe@example.com" 
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-xs font-semibold text-slate-900 placeholder:text-slate-300 outline-none focus:border-[#0052FF] focus:bg-white transition-all">
+                <div class="field">
+                    <label for="email">Email address</label>
+                    <div class="input-wrap">
+                        <i data-lucide="mail"></i>
+                        <input type="email" id="email" required placeholder="johndoe@gmail.com">
                     </div>
+                    <div class="field-error" data-error-for="email"></div>
                 </div>
 
-                <div>
-                    <label class="text-[10px] text-slate-400 mb-1.5 block uppercase font-black tracking-wider">Security Password</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                            <i data-lucide="lock" class="w-4 h-4"></i>
-                        </span>
-                        <input type="password" id="password" required minlength="6" placeholder="Minimum 6 characters" 
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-11 pr-4 text-xs font-bold text-slate-900 placeholder:text-slate-300 tracking-normal outline-none focus:border-[#0052FF] focus:bg-white transition-all">
+                <div class="field" style="margin-bottom:8px;">
+                    <label for="password">Security password</label>
+                    <div class="input-wrap">
+                        <i data-lucide="lock"></i>
+                        <input type="password" id="password" required minlength="6" placeholder="Minimum 6 characters">
                     </div>
+                    <div class="field-error" data-error-for="password"></div>
                 </div>
 
-                <button type="submit" id="submitBtn" 
-                    class="w-full brand-gradient text-white py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-md shadow-blue-600/10 transition-all flex justify-center items-center active:scale-[0.98] cursor-pointer">
-                    Create My Account
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <span id="submitBtnLabel">Create my account</span>
                 </button>
             </form>
 
-            <p class="mt-6 text-center text-xs text-slate-400 font-semibold">
-                Already have an account? 
-                <a href="login.html" class="text-[#0052FF] font-extrabold hover:underline ml-1">Sign In</a>
-            </p>
+            <p class="switch-line">Already have an account? <a href="login.html">Sign in</a></p>
+            <div class="trust-row"><i data-lucide="shield-check"></i> Your details are encrypted end-to-end</div>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
 
+        // ambient rising particles
+        (function initParticles(){
+            const wrap = document.getElementById('particles');
+            const count = window.innerWidth < 640 ? 14 : 26;
+            for (let i = 0; i < count; i++){
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.bottom = '-10px';
+                p.style.animationDuration = (10 + Math.random() * 14) + 's';
+                p.style.animationDelay = (Math.random() * 14) + 's';
+                wrap.appendChild(p);
+            }
+        })();
+
         const urlParams = new URLSearchParams(window.location.search);
-        const referralCode = urlParams.get('ref'); 
+        const referralCode = urlParams.get('ref');
 
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            
-            toast.className = `toast-animate pointer-events-auto flex items-center gap-3 p-4 rounded-xl border backdrop-blur-md shadow-lg transition-all duration-300 ${
-                type === 'success' 
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                : 'bg-rose-50 border-rose-200 text-rose-800'
-            }`;
+            toast.className = `toast ${type}`;
+            const iconName = type === 'success' ? 'check-circle-2' : 'alert-circle';
+            const title = type === 'success' ? 'Success' : 'Something needs attention';
 
-            const iconName = type === 'success' ? 'check-circle' : 'alert-circle';
-            
             toast.innerHTML = `
-                <i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i>
-                <p class="text-xs font-bold leading-tight">${message}</p>
+                <span class="icon"><i data-lucide="${iconName}" style="width:16px;height:16px;"></i></span>
+                <div class="body">
+                    <p class="title">${title}</p>
+                    <p>${message}</p>
+                </div>
+                <button class="dismiss" aria-label="Dismiss"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
             `;
-            
             container.appendChild(toast);
             lucide.createIcons();
+            requestAnimationFrame(() => toast.classList.add('show'));
 
-            setTimeout(() => {
+            let dismissed = false;
+            const removeToast = () => {
+                if (dismissed) return;
+                dismissed = true;
+                toast.classList.remove('show');
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-10px)';
                 setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            };
+
+            toast.querySelector('.dismiss').addEventListener('click', removeToast);
+
+            // pause the countdown bar (via CSS :hover) and its JS timer while hovered, resume on leave
+            let timer = setTimeout(removeToast, 4200);
+            let hoveredAt = null;
+            toast.addEventListener('mouseenter', () => {
+                clearTimeout(timer);
+                hoveredAt = Date.now();
+            });
+            toast.addEventListener('mouseleave', () => {
+                timer = setTimeout(removeToast, 1400);
+            });
+        }
+
+        function setFieldError(id, message){
+            const input = document.getElementById(id);
+            const errorEl = document.querySelector(`[data-error-for="${id}"]`);
+            if (message){
+                input.classList.add('err');
+                errorEl.textContent = message;
+            } else {
+                input.classList.remove('err');
+                errorEl.textContent = '';
+            }
+        }
+
+        function clearAllFieldErrors(){
+            ['fullName','username','phoneNumber','email','password'].forEach(id => setFieldError(id, ''));
         }
 
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            clearAllFieldErrors();
+
             const submitBtn = document.getElementById('submitBtn');
+            const submitLabel = document.getElementById('submitBtnLabel');
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const email = document.getElementById('email').value.trim();
             const passwordVal = document.getElementById('password').value;
-            
-            if (passwordVal.length < 6) {
-                showNotification("Registration policy error. Choose a password containing at least 6 characters.");
+
+            let hasError = false;
+            if (!fullName){ setFieldError('fullName', 'Enter your full name.'); hasError = true; }
+            if (!username){ setFieldError('username', 'Choose a username.'); hasError = true; }
+            if (!/^0\d{10}$/.test(phoneNumber)){ setFieldError('phoneNumber', 'Enter an 11-digit phone number.'); hasError = true; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setFieldError('email', 'Enter a valid email address.'); hasError = true; }
+            if (passwordVal.length < 6){ setFieldError('password', 'At least 6 characters.'); hasError = true; }
+
+            if (hasError){
+                showNotification("Check the highlighted fields and try again.");
                 return;
             }
 
-            submitBtn.innerHTML = `<div class="spinner"></div>`;
             submitBtn.disabled = true;
+            submitLabel.innerHTML = '<span class="spinner"></span> Creating account&hellip;';
 
             const payload = {
-                fullName: document.getElementById('fullName').value,
-                username: document.getElementById('username').value,
-                phone: document.getElementById('phoneNumber').value, 
-                email: document.getElementById('email').value,
+                fullName, username,
+                phone: phoneNumber,
+                email,
                 password: passwordVal,
                 referredBy: referralCode || null
             };
@@ -238,26 +411,21 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showNotification("Account registered successfully! Initiating handshake...", "success");
-                    
-                    // Trigger the Custom Premium Brand Pulse Transition Wave
-                    document.getElementById('loader-status-text').innerText = "Generating Account Matrix...";
-                    const overlay = document.getElementById('brand-loader-overlay');
-                    overlay.classList.remove('opacity-0', 'pointer-events-none');
-                    overlay.classList.add('opacity-100');
+                    showNotification("Account registered successfully! Initiating handshake\u2026", "success");
 
-                    setTimeout(() => {
-                        window.location.href = "login.html";
-                    }, 2500);
+                    document.getElementById('loader-status-text').innerText = "Generating account matrix\u2026";
+                    document.getElementById('brand-loader-overlay').classList.add('on');
+
+                    setTimeout(() => { window.location.href = "login.html"; }, 2200);
                 } else {
                     showNotification(data.error || "Signup configuration parameters rejected.");
-                    submitBtn.innerText = "Create My Account";
+                    submitLabel.innerText = "Create my account";
                     submitBtn.disabled = false;
                 }
             } catch (err) {
                 console.error(err);
-                showNotification("Cannot reach server gateway profiles. It may be asleep; please retry shortly.");
-                submitBtn.innerText = "Create My Account";
+                showNotification("Cannot reach server gateway. It may be asleep \u2014 please retry shortly.");
+                submitLabel.innerText = "Create my account";
                 submitBtn.disabled = false;
             }
         });
