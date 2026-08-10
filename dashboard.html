@@ -280,6 +280,53 @@
         .toast p.msg{ margin:0; font-size:11.5px; font-weight:500; color:var(--text-mid); line-height:1.5; }
         .toast .dismiss{ background:none; border:none; color:var(--text-dim); cursor:pointer; padding:3px; border-radius:6px; flex-shrink:0; transition:color .2s ease, background .2s ease; }
         .toast .dismiss:hover{ color:var(--text-hi); background:var(--tile-hover); }
+
+        /* ---------- KYC / premium modal ---------- */
+        .modal-overlay{
+            position:fixed; inset:0; z-index:95; background:rgba(3,5,14,.62); backdrop-filter:blur(6px);
+            display:flex; align-items:center; justify-content:center; padding:20px;
+            opacity:0; pointer-events:none; transition:opacity .28s ease;
+        }
+        .modal-overlay.open{ opacity:1; pointer-events:auto; }
+        .modal-card{
+            width:100%; max-width:400px; background:var(--card-2); border:1px solid var(--border); border-radius:22px; padding:32px;
+            box-shadow:0 40px 100px -20px rgba(0,0,0,.5); transform:translateY(18px) scale(.97);
+            transition:transform .32s cubic-bezier(.16,1,.3,1); position:relative; overflow:hidden;
+        }
+        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
+        .modal-card::before{
+            content:''; position:absolute; top:-60%; left:-20%; width:140%; height:140%;
+            background:radial-gradient(circle, rgba(59,107,255,.14), transparent 60%); pointer-events:none;
+        }
+        .modal-icon{
+            width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+            margin-bottom:18px; position:relative; z-index:1;
+        }
+        .modal-close{
+            position:absolute; top:18px; right:18px; color:var(--text-dim); background:none; border:none; cursor:pointer;
+            padding:6px; border-radius:8px; transition:color .2s ease, background .2s ease; z-index:2;
+        }
+        .modal-close:hover{ color:var(--text-hi); background:var(--tile-hover); }
+        .modal-label{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--text-dim); display:block; margin-bottom:8px; position:relative; z-index:1; }
+        .modal-input{
+            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:12px;
+            padding:13px 15px; color:var(--text-hi); font-size:13.5px; font-family:'Inter',sans-serif;
+            transition:border-color .2s ease, background .2s ease; margin-bottom:6px; position:relative; z-index:1;
+        }
+        .modal-input::placeholder{ color:var(--text-dim); }
+        .modal-input:focus{ outline:none; border-color:var(--electric-soft); }
+        .modal-input.err{ border-color:var(--rose); }
+        .modal-error{ color:var(--rose); font-size:11.5px; min-height:16px; margin-bottom:10px; position:relative; z-index:1; }
+        .btn-primary{
+            border:none; cursor:pointer; background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff;
+            padding:14px; border-radius:13px; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+            display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 14px 30px -10px rgba(59,107,255,.4);
+            transition:transform .2s ease, opacity .2s ease; position:relative; z-index:1;
+        }
+        .btn-primary:hover:not(:disabled){ transform:translateY(-2px); }
+        .btn-primary:disabled{ opacity:.7; cursor:progress; }
+        .kyc-spinner{ width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:kyc-spin .7s linear infinite; display:inline-block; }
+        @keyframes kyc-spin{ to{ transform:rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -375,7 +422,9 @@
         </div>
 
         <p class="section-label">Dedicated Funding Account</p>
-        <div class="card funding-card">
+
+        <!-- Shown once a dedicated account exists -->
+        <div class="card funding-card" id="fundingCardReady" style="display:none;">
             <div class="funding-left">
                 <div class="funding-icon"><i data-lucide="building" style="width:20px;height:20px;"></i></div>
                 <div style="min-width:0;">
@@ -384,6 +433,18 @@
                 </div>
             </div>
             <button onclick="copyVirtualAccount()" class="copy-btn" title="Copy Account Number"><i data-lucide="copy" style="width:16px;height:16px;"></i></button>
+        </div>
+
+        <!-- Shown until the user completes BVN/NIN verification -->
+        <div class="card funding-card" id="fundingCardActivate" style="cursor:pointer;" onclick="openKycModal()">
+            <div class="funding-left">
+                <div class="funding-icon" style="background:rgba(244,183,64,.16);color:var(--gold);"><i data-lucide="shield-alert" style="width:20px;height:20px;"></i></div>
+                <div style="min-width:0;">
+                    <p class="funding-meta">Verification required</p>
+                    <h3 class="funding-num" style="font-size:14px;">Activate dedicated account</h3>
+                </div>
+            </div>
+            <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-dim);"></i>
         </div>
 
         <p class="section-label">Core Utilities</p>
@@ -401,9 +462,9 @@
         <p class="section-label">Exclusive Offers</p>
         <div class="swiper swiper-promo">
             <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="Promo1.png" alt="Promo 1"></div>
-                <div class="swiper-slide"><img src="Promo2.png" alt="Promo 2"></div>
-                <div class="swiper-slide"><img src="Promo3.png" alt="Promo 3"></div>
+                <div class="swiper-slide"><img src="Promo1.jpg" alt="Promo 1"></div>
+                <div class="swiper-slide"><img src="Promo2.jpg" alt="Promo 2"></div>
+                <div class="swiper-slide"><img src="Promo3.jpg" alt="Promo 3"></div>
             </div>
             <div class="swiper-pagination"></div>
         </div>
@@ -421,6 +482,41 @@
             </div>
         </div>
     </main>
+
+    <div id="kycModal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeKycModal()" aria-label="Close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+
+            <div id="kycStepForm">
+                <div class="modal-icon" style="background:rgba(244,183,64,.14);color:var(--gold);"><i data-lucide="shield-check" style="width:21px;height:21px;"></i></div>
+                <h3 class="font-display" style="color:var(--text-hi);font-size:18px;font-weight:700;margin:0 0 6px;">Activate your dedicated account</h3>
+                <p style="color:var(--text-mid);font-size:12.5px;margin:0 0 20px;line-height:1.6;">Verify with your BVN or NIN to get a permanent bank account number for instant wallet funding.</p>
+
+                <label class="modal-label">Verification method</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;">
+                    <button type="button" id="kycModeBvn" onclick="setKycMode('bvn')" style="padding:11px;border-radius:11px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:2px solid var(--electric);background:rgba(59,107,255,.12);color:var(--electric-soft);">BVN</button>
+                    <button type="button" id="kycModeNin" onclick="setKycMode('nin')" style="padding:11px;border-radius:11px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:2px solid var(--panel-line);background:transparent;color:var(--text-mid);">NIN</button>
+                </div>
+
+                <label class="modal-label" for="kycIdNumber" id="kycIdLabel">BVN number</label>
+                <input id="kycIdNumber" class="modal-input" type="text" inputmode="numeric" maxlength="11" placeholder="Enter your 11-digit BVN" />
+                <div class="modal-error" id="kycIdError"></div>
+
+                <p style="font-size:9.5px;color:var(--text-dim);margin:0 0 18px;line-height:1.5;display:flex;align-items:flex-start;gap:6px;"><i data-lucide="lock" style="width:11px;height:11px;flex-shrink:0;margin-top:1px;"></i> Used only for identity verification with our banking partner. Never shared or stored elsewhere.</p>
+
+                <button id="kycSubmitBtn" class="btn-primary" style="width:100%;justify-content:center;" onclick="submitKyc()">
+                    <span id="kycSubmitBtnLabel">Activate account</span>
+                </button>
+            </div>
+
+            <div id="kycStepResult" style="display:none;">
+                <div class="modal-icon" id="kycResultIcon"></div>
+                <h3 class="font-display" style="color:var(--text-hi);font-size:18px;font-weight:700;margin:0 0 6px;" id="kycResultTitle">&mdash;</h3>
+                <p style="color:var(--text-mid);font-size:12.5px;margin:0 0 22px;line-height:1.6;" id="kycResultMessage">&mdash;</p>
+                <button class="btn-primary" style="width:100%;justify-content:center;" onclick="closeKycModal()">Done</button>
+            </div>
+        </div>
+    </div>
 
     <div class="bottom-nav-wrap">
         <div class="bottom-nav">
@@ -553,6 +649,126 @@
             showNotification("Your dedicated account number is on your clipboard.", "success", { title: "Copied to clipboard", icon: "check-circle-2" });
         }
 
+        // Toggle which funding-account card state is visible
+        function showFundingCard(hasAccount){
+            document.getElementById('fundingCardReady').style.display = hasAccount ? 'flex' : 'none';
+            document.getElementById('fundingCardActivate').style.display = hasAccount ? 'none' : 'flex';
+        }
+
+        // ---------------- KYC / Activate Dedicated Account Modal ----------------
+        let kycMode = 'bvn';
+
+        function setKycMode(mode){
+            kycMode = mode;
+            const bvnBtn = document.getElementById('kycModeBvn');
+            const ninBtn = document.getElementById('kycModeNin');
+            const label = document.getElementById('kycIdLabel');
+            const input = document.getElementById('kycIdNumber');
+
+            const activeStyle = "padding:11px;border-radius:11px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:2px solid var(--electric);background:rgba(59,107,255,.12);color:var(--electric-soft);";
+            const inactiveStyle = "padding:11px;border-radius:11px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:2px solid var(--panel-line);background:transparent;color:var(--text-mid);";
+
+            bvnBtn.setAttribute('style', mode === 'bvn' ? activeStyle : inactiveStyle);
+            ninBtn.setAttribute('style', mode === 'nin' ? activeStyle : inactiveStyle);
+            label.innerText = mode === 'bvn' ? 'BVN number' : 'NIN number';
+            input.placeholder = mode === 'bvn' ? 'Enter your 11-digit BVN' : 'Enter your 11-digit NIN';
+            input.value = '';
+            document.getElementById('kycIdError').innerText = '';
+            input.classList.remove('err');
+        }
+
+        function openKycModal(){
+            setKycMode('bvn');
+            document.getElementById('kycStepForm').style.display = 'block';
+            document.getElementById('kycStepResult').style.display = 'none';
+            resetKycButton();
+            document.getElementById('kycModal').classList.add('open');
+            lucide.createIcons();
+            setTimeout(() => document.getElementById('kycIdNumber').focus(), 250);
+        }
+        function closeKycModal(){ document.getElementById('kycModal').classList.remove('open'); }
+        function resetKycButton(){
+            const btn = document.getElementById('kycSubmitBtn');
+            btn.disabled = false;
+            document.getElementById('kycSubmitBtnLabel').innerText = 'Activate account';
+        }
+
+        async function submitKyc(){
+            const input = document.getElementById('kycIdNumber');
+            const errorEl = document.getElementById('kycIdError');
+            const idValue = input.value.trim();
+
+            if (!/^\d{11}$/.test(idValue)){
+                input.classList.add('err');
+                errorEl.innerText = `Enter a valid 11-digit ${kycMode.toUpperCase()}.`;
+                input.focus();
+                return;
+            }
+            input.classList.remove('err');
+            errorEl.innerText = '';
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user.email) { showNotification("Session expired. Please log in again.", "error"); return; }
+
+            const btn = document.getElementById('kycSubmitBtn');
+            btn.disabled = true;
+            document.getElementById('kycSubmitBtnLabel').innerHTML = '<span class="kyc-spinner"></span> Verifying&hellip;';
+
+            try {
+                const response = await fetch('https://bigoticdata-backend.onrender.com/generate-virtual-account', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: user.email, id_type: kycMode, id_number: idValue })
+                });
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    user.virtualAccountNumber = data.virtualAccountNumber;
+                    user.virtualBankName = data.virtualBankName || "Wema Bank";
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                    document.getElementById('virtual-account-number').innerText = user.virtualAccountNumber;
+                    document.getElementById('virtual-bank-name').innerText = user.virtualBankName;
+                    showFundingCard(true);
+
+                    showKycResult({ variant:'success', icon:'check-circle-2', title:'Account activated', message:`Your dedicated account is ready: ${user.virtualBankName} \u2014 ${user.virtualAccountNumber}.` });
+                } else {
+                    showKycResult({ variant:'error', icon:'alert-circle', title:'Verification failed', message: data.error || data.message || 'We could not verify these details. Please check and try again.' });
+                }
+            } catch (err) {
+                showKycResult({ variant:'error', icon:'alert-circle', title:'Network error', message:'Could not reach the server. Please try again shortly.' });
+            }
+            resetKycButton();
+        }
+
+        function showKycResult({ variant, icon, title, message }){
+            const colors = {
+                success: { bg:'rgba(52,211,153,.14)', color:'var(--emerald)' },
+                error:   { bg:'rgba(249,112,102,.14)', color:'#f97066' }
+            };
+            const c = colors[variant] || colors.error;
+
+            document.getElementById('kycStepForm').style.display = 'none';
+            const resultStep = document.getElementById('kycStepResult');
+            resultStep.style.display = 'block';
+
+            const iconEl = document.getElementById('kycResultIcon');
+            iconEl.style.background = c.bg;
+            iconEl.style.color = c.color;
+            iconEl.innerHTML = `<i data-lucide="${icon}" style="width:21px;height:21px;"></i>`;
+
+            document.getElementById('kycResultTitle').innerText = title;
+            document.getElementById('kycResultMessage').innerText = message;
+            lucide.createIcons();
+        }
+
+        document.getElementById('kycIdNumber')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitKyc();
+        });
+        document.getElementById('kycModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'kycModal') closeKycModal();
+        });
+
         window.onload = async function() {
             compileTimeGreeting();
 
@@ -585,6 +801,9 @@
                 if (user.virtualBankName) {
                     document.getElementById('virtual-bank-name').innerText = user.virtualBankName;
                 }
+                showFundingCard(true);
+            } else {
+                showFundingCard(false);
             }
 
             if (user.email) {
@@ -608,6 +827,7 @@
                             user.virtualBankName = result.virtualBankName || "Wema Bank";
                             document.getElementById('virtual-account-number').innerText = result.virtualAccountNumber;
                             document.getElementById('virtual-bank-name').innerText = result.virtualBankName || "Wema Bank";
+                            showFundingCard(true);
                         }
 
                         localStorage.setItem('user', JSON.stringify(user));
