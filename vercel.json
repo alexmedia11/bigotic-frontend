@@ -1,3 +1,9 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/xixapay-webhook",
+      "destination": "https://bigoticdata-backend.onrender.com/xixapay-webhook"
+    }
+  ]
 }
