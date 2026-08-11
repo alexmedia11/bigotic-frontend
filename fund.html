@@ -6,7 +6,6 @@
     <title>Fund Wallet | Bigotic Data</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <script>
         (function(){
@@ -35,23 +34,20 @@
             font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-hi); min-height:100vh;
             overflow-x:hidden; padding-bottom:110px; transition: background .35s ease, color .35s ease;
         }
-        .font-display{ font-family:'Space Grotesk',sans-serif; }
         .font-mono{ font-family:'JetBrains Mono',monospace; }
         a{ text-decoration:none; color:inherit; }
         button{ font-family:inherit; }
-        @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
 
-        /* ---------- top bar ---------- */
+        /* ---------- Top Bar ---------- */
         .topbar{ position:sticky; top:0; z-index:40; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:var(--nav-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
         .back-btn{ display:flex; align-items:center; gap:7px; color:var(--text-mid); font-size:12px; font-weight:700; }
         .back-btn i{ width:16px; height:16px; }
         .topbar-title{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; display:flex; align-items:center; gap:7px; }
-        .theme-quick{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-mid); transition:background .2s ease; }
-        .theme-quick:hover{ background:var(--row-hover); }
+        .theme-quick{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-mid); }
 
         main{ max-width:460px; margin:0 auto; padding:22px 18px 0; }
 
-        /* ---------- current balance strip ---------- */
+        /* ---------- Balance Strip ---------- */
         .balance-strip{
             display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-radius:18px;
             background:var(--card-2); border:1px solid var(--border); margin-bottom:22px;
@@ -60,56 +56,57 @@
         .balance-strip .amount{ font-size:19px; font-weight:700; font-family:'JetBrains Mono',monospace; margin:0; }
         .balance-strip .ic{ width:38px; height:38px; border-radius:12px; background:rgba(52,211,153,.14); color:var(--emerald); display:flex; align-items:center; justify-content:center; }
 
-        /* ---------- amount hero ---------- */
-        .amount-hero{ text-align:center; padding:8px 0 22px; }
-        .amount-hero .eyebrow{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color:var(--text-dim); margin:0 0 10px; }
-        .amount-display{ display:flex; align-items:baseline; justify-content:center; gap:4px; }
-        .amount-display .ngn{ font-size:24px; font-weight:700; color:var(--text-dim); }
-        .amount-display input{
-            width:auto; max-width:230px; background:none; border:none; outline:none; text-align:center;
-            font-size:44px; font-weight:700; color:var(--text-hi); font-family:'JetBrains Mono',monospace;
-        }
-        .amount-display input::placeholder{ color:var(--text-dim); }
-        .amount-underline{ width:120px; height:3px; border-radius:3px; background:linear-gradient(90deg,var(--electric),var(--cyan)); margin:6px auto 0; }
-        .min-note{ font-size:10px; color:var(--text-dim); font-weight:600; margin-top:10px; }
-
-        .chip-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:26px; }
-        .chip{
-            padding:11px 4px; text-align:center; border-radius:13px; border:1px solid var(--border); background:var(--card);
-            font-size:11.5px; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--text-mid); cursor:pointer;
-            transition:border-color .2s ease, background .2s ease, color .2s ease, transform .15s ease;
-        }
-        .chip:hover{ border-color:var(--electric-soft); }
-        .chip:active{ transform:scale(.96); }
-        .chip.active{ background:linear-gradient(135deg,var(--electric),#1d3fbf); border-color:transparent; color:#fff; box-shadow:0 10px 22px -6px rgba(59,107,255,.5); }
-
-        /* ---------- payment method ---------- */
+        /* ---------- Bank Card Styling ---------- */
         .group-label{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color:var(--text-dim); margin:0 0 10px 4px; }
-        .group{ background:var(--card); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden; }
-        .method-row{ display:flex; align-items:center; gap:13px; padding:16px; }
-        .method-icon{ width:40px; height:40px; border-radius:12px; background:rgba(59,107,255,.14); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .method-body{ flex:1; }
-        .method-title{ font-size:12.5px; font-weight:700; margin:0; }
-        .method-sub{ font-size:10.5px; color:var(--text-dim); margin:2px 0 0; font-weight:500; }
-        .method-radio{ width:19px; height:19px; border-radius:50%; border:2px solid var(--electric); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .method-radio::after{ content:''; width:9px; height:9px; border-radius:50%; background:var(--electric); }
-
-        .trust-row{ display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:22px; color:var(--text-dim); font-size:10.5px; }
-        .trust-row i{ width:12px; height:12px; color:var(--emerald); }
-
-        /* ---------- sticky submit ---------- */
-        .submit-btn{
-            width:100%; border:none; cursor:pointer; background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff;
-            padding:16px; border-radius:15px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
-            display:flex; align-items:center; justify-content:center; gap:9px; box-shadow:0 16px 34px -10px rgba(59,107,255,.45);
-            transition:transform .2s ease, opacity .2s ease; margin-bottom:26px;
+        .bank-card{
+            background: linear-gradient(135deg, var(--card), var(--bg-elevated));
+            border: 1px solid var(--electric-soft);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 22px;
+            position: relative;
         }
-        .submit-btn:hover:not(:disabled){ transform:translateY(-2px); }
-        .submit-btn:disabled{ opacity:.7; cursor:progress; }
-        .spinner{ width:15px; height:15px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
-        @keyframes spin{ to{ transform:rotate(360deg); } }
+        .bank-item{ margin-bottom: 14px; }
+        .bank-item:last-child{ margin-bottom: 0; }
+        .bank-item .title{ font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-dim); }
+        .bank-item .val{ font-size: 15px; font-weight: 700; color: var(--text-hi); margin-top: 2px; }
+        
+        .account-no-box{
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--input-bg); border: 1px solid var(--border);
+            padding: 12px 14px; border-radius: 12px; margin-top: 4px;
+        }
+        .account-no-box span{ font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--electric-soft); }
+        .copy-btn{
+            background: var(--electric); color: #fff; border: none; padding: 6px 12px;
+            border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+        }
 
-        /* ---------- bottom nav ---------- */
+        .notice-box{
+            background: rgba(244, 183, 64, 0.1); border: 1px solid rgba(244, 183, 64, 0.3);
+            border-radius: 14px; padding: 14px; font-size: 11.5px; color: var(--gold);
+            line-height: 1.5; margin-bottom: 22px; display: flex; gap: 10px; align-items: flex-start;
+        }
+
+        /* ---------- Kyc / Account Generation Form ---------- */
+        .kyc-card{
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 22px;
+        }
+        .input-group{ margin-bottom: 14px; }
+        .input-group label{ display: block; font-size: 11px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+        .input-group input, .input-group select{
+            width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+            padding: 12px; border-radius: 12px; color: var(--text-hi); outline: none; font-size: 13px;
+        }
+        .gen-btn{
+            width: 100%; border: none; cursor: pointer; background: linear-gradient(135deg,var(--electric),#1d3fbf);
+            color: #fff; padding: 14px; border-radius: 12px; font-size: 12px; font-weight: 800; text-transform: uppercase;
+        }
+
+        /* ---------- Bottom Nav ---------- */
         .bottom-nav-wrap{ position:fixed; bottom:0; left:0; right:0; z-index:45; padding:0 16px 16px; }
         .bottom-nav{ max-width:460px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-content:space-around; position:relative; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
         .bnav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:56px; color:var(--text-dim); gap:3px; }
@@ -118,31 +115,6 @@
         .bnav-center{ position:relative; top:-16px; }
         .bnav-center .glow{ position:absolute; inset:0; background:var(--electric); border-radius:14px; filter:blur(10px); opacity:.45; }
         .bnav-center a{ position:relative; width:50px; height:50px; border-radius:15px; background:linear-gradient(135deg,var(--electric),#1d3fbf); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 10px 24px rgba(59,107,255,.4); }
-
-        /* ---------- premium multi-stage status modal ---------- */
-        .modal-overlay{ position:fixed; inset:0; z-index:90; background:rgba(3,5,14,.62); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .28s ease; }
-        .modal-overlay.open{ opacity:1; pointer-events:auto; }
-        .modal-card{
-            width:100%; max-width:350px; background:var(--card-2); border:1px solid var(--border); border-radius:26px; padding:32px;
-            text-align:center; box-shadow:0 40px 100px -20px rgba(0,0,0,.5); transform:translateY(18px) scale(.96);
-            transition:transform .32s cubic-bezier(.16,1,.3,1); position:relative; overflow:hidden;
-        }
-        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-        .modal-card::before{ content:''; position:absolute; top:-60%; left:-20%; width:140%; height:140%; background:radial-gradient(circle, rgba(59,107,255,.14), transparent 60%); pointer-events:none; }
-
-        .stage-track{ display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:22px; position:relative; z-index:1; }
-        .stage-dot{ width:7px; height:7px; border-radius:50%; background:var(--border); transition:background .3s ease, width .3s ease; }
-        .stage-dot.active{ background:var(--electric); width:20px; border-radius:4px; }
-        .stage-dot.done{ background:var(--emerald); }
-
-        .modal-icon{ width:64px; height:64px; border-radius:50%; margin:0 auto 18px; display:flex; align-items:center; justify-content:center; position:relative; z-index:1; }
-        .modal-icon::before{ content:''; position:absolute; inset:-8px; border-radius:50%; opacity:.5; animation: modal-icon-pulse 1.8s ease-out infinite; }
-        @keyframes modal-icon-pulse{ 0%{ opacity:.5; transform:scale(1); } 100%{ opacity:0; transform:scale(1.4); } }
-        .modal-card h3{ font-size:17px; font-weight:700; margin:0 0 8px; position:relative; z-index:1; }
-        .modal-card p{ font-size:12.5px; color:var(--text-mid); line-height:1.6; margin:0 0 22px; position:relative; z-index:1; }
-        .modal-btn{ width:100%; border:none; cursor:pointer; padding:13px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; position:relative; z-index:1; transition:transform .2s ease; }
-        .modal-btn:hover{ transform:translateY(-2px); }
-        .modal-btn.hidden{ display:none; }
     </style>
 </head>
 <body>
@@ -150,10 +122,11 @@
     <nav class="topbar">
         <a href="dashboard.html" class="back-btn"><i data-lucide="arrow-left"></i> Dashboard</a>
         <div class="topbar-title"><i data-lucide="wallet" style="width:14px;height:14px;color:var(--electric-soft);"></i> Fund Wallet</div>
-        <button class="theme-quick" onclick="toggleTheme()" aria-label="Toggle theme"><i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i></button>
+        <button class="theme-quick" onclick="toggleTheme()"><i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i></button>
     </nav>
 
     <main>
+        <!-- Balance Header -->
         <div class="balance-strip">
             <div>
                 <p class="label">Current balance</p>
@@ -162,42 +135,64 @@
             <div class="ic"><i data-lucide="trending-up" style="width:18px;height:18px;"></i></div>
         </div>
 
-        <form id="paymentForm">
-            <div class="amount-hero">
-                <p class="eyebrow">Enter amount to fund</p>
-                <div class="amount-display">
-                    <span class="ngn">&#8358;</span>
-                    <input type="number" id="amount" required min="100" placeholder="0" inputmode="numeric">
+        <!-- Section A: Display Account Info if already generated -->
+        <div id="virtualAccountArea" style="display: none;">
+            <p class="group-label">Automated Bank Transfer</p>
+            <div class="bank-card">
+                <div class="bank-item">
+                    <div class="title">Bank Name</div>
+                    <div class="val" id="displayBankName">Loading...</div>
                 </div>
-                <div class="amount-underline"></div>
-                <p class="min-note">Minimum deposit &#8358;100.00</p>
-            </div>
 
-            <div class="chip-row">
-                <div class="chip" data-amt="1000" onclick="selectChip(this,1000)">&#8358;1,000</div>
-                <div class="chip" data-amt="2000" onclick="selectChip(this,2000)">&#8358;2,000</div>
-                <div class="chip" data-amt="5000" onclick="selectChip(this,5000)">&#8358;5,000</div>
-                <div class="chip" data-amt="10000" onclick="selectChip(this,10000)">&#8358;10,000</div>
-            </div>
-
-            <p class="group-label">Payment method</p>
-            <div class="group">
-                <div class="method-row">
-                    <div class="method-icon"><i data-lucide="credit-card" style="width:19px;height:19px;"></i></div>
-                    <div class="method-body">
-                        <p class="method-title">Card / Bank Transfer</p>
-                        <p class="method-sub">Processed instantly via Paystack</p>
+                <div class="bank-item">
+                    <div class="title">Account Number</div>
+                    <div class="account-no-box">
+                        <span id="displayAccountNo">0000000000</span>
+                        <button class="copy-btn" onclick="copyAccount()"><i data-lucide="copy" style="width:12px;"></i> Copy</button>
                     </div>
-                    <div class="method-radio"></div>
+                </div>
+
+                <div class="bank-item" style="margin-top: 14px;">
+                    <div class="title">Account Name</div>
+                    <div class="val" id="displayAccountName">Bigotic User</div>
                 </div>
             </div>
 
-            <div class="trust-row"><i data-lucide="shield-check"></i> 256-bit encrypted &bull; PCI-DSS compliant gateway</div>
+            <div class="notice-box">
+                <i data-lucide="info" style="width: 20px; flex-shrink: 0;"></i>
+                <div>
+                    Transfer any amount to this account. Your wallet will be credited automatically within seconds.
+                    <br><strong>Note:</strong> A 2% processing fee applies to automated deposits.
+                </div>
+            </div>
+        </div>
 
-            <button type="submit" id="payBtn" class="submit-btn"><span id="payBtnLabel">Proceed to checkout</span></button>
-        </form>
+        <!-- Section B: Request BVN/NIN if Account isn't generated yet -->
+        <div id="kycArea" style="display: none;">
+            <p class="group-label">Generate Reserved Account</p>
+            <div class="kyc-card">
+                <p style="font-size: 12px; color: var(--text-mid); margin-top: 0; margin-bottom: 16px;">
+                    Central Bank regulation requires a quick identity validation (BVN/NIN) to issue your dedicated virtual bank account.
+                </p>
+                <form id="genAccountForm">
+                    <div class="input-group">
+                        <label>Verification Method</label>
+                        <select id="id_type" required>
+                            <option value="nin">NIN (National Identity Number)</option>
+                            <option value="bvn">BVN (Bank Verification Number)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>ID Number</label>
+                        <input type="text" id="id_number" required placeholder="Enter 11-digit number" maxlength="11" pattern="\d{11}">
+                    </div>
+                    <button type="submit" id="genBtn" class="gen-btn">Generate Account Number</button>
+                </form>
+            </div>
+        </div>
     </main>
 
+    <!-- Bottom Nav -->
     <div class="bottom-nav-wrap">
         <div class="bottom-nav">
             <a href="buy-airtime.html" class="bnav-item"><i data-lucide="phone"></i><span>Airtime</span></a>
@@ -208,158 +203,101 @@
         </div>
     </div>
 
-    <div id="statusModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="stage-track" id="stageTrack">
-                <span class="stage-dot" data-stage="1"></span>
-                <span class="stage-dot" data-stage="2"></span>
-                <span class="stage-dot" data-stage="3"></span>
-            </div>
-            <div id="modalIcon" class="modal-icon"></div>
-            <h3 id="modalTitle"></h3>
-            <p id="modalMsg"></p>
-            <button id="modalBtn" class="modal-btn">Close</button>
-        </div>
-    </div>
-
     <script>
         lucide.createIcons();
-
-        const paymentForm = document.getElementById('paymentForm');
-        const payBtn = document.getElementById('payBtn');
-        const payBtnLabel = document.getElementById('payBtnLabel');
-        const statusModal = document.getElementById('statusModal');
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
 
-        function applyThemeIcon(){
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            document.getElementById('themeIconTop')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            lucide.createIcons();
-        }
         function toggleTheme(){
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('bigotic-theme', next);
-            applyThemeIcon();
         }
-        applyThemeIcon();
 
-        function selectChip(el, amt){
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('amount').value = amt;
-        }
-        document.getElementById('amount').addEventListener('input', () => {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        });
-
-        // stage: 1 = initializing/loading, 2 = verifying, 3 = result (success/error)
-        function setStage(stage, type){
-            document.querySelectorAll('.stage-dot').forEach(dot => {
-                const n = parseInt(dot.dataset.stage, 10);
-                dot.classList.remove('active','done');
-                if (n < stage) dot.classList.add('done');
-                else if (n === stage) dot.classList.add(type === 'error' ? 'active' : (stage === 3 ? 'done' : 'active'));
+        function copyAccount() {
+            const accNo = document.getElementById('displayAccountNo').innerText;
+            navigator.clipboard.writeText(accNo).then(() => {
+                alert("Account Number Copied!");
             });
         }
 
-        function showStatus(type, title, msg, btnText, action, stage) {
-            const iconBox = document.getElementById('modalIcon');
-            const btn = document.getElementById('modalBtn');
-
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMsg').innerText = msg;
-            btn.innerText = btnText || '';
-
-            setStage(stage, type);
-
-            if (type === 'loading') {
-                iconBox.style.background = 'rgba(59,107,255,.14)';
-                iconBox.innerHTML = `<div class="spinner" style="width:22px;height:22px;border-color:rgba(59,107,255,.25);border-top-color:var(--electric);"></div>`;
-                btn.classList.add('hidden');
-            } else if (type === 'success') {
-                iconBox.style.background = 'rgba(52,211,153,.16)';
-                iconBox.innerHTML = `<i data-lucide="check-circle-2" style="width:28px;height:28px;color:var(--emerald);"></i>`;
-                btn.style.background = 'linear-gradient(135deg,var(--emerald),#1fae7d)';
-                btn.style.color = '#fff';
-                btn.classList.remove('hidden');
-            } else {
-                iconBox.style.background = 'rgba(249,112,102,.16)';
-                iconBox.innerHTML = `<i data-lucide="alert-circle" style="width:28px;height:28px;color:var(--rose);"></i>`;
-                btn.style.background = 'linear-gradient(135deg,var(--rose),#c8362a)';
-                btn.style.color = '#fff';
-                btn.classList.remove('hidden');
-            }
-
-            statusModal.classList.add('open');
-            lucide.createIcons();
-            btn.onclick = action || (() => statusModal.classList.remove('open'));
-        }
-
-        function resetPayBtn() {
-            payBtnLabel.innerText = "Proceed to checkout";
-            payBtn.disabled = false;
-        }
-
-        paymentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const amount = parseFloat(document.getElementById('amount').value);
-            const user = JSON.parse(localStorage.getItem('user'));
-
-            if (!user) {
-                showStatus('error', 'Login Required', 'Please log in to fund your account.', 'Login', () => location.href = 'login.html', 3);
-                return;
-            }
-            if (!amount || amount < 100) {
-                showStatus('error', 'Invalid Amount', 'Enter an amount of at least \u20a6100 to continue.', 'Try Again', null, 3);
-                return;
-            }
-
-            payBtn.disabled = true;
-            payBtnLabel.innerHTML = '<span class="spinner"></span> Initializing&hellip;';
-
-            const handler = PaystackPop.setup({
-                key: 'pk_live_8b224c134d4236b808b2d779e4a5dd9d33c7adc2',
-                email: user.email,
-                amount: amount * 100,
-                currency: "NGN",
-                callback: function(response) {
-                    showStatus('loading', 'Verifying payment', 'Please wait while we confirm your transaction with the gateway.', '', null, 2);
-
-                    fetch(`${BACKEND_URL}/verify-payment`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ reference: response.reference, email: user.email })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            user.balance = data.newBalance;
-                            localStorage.setItem('user', JSON.stringify(user));
-                            document.getElementById('currentBalance').innerText = parseFloat(data.newBalance).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            showStatus('success', 'Wallet funded!', `\u20a6${amount.toLocaleString()} has been added to your balance successfully.`, 'Go to Dashboard', () => location.href = 'dashboard.html', 3);
-                        } else {
-                            showStatus('error', 'Verification Failed', data.error || 'We could not verify this transaction.', 'Retry', () => statusModal.classList.remove('open'), 3);
-                            resetPayBtn();
-                        }
-                    })
-                    .catch(() => {
-                        showStatus('error', 'Network Error', 'Check your connection and try again.', 'Close', () => statusModal.classList.remove('open'), 3);
-                        resetPayBtn();
-                    });
-                },
-                onClose: function() {
-                    resetPayBtn();
+        async function fetchUserProfile(email) {
+            try {
+                const response = await fetch(`${BACKEND_URL}/user-profile?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+                if (data && data.email) {
+                    localStorage.setItem('user', JSON.stringify(data));
+                    return data;
                 }
-            });
-            handler.openIframe();
+            } catch (err) {
+                console.error("Failed to fetch fresh user profile:", err);
+            }
+            return null;
+        }
+
+        function setupUI(user) {
+            document.getElementById('currentBalance').innerText = parseFloat(user.balance || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 });
+
+            if (user.virtualAccountNumber && user.virtualAccountNumber.trim() !== "") {
+                document.getElementById('displayBankName').innerText = user.virtualBankName || "Palmpay / Wema";
+                document.getElementById('displayAccountNo').innerText = user.virtualAccountNumber;
+                document.getElementById('displayAccountName').innerText = user.virtualAccountName || user.fullName || "Bigotic User";
+                
+                document.getElementById('virtualAccountArea').style.display = 'block';
+                document.getElementById('kycArea').style.display = 'none';
+            } else {
+                document.getElementById('virtualAccountArea').style.display = 'none';
+                document.getElementById('kycArea').style.display = 'block';
+            }
+        }
+
+        document.getElementById('genAccountForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const user = JSON.parse(localStorage.getItem('user'));
+            const id_type = document.getElementById('id_type').value;
+            const id_number = document.getElementById('id_number').value;
+
+            const genBtn = document.getElementById('genBtn');
+            genBtn.disabled = true;
+            genBtn.innerText = "Generating Account...";
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/generate-virtual-account`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: user.email,
+                        id_type: id_type,
+                        id_number: id_number
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert("Virtual account created successfully!");
+                    const updatedUser = await fetchUserProfile(user.email);
+                    setupUI(updatedUser || user);
+                } else {
+                    alert(data.message || "Failed to generate account. Verify details and try again.");
+                }
+            } catch (err) {
+                alert("Connection error. Please try again.");
+            } finally {
+                genBtn.disabled = false;
+                genBtn.innerText = "Generate Account Number";
+            }
         });
 
-        window.onload = function() {
-            const user = JSON.parse(localStorage.getItem('user'));
+        window.onload = async function() {
+            let user = JSON.parse(localStorage.getItem('user'));
             if (!user) { window.location.href = "login.html"; return; }
-            document.getElementById('currentBalance').innerText = parseFloat(user.balance || 0).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            setupUI(user);
+
+            // Silently fetch fresh profile to keep data current
+            const refreshedUser = await fetchUserProfile(user.email);
+            if (refreshedUser) setupUI(refreshedUser);
         };
     </script>
 </body>
