@@ -40,7 +40,7 @@
         button{ font-family:inherit; }
         @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
 
-        .topbar{ position:sticky; top:0; z-index:40; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:var(--nav-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
+        .topbar{ position:sticky; top:0; z-index:40; height:60px; display:flex; align-items:center; justify-space-between; padding:0 18px; background:var(--nav-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
         .back-btn{ display:flex; align-items:center; gap:7px; color:var(--text-mid); font-size:12px; font-weight:700; }
         .back-btn i{ width:16px; height:16px; }
         .topbar-title{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; display:flex; align-items:center; gap:7px; }
@@ -212,7 +212,16 @@
         }
         applyThemeIcon();
 
-        function isCredit(tx){ return tx.type === "Wallet Funding" || tx.type === "Fund"; }
+        // COMPREHENSIVE CREDIT MATCHING (FIXED CASE & VARIATION ISSUES)
+        function isCredit(tx){ 
+            if (!tx || !tx.type) return false;
+            const type = String(tx.type).toLowerCase().trim();
+            return type === "fund" || 
+                   type === "wallet funding" || 
+                   type === "deposit" || 
+                   type === "admin fund" || 
+                   type === "credit";
+        }
 
         function dateGroupLabel(dateStr){
             const d = new Date(dateStr);
