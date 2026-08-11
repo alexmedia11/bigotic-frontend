@@ -161,7 +161,7 @@
             border-radius:18px; padding:15px 16px; margin-bottom:22px; display:flex; gap:12px; align-items:flex-start;
             background: linear-gradient(120deg, rgba(59,107,255,.1), rgba(40,224,214,.05)); border:1px solid rgba(124,155,255,.25);
         }
-        .broadcast .ic{ width:28px; height:28px; border-radius:9px; background:rgba(59,107,255,.16); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .broadcast .ic{ width:28px; height:28px; border-radius:99px; background:rgba(59,107,255,.16); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
         .broadcast h3{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--text-dim); margin:0 0 3px; }
         .broadcast p{ font-size:12px; font-weight:600; color:var(--text-mid); margin:0; line-height:1.55; }
 
@@ -187,7 +187,9 @@
 
         .section-label{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.22em; color:var(--text-dim); margin:0 0 12px 2px; }
 
-        .funding-card{ border-radius:22px; padding:16px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        /* ---------- DEDICATED FUNDING & 2% FEE NOTICE ---------- */
+        .funding-card-wrap{ margin-bottom:24px; }
+        .funding-card{ border-radius:22px; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
         .funding-left{ display:flex; align-items:center; gap:12px; min-width:0; }
         .funding-icon{ width:46px; height:46px; border-radius:14px; background:var(--tile-hover); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
         .funding-meta{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -198,6 +200,14 @@
         }
         .copy-btn:hover{ background:rgba(59,107,255,.18); }
         .copy-btn:active{ transform:scale(.92); }
+
+        /* 2% Charge Badge & Note */
+        .fee-notice{
+            margin-top:8px; padding:10px 14px; border-radius:12px; background:rgba(244,183,64,.1); border:1px solid rgba(244,183,64,.25);
+            display:flex; align-items:center; justify-content:space-between; gap:8px;
+        }
+        .fee-notice p{ font-size:10.5px; font-weight:600; color:var(--gold); margin:0; display:flex; align-items:center; gap:6px; }
+        .fee-badge{ font-size:9px; font-weight:800; text-transform:uppercase; background:var(--gold); color:#000; padding:2px 8px; border-radius:6px; }
 
         .utility-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px 10px; margin-bottom:26px; }
         .utility-tile{ text-align:center; cursor:pointer; }
@@ -423,28 +433,37 @@
 
         <p class="section-label">Dedicated Funding Account</p>
 
-        <!-- Shown once a dedicated account exists -->
-        <div class="card funding-card" id="fundingCardReady" style="display:none;">
-            <div class="funding-left">
-                <div class="funding-icon"><i data-lucide="building" style="width:20px;height:20px;"></i></div>
-                <div style="min-width:0;">
-                    <p class="funding-meta"><span id="virtual-bank-name">Wema Bank</span> &bull; <span id="virtual-account-name">Loading...</span></p>
-                    <h3 class="funding-num" id="virtual-account-number">Awaiting Setup</h3>
+        <!-- Dedicated Funding Section with 2% Notice -->
+        <div class="funding-card-wrap">
+            <!-- Shown once a dedicated account exists -->
+            <div class="card funding-card" id="fundingCardReady" style="display:none;">
+                <div class="funding-left">
+                    <div class="funding-icon"><i data-lucide="building" style="width:20px;height:20px;"></i></div>
+                    <div style="min-width:0;">
+                        <p class="funding-meta"><span id="virtual-bank-name">Wema Bank</span> &bull; <span id="virtual-account-name">Loading...</span></p>
+                        <h3 class="funding-num" id="virtual-account-number">Awaiting Setup</h3>
+                    </div>
                 </div>
+                <button onclick="copyVirtualAccount()" class="copy-btn" title="Copy Account Number"><i data-lucide="copy" style="width:16px;height:16px;"></i></button>
             </div>
-            <button onclick="copyVirtualAccount()" class="copy-btn" title="Copy Account Number"><i data-lucide="copy" style="width:16px;height:16px;"></i></button>
-        </div>
 
-        <!-- Shown until the user completes BVN/NIN verification -->
-        <div class="card funding-card" id="fundingCardActivate" style="cursor:pointer;" onclick="openKycModal()">
-            <div class="funding-left">
-                <div class="funding-icon" style="background:rgba(244,183,64,.16);color:var(--gold);"><i data-lucide="shield-alert" style="width:20px;height:20px;"></i></div>
-                <div style="min-width:0;">
-                    <p class="funding-meta">Verification required</p>
-                    <h3 class="funding-num" style="font-size:14px;">Activate dedicated account</h3>
+            <!-- Shown until the user completes BVN/NIN verification -->
+            <div class="card funding-card" id="fundingCardActivate" style="cursor:pointer;" onclick="openKycModal()">
+                <div class="funding-left">
+                    <div class="funding-icon" style="background:rgba(244,183,64,.16);color:var(--gold);"><i data-lucide="shield-alert" style="width:20px;height:20px;"></i></div>
+                    <div style="min-width:0;">
+                        <p class="funding-meta">Verification required</p>
+                        <h3 class="funding-num" style="font-size:14px;">Activate dedicated account</h3>
+                    </div>
                 </div>
+                <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-dim);"></i>
             </div>
-            <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-dim);"></i>
+
+            <!-- 2% Automated Funding Fee Badge -->
+            <div class="fee-notice">
+                <p><i data-lucide="info" style="width:13px;height:13px;"></i> Automated Deposit Processing Fee</p>
+                <span class="fee-badge">2% Charge</span>
+            </div>
         </div>
 
         <p class="section-label">Core Utilities</p>
