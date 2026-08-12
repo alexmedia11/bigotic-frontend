@@ -185,7 +185,7 @@
                         <div class="exam-badge waec">W</div>
                         <div><p class="exam-name">WAEC</p><p class="exam-sub">Result checker pin</p></div>
                     </div>
-                    <span class="exam-price">&#8358;4,000</span>
+                    <span class="exam-price" id="price-tag-waec">&#8358;...</span>
                 </div>
 
                 <div class="exam-card" id="card-neco" onclick="selectExamCard('neco')">
@@ -193,7 +193,7 @@
                         <div class="exam-badge neco">N</div>
                         <div><p class="exam-name">NECO</p><p class="exam-sub">Result token</p></div>
                     </div>
-                    <span class="exam-price">&#8358;1,600</span>
+                    <span class="exam-price" id="price-tag-neco">&#8358;...</span>
                 </div>
 
                 <div class="exam-card" id="card-nabteb" onclick="selectExamCard('nabteb')">
@@ -201,7 +201,7 @@
                         <div class="exam-badge nabteb">N</div>
                         <div><p class="exam-name">NABTEB</p><p class="exam-sub">Scratch card pin</p></div>
                     </div>
-                    <span class="exam-price">&#8358;1,600</span>
+                    <span class="exam-price" id="price-tag-nabteb">&#8358;...</span>
                 </div>
 
                 <button class="submit-btn" id="next-btn-1" disabled onclick="goToStep(2)">Select an exam option</button>
@@ -258,7 +258,10 @@
     <script>
         lucide.createIcons();
 
-        const priceSheet = { waec: 6000, neco: 2500, nabteb: 2500 };
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+        
+        // Dynamic priceSheet initialized with backend fallback defaults
+        let priceSheet = { waec: 6000, neco: 2500, nabteb: 2500 };
         let selectedExam = null;
         const pinInput = document.getElementById('transaction-pin');
 
@@ -275,6 +278,35 @@
             applyThemeIcon();
         }
         applyThemeIcon();
+
+        function renderExamCardPrices() {
+            for (const key in priceSheet) {
+                const tag = document.getElementById(`price-tag-${key}`);
+                if (tag) {
+                    tag.innerText = `\u20a6${parseFloat(priceSheet[key]).toLocaleString('en-NG', { minimumFractionDigits: 0 })}`;
+                }
+            }
+        }
+
+        async function fetchLivePrices() {
+            try {
+                const res = await fetch(`${BACKEND_URL}/get-exampin-prices`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && typeof data === 'object') {
+                        // Dynamically update local prices from server.js
+                        if (data.waec) priceSheet.waec = Number(data.waec);
+                        if (data.neco) priceSheet.neco = Number(data.neco);
+                        if (data.nabteb) priceSheet.nabteb = Number(data.nabteb);
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not sync live exam prices from server, using fallback values.", err);
+            } finally {
+                renderExamCardPrices();
+                calculateTotal();
+            }
+        }
 
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
@@ -319,7 +351,7 @@
         function calculateTotal() {
             if (!selectedExam) return;
             const qty = parseInt(document.getElementById('pin-quantity').value) || 1;
-            const total = priceSheet[selectedExam] * qty;
+            const total = (priceSheet[selectedExam] || 0) * qty;
             document.getElementById('cost-display').innerText = total.toLocaleString('en-NG', { minimumFractionDigits: 2 });
             document.getElementById('summary-name').innerText = selectedExam.toUpperCase();
             document.getElementById('summary-qty').innerText = `${qty} unit${qty > 1 ? 's' : ''}`;
@@ -379,7 +411,7 @@
             submitBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .7s linear infinite;"></span> Processing&hellip;';
 
             try {
-                const response = await fetch('https://bigoticdata-backend.onrender.com/buy-exampin', {
+                const response = await fetch(`${BACKEND_URL}/buy-exampin`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: user.email, examType: selectedExam, quantity: Number(qty), pin: pinValue })
@@ -409,7 +441,10 @@
 
         window.onload = function(){
             const user = JSON.parse(localStorage.getItem('user'));
-            if (!user) { window.location.href = 'login.html'; }
+            if (!user) { window.location.href = 'login.html'; return; }
+
+            renderExamCardPrices();
+            fetchLivePrices();
         };
     </script>
 </body>

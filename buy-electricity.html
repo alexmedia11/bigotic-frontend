@@ -47,7 +47,7 @@
         .theme-quick{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-mid); }
 
         main{ max-width:460px; margin:0 auto; padding:20px 18px 0; }
-        .top-row{ display:flex; justify-content:flex-end; margin-bottom:18px; }
+        .top-row{ display:flex; justify-flex:flex-end; margin-bottom:18px; }
         .auto-badge{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; background:var(--row-hover); color:var(--text-mid); padding:5px 12px; border-radius:999px; }
 
         .card{ background:var(--card); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow); padding:22px; margin-bottom:18px; }
@@ -139,6 +139,7 @@
         .token-box{
             background:var(--input-bg); border:1.5px dashed var(--electric-soft); border-radius:14px; padding:18px 12px; margin:16px 0 20px;
             font-size:19px; font-weight:800; letter-spacing:.15em; color:var(--electric-soft); font-family:'JetBrains Mono',monospace; text-align:center;
+            word-break: break-all;
         }
         .copy-token-btn{
             width:100%; background:var(--row-hover); color:var(--text-mid); border:1px solid var(--border); padding:11px; border-radius:11px;
@@ -297,6 +298,28 @@
         }
         applyThemeIcon();
 
+        // Synchronize live DISCO provider options from backend
+        async function fetchLiveElectricityDiscos() {
+            try {
+                const res = await fetch(`${BACKEND_URL}/get-electricity-plans`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        discoSelect.innerHTML = '<option value="" disabled selected>-- Select DISCO --</option>';
+                        data.forEach(item => {
+                            const opt = document.createElement('option');
+                            opt.value = item.id || item.disco_id;
+                            opt.innerText = item.name || item.disco_name;
+                            if (item.min_amount) opt.dataset.min = item.min_amount;
+                            discoSelect.appendChild(opt);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.warn("Using static DISCO list fallback:", err);
+            }
+        }
+
         function showNotification(message, type = 'error') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -333,7 +356,13 @@
 
         [discoSelect, meterNumberInput].forEach(el => {
             el.addEventListener('input', resetMeterVerification);
-            el.addEventListener('change', resetMeterVerification);
+            el.addEventListener('change', () => {
+                resetMeterVerification();
+                const opt = discoSelect.options[discoSelect.selectedIndex];
+                if (opt && opt.dataset.min) {
+                    document.getElementById('amount').min = opt.dataset.min;
+                }
+            });
         });
 
         function triggerManualVerification() {
@@ -341,7 +370,7 @@
             const disco = discoSelect.value;
 
             if (!disco) { setVerifyBox('warn', 'Please choose a Distribution Company (DISCO) first.'); return; }
-            if (meterNum.length < 9 || meterNum.length > 15) { setVerifyBox('error', 'Meter number must be between 9 and 15 digits.'); return; }
+            if (meterNum.length < 8 || meterNum.length > 16) { setVerifyBox('error', 'Meter number must be between 8 and 16 digits.'); return; }
 
             performMeterVerification(meterNum, disco, selectedMeterType);
         }
@@ -449,8 +478,10 @@
                     currentUser.balance = data.newBalance;
                     localStorage.setItem('user', JSON.stringify(currentUser));
 
-                    if (selectedMeterType === 'prepaid' && data.token && data.token !== 'N/A' && data.token !== 'Processed Successfully') {
-                        document.getElementById('tokenDisplay').innerText = data.token;
+                    const generatedToken = data.token || data.purchased_code || data.mainToken;
+
+                    if (selectedMeterType === 'prepaid' && generatedToken && generatedToken !== 'N/A' && generatedToken !== 'Processed Successfully') {
+                        document.getElementById('tokenDisplay').innerText = generatedToken;
                         tokenModal.classList.add('open');
                     } else {
                         document.getElementById('successModalMsg').innerText = `Bill payment of \u20a6${parseFloat(amountVal).toLocaleString()} for meter #${meterNumVal} was processed successfully.`;
@@ -474,7 +505,9 @@
 
         window.onload = function() {
             const user = JSON.parse(localStorage.getItem('user'));
-            if (!user) { window.location.href = "login.html"; }
+            if (!user) { window.location.href = "login.html"; return; }
+
+            fetchLiveElectricityDiscos();
         }
     </script>
 </body>
