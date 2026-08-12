@@ -108,7 +108,6 @@
         .spinner{ width:15px; height:15px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
         @keyframes spin{ to{ transform:rotate(360deg); } }
 
-        /* ---------- bottom nav ---------- */
         .bottom-nav-wrap{ position:fixed; bottom:0; left:0; right:0; z-index:45; padding:0 16px 16px; }
         .bottom-nav{ max-width:460px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-content:space-around; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
         .bnav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:56px; color:var(--text-dim); gap:3px; }
@@ -119,7 +118,6 @@
         .bnav-center .glow{ position:absolute; inset:0; background:var(--electric); border-radius:14px; filter:blur(10px); opacity:.45; }
         .bnav-center a{ position:relative; width:50px; height:50px; border-radius:15px; background:linear-gradient(135deg,var(--electric),#1d3fbf); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 10px 24px rgba(59,107,255,.4); }
 
-        /* ---------- pin modal ---------- */
         .modal-overlay{ position:fixed; inset:0; z-index:90; background:rgba(3,5,14,.62); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .28s ease; }
         .modal-overlay.open{ opacity:1; pointer-events:auto; }
         .modal-card{ width:100%; max-width:330px; background:var(--card-2); border:1px solid var(--border); border-radius:24px; padding:28px; text-align:center; box-shadow:0 40px 100px -20px rgba(0,0,0,.5); transform:translateY(18px) scale(.96); transition:transform .32s cubic-bezier(.16,1,.3,1); position:relative; overflow:hidden; }
@@ -130,21 +128,17 @@
         .pin-dots{ display:flex; gap:11px; justify-content:center; margin-bottom:16px; }
         .pin-dots span{ width:13px; height:13px; border-radius:50%; background:var(--border); transition:background .2s ease, transform .2s ease; }
         .pin-dots span.filled{ background:var(--electric); transform:scale(1.15); }
-        .modal-card input.pin-input{
-            position:absolute; opacity:0; pointer-events:none;
-        }
+        .modal-card input.pin-input{ position:absolute; opacity:0; pointer-events:none; }
         .modal-actions{ display:flex; gap:10px; margin-top:6px; }
         .modal-actions button{ flex:1; padding:12px; border-radius:12px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; border:none; cursor:pointer; }
         .confirm-btn{ background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff; display:flex; align-items:center; justify-content:center; gap:7px; }
         .cancel-btn{ background:var(--row-hover); color:var(--text-mid); }
 
-        /* result modal (success/error) */
         .result-icon{ width:60px; height:60px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; position:relative; }
         .result-icon::before{ content:''; position:absolute; inset:-8px; border-radius:50%; opacity:.5; animation:pulse-ring 1.8s ease-out infinite; }
         @keyframes pulse-ring{ 0%{ opacity:.5; transform:scale(1);} 100%{ opacity:0; transform:scale(1.4);} }
         .result-btn{ width:100%; border:none; cursor:pointer; padding:13px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#fff; }
 
-        /* ---------- toasts ---------- */
         #toastContainer{ position:fixed; top:18px; right:18px; z-index:99; display:flex; flex-direction:column; gap:11px; max-width:340px; width:calc(100% - 36px); pointer-events:none; }
         .toast{ pointer-events:auto; position:relative; overflow:hidden; display:flex; align-items:flex-start; gap:11px; padding:15px 16px 14px; border-radius:16px; background:var(--card-2); border:1px solid var(--border); box-shadow:0 24px 55px -16px rgba(0,0,0,.35); transform:translateY(-14px) scale(.96); opacity:0; transition:transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
         .toast.show{ transform:translateY(0) scale(1); opacity:1; }
@@ -421,12 +415,19 @@
             if (!selectedPlanType) { dataPackageSection.style.display = 'none'; return; }
 
             let searchType = selectedPlanType.toUpperCase().trim();
-            if (searchType === 'COOPERATE GIFTING' || searchType === 'CORPORATE GIFTING') searchType = 'CG';
 
             const filteredPlans = cachedPlans.filter(p => {
-                const networkMatch = p.network === selectedNetworkId;
-                const backendType = p.type ? p.type.toUpperCase().trim() : '';
-                return networkMatch && (backendType === searchType);
+                const networkMatch = Number(p.network) === Number(selectedNetworkId);
+                if (!networkMatch) return false;
+
+                const backendType = p.type ? String(p.type).toUpperCase().trim() : '';
+
+                const isCGRequested = (searchType === 'COOPERATE GIFTING' || searchType === 'CORPORATE GIFTING' || searchType === 'CG');
+                const isCGBackend = (backendType === 'CG' || backendType === 'COOPERATE GIFTING' || backendType === 'CORPORATE GIFTING');
+
+                if (isCGRequested && isCGBackend) return true;
+
+                return backendType === searchType || backendType.includes(searchType);
             });
 
             if (filteredPlans.length === 0) {
@@ -435,8 +436,14 @@
                 filteredPlans.forEach(plan => {
                     const option = document.createElement('option');
                     option.value = plan.id;
-                    option.dataset.cost = plan.price;
-                    option.innerText = `${plan.name} - \u20a6${parseFloat(plan.price).toLocaleString()}`;
+                    const priceVal = plan.price || plan.amount || 0;
+                    option.dataset.cost = priceVal;
+                    
+                    // Reads plan validity directly from backend object
+                    const validityText = plan.validity || plan.month_validate || '';
+                    const validityBadge = validityText ? ` (${validityText})` : '';
+
+                    option.innerText = `${plan.name || plan.plan_name}${validityBadge} - \u20a6${parseFloat(priceVal).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
                     planSelect.appendChild(option);
                 });
             }
