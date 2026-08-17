@@ -547,35 +547,6 @@
         </div>
     </div>
 
-    <div id="bigoticPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:#fff;padding:25px;border-radius:12px;max-width:400px;text-align:center;">
-    <h3 id="popupTitleTxt"></h3>
-    <p id="popupMsgTxt"></p>
-    <a id="popupBtn" href="#" style="display:inline-block;background:#2563eb;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;"></a>
-    <br><br>
-    <button onclick="closePopup()" style="background:#ccc;border:none;padding:8px 15px;border-radius:5px;">Close</button>
-  </div>
-</div>
-
-<script>
-async function checkPopup(){
-  const res = await fetch('/api/popup');
-  const data = await res.json();
-  if(data.isActive){
-    document.getElementById('popupTitleTxt').innerText = data.title;
-    document.getElementById('popupMsgTxt').innerText = data.message;
-    document.getElementById('popupBtn').innerText = data.buttonText;
-    document.getElementById('popupBtn').href = data.buttonLink;
-    document.getElementById('bigoticPopup').style.display = 'flex';
-  }
-}
-function closePopup(){
-  document.getElementById('bigoticPopup').style.display = 'none';
-}
-checkPopup(); // runs on page load
-setInterval(checkPopup, 30000); // checks every 30s
-</script>
-
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <script>
