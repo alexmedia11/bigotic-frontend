@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bigotic Data - Admin Control</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 20px; max-width: 600px; margin: auto; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; }
+        label { display: block; margin-top: 10px; font-size: 13px; color: #94a3b8; }
+        input, textarea, select { width: 100%; padding: 10px; margin-top: 5px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 6px; box-sizing: border-box; }
+        button { background: #3b82f6; color: #fff; border: none; padding: 12px 20px; width: 100%; border-radius: 6px; margin-top: 15px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+
+    <h2>📢 Admin Announcement Manager</h2>
+
+    <!-- Admin Key -->
+    <div class="card">
+        <label>Admin Access Key</label>
+        <input type="password" id="adminKey" placeholder="Enter secret admin key">
+    </div>
+
+    <!-- Advert Popup Control -->
+    <div class="card">
+        <h3>1. Popup Advert Banner</h3>
+        <label>Status</label>
+        <select id="popupActive">
+            <option value="true">Active (Show to Users)</option>
+            <option value="false">Disabled (Hide Banner)</option>
+        </select>
+
+        <label>Banner Image URL</label>
+        <input type="text" id="imageUrl" placeholder="https://i.imgur.com/your-image.jpg">
+
+        <label>Target Action Link (e.g. Telegram Channel)</label>
+        <input type="text" id="actionLink" placeholder="https://t.me/your_telegram_channel">
+
+        <label>Bottom Button Text</label>
+        <input type="text" id="buttonText" placeholder="CLICK HERE NOW..to join channel">
+    </div>
+
+    <!-- Notification Control -->
+    <div class="card">
+        <h3>2. Live Notification</h3>
+        <label>Notification Title</label>
+        <input type="text" id="notifTitle" placeholder="Important Update">
+
+        <label>Notification Message</label>
+        <textarea id="notifMessage" rows="3" placeholder="Enter message for users..."></textarea>
+    </div>
+
+    <button onclick="updateAnnouncements()">🚀 Publish Live Changes</button>
+
+    <script>
+        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+
+        async function updateAnnouncements() {
+            const adminKey = document.getElementById('adminKey').value;
+            if(!adminKey) return alert("Please enter your Admin Key!");
+
+            const payload = {
+                adminKey: adminKey,
+                popup: {
+                    active: document.getElementById('popupActive').value === "true",
+                    imageUrl: document.getElementById('imageUrl').value,
+                    actionLink: document.getElementById('actionLink').value,
+                    buttonText: document.getElementById('buttonText').value
+                },
+                notifications: [
+                    {
+                        id: Date.now(),
+                        title: document.getElementById('notifTitle').value,
+                        message: document.getElementById('notifMessage').value,
+                        date: new Date().toISOString().split('T')[0],
+                        unread: true
+                    }
+                ]
+            };
+
+            const response = await fetch(`${BACKEND_URL}/api/admin/announcements`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        }
+    </script>
+</body>
+</html>
