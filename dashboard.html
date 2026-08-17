@@ -537,6 +537,16 @@
         </div>
     </div>
 
+    <!-- ================= SITE-WIDE POPUP NOTIFICATION (admin-controlled) ================= -->
+    <div id="siteModal" class="modal-overlay">
+        <div class="modal-card" style="text-align:center;">
+            <button class="modal-close" onclick="closeSiteModal()" aria-label="Close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+            <img id="siteModalImage" src="" alt="" style="display:none;width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-bottom:16px;position:relative;z-index:1;">
+            <p id="siteModalText" style="color:var(--text-mid);font-size:13px;line-height:1.6;margin:0 0 20px;position:relative;z-index:1;"></p>
+            <a id="siteModalLink" href="#" target="_blank" rel="noopener" class="btn-primary" style="width:100%;justify-content:center;display:none;">Learn more</a>
+        </div>
+    </div>
+
     <div class="bottom-nav-wrap">
         <div class="bottom-nav">
             <a href="buy-airtime.html" class="bnav-item"><i data-lucide="phone"></i><span>Airtime</span></a>
@@ -788,6 +798,53 @@
             if (e.target.id === 'kycModal') closeKycModal();
         });
 
+        // ---------------- Site-wide popup notification (admin-controlled) ----------------
+        function closeSiteModal(){
+            document.getElementById('siteModal').classList.remove('open');
+        }
+
+        async function checkSitePopup() {
+            try {
+                const response = await fetch(`https://bigoticdata-backend.onrender.com/popup/active?t=${new Date().getTime()}`);
+                if (!response.ok) return;
+                const popup = await response.json();
+                if (!popup || !popup.active) return;
+
+                // Only show once per published version — keyed on updatedAt so re-saving re-shows it
+                const dismissKey = `bigotic-popup-seen-${popup.updatedAt || popup._id || 'v1'}`;
+                if (localStorage.getItem(dismissKey)) return;
+
+                const imgEl = document.getElementById('siteModalImage');
+                const textEl = document.getElementById('siteModalText');
+                const linkEl = document.getElementById('siteModalLink');
+
+                textEl.innerText = popup.text || '';
+
+                if (popup.imageUrl) {
+                    imgEl.src = popup.imageUrl;
+                    imgEl.style.display = 'block';
+                } else {
+                    imgEl.style.display = 'none';
+                }
+
+                if (popup.link) {
+                    linkEl.href = popup.link;
+                    linkEl.style.display = 'flex';
+                } else {
+                    linkEl.style.display = 'none';
+                }
+
+                document.getElementById('siteModal').classList.add('open');
+                localStorage.setItem(dismissKey, '1');
+                lucide.createIcons();
+            } catch (err) {
+                console.log("Popup check skipped.", err);
+            }
+        }
+        document.getElementById('siteModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'siteModal') closeSiteModal();
+        });
+
         window.onload = async function() {
             compileTimeGreeting();
 
@@ -855,6 +912,9 @@
                     console.log("Realtime background sync paused.", err);
                 }
             }
+
+            // Check for an active admin-published popup notification
+            checkSitePopup();
         };
     </script>
 </body>
