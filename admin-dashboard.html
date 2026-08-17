@@ -152,7 +152,7 @@
         /* ---------- mobile bottom nav ---------- */
         .bottom-nav-wrap{ position:fixed; bottom:0; left:0; right:0; z-index:45; padding:0 16px 16px; }
         @media (min-width:900px){ .bottom-nav-wrap{ display:none; } }
-        .bottom-nav{ max-width:480px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-content:space-around; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
+        .bottom-nav{ max-width:480px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-style:space-around; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
         .bnav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:56px; color:var(--text-dim); gap:3px; background:none; border:none; cursor:pointer; }
         .bnav-item.active{ color:var(--electric-soft); }
         .bnav-item i{ width:16px; height:16px; }
@@ -451,7 +451,9 @@
         // ---------------- tabs ----------------
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.add('active');
+            
             ['overview','broadcast','users','profits'].forEach(id => {
                 document.getElementById(`btn-${id}`)?.classList.toggle('active', id === tabId);
                 document.getElementById(`bnav-${id}`)?.classList.toggle('active', id === tabId);
@@ -464,16 +466,18 @@
             refreshBtn?.classList.add('spinning');
             try {
                 const adminCheck = JSON.parse(localStorage.getItem('user'));
-                if (!adminCheck || adminCheck.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
+                if (!adminCheck || !adminCheck.email || adminCheck.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
                     showNotification('You do not have administrative access. Redirecting to your dashboard.', 'error', 'Unauthorized');
                     setTimeout(() => { window.location.href = "dashboard.html"; }, 1600);
                     return;
                 }
 
-                const userRes = await fetch(`${BACKEND_URL}/admin/users`, { headers: { 'admin-email': ADMIN_EMAIL } });
-                localUsersCache = await userRes.json();
+                const [userRes, txRes] = await Promise.all([
+                    fetch(`${BACKEND_URL}/admin/users`, { headers: { 'admin-email': ADMIN_EMAIL } }),
+                    fetch(`${BACKEND_URL}/admin/transactions`, { headers: { 'admin-email': ADMIN_EMAIL } })
+                ]);
 
-                const txRes = await fetch(`${BACKEND_URL}/admin/transactions`, { headers: { 'admin-email': ADMIN_EMAIL } });
+                localUsersCache = await userRes.json();
                 const txs = await txRes.json();
 
                 renderStats(localUsersCache, txs);
@@ -491,69 +495,70 @@
             refreshBtn?.classList.remove('spinning');
         }
 
-        function renderStats(users, txs) {
-            let liability = users.reduce((acc, u) => acc + (parseFloat(u.balance) || 0), 0);
-            let profit = txs.reduce((acc, t) => acc + (parseFloat(t.profit) || 0), 0);
-            let sales = txs.filter(t => !['Wallet Funding','Admin Funding','Fund','Admin Fund'].includes(t.type))
+        function renderStats(users = [], txs = []) {
+            let liability = (Array.isArray(users) ? users : []).reduce((acc, u) => acc + (parseFloat(u.balance) || 0), 0);
+            let profit = (Array.isArray(txs) ? txs : []).reduce((acc, t) => acc + (parseFloat(t.profit) || 0), 0);
+            let sales = (Array.isArray(txs) ? txs : []).filter(t => !['Wallet Funding','Admin Funding','Fund','Admin Fund'].includes(t.type))
                            .reduce((acc, t) => acc + (parseFloat(t.amount) || 0), 0);
 
             const fmt = n => `\u20a6${n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-            document.getElementById('metric-users').innerText = users.length.toLocaleString();
+            document.getElementById('metric-users').innerText = (Array.isArray(users) ? users.length : 0).toLocaleString();
             document.getElementById('metric-liability').innerText = fmt(liability);
             document.getElementById('metric-sales').innerText = fmt(sales);
             document.getElementById('metric-profit').innerText = fmt(profit);
             document.getElementById('ledger-total-profit').innerText = fmt(profit);
         }
 
-        function renderUsers(users) {
+        function renderUsers(users = []) {
             const tbody = document.getElementById('admin-user-table');
-            if (!users || users.length === 0) {
+            if (!Array.isArray(users) || users.length === 0) {
                 tbody.innerHTML = `<tr class="empty-row"><td colspan="4">No matching accounts found</td></tr>`;
                 return;
             }
             tbody.innerHTML = users.map(user => {
                 const computedName = user.fullName || user.username || 'Not Provided';
+                const safeName = computedName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 return `
                     <tr>
                         <td class="cell-strong" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;">${computedName}</td>
                         <td class="cell-mono">${user.email}</td>
                         <td style="color:var(--emerald);font-weight:800;">&#8358;${(parseFloat(user.balance) || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                        <td style="text-align:right;"><button onclick="openFundModal('${user.email}', '${escape(computedName)}')" class="adjust-btn">Adjust capital</button></td>
+                        <td style="text-align:right;"><button onclick="openFundModal('${user.email}', '${safeName}')" class="adjust-btn">Adjust capital</button></td>
                     </tr>`;
             }).join('');
         }
 
-        function renderTransactions(txs) {
+        function renderTransactions(txs = []) {
             const tbody = document.getElementById('recent-transactions-body');
-            if (!txs || txs.length === 0) {
+            if (!Array.isArray(txs) || txs.length === 0) {
                 tbody.innerHTML = `<tr class="empty-row"><td colspan="4">No platform activity logged yet</td></tr>`;
                 return;
             }
             tbody.innerHTML = txs.slice(0, 10).map(tx => `
                 <tr>
-                    <td class="cell-mono" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;">${tx.email}</td>
+                    <td class="cell-mono" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;">${tx.email || 'N/A'}</td>
                     <td><span class="pill">${tx.type || 'VTU Order'}</span></td>
-                    <td style="color:var(--electric-soft);font-weight:800;">&#8358;${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                    <td class="cell-dim">${new Date(tx.date).toLocaleDateString()}</td>
+                    <td style="color:var(--electric-soft);font-weight:800;">&#8358;${Number(tx.amount || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
+                    <td class="cell-dim">${tx.date ? new Date(tx.date).toLocaleDateString() : 'N/A'}</td>
                 </tr>`).join('');
         }
 
-        function renderProfitLedger(txs) {
+        function renderProfitLedger(txs = []) {
             const tbody = document.getElementById('admin-profit-table');
-            const profitOrders = txs.filter(t => parseFloat(t.profit) > 0);
-            if (!profitOrders || profitOrders.length === 0) {
+            const profitOrders = Array.isArray(txs) ? txs.filter(t => parseFloat(t.profit) > 0) : [];
+            if (profitOrders.length === 0) {
                 tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No commercial margin revenue tracked yet</td></tr>`;
                 return;
             }
             tbody.innerHTML = profitOrders.map(tx => `
                 <tr>
-                    <td class="cell-mono" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;" title="${tx.email}">${tx.email}</td>
+                    <td class="cell-mono" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;" title="${tx.email || ''}">${tx.email || 'N/A'}</td>
                     <td><span class="pill blue">${tx.type || 'DATA'}</span></td>
                     <td>${tx.details || 'VTU Custom Fulfillment'} &rarr; (${tx.recipient || 'N/A'})</td>
-                    <td class="cell-mono">&#8358;${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                    <td style="color:var(--emerald);font-weight:800;">+&#8358;${Number(tx.profit).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                    <td class="cell-dim">${new Date(tx.date).toLocaleString()}</td>
+                    <td class="cell-mono">&#8358;${Number(tx.amount || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
+                    <td style="color:var(--emerald);font-weight:800;">+&#8358;${Number(tx.profit || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
+                    <td class="cell-dim">${tx.date ? new Date(tx.date).toLocaleString() : 'N/A'}</td>
                 </tr>`).join('');
         }
 
@@ -642,16 +647,16 @@
             }
         }
 
-        function renderNotificationsTable(list) {
+        function renderNotificationsTable(list = []) {
             const tbody = document.getElementById('admin-notifications-table');
-            if (!list || list.length === 0) {
+            if (!Array.isArray(list) || list.length === 0) {
                 tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No broadcast notifications sent yet</td></tr>`;
                 return;
             }
             tbody.innerHTML = list.map(item => `
                 <tr>
-                    <td class="cell-strong">${item.title}</td>
-                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.message}</td>
+                    <td class="cell-strong">${item.title || 'Untitled'}</td>
+                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.message || ''}</td>
                     <td class="cell-mono">${item.linkUrl ? `<a href="${item.linkUrl}" target="_blank" style="color:var(--electric-soft);">Link</a>` : 'None'}</td>
                     <td class="cell-dim">${new Date(item.createdAt || item.date || Date.now()).toLocaleDateString()}</td>
                     <td style="text-align:right;"><button onclick="deleteNotification('${item._id || item.id}')" class="delete-btn">Delete</button></td>
@@ -718,9 +723,9 @@
             document.getElementById('toggle-deduct').classList.toggle('active', mode === 'DEDUCT');
         }
 
-        function openFundModal(email, escapedName) {
+        function openFundModal(email, safeName) {
             currentFundEmail = email;
-            document.getElementById('fund-target-name').innerText = unescape(escapedName);
+            document.getElementById('fund-target-name').innerText = safeName;
             document.getElementById('fund-target-email').innerText = email;
             setAdjustmentMode('ADD');
             document.getElementById('fund-amount').value = '';
