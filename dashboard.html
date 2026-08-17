@@ -541,7 +541,7 @@
     <div id="siteModal" class="modal-overlay">
         <div class="modal-card" style="text-align:center;">
             <button class="modal-close" onclick="closeSiteModal()" aria-label="Close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
-            <img id="siteModalImage" src="" alt="" style="display:none;width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-bottom:16px;position:relative;z-index:1;">
+            <img id="siteModalImage" src="" alt="" style="display:none;width:100%;max-height:60vh;object-fit:contain;border-radius:14px;margin-bottom:16px;position:relative;z-index:1;">
             <p id="siteModalText" style="color:var(--text-mid);font-size:13px;line-height:1.6;margin:0 0 20px;position:relative;z-index:1;"></p>
             <a id="siteModalLink" href="#" target="_blank" rel="noopener" class="btn-primary" style="width:100%;justify-content:center;display:none;">Learn more</a>
         </div>
@@ -810,10 +810,7 @@
                 const popup = await response.json();
                 if (!popup || !popup.active) return;
 
-                // Only show once per published version — keyed on updatedAt so re-saving re-shows it
-                const dismissKey = `bigotic-popup-seen-${popup.updatedAt || popup._id || 'v1'}`;
-                if (localStorage.getItem(dismissKey)) return;
-
+                // Shows every time the user opens or refreshes the dashboard while the popup is active
                 const imgEl = document.getElementById('siteModalImage');
                 const textEl = document.getElementById('siteModalText');
                 const linkEl = document.getElementById('siteModalLink');
@@ -835,7 +832,6 @@
                 }
 
                 document.getElementById('siteModal').classList.add('open');
-                localStorage.setItem(dismissKey, '1');
                 lucide.createIcons();
             } catch (err) {
                 console.log("Popup check skipped.", err);
