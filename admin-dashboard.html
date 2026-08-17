@@ -399,6 +399,43 @@
         </div>
     </div>
 
+    <div class="popup-control" style="background:#fff;padding:20px;border-radius:10px;margin:20px 0;">
+  <h3>📢 Popup Notification Control</h3>
+  <label><input type="checkbox" id="popupActive"> Show Popup</label><br><br>
+  <input type="text" id="popupTitle" placeholder="Popup Title" style="width:100%;padding:8px;margin:5px 0;"><br>
+  <textarea id="popupMessage" placeholder="Popup Message" style="width:100%;padding:8px;margin:5px 0;"></textarea><br>
+  <input type="text" id="popupBtnText" placeholder="Button Text" style="width:100%;padding:8px;margin:5px 0;"><br>
+  <input type="text" id="popupBtnLink" placeholder="Button Link URL" style="width:100%;padding:8px;margin:5px 0;"><br>
+  <button onclick="savePopup()" style="background:#2563eb;color:#fff;padding:10px 20px;border:none;border-radius:5px;">Save Popup</button>
+</div>
+
+<script>
+async function loadPopup(){
+  const res = await fetch('/admin/popup');
+  const data = await res.json();
+  document.getElementById('popupActive').checked = data.isActive;
+  document.getElementById('popupTitle').value = data.title;
+  document.getElementById('popupMessage').value = data.message;
+  document.getElementById('popupBtnText').value = data.buttonText;
+  document.getElementById('popupBtnLink').value = data.buttonLink;
+}
+
+async function savePopup(){
+  const body = {
+    isActive: document.getElementById('popupActive').checked,
+    title: document.getElementById('popupTitle').value,
+    message: document.getElementById('popupMessage').value,
+    buttonText: document.getElementById('popupBtnText').value,
+    buttonLink: document.getElementById('popupBtnLink').value
+  };
+  const res = await fetch('/admin/popup', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  const data = await res.json();
+  alert(data.success ? "Popup Updated!" : "Error");
+}
+loadPopup();
+</script>
+
+
     <script>
         lucide.createIcons();
         const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
