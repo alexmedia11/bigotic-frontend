@@ -1,549 +1,789 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy Data | Bigotic Data</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buy Data | Bigotic Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+(function(){
+    const saved = localStorage.getItem('bigotic-theme');
+    document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
+})();
+</script>
 
-    <script>
-        (function(){
-            const saved = localStorage.getItem('bigotic-theme');
-            document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
-        })();
-    </script>
-
-    <style>
-        :root{ --electric:#3b6bff; --electric-soft:#7c9bff; --cyan:#28e0d6; --emerald:#34d399; --rose:#f97066; --gold:#f4b740; }
-        html[data-theme="dark"]{
-            --bg:#060915; --bg-elevated:#0d1330; --card:#0f1638; --card-2:linear-gradient(165deg,#121a42,#0d1330);
-            --border: rgba(148,163,255,0.14); --text-hi:#eef1ff; --text-mid:#aab0d6; --text-dim:#6b71a0;
-            --nav-bg: rgba(6,9,21,0.78); --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07); --input-bg: rgba(255,255,255,.04); --divider: rgba(148,163,255,0.1);
-        }
-        html[data-theme="light"]{
-            --bg:#f2f4fb; --bg-elevated:#ffffff; --card:#ffffff; --card-2:linear-gradient(165deg,#ffffff,#f6f8ff);
-            --border:#e6e9f6; --text-hi:#0f1428; --text-mid:#5b6178; --text-dim:#98a0c2;
-            --nav-bg: rgba(255,255,255,.85); --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05); --input-bg: #f5f7fd; --divider: #eef0fa;
-        }
-        *{ box-sizing:border-box; }
-        html, body{ margin:0; padding:0; }
-        body{
-            font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-hi); min-height:100vh;
-            overflow-x:hidden; padding-bottom:110px; transition: background .35s ease, color .35s ease;
-        }
-        .font-display{ font-family:'Space Grotesk',sans-serif; }
-        .font-mono{ font-family:'JetBrains Mono',monospace; }
-        a{ text-decoration:none; color:inherit; }
-        button{ font-family:inherit; }
-        @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
-
-        .topbar{ position:sticky; top:0; z-index:40; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:var(--nav-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
-        .back-btn{ display:flex; align-items:center; gap:7px; color:var(--text-mid); font-size:12px; font-weight:700; }
-        .back-btn i{ width:16px; height:16px; }
-        .topbar-title{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; display:flex; align-items:center; gap:7px; }
-        .theme-quick{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-mid); }
-
-        main{ max-width:460px; margin:0 auto; padding:20px 18px 0; }
-        .top-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
-        .auto-badge{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; background:var(--row-hover); color:var(--text-mid); padding:5px 12px; border-radius:999px; }
-
-        .card{ background:var(--card); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow); padding:22px; margin-bottom:18px; }
-        .field-label{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--electric-soft); margin:0 0 10px; display:block; }
-
-        .input-wrap{ position:relative; margin-bottom:20px; }
-        .input-wrap input{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:13px; padding:14px 42px 14px 15px;
-            font-size:14px; font-weight:700; color:var(--text-hi); outline:none; font-family:'JetBrains Mono',monospace; transition:border-color .2s ease;
-        }
-        .input-wrap input:focus{ border-color:var(--electric-soft); }
-        .input-wrap i.field-ic{ position:absolute; right:14px; top:50%; transform:translateY(-50%); width:17px; height:17px; color:var(--text-dim); }
-
-        .network-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:20px; }
-        .network-card{
-            border:1.5px solid var(--border); border-radius:14px; padding:13px 4px; text-align:center; background:var(--input-bg);
-            cursor:pointer; transition:all .2s cubic-bezier(.16,1,.3,1);
-        }
-        .network-card span{ font-size:11px; font-weight:800; letter-spacing:-.01em; color:var(--text-mid); }
-        .network-card.active{ border-color:var(--electric); background:rgba(59,107,255,.12); transform:scale(.97); box-shadow:0 8px 18px -6px rgba(59,107,255,.35); }
-        .network-card.active span{ color:var(--electric-soft); }
-
-        .plan-type-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:20px; }
-        .plan-type-card{
-            border:1.5px solid var(--border); border-radius:14px; padding:14px 6px; text-align:center; background:var(--input-bg);
-            cursor:pointer; transition:all .2s cubic-bezier(.16,1,.3,1); display:flex; flex-direction:column; align-items:center; gap:4px;
-        }
-        .plan-type-card .ngn{ font-size:16px; font-weight:800; color:var(--text-dim); }
-        .plan-type-card span.lbl{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--text-mid); line-height:1.3; }
-        .plan-type-card.active{ border-color:var(--electric); background:rgba(59,107,255,.12); transform:scale(.97); }
-        .plan-type-card.active .ngn{ color:var(--electric-soft); }
-        .plan-type-card.active span.lbl{ color:var(--electric-soft); }
-
-        select{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:13px; padding:14px 40px 14px 15px;
-            font-size:13px; font-weight:700; color:var(--text-hi); outline:none; appearance:none; cursor:pointer; font-family:'Inter',sans-serif;
-            transition:border-color .2s ease;
-        }
-        select:focus{ border-color:var(--electric-soft); }
-        .select-wrap{ position:relative; margin-bottom:6px; }
-        .select-wrap i{ position:absolute; right:14px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-dim); pointer-events:none; }
-
-        .price-box{
-            background:linear-gradient(135deg,var(--electric),#1d3fbf 70%,var(--cyan)); border-radius:18px; padding:18px; text-align:center;
-            margin-top:6px; color:#fff; box-shadow:0 18px 40px -14px rgba(59,107,255,.5);
-        }
-        .price-box .lbl{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:rgba(255,255,255,.75); margin:0; }
-        .price-box .val{ font-size:26px; font-weight:700; font-family:'JetBrains Mono',monospace; margin:4px 0 0; }
-
-        .submit-btn{
-            width:100%; border:none; cursor:pointer; background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff;
-            padding:16px; border-radius:15px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
-            display:flex; align-items:center; justify-content:center; gap:9px; box-shadow:0 16px 34px -10px rgba(59,107,255,.45);
-            transition:transform .2s ease, opacity .2s ease; margin-bottom:8px;
-        }
-        .submit-btn:hover:not(:disabled){ transform:translateY(-2px); }
-        .submit-btn:disabled{ opacity:.7; cursor:progress; }
-        .spinner{ width:15px; height:15px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
-        @keyframes spin{ to{ transform:rotate(360deg); } }
-
-        .bottom-nav-wrap{ position:fixed; bottom:0; left:0; right:0; z-index:45; padding:0 16px 16px; }
-        .bottom-nav{ max-width:460px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-content:space-around; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
-        .bnav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:56px; color:var(--text-dim); gap:3px; }
-        .bnav-item.active{ color:var(--electric-soft); }
-        .bnav-item i{ width:16px; height:16px; }
-        .bnav-item span{ font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
-        .bnav-center{ position:relative; top:-16px; }
-        .bnav-center .glow{ position:absolute; inset:0; background:var(--electric); border-radius:14px; filter:blur(10px); opacity:.45; }
-        .bnav-center a{ position:relative; width:50px; height:50px; border-radius:15px; background:linear-gradient(135deg,var(--electric),#1d3fbf); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 10px 24px rgba(59,107,255,.4); }
-
-        .modal-overlay{ position:fixed; inset:0; z-index:90; background:rgba(3,5,14,.62); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .28s ease; }
-        .modal-overlay.open{ opacity:1; pointer-events:auto; }
-        .modal-card{ width:100%; max-width:330px; background:var(--card-2); border:1px solid var(--border); border-radius:24px; padding:28px; text-align:center; box-shadow:0 40px 100px -20px rgba(0,0,0,.5); transform:translateY(18px) scale(.96); transition:transform .32s cubic-bezier(.16,1,.3,1); position:relative; overflow:hidden; }
-        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-        .modal-icon{ width:52px; height:52px; border-radius:15px; background:rgba(59,107,255,.14); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
-        .modal-card h3{ font-size:16px; font-weight:700; margin:0 0 6px; }
-        .modal-card p{ font-size:11.5px; color:var(--text-mid); line-height:1.6; margin:0 0 18px; }
-        .pin-dots{ display:flex; gap:11px; justify-content:center; margin-bottom:16px; }
-        .pin-dots span{ width:13px; height:13px; border-radius:50%; background:var(--border); transition:background .2s ease, transform .2s ease; }
-        .pin-dots span.filled{ background:var(--electric); transform:scale(1.15); }
-        .modal-card input.pin-input{ position:absolute; opacity:0; pointer-events:none; }
-        .modal-actions{ display:flex; gap:10px; margin-top:6px; }
-        .modal-actions button{ flex:1; padding:12px; border-radius:12px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; border:none; cursor:pointer; }
-        .confirm-btn{ background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff; display:flex; align-items:center; justify-content:center; gap:7px; }
-        .cancel-btn{ background:var(--row-hover); color:var(--text-mid); }
-
-        .result-icon{ width:60px; height:60px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; position:relative; }
-        .result-icon::before{ content:''; position:absolute; inset:-8px; border-radius:50%; opacity:.5; animation:pulse-ring 1.8s ease-out infinite; }
-        @keyframes pulse-ring{ 0%{ opacity:.5; transform:scale(1);} 100%{ opacity:0; transform:scale(1.4);} }
-        .result-btn{ width:100%; border:none; cursor:pointer; padding:13px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#fff; }
-
-        #toastContainer{ position:fixed; top:18px; right:18px; z-index:99; display:flex; flex-direction:column; gap:11px; max-width:340px; width:calc(100% - 36px); pointer-events:none; }
-        .toast{ pointer-events:auto; position:relative; overflow:hidden; display:flex; align-items:flex-start; gap:11px; padding:15px 16px 14px; border-radius:16px; background:var(--card-2); border:1px solid var(--border); box-shadow:0 24px 55px -16px rgba(0,0,0,.35); transform:translateY(-14px) scale(.96); opacity:0; transition:transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
-        .toast.show{ transform:translateY(0) scale(1); opacity:1; }
-        .toast::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(180deg,var(--rose),#c8362a); }
-        .toast::after{ content:''; position:absolute; left:0; bottom:0; height:2px; width:100%; background:linear-gradient(90deg,var(--rose),transparent); transform-origin:left; animation: toast-countdown 3.6s linear forwards; }
-        .toast:hover::after{ animation-play-state:paused; }
-        @keyframes toast-countdown{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
-        .toast .icon{ width:31px; height:31px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(249,112,102,.16); color:var(--rose); }
-        .toast .title{ margin:0 0 2px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
-        .toast p.msg{ margin:0; font-size:11.5px; font-weight:500; color:var(--text-mid); line-height:1.5; }
-        .toast .dismiss{ background:none; border:none; color:var(--text-dim); cursor:pointer; padding:3px; border-radius:6px; flex-shrink:0; }
-    </style>
+<style>
+:root{--electric:#3b6bff;--electric-soft:#7c9bff;--cyan:#28e0d6;--emerald:#34d399;--rose:#f97066;--gold:#f4b740}
+html[data-theme="dark"]{
+--bg:#060915;--bg-elevated:#0d1330;--card:#0f1638;--card-2:linear-gradient(165deg,#121a42,#0d1330);
+--border:rgba(148,163,255,.14);--text-hi:#eef1ff;--text-mid:#aab0d6;--text-dim:#6b71a0;
+--nav-bg:rgba(6,9,21,.78);--shadow:0 20px 45px -14px rgba(0,0,0,.5);
+--row-hover:rgba(124,155,255,.07);--input-bg:rgba(255,255,255,.04);--divider:rgba(148,163,255,.1)
+}
+html[data-theme="light"]{
+--bg:#f2f4fb;--bg-elevated:#fff;--card:#fff;--card-2:linear-gradient(165deg,#fff,#f6f8ff);
+--border:#e6e9f6;--text-hi:#0f1428;--text-mid:#5b6178;--text-dim:#98a0c2;
+--nav-bg:rgba(255,255,255,.85);--shadow:0 20px 45px -20px rgba(30,58,138,.14);
+--row-hover:rgba(59,107,255,.05);--input-bg:#f5f7fd;--divider:#eef0fa
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text-hi);min-height:100vh;overflow-x:hidden;padding-bottom:110px;transition:background .35s,color .35s}
+.font-display{font-family:"Space Grotesk",sans-serif}
+.font-mono{font-family:"JetBrains Mono",monospace}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.topbar{position:sticky;top:0;z-index:40;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.back-btn{display:flex;align-items:center;gap:7px;color:var(--text-mid);font-size:12px;font-weight:700}
+.back-btn i{width:16px;height:16px}
+.topbar-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:7px}
+.theme-quick{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-mid)}
+main{max-width:460px;margin:0 auto;padding:20px 18px 0}
+.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.auto-badge{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;background:var(--row-hover);color:var(--text-mid);padding:5px 12px;border-radius:999px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:22px;margin-bottom:18px}
+.field-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--electric-soft);margin:0 0 10px;display:block}
+.input-wrap{position:relative;margin-bottom:20px}
+.input-wrap input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:13px;padding:14px 42px 14px 15px;font-size:14px;font-weight:700;color:var(--text-hi);outline:none;font-family:"JetBrains Mono",monospace;transition:border-color .2s}
+.input-wrap input:focus{border-color:var(--electric-soft)}
+.input-wrap i.field-ic{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--text-dim)}
+.network-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:20px}
+.network-card{border:1.5px solid var(--border);border-radius:14px;padding:13px 4px;text-align:center;background:var(--input-bg);cursor:pointer;transition:all .2s}
+.network-card span{font-size:11px;font-weight:800;color:var(--text-mid)}
+.network-card.active{border-color:var(--electric);background:rgba(59,107,255,.12);transform:scale(.97);box-shadow:0 8px 18px -6px rgba(59,107,255,.35)}
+.network-card.active span{color:var(--electric-soft)}
+.plan-type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.plan-type-card{border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;text-align:center;background:var(--input-bg);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.plan-type-card .ngn{font-size:16px;font-weight:800;color:var(--text-dim)}
+.plan-type-card span.lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--text-mid);line-height:1.3}
+.plan-type-card.active{border-color:var(--electric);background:rgba(59,107,255,.12);transform:scale(.97)}
+.plan-type-card.active .ngn,.plan-type-card.active span.lbl{color:var(--electric-soft)}
+select{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:13px;padding:14px 40px 14px 15px;font-size:13px;font-weight:700;color:var(--text-hi);outline:none;appearance:none;cursor:pointer;font-family:Inter,sans-serif}
+select:focus{border-color:var(--electric-soft)}
+select option{background:var(--card);color:var(--text-hi)}
+.select-wrap{position:relative;margin-bottom:6px}
+.select-wrap i{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-dim);pointer-events:none}
+.price-box{background:linear-gradient(135deg,var(--electric),#1d3fbf 70%,var(--cyan));border-radius:18px;padding:18px;text-align:center;margin-top:6px;color:#fff;box-shadow:0 18px 40px -14px rgba(59,107,255,.5)}
+.price-box .lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.75);margin:0}
+.price-box .val{font-size:26px;font-weight:700;font-family:"JetBrains Mono",monospace;margin:4px 0 0}
+.submit-btn{width:100%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--electric),#1d3fbf);color:#fff;padding:16px;border-radius:15px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 16px 34px -10px rgba(59,107,255,.45);transition:transform .2s,opacity .2s;margin-bottom:8px}
+.submit-btn:hover:not(:disabled){transform:translateY(-2px)}
+.submit-btn:disabled{opacity:.7;cursor:progress}
+.spinner{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bottom-nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:45;padding:0 16px 16px}
+.bottom-nav{max-width:460px;margin:0 auto;background:var(--nav-bg);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;height:64px;display:flex;align-items:center;justify-content:space-around;box-shadow:0 -14px 34px -14px rgba(0,0,0,.25)}
+.bnav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;width:56px;color:var(--text-dim);gap:3px}
+.bnav-item.active{color:var(--electric-soft)}
+.bnav-item i{width:16px;height:16px}
+.bnav-item span{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.bnav-center{position:relative;top:-16px}
+.bnav-center .glow{position:absolute;inset:0;background:var(--electric);border-radius:14px;filter:blur(10px);opacity:.45}
+.bnav-center a{position:relative;width:50px;height:50px;border-radius:15px;background:linear-gradient(135deg,var(--electric),#1d3fbf);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 10px 24px rgba(59,107,255,.4)}
+.modal-overlay{position:fixed;inset:0;z-index:90;background:rgba(3,5,14,.62);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .28s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-card{width:100%;max-width:350px;background:var(--card-2);border:1px solid var(--border);border-radius:24px;padding:28px;text-align:center;box-shadow:0 40px 100px -20px rgba(0,0,0,.5);transform:translateY(18px) scale(.96);transition:transform .32s;position:relative;overflow:hidden}
+.modal-overlay.open .modal-card{transform:translateY(0) scale(1)}
+.modal-icon{width:52px;height:52px;border-radius:15px;background:rgba(59,107,255,.14);color:var(--electric-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.modal-card h3{font-size:16px;font-weight:700;margin:0 0 8px}
+.modal-card p{font-size:12px;color:var(--text-mid);line-height:1.65;margin:0 0 18px;overflow-wrap:anywhere}
+.pin-dots{display:flex;gap:11px;justify-content:center;margin-bottom:16px}
+.pin-dots span{width:13px;height:13px;border-radius:50%;background:var(--border);transition:background .2s,transform .2s}
+.pin-dots span.filled{background:var(--electric);transform:scale(1.15)}
+.modal-card input.pin-input{position:absolute;opacity:0;pointer-events:none}
+.modal-actions{display:flex;gap:10px;margin-top:6px}
+.modal-actions button{flex:1;padding:12px;border-radius:12px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border:none;cursor:pointer}
+.confirm-btn{background:linear-gradient(135deg,var(--electric),#1d3fbf);color:#fff;display:flex;align-items:center;justify-content:center;gap:7px}
+.cancel-btn{background:var(--row-hover);color:var(--text-mid)}
+.result-icon{width:60px;height:60px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;position:relative}
+.result-btn{width:100%;border:none;cursor:pointer;padding:13px;border-radius:12px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff}
+#toastContainer{position:fixed;top:18px;right:18px;z-index:99;display:flex;flex-direction:column;gap:11px;max-width:340px;width:calc(100% - 36px);pointer-events:none}
+.toast{pointer-events:auto;position:relative;overflow:hidden;display:flex;align-items:flex-start;gap:11px;padding:15px 16px 14px;border-radius:16px;background:var(--card-2);border:1px solid var(--border);box-shadow:0 24px 55px -16px rgba(0,0,0,.35);transform:translateY(-14px) scale(.96);opacity:0;transition:transform .38s,opacity .3s}
+.toast.show{transform:translateY(0) scale(1);opacity:1}
+.toast::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--rose),#c8362a)}
+.toast .icon{width:31px;height:31px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(249,112,102,.16);color:var(--rose)}
+.toast .title{margin:0 0 2px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.toast p.msg{margin:0;font-size:11.5px;font-weight:500;color:var(--text-mid);line-height:1.5}
+.toast .dismiss{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:3px;border-radius:6px;flex-shrink:0}
+@keyframes toast-countdown{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.toast::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,var(--rose),transparent);transform-origin:left;animation:toast-countdown 3.6s linear forwards}
+@media(max-width:360px){.topbar{padding:0 10px}.topbar-title{font-size:10px}.back-btn{font-size:11px}.card{padding:17px}.modal-card{padding:24px}}
+</style>
 </head>
+
 <body>
+<nav class="topbar">
+    <a href="dashboard.html" class="back-btn"><i data-lucide="arrow-left"></i> Dashboard</a>
+    <div class="topbar-title"><i data-lucide="wifi" style="width:14px;height:14px;color:var(--electric-soft)"></i> Buy Data Bundle</div>
+    <button class="theme-quick" onclick="toggleTheme()" aria-label="Toggle theme"><i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px"></i></button>
+</nav>
 
-    <nav class="topbar">
-        <a href="dashboard.html" class="back-btn"><i data-lucide="arrow-left"></i> Dashboard</a>
-        <div class="topbar-title"><i data-lucide="wifi" style="width:14px;height:14px;color:var(--electric-soft);"></i> Buy Data Bundle</div>
-        <button class="theme-quick" onclick="toggleTheme()" aria-label="Toggle theme"><i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i></button>
-    </nav>
+<div id="toastContainer"></div>
 
-    <div id="toastContainer"></div>
+<main>
+    <div class="top-row"><span></span><span class="auto-badge">Automated API delivery</span></div>
 
-    <main>
-        <div class="top-row"><span></span><span class="auto-badge">Automated API delivery</span></div>
+    <form id="dataForm">
+        <div class="card">
+            <label class="field-label" for="phone">Recipient phone number</label>
+            <div class="input-wrap">
+                <input type="tel" id="phone" required placeholder="e.g. 08123456789" maxlength="14" inputmode="tel">
+                <i data-lucide="smartphone" class="field-ic"></i>
+            </div>
 
-        <form id="dataForm">
-            <div class="card">
-                <label class="field-label" for="phone">Recipient phone number</label>
-                <div class="input-wrap">
-                    <input type="tel" id="phone" required placeholder="e.g. 08123456789" maxlength="11">
-                    <i data-lucide="smartphone" class="field-ic"></i>
-                </div>
+            <label class="field-label">Select network provider</label>
+            <div class="network-grid" id="networkGrid">
+                <div class="network-card" data-value="1"><span>MTN</span></div>
+                <div class="network-card" data-value="2"><span>AIRTEL</span></div>
+                <div class="network-card" data-value="3"><span>GLO</span></div>
+                <div class="network-card" data-value="4"><span>9MOBILE</span></div>
+            </div>
 
-                <label class="field-label">Select network provider</label>
-                <div class="network-grid" id="networkGrid">
-                    <div class="network-card" data-value="1"><span>MTN</span></div>
-                    <div class="network-card" data-value="2"><span>AIRTEL</span></div>
-                    <div class="network-card" data-value="3"><span>GLO</span></div>
-                    <div class="network-card" data-value="4"><span>9MOBILE</span></div>
-                </div>
+            <div id="planTypeSection" style="display:none">
+                <label class="field-label">Select plan type</label>
+                <div class="plan-type-grid" id="planTypeGrid"></div>
+            </div>
 
-                <div id="planTypeSection" style="display:none;">
-                    <label class="field-label">Select plan type</label>
-                    <div class="plan-type-grid" id="planTypeGrid"></div>
-                </div>
-
-                <div id="dataPackageSection" style="display:none;">
-                    <label class="field-label" for="dataPlan">Select data package</label>
-                    <div class="select-wrap">
-                        <select id="dataPlan" required><option value="">-- Select package --</option></select>
-                        <i data-lucide="chevron-down"></i>
-                    </div>
-                </div>
-
-                <div id="priceDisplayBox" class="price-box" style="display:none;">
-                    <p class="lbl">Total debited settlement cost</p>
-                    <h2 class="val">&#8358;<span id="calculatedPrice">0.00</span></h2>
+            <div id="dataPackageSection" style="display:none">
+                <label class="field-label" for="dataPlan">Select data package</label>
+                <div class="select-wrap">
+                    <select id="dataPlan" required><option value="">-- Select package --</option></select>
+                    <i data-lucide="chevron-down"></i>
                 </div>
             </div>
 
-            <button type="submit" id="submitBtn" class="submit-btn"><span id="submitBtnLabel">Purchase bundle</span></button>
+            <div id="priceDisplayBox" class="price-box" style="display:none">
+                <p class="lbl">Total purchase cost</p>
+                <h2 class="val">&#8358;<span id="calculatedPrice">0.00</span></h2>
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">
+            <span id="submitBtnLabel">Purchase bundle</span>
+        </button>
+    </form>
+</main>
+
+<div id="pinGateModal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-icon"><i data-lucide="lock" style="width:20px;height:20px"></i></div>
+        <h3 class="font-display">Security verification</h3>
+        <p>Enter your 4-digit transaction PIN to finalize this purchase.</p>
+        <form id="pinAuthForm">
+            <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
+            <input type="password" id="txPin" class="pin-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" autocomplete="off" aria-label="Transaction PIN" required>
+            <div class="modal-actions">
+                <button type="submit" id="confirmPayBtn" class="confirm-btn">Confirm</button>
+                <button type="button" onclick="closePinGate()" class="cancel-btn">Cancel</button>
+            </div>
         </form>
-    </main>
-
-    <div id="pinGateModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-icon"><i data-lucide="lock" style="width:20px;height:20px;"></i></div>
-            <h3 class="font-display">Security verification</h3>
-            <p>Enter your 4-digit transaction PIN to finalize this purchase.</p>
-            <form id="pinAuthForm">
-                <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
-                <input type="password" id="txPin" class="pin-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" autocomplete="off">
-                <div class="modal-actions">
-                    <button type="submit" id="confirmPayBtn" class="confirm-btn">Confirm</button>
-                    <button type="button" onclick="closePinGate()" class="cancel-btn">Cancel</button>
-                </div>
-            </form>
-        </div>
     </div>
+</div>
 
-    <div id="successResponseModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="result-icon" style="background:rgba(52,211,153,.16);"><i data-lucide="check-circle-2" style="width:26px;height:26px;color:var(--emerald);"></i></div>
-            <h3 class="font-display">Purchase successful!</h3>
-            <p id="successModalMsg">Your data bundle has been delivered.</p>
-            <button onclick="closeSuccessModal()" class="result-btn" style="background:linear-gradient(135deg,var(--emerald),#1fae7d);">Acknowledge</button>
+<div id="successResponseModal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="result-icon" style="background:rgba(52,211,153,.16)">
+            <i data-lucide="check-circle-2" style="width:26px;height:26px;color:var(--emerald)"></i>
         </div>
+        <h3 class="font-display">Purchase successful!</h3>
+        <p id="successModalMsg">Your data bundle has been delivered.</p>
+        <button onclick="closeSuccessModal()" class="result-btn" style="background:linear-gradient(135deg,var(--emerald),#1fae7d)">Continue</button>
     </div>
+</div>
 
-    <div id="errorResponseModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="result-icon" style="background:rgba(249,112,102,.16);"><i data-lucide="alert-circle" style="width:26px;height:26px;color:var(--rose);"></i></div>
-            <h3 class="font-display">Fulfillment failed</h3>
-            <p id="errorModalMsg">The network provider rejected this transaction.</p>
-            <button onclick="closeErrorModal()" class="result-btn" style="background:linear-gradient(135deg,var(--rose),#c8362a);">Go back</button>
+<div id="errorResponseModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="errorModalTitle">
+    <div class="modal-card">
+        <div class="result-icon" id="errorIcon" style="background:rgba(249,112,102,.16)">
+            <i data-lucide="alert-circle" style="width:26px;height:26px;color:var(--rose)"></i>
         </div>
+        <h3 class="font-display" id="errorModalTitle">Purchase Unsuccessful</h3>
+        <p id="errorModalMsg">We could not complete your data purchase.</p>
+        <button id="errorModalButton" class="result-btn" style="background:linear-gradient(135deg,var(--electric),#1d3fbf)">Go Back</button>
     </div>
+</div>
 
-    <div class="bottom-nav-wrap">
-        <div class="bottom-nav">
-            <a href="buy-airtime.html" class="bnav-item"><i data-lucide="phone"></i><span>Airtime</span></a>
-            <a href="buy-data.html" class="bnav-item active"><i data-lucide="wifi"></i><span>Data</span></a>
-            <div class="bnav-center"><div class="glow"></div><a href="dashboard.html"><i data-lucide="home" style="width:20px;height:20px;"></i></a></div>
-            <a href="history.html" class="bnav-item"><i data-lucide="clock"></i><span>History</span></a>
-            <a href="settings.html" class="bnav-item"><i data-lucide="settings"></i><span>Settings</span></a>
-        </div>
+<div class="bottom-nav-wrap">
+    <div class="bottom-nav">
+        <a href="buy-airtime.html" class="bnav-item"><i data-lucide="phone"></i><span>Airtime</span></a>
+        <a href="buy-data.html" class="bnav-item active"><i data-lucide="wifi"></i><span>Data</span></a>
+        <div class="bnav-center"><div class="glow"></div><a href="dashboard.html" aria-label="Home"><i data-lucide="home" style="width:20px;height:20px"></i></a></div>
+        <a href="history.html" class="bnav-item"><i data-lucide="clock"></i><span>History</span></a>
+        <a href="settings.html" class="bnav-item"><i data-lucide="settings"></i><span>Settings</span></a>
     </div>
+</div>
 
-    <script>
-        lucide.createIcons();
+<script>
+lucide.createIcons();
 
-        const planSelect = document.getElementById('dataPlan');
-        const priceBox = document.getElementById('priceDisplayBox');
-        const calculatedPriceSpan = document.getElementById('calculatedPrice');
-        const dataForm = document.getElementById('dataForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const submitBtnLabel = document.getElementById('submitBtnLabel');
-        const phoneInput = document.getElementById('phone');
-        const pinGateModal = document.getElementById('pinGateModal');
-        const pinAuthForm = document.getElementById('pinAuthForm');
-        const txPinInput = document.getElementById('txPin');
-        const successResponseModal = document.getElementById('successResponseModal');
-        const errorResponseModal = document.getElementById('errorResponseModal');
+const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
 
-        const planTypeSection = document.getElementById('planTypeSection');
-        const planTypeGrid = document.getElementById('planTypeGrid');
-        const dataPackageSection = document.getElementById('dataPackageSection');
+const planSelect = document.getElementById('dataPlan');
+const priceBox = document.getElementById('priceDisplayBox');
+const calculatedPriceSpan = document.getElementById('calculatedPrice');
+const dataForm = document.getElementById('dataForm');
+const submitBtn = document.getElementById('submitBtn');
+const submitBtnLabel = document.getElementById('submitBtnLabel');
+const phoneInput = document.getElementById('phone');
+const pinGateModal = document.getElementById('pinGateModal');
+const pinAuthForm = document.getElementById('pinAuthForm');
+const txPinInput = document.getElementById('txPin');
+const successResponseModal = document.getElementById('successResponseModal');
+const errorResponseModal = document.getElementById('errorResponseModal');
+const planTypeSection = document.getElementById('planTypeSection');
+const planTypeGrid = document.getElementById('planTypeGrid');
+const dataPackageSection = document.getElementById('dataPackageSection');
 
-        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
-        let cachedPlans = [];
-        let selectedNetworkId = null;
-        let selectedPlanType = null;
+let cachedPlans = [];
+let selectedNetworkId = null;
+let selectedPlanType = null;
+let purchaseInProgress = false;
 
-        const PREFIX_MAP = {
-            '1': ['0803','0806','0810','0813','0814','0816','0903','0906','0913','0916','0703','0706','0702','0704','0205'],
-            '2': ['0802','0808','0812','0901','0902','0904','0907','0912','0911','0701','0708'],
-            '3': ['0805','0807','0811','0815','0905','0915','0705'],
-            '4': ['0809','0817','0818','0908','0909']
-        };
-        const NETWORK_PLANS_ALLOWED = {
-            '1': ['SME', 'COOPERATE GIFTING', 'GIFTING'],
-            '2': ['COOPERATE GIFTING'],
-            '3': ['COOPERATE GIFTING', 'GIFTING'],
-            '4': ['COOPERATE GIFTING']
-        };
+const PREFIX_MAP = {
+    '1':['0803','0806','0810','0813','0814','0816','0903','0906','0913','0916','0703','0706','0702','0704','0205'],
+    '2':['0802','0808','0812','0901','0902','0904','0907','0912','0911','0701','0708'],
+    '3':['0805','0807','0811','0815','0905','0915','0705'],
+    '4':['0809','0817','0818','0908','0909']
+};
 
-        function applyThemeIcon(){
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            document.getElementById('themeIconTop')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            lucide.createIcons();
+const NETWORK_PLANS_ALLOWED = {
+    '1':['SME','COOPERATE GIFTING','GIFTING'],
+    '2':['COOPERATE GIFTING'],
+    '3':['COOPERATE GIFTING','GIFTING'],
+    '4':['COOPERATE GIFTING']
+};
+
+function applyThemeIcon(){
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    document.getElementById('themeIconTop')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
+    lucide.createIcons();
+}
+
+function toggleTheme(){
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('bigotic-theme', next);
+    applyThemeIcon();
+}
+applyThemeIcon();
+
+function showNotification(message, type='error'){
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+
+    const iconName = type === 'success' ? 'check-circle-2' : 'alert-circle';
+    const title = type === 'success' ? 'Success' : 'Please note';
+
+    const icon = document.createElement('span');
+    icon.className = 'icon';
+    const iconElement = document.createElement('i');
+    iconElement.setAttribute('data-lucide', iconName);
+    iconElement.style.width = '15px';
+    iconElement.style.height = '15px';
+    icon.appendChild(iconElement);
+
+    const content = document.createElement('div');
+    content.style.flex = '1';
+
+    const heading = document.createElement('p');
+    heading.className = 'title';
+    heading.textContent = title;
+
+    const msg = document.createElement('p');
+    msg.className = 'msg';
+    msg.textContent = message;
+
+    content.append(heading, msg);
+
+    const dismiss = document.createElement('button');
+    dismiss.className = 'dismiss';
+    dismiss.type = 'button';
+    dismiss.setAttribute('aria-label', 'Dismiss');
+    dismiss.textContent = '×';
+
+    toast.append(icon, content, dismiss);
+    container.appendChild(toast);
+    lucide.createIcons();
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    let timer;
+    let removed = false;
+
+    function remove(){
+        if(removed) return;
+        removed = true;
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }
+
+    dismiss.addEventListener('click', remove);
+    timer = setTimeout(remove, 3600);
+    toast.addEventListener('mouseenter', () => clearTimeout(timer));
+    toast.addEventListener('mouseleave', () => {
+        if(!removed) timer = setTimeout(remove, 1200);
+    });
+}
+
+function openPinGate(){
+    pinGateModal.classList.add('open');
+    txPinInput.value = '';
+    updatePinDots();
+    setTimeout(() => txPinInput.focus(), 200);
+}
+
+function closePinGate(){
+    pinGateModal.classList.remove('open');
+    txPinInput.value = '';
+    updatePinDots();
+}
+
+function updatePinDots(){
+    const val = txPinInput.value || '';
+    document.querySelectorAll('#pinDots span').forEach((dot, i) => {
+        dot.classList.toggle('filled', i < val.length);
+    });
+}
+
+txPinInput.addEventListener('input', updatePinDots);
+
+document.querySelector('#pinGateModal .modal-card').addEventListener('click', e => {
+    if(e.target.closest('#pinDots')) txPinInput.focus();
+});
+
+function closeSuccessModal(){
+    successResponseModal.classList.remove('open');
+    window.location.href = 'dashboard.html';
+}
+
+function closeErrorModal(){
+    errorResponseModal.classList.remove('open');
+}
+
+function resetSubmitButton(){
+    purchaseInProgress = false;
+    submitBtnLabel.textContent = 'Purchase bundle';
+    submitBtn.disabled = false;
+    document.getElementById('confirmPayBtn').disabled = false;
+}
+
+function openErrorModal(title, message, buttonText, action){
+    document.getElementById('errorModalTitle').textContent = title;
+    document.getElementById('errorModalMsg').textContent = message;
+
+    const button = document.getElementById('errorModalButton');
+    button.textContent = buttonText;
+    button.onclick = function(){
+        errorResponseModal.classList.remove('open');
+
+        if(action === 'dashboard'){
+            window.location.href = 'dashboard.html';
+        }else if(action === 'history'){
+            window.location.href = 'history.html';
+        }else if(action === 'login'){
+            window.location.href = 'login.html';
         }
-        function toggleTheme(){
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('bigotic-theme', next);
-            applyThemeIcon();
-        }
-        applyThemeIcon();
+        // action "close" leaves the user on this page.
+    };
 
-        function showNotification(message, type = 'error') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            const iconName = type === 'success' ? 'check-circle-2' : 'alert-circle';
-            toast.innerHTML = `
-                <span class="icon"><i data-lucide="${iconName}" style="width:15px;height:15px;"></i></span>
-                <div style="flex:1;"><p class="title">${type === 'success' ? 'Success' : 'Something needs attention'}</p><p class="msg">${message}</p></div>
-                <button class="dismiss" aria-label="Dismiss"><i data-lucide="x" style="width:13px;height:13px;"></i></button>
-            `;
-            container.appendChild(toast);
-            lucide.createIcons();
-            requestAnimationFrame(() => toast.classList.add('show'));
-            let dismissed = false;
-            const remove = () => { if (dismissed) return; dismissed = true; toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); };
-            toast.querySelector('.dismiss').addEventListener('click', remove);
-            let timer = setTimeout(remove, 3600);
-            toast.addEventListener('mouseenter', () => clearTimeout(timer));
-            toast.addEventListener('mouseleave', () => { timer = setTimeout(remove, 1200); });
+    errorResponseModal.classList.add('open');
+    lucide.createIcons();
+}
+
+/*
+ * Converts backend error codes into customer-friendly messages.
+ * Never show raw JSON, stack traces, or provider responses in the UI.
+ */
+function showPurchaseError(data, httpStatus=0){
+    const code = String(data?.code || '').toUpperCase();
+
+    if(code === 'INSUFFICIENT_WALLET'){
+        openErrorModal(
+            'Insufficient Wallet Balance',
+            'Your wallet balance is too low for this data bundle. Please fund your wallet and try again.',
+            'GO TO DASHBOARD',
+            'dashboard'
+        );
+        return;
+    }
+
+    if(code === 'PROVIDER_INSUFFICIENT_FUNDS'){
+        openErrorModal(
+            'Service Temporarily Unavailable',
+            'Sorry, our data service is temporarily unavailable. Your wallet has not been charged for this request. Please try again later.',
+            'GO BACK',
+            'close'
+        );
+        return;
+    }
+
+    if(code === 'PURCHASE_STATUS_UNCONFIRMED' ||
+       code === 'PROVIDER_RESPONSE_UNCONFIRMED'){
+        openErrorModal(
+            'Check Transaction Status',
+            'We could not confirm whether this purchase was completed. Please check your transaction history before trying again.',
+            'VIEW HISTORY',
+            'history'
+        );
+        return;
+    }
+
+    if(code === 'PROVIDER_PURCHASE_FAILED'){
+        openErrorModal(
+            'Purchase Not Completed',
+            'The data service could not complete this request. Please check your transaction history before attempting another purchase.',
+            'VIEW HISTORY',
+            'history'
+        );
+        return;
+    }
+
+    if(httpStatus === 401 || httpStatus === 403){
+        openErrorModal(
+            'Session Expired',
+            'Your session may have expired. Please sign in again to continue.',
+            'SIGN IN',
+            'login'
+        );
+        return;
+    }
+
+    openErrorModal(
+        'Purchase Unsuccessful',
+        'We could not complete your data purchase. Please try again later. If your wallet was debited, check your transaction history before retrying.',
+        'GO BACK',
+        'close'
+    );
+}
+
+window.addEventListener('load', async function(){
+    let user;
+
+    try{
+        user = JSON.parse(localStorage.getItem('user') || 'null');
+    }catch{
+        user = null;
+    }
+
+    if(!user){
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try{
+        const response = await fetch(`${BACKEND_URL}/get-data-plans`);
+        if(!response.ok) throw new Error('Could not load plans');
+
+        const data = await response.json();
+
+        if(Array.isArray(data)){
+            cachedPlans = data;
+        }else if(Array.isArray(data.plans)){
+            cachedPlans = data.plans;
+        }else{
+            cachedPlans = [];
         }
 
-        function openPinGate() {
-            pinGateModal.classList.add('open');
-            txPinInput.value = '';
-            updatePinDots();
-            setTimeout(() => txPinInput.focus(), 200);
+        if(cachedPlans.length === 0){
+            showNotification('No data packages are currently available. Please try again later.');
         }
-        function closePinGate() {
-            pinGateModal.classList.remove('open');
-            txPinInput.value = '';
-            updatePinDots();
-        }
-        function updatePinDots(){
-            const val = txPinInput.value || '';
-            document.querySelectorAll('#pinDots span').forEach((dot, i) => dot.classList.toggle('filled', i < val.length));
-        }
-        txPinInput.addEventListener('input', updatePinDots);
-        document.querySelector('.modal-card').addEventListener('click', (e) => {
-            if (e.target.closest('#pinDots')) txPinInput.focus();
+    }catch(err){
+        console.error('Error loading data plans:', err);
+        showNotification('Could not load data packages. Please refresh the page and try again.');
+    }
+
+    setupNetworkGridListeners();
+});
+
+function setupNetworkGridListeners(){
+    document.querySelectorAll('.network-card').forEach(card => {
+        card.addEventListener('click', function(){
+            document.querySelectorAll('.network-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            handleNetworkChange(this.getAttribute('data-value'));
+        });
+    });
+}
+
+function handleNetworkChange(networkId){
+    selectedNetworkId = parseInt(networkId, 10);
+    selectedPlanType = null;
+
+    planSelect.innerHTML = '<option value="">-- Select package --</option>';
+    dataPackageSection.style.display = 'none';
+    priceBox.style.display = 'none';
+
+    if(!selectedNetworkId){
+        planTypeSection.style.display = 'none';
+        return;
+    }
+
+    const allowedTypes = NETWORK_PLANS_ALLOWED[String(selectedNetworkId)] || [];
+    planTypeGrid.innerHTML = '';
+
+    allowedTypes.forEach(type => {
+        const card = document.createElement('div');
+        card.className = 'plan-type-card';
+        card.setAttribute('data-type', type);
+
+        const symbol = document.createElement('span');
+        symbol.className = 'ngn';
+        symbol.textContent = '₦';
+
+        const label = document.createElement('span');
+        label.className = 'lbl';
+        label.textContent = type;
+
+        card.append(symbol, label);
+        card.addEventListener('click', function(){
+            document.querySelectorAll('.plan-type-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            handlePlanTypeChange(this.getAttribute('data-type'));
         });
 
-        function closeSuccessModal() {
-            successResponseModal.classList.remove('open');
-            window.location.href = "dashboard.html";
-        }
-        function closeErrorModal() {
-            errorResponseModal.classList.remove('open');
-        }
+        planTypeGrid.appendChild(card);
+    });
 
-        window.onload = function() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (!user) { window.location.href = "login.html"; return; }
+    planTypeSection.style.display = 'block';
+}
 
-            fetch(`${BACKEND_URL}/get-data-plans`)
-                .then(res => res.json())
-                .then(data => {
-                    if (Array.isArray(data)) cachedPlans = data;
-                    else if (data.plans) cachedPlans = data.plans;
-                })
-                .catch(err => {
-                    console.error("Error loading network specifications:", err);
-                    showNotification("Could not sync with the product bundles list.", "error");
-                });
+function handlePlanTypeChange(typeStr){
+    selectedPlanType = typeStr;
+    planSelect.innerHTML = '<option value="">-- Select package --</option>';
+    priceBox.style.display = 'none';
 
-            setupNetworkGridListeners();
-        };
+    if(!selectedPlanType){
+        dataPackageSection.style.display = 'none';
+        return;
+    }
 
-        function setupNetworkGridListeners() {
-            const cards = document.querySelectorAll('.network-card');
-            cards.forEach(card => {
-                card.addEventListener('click', function() {
-                    cards.forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    handleNetworkChange(this.getAttribute('data-value'));
-                });
-            });
-        }
+    const searchType = selectedPlanType.toUpperCase().trim();
 
-        function handleNetworkChange(networkId) {
-            selectedNetworkId = parseInt(networkId);
-            selectedPlanType = null;
+    const filteredPlans = cachedPlans.filter(plan => {
+        if(Number(plan.network) !== Number(selectedNetworkId)) return false;
 
-            planSelect.innerHTML = '<option value="">-- Select package --</option>';
-            dataPackageSection.style.display = 'none';
-            priceBox.style.display = 'none';
+        const backendType = plan.type ? String(plan.type).toUpperCase().trim() : '';
+        const isCGRequested = ['COOPERATE GIFTING','CORPORATE GIFTING','CG'].includes(searchType);
+        const isCGBackend = ['CG','COOPERATE GIFTING','CORPORATE GIFTING'].includes(backendType);
 
-            if (!selectedNetworkId) { planTypeSection.style.display = 'none'; return; }
+        if(isCGRequested && isCGBackend) return true;
 
-            const allowedTypes = NETWORK_PLANS_ALLOWED[String(selectedNetworkId)] || [];
-            planTypeGrid.innerHTML = '';
+        return backendType === searchType || backendType.includes(searchType);
+    });
 
-            allowedTypes.forEach(type => {
-                const card = document.createElement('div');
-                card.className = 'plan-type-card';
-                card.setAttribute('data-type', type);
-                card.innerHTML = `<span class="ngn">&#8358;</span><span class="lbl">${type}</span>`;
-                card.addEventListener('click', function() {
-                    document.querySelectorAll('.plan-type-card').forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    handlePlanTypeChange(this.getAttribute('data-type'));
-                });
-                planTypeGrid.appendChild(card);
-            });
+    if(filteredPlans.length === 0){
+        planSelect.innerHTML = '<option value="">No packages active for this type</option>';
+    }else{
+        filteredPlans.forEach(plan => {
+            const option = document.createElement('option');
+            option.value = plan.id;
 
-            planTypeSection.style.display = 'block';
-        }
+            const priceVal = Number(plan.price ?? plan.amount ?? 0);
+            option.dataset.cost = String(priceVal);
 
-        function handlePlanTypeChange(typeStr) {
-            selectedPlanType = typeStr;
-            planSelect.innerHTML = '<option value="">-- Select package --</option>';
-            priceBox.style.display = 'none';
+            const validityText = plan.validity || plan.month_validate || '';
+            const validityBadge = validityText ? ` (${validityText})` : '';
+            const planName = plan.name || plan.plan_name || 'Data bundle';
 
-            if (!selectedPlanType) { dataPackageSection.style.display = 'none'; return; }
+            option.textContent = `${planName}${validityBadge} - ₦${priceVal.toLocaleString('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+            planSelect.appendChild(option);
+        });
+    }
 
-            let searchType = selectedPlanType.toUpperCase().trim();
+    dataPackageSection.style.display = 'block';
+}
 
-            const filteredPlans = cachedPlans.filter(p => {
-                const networkMatch = Number(p.network) === Number(selectedNetworkId);
-                if (!networkMatch) return false;
+phoneInput.addEventListener('input', function(){
+    let val = this.value.trim().replace(/\s+/g, '');
 
-                const backendType = p.type ? String(p.type).toUpperCase().trim() : '';
+    if(val.startsWith('+234')){
+        val = '0' + val.substring(4);
+    }else if(val.startsWith('234') && val.length > 3){
+        val = '0' + val.substring(3);
+    }
 
-                const isCGRequested = (searchType === 'COOPERATE GIFTING' || searchType === 'CORPORATE GIFTING' || searchType === 'CG');
-                const isCGBackend = (backendType === 'CG' || backendType === 'COOPERATE GIFTING' || backendType === 'CORPORATE GIFTING');
+    this.value = val;
 
-                if (isCGRequested && isCGBackend) return true;
+    if(val.length >= 4){
+        const inputPrefix = val.substring(0, 4);
 
-                return backendType === searchType || backendType.includes(searchType);
-            });
-
-            if (filteredPlans.length === 0) {
-                planSelect.innerHTML = '<option value="">No packages active for this type</option>';
-            } else {
-                filteredPlans.forEach(plan => {
-                    const option = document.createElement('option');
-                    option.value = plan.id;
-                    const priceVal = plan.price || plan.amount || 0;
-                    option.dataset.cost = priceVal;
-                    
-                    // Reads plan validity directly from backend object
-                    const validityText = plan.validity || plan.month_validate || '';
-                    const validityBadge = validityText ? ` (${validityText})` : '';
-
-                    option.innerText = `${plan.name || plan.plan_name}${validityBadge} - \u20a6${parseFloat(priceVal).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
-                    planSelect.appendChild(option);
-                });
-            }
-            dataPackageSection.style.display = 'block';
-        }
-
-        phoneInput.addEventListener('input', function() {
-            let val = this.value.trim();
-            if (val.startsWith('+234')) val = '0' + val.substring(4);
-            else if (val.startsWith('234') && val.length > 3) val = '0' + val.substring(3);
-            if (this.value !== val) this.value = val;
-
-            if (val.length >= 4) {
-                const inputPrefix = val.substring(0, 4);
-                for (const networkId in PREFIX_MAP) {
-                    if (PREFIX_MAP[networkId].includes(inputPrefix)) {
-                        const targetCard = document.querySelector(`.network-card[data-value="${networkId}"]`);
-                        if (targetCard && !targetCard.classList.contains('active')) targetCard.click();
-                        break;
-                    }
+        for(const networkId in PREFIX_MAP){
+            if(PREFIX_MAP[networkId].includes(inputPrefix)){
+                const targetCard = document.querySelector(`.network-card[data-value="${networkId}"]`);
+                if(targetCard && !targetCard.classList.contains('active')){
+                    targetCard.click();
                 }
+                break;
             }
-        });
-
-        planSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const cost = selectedOption ? selectedOption.dataset.cost : null;
-            if (cost) {
-                calculatedPriceSpan.innerText = parseFloat(cost).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                priceBox.style.display = 'block';
-            } else {
-                priceBox.style.display = 'none';
-            }
-        });
-
-        dataForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const phone = phoneInput.value.trim();
-
-            if (!selectedNetworkId) { showNotification("Please select a network provider."); return; }
-            if (!selectedPlanType) { showNotification("Please select a data plan type."); return; }
-            if (phone.length !== 11 || isNaN(phone)) { showNotification("Enter a valid 11-digit mobile number."); return; }
-            if (!planSelect.value) { showNotification("Please select a data package."); return; }
-            openPinGate();
-        });
-
-        pinAuthForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const user = JSON.parse(localStorage.getItem('user'));
-            const dataPlan = planSelect.value;
-            const phone = phoneInput.value.trim();
-            const pinVal = txPinInput.value;
-
-            closePinGate();
-            submitBtn.disabled = true;
-            submitBtnLabel.innerHTML = '<span class="spinner"></span> Processing&hellip;';
-
-            const payload = { email: user ? user.email : null, network: selectedNetworkId, dataPlan: dataPlan, phone: phone, pin: pinVal };
-
-            fetch(`${BACKEND_URL}/buy-data`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(async res => {
-                if (!res.ok) {
-                    const rawErrText = await res.text();
-                    console.error("Backend Rejected Payload with Status:", res.status, rawErrText);
-                    throw new Error(rawErrText || "Fulfillment Failed");
-                }
-                return res.json();
-            })
-            .then(data => {
-                txPinInput.value = '';
-                if (data.success) {
-                    user.balance = data.newBalance;
-                    localStorage.setItem('user', JSON.stringify(user));
-                    const chosenPlanText = planSelect.options[planSelect.selectedIndex].text.split(' - ')[0];
-                    document.getElementById('successModalMsg').innerText = `${chosenPlanText} has been credited successfully to ${phone}.`;
-                    successResponseModal.classList.add('open');
-                } else {
-                    document.getElementById('errorModalMsg').innerText = data.error || data.message || "Transaction authorization validation failed.";
-                    errorResponseModal.classList.add('open');
-                    resetSubmitButton();
-                }
-            })
-            .catch(err => {
-                console.error("Catch Exception Block:", err);
-                txPinInput.value = '';
-                document.getElementById('errorModalMsg').innerText = err.message || "Gateway communication error.";
-                errorResponseModal.classList.add('open');
-                resetSubmitButton();
-            });
-        });
-
-        function resetSubmitButton() {
-            submitBtnLabel.innerText = "Purchase bundle";
-            submitBtn.disabled = false;
         }
-    </script>
+    }
+});
+
+planSelect.addEventListener('change', function(){
+    const selectedOption = this.options[this.selectedIndex];
+    const cost = selectedOption?.dataset.cost;
+
+    if(cost !== undefined && cost !== '' && Number.isFinite(Number(cost))){
+        calculatedPriceSpan.textContent = Number(cost).toLocaleString('en-NG',{
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        });
+        priceBox.style.display = 'block';
+    }else{
+        priceBox.style.display = 'none';
+    }
+});
+
+dataForm.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    if(purchaseInProgress) return;
+
+    const phone = phoneInput.value.trim();
+
+    if(!selectedNetworkId){
+        showNotification('Please select a network provider.');
+        return;
+    }
+
+    if(!selectedPlanType){
+        showNotification('Please select a data plan type.');
+        return;
+    }
+
+    if(!/^0\d{10}$/.test(phone)){
+        showNotification('Enter a valid 11-digit Nigerian mobile number.');
+        return;
+    }
+
+    if(!planSelect.value){
+        showNotification('Please select a data package.');
+        return;
+    }
+
+    openPinGate();
+});
+
+pinAuthForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    if(purchaseInProgress) return;
+
+    const pinVal = txPinInput.value.trim();
+
+    if(!/^\d{4}$/.test(pinVal)){
+        showNotification('Enter your 4-digit transaction PIN.');
+        txPinInput.focus();
+        return;
+    }
+
+    let user;
+
+    try{
+        user = JSON.parse(localStorage.getItem('user') || 'null');
+    }catch{
+        user = null;
+    }
+
+    if(!user || !user.email){
+        closePinGate();
+        openErrorModal(
+            'Session Expired',
+            'Please sign in again before making a purchase.',
+            'SIGN IN',
+            'login'
+        );
+        return;
+    }
+
+    const payload = {
+        email: user.email,
+        network: selectedNetworkId,
+        dataPlan: planSelect.value,
+        phone: phoneInput.value.trim(),
+        pin: pinVal
+    };
+
+    purchaseInProgress = true;
+    closePinGate();
+    submitBtn.disabled = true;
+    document.getElementById('confirmPayBtn').disabled = true;
+    submitBtnLabel.innerHTML = '<span class="spinner"></span> Processing…';
+
+    try{
+        const response = await fetch(`${BACKEND_URL}/buy-data`, {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+        });
+
+        const rawText = await response.text();
+        let data = {};
+
+        try{
+            data = rawText ? JSON.parse(rawText) : {};
+        }catch{
+            data = {};
+        }
+
+        if(!response.ok || data.success === false){
+            // Log only diagnostic fields, not the PIN or full request payload.
+            console.error('Data purchase rejected:', {
+                status:response.status,
+                code:data.code || 'UNKNOWN'
+            });
+
+            showPurchaseError(data, response.status);
+            return;
+        }
+
+        if(data.success !== true){
+            showPurchaseError({}, response.status);
+            return;
+        }
+
+        user.balance = data.newBalance;
+        localStorage.setItem('user', JSON.stringify(user));
+
+        const chosenPlanText = planSelect.options[planSelect.selectedIndex].text.split(' - ')[0];
+        document.getElementById('successModalMsg').textContent =
+            `${chosenPlanText} has been credited successfully to ${payload.phone}.`;
+
+        successResponseModal.classList.add('open');
+
+    }catch(err){
+        console.error('Data purchase request failed:', err);
+
+        /*
+         * A network failure does not prove that the provider rejected
+         * the purchase. Tell the customer to check history first.
+         */
+        openErrorModal(
+            'Check Transaction Status',
+            'We could not confirm the status of your purchase. Please check your transaction history before trying again.',
+            'VIEW HISTORY',
+            'history'
+        );
+    }finally{
+        txPinInput.value = '';
+        updatePinDots();
+        resetSubmitButton();
+    }
+});
+
+// Close a modal if the user taps the dark area outside its card.
+[pinGateModal, successResponseModal, errorResponseModal].forEach(modal => {
+    modal.addEventListener('click', function(e){
+        if(e.target !== modal) return;
+
+        if(modal === pinGateModal) closePinGate();
+        else if(modal === errorResponseModal) closeErrorModal();
+        // The success modal remains until its Continue button is used.
+    });
+});
+</script>
 </body>
 </html>
