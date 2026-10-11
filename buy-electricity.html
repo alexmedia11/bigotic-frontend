@@ -1,182 +1,899 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#060915">
+
     <title>Electricity Bill | Bigotic Data</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
-        (function(){
-            const saved = localStorage.getItem('bigotic-theme');
-            document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
+        (function () {
+            try {
+                const saved = localStorage.getItem('bigotic-theme');
+
+                document.documentElement.setAttribute(
+                    'data-theme',
+                    saved === 'light' ? 'light' : 'dark'
+                );
+            } catch (_) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
         })();
     </script>
 
     <style>
-        :root{ --electric:#3b6bff; --electric-soft:#7c9bff; --cyan:#28e0d6; --emerald:#34d399; --rose:#f97066; --gold:#f4b740; }
-        html[data-theme="dark"]{
-            --bg:#060915; --bg-elevated:#0d1330; --card:#0f1638; --card-2:linear-gradient(165deg,#121a42,#0d1330);
-            --border: rgba(148,163,255,0.14); --text-hi:#eef1ff; --text-mid:#aab0d6; --text-dim:#6b71a0;
-            --nav-bg: rgba(6,9,21,0.78); --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07); --input-bg: rgba(255,255,255,.04);
+        :root {
+            --electric: #3b6bff;
+            --electric-soft: #7c9bff;
+            --cyan: #28e0d6;
+            --emerald: #34d399;
+            --rose: #f97066;
+            --gold: #f4b740;
         }
-        html[data-theme="light"]{
-            --bg:#f2f4fb; --bg-elevated:#ffffff; --card:#ffffff; --card-2:linear-gradient(165deg,#ffffff,#f6f8ff);
-            --border:#e6e9f6; --text-hi:#0f1428; --text-mid:#5b6178; --text-dim:#98a0c2;
-            --nav-bg: rgba(255,255,255,.85); --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05); --input-bg: #f5f7fd;
+
+        html[data-theme="dark"] {
+            --bg: #060915;
+            --bg-elevated: #0d1330;
+            --card: #0f1638;
+            --card-2: linear-gradient(165deg, #121a42, #0d1330);
+            --border: rgba(148,163,255,0.14);
+            --text-hi: #eef1ff;
+            --text-mid: #aab0d6;
+            --text-dim: #6b71a0;
+            --nav-bg: rgba(6,9,21,0.78);
+            --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
+            --row-hover: rgba(124,155,255,.07);
+            --input-bg: rgba(255,255,255,.04);
         }
-        *{ box-sizing:border-box; }
-        html, body{ margin:0; padding:0; }
-        body{
-            font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-hi); min-height:100vh;
-            overflow-x:hidden; padding-bottom:110px; transition: background .35s ease, color .35s ease;
+
+        html[data-theme="light"] {
+            --bg: #f2f4fb;
+            --bg-elevated: #ffffff;
+            --card: #ffffff;
+            --card-2: linear-gradient(165deg, #ffffff, #f6f8ff);
+            --border: #e6e9f6;
+            --text-hi: #0f1428;
+            --text-mid: #5b6178;
+            --text-dim: #98a0c2;
+            --nav-bg: rgba(255,255,255,.85);
+            --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
+            --row-hover: rgba(59,107,255,.05);
+            --input-bg: #f5f7fd;
         }
-        .font-display{ font-family:'Space Grotesk',sans-serif; }
-        .font-mono{ font-family:'JetBrains Mono',monospace; }
-        a{ text-decoration:none; color:inherit; }
-        button{ font-family:inherit; }
-        @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
 
-        .topbar{ position:sticky; top:0; z-index:40; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:var(--nav-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
-        .back-btn{ display:flex; align-items:center; gap:7px; color:var(--text-mid); font-size:12px; font-weight:700; }
-        .back-btn i{ width:16px; height:16px; }
-        .topbar-title{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; display:flex; align-items:center; gap:7px; }
-        .theme-quick{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-mid); }
-
-        main{ max-width:460px; margin:0 auto; padding:20px 18px 0; }
-        .top-row{ display:flex; justify-flex:flex-end; margin-bottom:18px; }
-        .auto-badge{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; background:var(--row-hover); color:var(--text-mid); padding:5px 12px; border-radius:999px; }
-
-        .card{ background:var(--card); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow); padding:22px; margin-bottom:18px; }
-        .field-label{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--electric-soft); margin:0 0 10px; display:block; }
-
-        select{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:13px; padding:14px 40px 14px 15px;
-            font-size:13px; font-weight:700; color:var(--text-hi); outline:none; appearance:none; cursor:pointer; font-family:'Inter',sans-serif;
-            transition:border-color .2s ease;
+        * {
+            box-sizing: border-box;
         }
-        select:focus{ border-color:var(--electric-soft); }
-        .select-wrap{ position:relative; margin-bottom:20px; }
-        .select-wrap i{ position:absolute; right:14px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-dim); pointer-events:none; }
 
-        .meter-type-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
-        .meter-type-card{ border:1.5px solid var(--border); border-radius:13px; padding:13px; text-align:center; background:var(--input-bg); cursor:pointer; transition:all .2s cubic-bezier(.16,1,.3,1); font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--text-mid); }
-        .meter-type-card.active{ border-color:var(--electric); background:rgba(59,107,255,.12); color:var(--electric-soft); }
-
-        .meter-row{ display:flex; gap:9px; margin-bottom:6px; }
-        .meter-row input{
-            flex:1; background:var(--input-bg); border:1px solid var(--border); border-radius:13px; padding:14px 15px;
-            font-size:13.5px; font-weight:700; color:var(--text-hi); outline:none; font-family:'JetBrains Mono',monospace; transition:border-color .2s ease;
+        html, body {
+            margin: 0;
+            padding: 0;
         }
-        .meter-row input:focus{ border-color:var(--electric-soft); }
-        .verify-btn{
-            background:var(--text-hi); color:var(--bg); border:none; padding:0 18px; border-radius:13px; font-size:10.5px;
-            font-weight:800; text-transform:uppercase; letter-spacing:.05em; cursor:pointer; transition:opacity .2s ease; display:flex; align-items:center; gap:6px;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-hi);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 110px;
+            transition: background .35s ease, color .35s ease;
         }
-        .verify-btn:hover{ opacity:.88; }
-        .verify-btn:disabled{ opacity:.6; cursor:progress; }
 
-        .verify-box{ display:none; margin:12px 0 18px; padding:11px 14px; border-radius:12px; font-size:11px; font-weight:700; text-align:left; border:1px solid; }
-        .verify-box.info{ background:rgba(59,107,255,.1); border-color:rgba(124,155,255,.3); color:var(--electric-soft); }
-        .verify-box.success{ background:rgba(52,211,153,.1); border-color:rgba(52,211,153,.3); color:var(--emerald); }
-        .verify-box.error{ background:rgba(249,112,102,.1); border-color:rgba(249,112,102,.3); color:var(--rose); }
-        .verify-box.warn{ background:rgba(244,183,64,.1); border-color:rgba(244,183,64,.35); color:var(--gold); }
-
-        .input-wrap{ position:relative; margin-bottom:6px; }
-        .input-wrap input{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:13px; padding:14px 42px 14px 15px;
-            font-size:14px; font-weight:700; color:var(--text-hi); outline:none; font-family:'JetBrains Mono',monospace; transition:border-color .2s ease;
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
         }
-        .input-wrap input:focus{ border-color:var(--electric-soft); }
-        .input-wrap .ngn-tag{ position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; background:var(--row-hover); color:var(--text-mid); padding:4px 8px; border-radius:7px; }
 
-        .submit-btn{
-            width:100%; border:none; cursor:pointer; background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff;
-            padding:16px; border-radius:15px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
-            display:flex; align-items:center; justify-content:center; gap:9px; box-shadow:0 16px 34px -10px rgba(59,107,255,.45);
-            transition:transform .2s ease, opacity .2s ease;
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
         }
-        .submit-btn:hover:not(:disabled){ transform:translateY(-2px); }
-        .submit-btn:disabled{ opacity:.7; cursor:progress; }
-        .spinner{ width:15px; height:15px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
-        @keyframes spin{ to{ transform:rotate(360deg); } }
 
-        .bottom-nav-wrap{ position:fixed; bottom:0; left:0; right:0; z-index:45; padding:0 16px 16px; }
-        .bottom-nav{ max-width:460px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-content:space-around; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
-        .bnav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:56px; color:var(--text-dim); gap:3px; }
-        .bnav-item i{ width:16px; height:16px; }
-        .bnav-item span{ font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
-        .bnav-center{ position:relative; top:-16px; }
-        .bnav-center .glow{ position:absolute; inset:0; background:var(--electric); border-radius:14px; filter:blur(10px); opacity:.45; }
-        .bnav-center a{ position:relative; width:50px; height:50px; border-radius:15px; background:linear-gradient(135deg,var(--electric),#1d3fbf); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 10px 24px rgba(59,107,255,.4); }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-        .modal-overlay{ position:fixed; inset:0; z-index:90; background:rgba(3,5,14,.62); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .28s ease; }
-        .modal-overlay.open{ opacity:1; pointer-events:auto; }
-        .modal-card{ width:100%; max-width:340px; background:var(--card-2); border:1px solid var(--border); border-radius:24px; padding:28px; text-align:center; box-shadow:0 40px 100px -20px rgba(0,0,0,.5); transform:translateY(18px) scale(.96); transition:transform .32s cubic-bezier(.16,1,.3,1); position:relative; overflow:hidden; }
-        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-        .modal-icon{ width:52px; height:52px; border-radius:15px; background:rgba(59,107,255,.14); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
-        .modal-card h3{ font-size:16px; font-weight:700; margin:0 0 6px; }
-        .modal-card p{ font-size:11.5px; color:var(--text-mid); line-height:1.6; margin:0 0 18px; }
-        .pin-dots{ display:flex; gap:11px; justify-content:center; margin-bottom:16px; }
-        .pin-dots span{ width:13px; height:13px; border-radius:50%; background:var(--border); transition:background .2s ease, transform .2s ease; }
-        .pin-dots span.filled{ background:var(--electric); transform:scale(1.15); }
-        .modal-card input.pin-input{ position:absolute; opacity:0; pointer-events:none; }
-        .modal-actions{ display:flex; gap:10px; margin-top:6px; }
-        .modal-actions button{ flex:1; padding:12px; border-radius:12px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; border:none; cursor:pointer; }
-        .confirm-btn{ background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff; }
-        .cancel-btn{ background:var(--row-hover); color:var(--text-mid); }
+        button {
+            font-family: inherit;
+        }
 
-        .result-icon{ width:60px; height:60px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; position:relative; background:rgba(52,211,153,.16); }
-        .result-icon::before{ content:''; position:absolute; inset:-8px; border-radius:50%; opacity:.5; animation:pulse-ring 1.8s ease-out infinite; }
-        @keyframes pulse-ring{ 0%{ opacity:.5; transform:scale(1);} 100%{ opacity:0; transform:scale(1.4);} }
-        .result-btn{ width:100%; border:none; cursor:pointer; padding:13px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#fff; background:linear-gradient(135deg,var(--emerald),#1fae7d); }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
 
-        /* token modal */
-        .token-icon{ width:56px; height:56px; border-radius:16px; background:rgba(244,183,64,.16); color:var(--gold); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
-        .token-box{
-            background:var(--input-bg); border:1.5px dashed var(--electric-soft); border-radius:14px; padding:18px 12px; margin:16px 0 20px;
-            font-size:19px; font-weight:800; letter-spacing:.15em; color:var(--electric-soft); font-family:'JetBrains Mono',monospace; text-align:center;
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--text-mid);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .back-btn i {
+            width: 16px;
+            height: 16px;
+        }
+
+        .topbar-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .theme-quick {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-mid);
+        }
+
+        main {
+            max-width: 460px;
+            margin: 0 auto;
+            padding: 20px 18px 0;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 18px;
+        }
+
+        .auto-badge {
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            background: var(--row-hover);
+            color: var(--text-mid);
+            padding: 5px 12px;
+            border-radius: 999px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .field-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--electric-soft);
+            margin: 0 0 10px;
+            display: block;
+        }
+
+        select {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 14px 40px 14px 15px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-hi);
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color .2s ease;
+        }
+
+        select option {
+            background: var(--bg-elevated);
+            color: var(--text-hi);
+        }
+
+        select:focus {
+            border-color: var(--electric-soft);
+        }
+
+        .select-wrap {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .select-wrap i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        .meter-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .meter-type-card {
+            border: 1.5px solid var(--border);
+            border-radius: 13px;
+            padding: 13px;
+            text-align: center;
+            background: var(--input-bg);
+            cursor: pointer;
+            transition: all .2s cubic-bezier(.16,1,.3,1);
+            font-size: 11.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            color: var(--text-mid);
+        }
+
+        .meter-type-card.active {
+            border-color: var(--electric);
+            background: rgba(59,107,255,.12);
+            color: var(--electric-soft);
+        }
+
+        .meter-type-card:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--electric-soft);
+            outline-offset: 2px;
+        }
+
+        .meter-row {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 6px;
+        }
+
+        .meter-row input {
+            flex: 1;
+            min-width: 0;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 14px 15px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-hi);
+            outline: none;
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color .2s ease;
+        }
+
+        .meter-row input:focus {
+            border-color: var(--electric-soft);
+        }
+
+        .verify-btn {
+            background: var(--text-hi);
+            color: var(--bg);
+            border: none;
+            padding: 0 16px;
+            border-radius: 13px;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            cursor: pointer;
+            transition: opacity .2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .verify-btn:hover:not(:disabled) {
+            opacity: .88;
+        }
+
+        .verify-btn:disabled {
+            opacity: .6;
+            cursor: progress;
+        }
+
+        .verify-box {
+            display: none;
+            margin: 12px 0 18px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.6;
+            text-align: left;
+            border: 1px solid;
+            overflow-wrap: anywhere;
+        }
+
+        .verify-box.info {
+            background: rgba(59,107,255,.1);
+            border-color: rgba(124,155,255,.3);
+            color: var(--electric-soft);
+        }
+
+        .verify-box.success {
+            background: rgba(52,211,153,.1);
+            border-color: rgba(52,211,153,.3);
+            color: var(--emerald);
+        }
+
+        .verify-box.error {
+            background: rgba(249,112,102,.1);
+            border-color: rgba(249,112,102,.3);
+            color: var(--rose);
+        }
+
+        .verify-box.warn {
+            background: rgba(244,183,64,.1);
+            border-color: rgba(244,183,64,.35);
+            color: var(--gold);
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 14px 42px 14px 15px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-hi);
+            outline: none;
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color .2s ease;
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--electric-soft);
+        }
+
+        .input-wrap .ngn-tag {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            background: var(--row-hover);
+            color: var(--text-mid);
+            padding: 4px 8px;
+            border-radius: 7px;
+            pointer-events: none;
+        }
+
+        .field-note {
+            color: var(--text-dim);
+            font-size: 10px;
+            line-height: 1.6;
+            margin: 10px 0 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg,var(--electric),#1d3fbf);
+            color: #fff;
+            padding: 16px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            box-shadow: 0 16px 34px -10px rgba(59,107,255,.45);
+            transition: transform .2s ease, opacity .2s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: .7;
+            cursor: progress;
+        }
+
+        .spinner {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,.35);
+            border-top-color: #fff;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .bottom-nav-wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 45;
+            padding: 0 16px 16px;
+        }
+
+        .bottom-nav {
+            max-width: 460px;
+            margin: 0 auto;
+            background: var(--nav-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 -14px 34px -14px rgba(0,0,0,.25);
+        }
+
+        .bnav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            color: var(--text-dim);
+            gap: 3px;
+        }
+
+        .bnav-item i {
+            width: 16px;
+            height: 16px;
+        }
+
+        .bnav-item span {
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .bnav-center {
+            position: relative;
+            top: -16px;
+        }
+
+        .bnav-center .glow {
+            position: absolute;
+            inset: 0;
+            background: var(--electric);
+            border-radius: 14px;
+            filter: blur(10px);
+            opacity: .45;
+        }
+
+        .bnav-center a {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: linear-gradient(135deg,var(--electric),#1d3fbf);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(59,107,255,.4);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            background: rgba(3,5,14,.62);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .28s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 340px;
+            background: var(--card-2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 40px 100px -20px rgba(0,0,0,.5);
+            transform: translateY(18px) scale(.96);
+            transition: transform .32s cubic-bezier(.16,1,.3,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-overlay.open .modal-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            background: rgba(59,107,255,.14);
+            color: var(--electric-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .modal-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 6px;
+        }
+
+        .modal-card p {
+            font-size: 11.5px;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin: 0 0 18px;
+        }
+
+        .pin-dots {
+            display: flex;
+            gap: 11px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .pin-dots span {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .pin-dots span.filled {
+            background: var(--electric);
+            transform: scale(1.15);
+        }
+
+        .modal-card input.pin-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border: none;
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg,var(--electric),#1d3fbf);
+            color: #fff;
+        }
+
+        .cancel-btn {
+            background: var(--row-hover);
+            color: var(--text-mid);
+        }
+
+        .modal-actions button:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(52,211,153,.16);
+        }
+
+        .result-icon::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            opacity: .5;
+            animation: pulse-ring 1.8s ease-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                opacity: .5;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.4);
+            }
+        }
+
+        .result-btn {
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #fff;
+            background: linear-gradient(135deg,var(--emerald),#1fae7d);
+        }
+
+        .token-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(244,183,64,.16);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .token-box {
+            background: var(--input-bg);
+            border: 1.5px dashed var(--electric-soft);
+            border-radius: 14px;
+            padding: 18px 12px;
+            margin: 16px 0 20px;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: .1em;
+            color: var(--electric-soft);
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
             word-break: break-all;
         }
-        .copy-token-btn{
-            width:100%; background:var(--row-hover); color:var(--text-mid); border:1px solid var(--border); padding:11px; border-radius:11px;
-            font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; cursor:pointer; margin-bottom:10px;
-            display:flex; align-items:center; justify-content:center; gap:7px; transition:background .2s ease;
-        }
-        .copy-token-btn:hover{ background:var(--border); }
 
-        #toastContainer{ position:fixed; top:18px; right:18px; z-index:99; display:flex; flex-direction:column; gap:11px; max-width:340px; width:calc(100% - 36px); pointer-events:none; }
-        .toast{ pointer-events:auto; position:relative; overflow:hidden; display:flex; align-items:flex-start; gap:11px; padding:15px 16px 14px; border-radius:16px; background:var(--card-2); border:1px solid var(--border); box-shadow:0 24px 55px -16px rgba(0,0,0,.35); transform:translateY(-14px) scale(.96); opacity:0; transition:transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
-        .toast.show{ transform:translateY(0) scale(1); opacity:1; }
-        .toast::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(180deg,var(--rose),#c8362a); }
-        .toast::after{ content:''; position:absolute; left:0; bottom:0; height:2px; width:100%; background:linear-gradient(90deg,var(--rose),transparent); transform-origin:left; animation: toast-countdown 3.6s linear forwards; }
-        .toast:hover::after{ animation-play-state:paused; }
-        @keyframes toast-countdown{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
-        .toast .icon{ width:31px; height:31px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(249,112,102,.16); color:var(--rose); }
-        .toast .title{ margin:0 0 2px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
-        .toast p.msg{ margin:0; font-size:11.5px; font-weight:500; color:var(--text-mid); line-height:1.5; }
-        .toast .dismiss{ background:none; border:none; color:var(--text-dim); cursor:pointer; padding:3px; border-radius:6px; flex-shrink:0; }
+        .copy-token-btn {
+            width: 100%;
+            background: var(--row-hover);
+            color: var(--text-mid);
+            border: 1px solid var(--border);
+            padding: 11px;
+            border-radius: 11px;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .copy-token-btn:hover {
+            background: var(--border);
+        }
+
+        #toastContainer {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            max-width: 340px;
+            width: calc(100% - 36px);
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            padding: 15px 16px 14px;
+            border-radius: 16px;
+            background: var(--card-2);
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 55px -16px rgba(0,0,0,.35);
+            transform: translateY(-14px) scale(.96);
+            opacity: 0;
+            transition: transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg,var(--rose),#c8362a);
+        }
+
+        .toast .icon {
+            width: 31px;
+            height: 31px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(249,112,102,.16);
+            color: var(--rose);
+        }
+
+        .toast .title {
+            margin: 0 0 2px;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .toast p.msg {
+            margin: 0;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text-mid);
+            line-height: 1.5;
+        }
+
+        .toast .dismiss {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 360px) {
+            main {
+                padding: 16px 12px 0;
+            }
+
+            .card {
+                padding: 18px 15px;
+            }
+
+            .meter-row {
+                gap: 6px;
+            }
+
+            .verify-btn {
+                padding: 0 11px;
+            }
+
+            .topbar-title {
+                font-size: 10px;
+            }
+        }
     </style>
 </head>
-<body>
 
+<body>
     <nav class="topbar">
-        <a href="dashboard.html" class="back-btn"><i data-lucide="arrow-left"></i> Dashboard</a>
-        <div class="topbar-title"><i data-lucide="zap" style="width:14px;height:14px;color:var(--electric-soft);"></i> Electricity Utility</div>
-        <button class="theme-quick" onclick="toggleTheme()" aria-label="Toggle theme"><i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i></button>
+        <a href="dashboard.html" class="back-btn">
+            <i data-lucide="arrow-left"></i>
+            Dashboard
+        </a>
+
+        <div class="topbar-title">
+            <i data-lucide="zap" style="width:14px;height:14px;color:var(--electric-soft);"></i>
+            Electricity Utility
+        </div>
+
+        <button
+            type="button"
+            class="theme-quick"
+            id="themeToggle"
+            aria-label="Toggle theme"
+        >
+            <i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i>
+        </button>
     </nav>
 
-    <div id="toastContainer"></div>
+    <div id="toastContainer" aria-live="polite"></div>
 
     <main>
-        <div class="top-row"><span class="auto-badge">Meters &amp; tokens</span></div>
+        <div class="top-row">
+            <span class="auto-badge">Meters &amp; tokens</span>
+        </div>
 
         <form id="electricityForm">
             <div class="card">
-                <label class="field-label" for="disco">Distribution company (DISCO)</label>
+
+                <label class="field-label" for="disco">
+                    Distribution company (DISCO)
+                </label>
+
                 <div class="select-wrap">
                     <select id="disco" required>
                         <option value="" disabled selected>-- Select DISCO --</option>
@@ -187,328 +904,1204 @@
                         <option value="6">Ibadan Electricity (IBEDC)</option>
                         <option value="7">Kaduna Electricity (KAEDCO)</option>
                         <option value="8">Abuja Electricity (AEDC)</option>
-                        <option value="9">Enugu Electric (EEDC)</option>
-                        <option value="10">Benin Electric (BEDC)</option>
-                        <option value="12">Aba Electric (APLE)</option>
+                        <option value="9">Enugu Electricity (EEDC)</option>
+                        <option value="10">Benin Electricity (BEDC)</option>
+                        <option value="12">Aba Electricity (APLE)</option>
                     </select>
+
                     <i data-lucide="chevron-down"></i>
                 </div>
 
-                <label class="field-label">Meter type class</label>
-                <div class="meter-type-grid">
-                    <div class="meter-type-card active" data-value="prepaid" onclick="selectMeterType(this,'prepaid')">Prepaid</div>
-                    <div class="meter-type-card" data-value="postpaid" onclick="selectMeterType(this,'postpaid')">Postpaid</div>
+                <label class="field-label">
+                    Meter type class
+                </label>
+
+                <div class="meter-type-grid" id="meterTypeGrid">
+                    <button
+                        type="button"
+                        class="meter-type-card active"
+                        data-value="prepaid"
+                        aria-pressed="true"
+                    >
+                        Prepaid
+                    </button>
+
+                    <button
+                        type="button"
+                        class="meter-type-card"
+                        data-value="postpaid"
+                        aria-pressed="false"
+                    >
+                        Postpaid
+                    </button>
                 </div>
 
-                <label class="field-label" for="meterNumber">Meter reference number</label>
+                <label class="field-label" for="meterNumber">
+                    Meter reference number
+                </label>
+
                 <div class="meter-row">
-                    <input type="text" id="meterNumber" required placeholder="Enter meter number">
-                    <button type="button" id="verifyBtn" onclick="triggerManualVerification()" class="verify-btn"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> Verify</button>
-                </div>
-                <div id="verificationBox" class="verify-box"></div>
+                    <input
+                        type="text"
+                        id="meterNumber"
+                        required
+                        placeholder="Enter meter number"
+                        maxlength="16"
+                        inputmode="numeric"
+                        autocomplete="off"
+                    >
 
-                <label class="field-label" for="amount" style="margin-top:2px;">Purchase token amount (&#8358;)</label>
+                    <button
+                        type="button"
+                        id="verifyBtn"
+                        class="verify-btn"
+                    >
+                        <i data-lucide="shield-check" style="width:13px;height:13px;"></i>
+                        <span id="verifyBtnText">Verify</span>
+                    </button>
+                </div>
+
+                <div
+                    id="verificationBox"
+                    class="verify-box"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
+                <label
+                    class="field-label"
+                    for="amount"
+                    style="margin-top:20px;"
+                >
+                    Electricity payment amount (₦)
+                </label>
+
                 <div class="input-wrap">
-                    <input type="number" id="amount" min="100" required placeholder="e.g. 2000">
+                    <input
+                        type="number"
+                        id="amount"
+                        required
+                        min="100"
+                        step="1"
+                        placeholder="e.g. 2000"
+                        inputmode="numeric"
+                    >
+
                     <span class="ngn-tag">NGN</span>
                 </div>
+
+                <p class="field-note">
+                    Verify your meter details before payment. Your final
+                    purchase is subject to the selected electricity provider's
+                    minimum payment requirement.
+                </p>
+
             </div>
 
-            <button type="submit" id="submitBtn" class="submit-btn"><span id="submitBtnLabel">Pay electricity bill</span></button>
+            <button
+                type="submit"
+                id="submitBtn"
+                class="submit-btn"
+            >
+                <span id="submitBtnLabel">
+                    Pay electricity bill
+                </span>
+            </button>
         </form>
     </main>
 
-    <div id="tokenModal" class="modal-overlay">
+    <!-- TOKEN MODAL -->
+    <div
+        id="tokenModal"
+        class="modal-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tokenModalTitle"
+    >
         <div class="modal-card">
-            <div class="token-icon"><i data-lucide="zap" style="width:24px;height:24px;"></i></div>
-            <h3 class="font-display">Electricity token generated!</h3>
-            <p>Copy your prepaid token below and load it onto your meter terminal.</p>
-            <div class="token-box" id="tokenDisplay">---- ---- ---- ----</div>
-            <button class="copy-token-btn" onclick="copyToken()"><i data-lucide="copy" style="width:13px;height:13px;"></i> Copy token</button>
-            <button onclick="location.href='dashboard.html'" class="result-btn" style="background:linear-gradient(135deg,var(--electric),#1d3fbf);">Back to dashboard</button>
+            <div class="token-icon">
+                <i data-lucide="zap" style="width:24px;height:24px;"></i>
+            </div>
+
+            <h3 class="font-display" id="tokenModalTitle">
+                Electricity token received!
+            </h3>
+
+            <p>
+                Your prepaid electricity purchase has been processed.
+                Copy the token below and enter it on your meter.
+            </p>
+
+            <div class="token-box" id="tokenDisplay">
+                ---- ---- ---- ----
+            </div>
+
+            <button
+                type="button"
+                class="copy-token-btn"
+                id="copyTokenBtn"
+            >
+                <i data-lucide="copy" style="width:13px;height:13px;"></i>
+                Copy token
+            </button>
+
+            <button
+                type="button"
+                id="tokenDashboardBtn"
+                class="result-btn"
+                style="background:linear-gradient(135deg,var(--electric),#1d3fbf);"
+            >
+                Back to dashboard
+            </button>
         </div>
     </div>
 
-    <div id="successResponseModal" class="modal-overlay">
+    <!-- PURCHASE SUCCESS MODAL -->
+    <div
+        id="successResponseModal"
+        class="modal-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="successModalTitle"
+    >
         <div class="modal-card">
-            <div class="result-icon"><i data-lucide="check-circle-2" style="width:26px;height:26px;color:var(--emerald);"></i></div>
-            <h3 class="font-display">Payment successful!</h3>
-            <p id="successModalMsg">Your bill has been settled.</p>
-            <button onclick="closeSuccessModal()" class="result-btn">Acknowledge</button>
+            <div class="result-icon">
+                <i data-lucide="check-circle-2" style="width:26px;height:26px;color:var(--emerald);"></i>
+            </div>
+
+            <h3 class="font-display" id="successModalTitle">
+                Payment successful!
+            </h3>
+
+            <p id="successModalMsg">
+                Your electricity bill payment has been processed.
+            </p>
+
+            <button
+                type="button"
+                id="closeSuccessBtn"
+                class="result-btn"
+            >
+                Acknowledge
+            </button>
         </div>
     </div>
 
-    <div id="pinGateModal" class="modal-overlay">
+    <!-- SECURITY PIN MODAL -->
+    <div
+        id="pinGateModal"
+        class="modal-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pinModalTitle"
+    >
         <div class="modal-card">
-            <div class="modal-icon"><i data-lucide="lock" style="width:20px;height:20px;"></i></div>
-            <h3 class="font-display">Security verification</h3>
-            <p>Enter your 4-digit transaction PIN to finalize this purchase.</p>
+            <div class="modal-icon">
+                <i data-lucide="lock" style="width:20px;height:20px;"></i>
+            </div>
+
+            <h3 class="font-display" id="pinModalTitle">
+                Security verification
+            </h3>
+
+            <p>
+                Enter your 4-digit transaction PIN to finalize this purchase.
+            </p>
+
             <form id="pinAuthForm">
-                <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
-                <input type="password" id="txPin" class="pin-input" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" autocomplete="off">
+                <div class="pin-dots" id="pinDots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <input
+                    type="password"
+                    id="txPin"
+                    class="pin-input"
+                    maxlength="4"
+                    pattern="[0-9]{4}"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    aria-label="Four-digit transaction PIN"
+                    required
+                >
+
                 <div class="modal-actions">
-                    <button type="submit" id="confirmPayBtn" class="confirm-btn">Confirm</button>
-                    <button type="button" onclick="closePinGate()" class="cancel-btn">Cancel</button>
+                    <button
+                        type="submit"
+                        id="confirmPayBtn"
+                        class="confirm-btn"
+                    >
+                        Confirm
+                    </button>
+
+                    <button
+                        type="button"
+                        id="cancelPinBtn"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav-wrap">
         <div class="bottom-nav">
-            <a href="buy-airtime.html" class="bnav-item"><i data-lucide="phone"></i><span>Airtime</span></a>
-            <a href="buy-data.html" class="bnav-item"><i data-lucide="wifi"></i><span>Data</span></a>
-            <div class="bnav-center"><div class="glow"></div><a href="dashboard.html"><i data-lucide="home" style="width:20px;height:20px;"></i></a></div>
-            <a href="history.html" class="bnav-item"><i data-lucide="clock"></i><span>History</span></a>
-            <a href="settings.html" class="bnav-item"><i data-lucide="settings"></i><span>Settings</span></a>
+            <a href="buy-airtime.html" class="bnav-item">
+                <i data-lucide="phone"></i>
+                <span>Airtime</span>
+            </a>
+
+            <a href="buy-data.html" class="bnav-item">
+                <i data-lucide="wifi"></i>
+                <span>Data</span>
+            </a>
+
+            <div class="bnav-center">
+                <div class="glow"></div>
+
+                <a href="dashboard.html" aria-label="Home">
+                    <i data-lucide="home" style="width:20px;height:20px;"></i>
+                </a>
+            </div>
+
+            <a href="history.html" class="bnav-item">
+                <i data-lucide="clock"></i>
+                <span>History</span>
+            </a>
+
+            <a href="settings.html" class="bnav-item">
+                <i data-lucide="settings"></i>
+                <span>Settings</span>
+            </a>
         </div>
     </div>
 
     <script>
-        lucide.createIcons();
+        if (window.lucide) {
+            lucide.createIcons();
+        }
 
-        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
+        const BACKEND_URL =
+            'https://bigoticdata-backend.onrender.com';
 
+        const SUPPORTED_DISCO_IDS = new Set([
+            '1', '2', '3', '5', '6',
+            '7', '8', '9', '10', '12'
+        ]);
+
+        const electricityForm = document.getElementById('electricityForm');
         const discoSelect = document.getElementById('disco');
         const meterNumberInput = document.getElementById('meterNumber');
+        const amountInput = document.getElementById('amount');
+
         const verificationBox = document.getElementById('verificationBox');
         const verifyBtn = document.getElementById('verifyBtn');
+        const verifyBtnText = document.getElementById('verifyBtnText');
+
         const submitBtn = document.getElementById('submitBtn');
         const submitBtnLabel = document.getElementById('submitBtnLabel');
+
         const pinGateModal = document.getElementById('pinGateModal');
         const pinAuthForm = document.getElementById('pinAuthForm');
         const txPinInput = document.getElementById('txPin');
-        const successResponseModal = document.getElementById('successResponseModal');
+        const confirmPayBtn = document.getElementById('confirmPayBtn');
+        const cancelPinBtn = document.getElementById('cancelPinBtn');
+
+        const successResponseModal =
+            document.getElementById('successResponseModal');
+
         const tokenModal = document.getElementById('tokenModal');
+        const tokenDisplay = document.getElementById('tokenDisplay');
 
-        let isMeterVerified = false;
         let selectedMeterType = 'prepaid';
+        let isMeterVerified = false;
+        let verifiedMeterKey = null;
 
-        function applyThemeIcon(){
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            document.getElementById('themeIconTop')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            lucide.createIcons();
+        let isVerifying = false;
+        let isProcessing = false;
+
+        let verificationController = null;
+        let verificationSequence = 0;
+
+        // =============================
+        // THEME
+        // =============================
+
+        function applyThemeIcon() {
+            const isLight =
+                document.documentElement.getAttribute('data-theme') === 'light';
+
+            const icon = document.getElementById('themeIconTop');
+
+            if (icon) {
+                icon.setAttribute(
+                    'data-lucide',
+                    isLight ? 'sun' : 'moon'
+                );
+            }
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
         }
-        function toggleTheme(){
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
+
+        function toggleTheme() {
+            const current =
+                document.documentElement.getAttribute('data-theme');
+
+            const next = current === 'light'
+                ? 'dark'
+                : 'light';
+
             document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('bigotic-theme', next);
+
+            try {
+                localStorage.setItem('bigotic-theme', next);
+            } catch (_) {}
+
             applyThemeIcon();
         }
+
+        document.getElementById('themeToggle')
+            .addEventListener('click', toggleTheme);
+
         applyThemeIcon();
 
-        // Synchronize live DISCO provider options from backend
-        async function fetchLiveElectricityDiscos() {
+        // =============================
+        // USER SESSION
+        // =============================
+
+        function getCurrentUser() {
             try {
-                const res = await fetch(`${BACKEND_URL}/get-electricity-plans`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data) && data.length > 0) {
-                        discoSelect.innerHTML = '<option value="" disabled selected>-- Select DISCO --</option>';
-                        data.forEach(item => {
-                            const opt = document.createElement('option');
-                            opt.value = item.id || item.disco_id;
-                            opt.innerText = item.name || item.disco_name;
-                            if (item.min_amount) opt.dataset.min = item.min_amount;
-                            discoSelect.appendChild(opt);
-                        });
-                    }
+                const user = JSON.parse(
+                    localStorage.getItem('user') || 'null'
+                );
+
+                if (
+                    user &&
+                    typeof user.email === 'string' &&
+                    user.email.trim()
+                ) {
+                    return user;
                 }
-            } catch (err) {
-                console.warn("Using static DISCO list fallback:", err);
-            }
+            } catch (_) {}
+
+            return null;
         }
+
+        // =============================
+        // NOTIFICATIONS
+        // =============================
 
         function showNotification(message, type = 'error') {
-            const container = document.getElementById('toastContainer');
+            const container =
+                document.getElementById('toastContainer');
+
             const toast = document.createElement('div');
             toast.className = 'toast';
-            const iconName = type === 'success' ? 'check-circle-2' : 'alert-circle';
-            toast.innerHTML = `
-                <span class="icon"><i data-lucide="${iconName}" style="width:15px;height:15px;"></i></span>
-                <div style="flex:1;"><p class="title">${type === 'success' ? 'Success' : 'Something needs attention'}</p><p class="msg">${message}</p></div>
-                <button class="dismiss" aria-label="Dismiss"><i data-lucide="x" style="width:13px;height:13px;"></i></button>
-            `;
+
+            const iconWrap = document.createElement('span');
+            iconWrap.className = 'icon';
+
+            const icon = document.createElement('i');
+
+            icon.setAttribute(
+                'data-lucide',
+                type === 'success'
+                    ? 'check-circle-2'
+                    : 'alert-circle'
+            );
+
+            icon.style.width = '15px';
+            icon.style.height = '15px';
+
+            iconWrap.appendChild(icon);
+
+            const content = document.createElement('div');
+            content.style.flex = '1';
+
+            const titleEl = document.createElement('p');
+            titleEl.className = 'title';
+
+            titleEl.textContent = type === 'success'
+                ? 'Success'
+                : 'Something needs attention';
+
+            const messageEl = document.createElement('p');
+            messageEl.className = 'msg';
+            messageEl.textContent = String(message);
+
+            content.appendChild(titleEl);
+            content.appendChild(messageEl);
+
+            const dismiss = document.createElement('button');
+            dismiss.type = 'button';
+            dismiss.className = 'dismiss';
+            dismiss.setAttribute(
+                'aria-label',
+                'Dismiss notification'
+            );
+
+            const closeIcon = document.createElement('i');
+            closeIcon.setAttribute('data-lucide', 'x');
+            closeIcon.style.width = '13px';
+            closeIcon.style.height = '13px';
+
+            dismiss.appendChild(closeIcon);
+
+            toast.appendChild(iconWrap);
+            toast.appendChild(content);
+            toast.appendChild(dismiss);
+
             container.appendChild(toast);
-            lucide.createIcons();
-            requestAnimationFrame(() => toast.classList.add('show'));
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+
             let dismissed = false;
-            const remove = () => { if (dismissed) return; dismissed = true; toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); };
-            toast.querySelector('.dismiss').addEventListener('click', remove);
-            let timer = setTimeout(remove, 3600);
-            toast.addEventListener('mouseenter', () => clearTimeout(timer));
-            toast.addEventListener('mouseleave', () => { timer = setTimeout(remove, 1200); });
-        }
+            let timer;
 
-        function selectMeterType(el, value){
-            selectedMeterType = value;
-            document.querySelectorAll('.meter-type-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            resetMeterVerification();
-        }
+            const remove = () => {
+                if (dismissed) return;
 
-        function setVerifyBox(state, text){
-            verificationBox.className = `verify-box ${state}`;
-            verificationBox.style.display = 'block';
-            verificationBox.innerText = text;
-        }
+                dismissed = true;
+                clearTimeout(timer);
 
-        [discoSelect, meterNumberInput].forEach(el => {
-            el.addEventListener('input', resetMeterVerification);
-            el.addEventListener('change', () => {
-                resetMeterVerification();
-                const opt = discoSelect.options[discoSelect.selectedIndex];
-                if (opt && opt.dataset.min) {
-                    document.getElementById('amount').min = opt.dataset.min;
+                toast.classList.remove('show');
+
+                setTimeout(() => toast.remove(), 300);
+            };
+
+            dismiss.addEventListener('click', remove);
+
+            timer = setTimeout(remove, 4500);
+
+            toast.addEventListener(
+                'mouseenter',
+                () => clearTimeout(timer)
+            );
+
+            toast.addEventListener('mouseleave', () => {
+                if (!dismissed) {
+                    timer = setTimeout(remove, 1200);
                 }
             });
-        });
-
-        function triggerManualVerification() {
-            const meterNum = meterNumberInput.value.trim();
-            const disco = discoSelect.value;
-
-            if (!disco) { setVerifyBox('warn', 'Please choose a Distribution Company (DISCO) first.'); return; }
-            if (meterNum.length < 8 || meterNum.length > 16) { setVerifyBox('error', 'Meter number must be between 8 and 16 digits.'); return; }
-
-            performMeterVerification(meterNum, disco, selectedMeterType);
         }
 
-        async function performMeterVerification(meterNum, disco, meterType) {
-            setVerifyBox('info', 'Verifying meter account details\u2026');
-            verifyBtn.disabled = true;
+        // =============================
+        // METER SELECTION
+        // =============================
 
-            try {
-                const response = await fetch(`${BACKEND_URL}/verify-meter`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ disco, meterNumber: meterNum, meterType })
-                });
-                const data = await response.json();
+        function getMeterKey() {
+            return [
+                discoSelect.value,
+                selectedMeterType,
+                meterNumberInput.value.trim()
+            ].join('|');
+        }
 
-                if (response.ok && data.success && data.customerName) {
-                    isMeterVerified = true;
-                    setVerifyBox('success', `Meter verified \u2014 ${data.customerName}`);
-                } else {
-                    isMeterVerified = false;
-                    setVerifyBox('error', `Invalid meter: ${data.error || 'Check your selections'}`);
-                }
-            } catch (err) {
-                console.error(err);
-                isMeterVerified = false;
-                setVerifyBox('warn', 'Validation request timed out. Please retry.');
-            }
-            verifyBtn.disabled = false;
+        function setVerifyBox(state, text) {
+            verificationBox.className =
+                `verify-box ${state}`;
+
+            verificationBox.style.display = 'block';
+            verificationBox.textContent = text;
         }
 
         function resetMeterVerification() {
+            verificationSequence++;
+
+            if (verificationController) {
+                verificationController.abort();
+                verificationController = null;
+            }
+
+            isVerifying = false;
             isMeterVerified = false;
+            verifiedMeterKey = null;
+
+            verifyBtn.disabled = false;
+            verifyBtnText.textContent = 'Verify';
+
             verificationBox.style.display = 'none';
-            verificationBox.innerText = '';
+            verificationBox.textContent = '';
         }
 
-        function openPinGate() {
-            pinGateModal.classList.add('open');
-            txPinInput.value = '';
-            updatePinDots();
-            setTimeout(() => txPinInput.focus(), 200);
+        function selectMeterType(value) {
+            if (isProcessing) return;
+
+            if (
+                value !== 'prepaid' &&
+                value !== 'postpaid'
+            ) {
+                return;
+            }
+
+            selectedMeterType = value;
+
+            document
+                .querySelectorAll('.meter-type-card')
+                .forEach(card => {
+                    const active =
+                        card.dataset.value === value;
+
+                    card.classList.toggle(
+                        'active',
+                        active
+                    );
+
+                    card.setAttribute(
+                        'aria-pressed',
+                        String(active)
+                    );
+                });
+
+            resetMeterVerification();
         }
-        function closePinGate() {
-            pinGateModal.classList.remove('open');
-            txPinInput.value = '';
-            updatePinDots();
-        }
-        function updatePinDots(){
-            const val = txPinInput.value || '';
-            document.querySelectorAll('#pinDots span').forEach((dot, i) => dot.classList.toggle('filled', i < val.length));
-        }
-        txPinInput.addEventListener('input', updatePinDots);
-        document.querySelector('#pinGateModal .modal-card').addEventListener('click', (e) => {
-            if (e.target.closest('#pinDots')) txPinInput.focus();
+
+        document.querySelectorAll('.meter-type-card')
+            .forEach(card => {
+                card.addEventListener('click', () => {
+                    selectMeterType(card.dataset.value);
+                });
+            });
+
+        discoSelect.addEventListener(
+            'change',
+            resetMeterVerification
+        );
+
+        meterNumberInput.addEventListener('input', function () {
+            const cleanValue =
+                this.value.replace(/\D/g, '').slice(0, 16);
+
+            if (this.value !== cleanValue) {
+                this.value = cleanValue;
+            }
+
+            resetMeterVerification();
         });
+
+        // =============================
+        // VERIFY METER
+        // =============================
+
+        function triggerManualVerification() {
+            if (isProcessing || isVerifying) return;
+
+            const disco = discoSelect.value;
+
+            const meterNumber =
+                meterNumberInput.value.trim();
+
+            if (
+                !disco ||
+                !SUPPORTED_DISCO_IDS.has(disco)
+            ) {
+                setVerifyBox(
+                    'warn',
+                    'Please select a supported electricity distribution company.'
+                );
+
+                return;
+            }
+
+            if (!/^\d{8,16}$/.test(meterNumber)) {
+                setVerifyBox(
+                    'error',
+                    'Enter a valid meter number containing 8 to 16 digits.'
+                );
+
+                meterNumberInput.focus();
+                return;
+            }
+
+            performMeterVerification(
+                meterNumber,
+                disco,
+                selectedMeterType
+            );
+        }
+
+        verifyBtn.addEventListener(
+            'click',
+            triggerManualVerification
+        );
+
+        async function performMeterVerification(
+            meterNumber,
+            disco,
+            meterType
+        ) {
+            const requestedKey = [
+                disco,
+                meterType,
+                meterNumber
+            ].join('|');
+
+            const requestSequence =
+                ++verificationSequence;
+
+            const controller = new AbortController();
+            verificationController = controller;
+
+            isVerifying = true;
+            isMeterVerified = false;
+            verifiedMeterKey = null;
+
+            verifyBtn.disabled = true;
+            verifyBtnText.textContent = 'Checking...';
+
+            setVerifyBox(
+                'info',
+                'Verifying your meter account details. Please wait...'
+            );
+
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+            }, 25000);
+
+            try {
+                const response = await fetch(
+                    `${BACKEND_URL}/verify-meter`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            disco,
+                            meterNumber,
+                            meterType
+                        }),
+                        signal: controller.signal
+                    }
+                );
+
+                let data;
+
+                try {
+                    data = await response.json();
+                } catch (_) {
+                    data = {};
+                }
+
+                // Ignore a response for details which
+                // have since been changed by the user.
+                if (
+                    requestSequence !== verificationSequence ||
+                    requestedKey !== getMeterKey()
+                ) {
+                    return;
+                }
+
+                if (
+                    response.ok &&
+                    data.success === true
+                ) {
+                    isMeterVerified = true;
+                    verifiedMeterKey = requestedKey;
+
+                    const customerName =
+                        typeof data.customerName === 'string'
+                            ? data.customerName.trim()
+                            : '';
+
+                    setVerifyBox(
+                        'success',
+                        customerName
+                            ? `Meter verified — ${customerName}`
+                            : 'Meter account verified successfully.'
+                    );
+                } else {
+                    isMeterVerified = false;
+                    verifiedMeterKey = null;
+
+                    setVerifyBox(
+                        'error',
+                        data.error ||
+                        data.message ||
+                        'Meter verification failed. Confirm the DISCO, meter type, and meter number.'
+                    );
+                }
+            } catch (error) {
+                if (
+                    requestSequence !== verificationSequence
+                ) {
+                    return;
+                }
+
+                isMeterVerified = false;
+                verifiedMeterKey = null;
+
+                setVerifyBox(
+                    'warn',
+                    'Unable to verify your meter at the moment. Please try verification again.'
+                );
+            } finally {
+                clearTimeout(timeoutId);
+
+                if (
+                    requestSequence === verificationSequence
+                ) {
+                    isVerifying = false;
+                    verificationController = null;
+
+                    verifyBtn.disabled = false;
+                    verifyBtnText.textContent = 'Verify';
+                }
+            }
+        }
+
+        // =============================
+        // SECURITY PIN MODAL
+        // =============================
+
+        function openPinGate() {
+            if (isProcessing || isVerifying) return;
+
+            txPinInput.value = '';
+            updatePinDots();
+
+            pinGateModal.classList.add('open');
+
+            setTimeout(() => {
+                txPinInput.focus();
+            }, 200);
+        }
+
+        function closePinGate() {
+            if (isProcessing) return;
+
+            pinGateModal.classList.remove('open');
+
+            txPinInput.value = '';
+            updatePinDots();
+        }
+
+        function updatePinDots() {
+            const value = txPinInput.value || '';
+
+            document
+                .querySelectorAll('#pinDots span')
+                .forEach((dot, index) => {
+                    dot.classList.toggle(
+                        'filled',
+                        index < value.length
+                    );
+                });
+        }
+
+        txPinInput.addEventListener('input', function () {
+            this.value = this.value
+                .replace(/\D/g, '')
+                .slice(0, 4);
+
+            updatePinDots();
+        });
+
+        document.getElementById('pinDots')
+            .addEventListener('click', () => {
+                txPinInput.focus();
+            });
+
+        cancelPinBtn.addEventListener(
+            'click',
+            closePinGate
+        );
+
+        // =============================
+        // TRANSACTION BUTTON STATE
+        // =============================
+
+        function setProcessing(status) {
+            isProcessing = status;
+
+            submitBtn.disabled = status;
+            confirmPayBtn.disabled = status;
+            cancelPinBtn.disabled = status;
+
+            discoSelect.disabled = status;
+            meterNumberInput.disabled = status;
+            amountInput.disabled = status;
+            verifyBtn.disabled = status;
+
+            document
+                .querySelectorAll('.meter-type-card')
+                .forEach(card => {
+                    card.disabled = status;
+                });
+
+            if (status) {
+                submitBtnLabel.innerHTML =
+                    '<span class="spinner"></span> Processing...';
+
+                confirmPayBtn.textContent = 'Processing...';
+            } else {
+                submitBtnLabel.textContent =
+                    'Pay electricity bill';
+
+                confirmPayBtn.textContent = 'Confirm';
+            }
+        }
+
+        // =============================
+        // VALIDATE ELECTRICITY PAYMENT
+        // =============================
+
+        function getPaymentValidation() {
+            const disco = discoSelect.value;
+
+            const meterNumber =
+                meterNumberInput.value.trim();
+
+            const amount = Number(amountInput.value);
+
+            if (!SUPPORTED_DISCO_IDS.has(disco)) {
+                return {
+                    valid: false,
+                    error: 'Please select a valid DISCO.'
+                };
+            }
+
+            if (!/^\d{8,16}$/.test(meterNumber)) {
+                return {
+                    valid: false,
+                    error: 'Enter a valid meter number.'
+                };
+            }
+
+            if (
+                isVerifying ||
+                !isMeterVerified ||
+                verifiedMeterKey !== getMeterKey()
+            ) {
+                return {
+                    valid: false,
+                    error: 'Please verify your meter details successfully before payment.'
+                };
+            }
+
+            if (
+                !Number.isSafeInteger(amount) ||
+                amount < 100
+            ) {
+                return {
+                    valid: false,
+                    error: 'Enter a valid electricity payment amount of at least ₦100.'
+                };
+            }
+
+            return {
+                valid: true,
+                disco,
+                meterNumber,
+                meterType: selectedMeterType,
+                amount
+            };
+        }
+
+        electricityForm.addEventListener(
+            'submit',
+            function (event) {
+                event.preventDefault();
+
+                if (isProcessing) return;
+
+                const currentUser = getCurrentUser();
+
+                if (!currentUser) {
+                    showNotification(
+                        'Session expired. Please log in again.'
+                    );
+
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1600);
+
+                    return;
+                }
+
+                const validation =
+                    getPaymentValidation();
+
+                if (!validation.valid) {
+                    showNotification(validation.error);
+                    return;
+                }
+
+                openPinGate();
+            }
+        );
+
+        // =============================
+        // PURCHASE ELECTRICITY
+        // =============================
+
+        pinAuthForm.addEventListener(
+            'submit',
+            async function (event) {
+                event.preventDefault();
+
+                if (isProcessing) return;
+
+                const pin = txPinInput.value;
+
+                if (!/^\d{4}$/.test(pin)) {
+                    showNotification(
+                        'Please enter your 4-digit transaction PIN.'
+                    );
+
+                    txPinInput.focus();
+                    return;
+                }
+
+                const currentUser = getCurrentUser();
+
+                if (!currentUser) {
+                    closePinGate();
+
+                    showNotification(
+                        'Your session has expired. Please log in again.'
+                    );
+
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1600);
+
+                    return;
+                }
+
+                const validation =
+                    getPaymentValidation();
+
+                if (!validation.valid) {
+                    closePinGate();
+                    showNotification(validation.error);
+                    return;
+                }
+
+                // Preserve exactly the details
+                // authorized for this purchase.
+                const {
+                    disco,
+                    meterNumber,
+                    meterType,
+                    amount
+                } = validation;
+
+                setProcessing(true);
+                pinGateModal.classList.remove('open');
+
+                const controller = new AbortController();
+
+                const timeoutId = setTimeout(() => {
+                    controller.abort();
+                }, 60000);
+
+                try {
+                    const response = await fetch(
+                        `${BACKEND_URL}/buy-electricity`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: currentUser.email,
+                                disco,
+                                meterNumber,
+                                meterType,
+                                amount,
+                                pin
+                            }),
+                            signal: controller.signal
+                        }
+                    );
+
+                    let data;
+
+                    try {
+                        data = await response.json();
+                    } catch (_) {
+                        data = {};
+                    }
+
+                    if (
+                        response.ok &&
+                        data.success === true
+                    ) {
+                        // Backend balance is authoritative.
+                        if (
+                            data.newBalance !== undefined &&
+                            data.newBalance !== null &&
+                            Number.isFinite(Number(data.newBalance))
+                        ) {
+                            currentUser.balance =
+                                Number(data.newBalance);
+
+                            try {
+                                localStorage.setItem(
+                                    'user',
+                                    JSON.stringify(currentUser)
+                                );
+                            } catch (_) {}
+                        }
+
+                        const rawToken =
+                            data.token ??
+                            data.purchased_code ??
+                            data.mainToken ??
+                            null;
+
+                        const generatedToken =
+                            typeof rawToken === 'string' ||
+                            typeof rawToken === 'number'
+                                ? String(rawToken).trim()
+                                : '';
+
+                        const tokenAvailable =
+                            generatedToken.length > 0 &&
+                            generatedToken !== 'N/A' &&
+                            generatedToken !== 'Processed Successfully' &&
+                            generatedToken !== 'null' &&
+                            generatedToken !== 'undefined';
+
+                        if (
+                            meterType === 'prepaid' &&
+                            tokenAvailable
+                        ) {
+                            tokenDisplay.textContent =
+                                generatedToken;
+
+                            tokenModal.classList.add('open');
+                        } else {
+                            const message =
+                                meterType === 'postpaid'
+                                    ? `Your electricity payment of ₦${amount.toLocaleString('en-NG')} for meter ${meterNumber} was processed successfully.`
+                                    : `Your prepaid electricity purchase of ₦${amount.toLocaleString('en-NG')} was processed, but the provider did not return a token in this response. Check your transaction history or contact support. Do not make another payment for the same purchase.`;
+
+                            document.getElementById(
+                                'successModalMsg'
+                            ).textContent = message;
+
+                            successResponseModal.classList.add('open');
+                        }
+
+                        return;
+                    }
+
+                    if (
+                        response.status >= 500 ||
+                        data.code === 'PURCHASE_STATUS_UNCONFIRMED'
+                    ) {
+                        showNotification(
+                            'The payment status could not be confirmed. Please check your transaction history before attempting another payment.'
+                        );
+                    } else {
+                        showNotification(
+                            data.error ||
+                            data.message ||
+                            'Electricity transaction failed. Please check your details.'
+                        );
+                    }
+
+                } catch (error) {
+                    showNotification(
+                        'The electricity payment result could not be confirmed. Check your transaction history before trying again to avoid duplicate payments.'
+                    );
+                } finally {
+                    clearTimeout(timeoutId);
+
+                    setProcessing(false);
+
+                    txPinInput.value = '';
+                    updatePinDots();
+
+                    pinGateModal.classList.remove('open');
+                }
+            }
+        );
+
+        // =============================
+        // COPY ELECTRICITY TOKEN
+        // =============================
+
+        async function copyToken() {
+            const token = tokenDisplay.textContent.trim();
+
+            if (!token || token.startsWith('----')) {
+                showNotification(
+                    'There is no valid token to copy.'
+                );
+
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(token);
+
+                showNotification(
+                    'Electricity token copied successfully.',
+                    'success'
+                );
+            } catch (_) {
+                showNotification(
+                    'Unable to copy automatically. Please select and copy the token manually.'
+                );
+            }
+        }
+
+        document.getElementById('copyTokenBtn')
+            .addEventListener('click', copyToken);
+
+        // =============================
+        // CLOSE MODALS
+        // =============================
 
         function closeSuccessModal() {
             successResponseModal.classList.remove('open');
-            window.location.href = "dashboard.html";
+            window.location.href = 'dashboard.html';
         }
 
-        function copyToken(){
-            const tokenText = document.getElementById('tokenDisplay').innerText;
-            navigator.clipboard.writeText(tokenText);
-            showNotification('Token copied to clipboard.', 'success');
-        }
+        document.getElementById('closeSuccessBtn')
+            .addEventListener(
+                'click',
+                closeSuccessModal
+            );
 
-        document.getElementById('electricityForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const currentUser = JSON.parse(localStorage.getItem('user'));
-            if (!currentUser) { showNotification("Please log in to continue."); return; }
-            if (!isMeterVerified) { showNotification("Please verify your meter number successfully first."); return; }
-            openPinGate();
-        });
+        document.getElementById('tokenDashboardBtn')
+            .addEventListener('click', () => {
+                window.location.href = 'dashboard.html';
+            });
 
-        pinAuthForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // =============================
+        // INITIALIZE PAGE
+        // =============================
 
-            const currentUser = JSON.parse(localStorage.getItem('user'));
-            const pinVal = txPinInput.value;
-            const amountVal = document.getElementById('amount').value.trim();
-            const meterNumVal = meterNumberInput.value.trim();
+        window.addEventListener('load', function () {
+            const user = getCurrentUser();
 
-            closePinGate();
-            submitBtn.disabled = true;
-            submitBtnLabel.innerHTML = '<span class="spinner"></span> Processing&hellip;';
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/buy-electricity`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: currentUser.email,
-                        disco: discoSelect.value,
-                        meterType: selectedMeterType,
-                        meterNumber: meterNumVal,
-                        amount: amountVal,
-                        pin: pinVal
-                    })
-                });
-
-                const data = await response.json();
-                if (response.ok && data.success) {
-                    currentUser.balance = data.newBalance;
-                    localStorage.setItem('user', JSON.stringify(currentUser));
-
-                    const generatedToken = data.token || data.purchased_code || data.mainToken;
-
-                    if (selectedMeterType === 'prepaid' && generatedToken && generatedToken !== 'N/A' && generatedToken !== 'Processed Successfully') {
-                        document.getElementById('tokenDisplay').innerText = generatedToken;
-                        tokenModal.classList.add('open');
-                    } else {
-                        document.getElementById('successModalMsg').innerText = `Bill payment of \u20a6${parseFloat(amountVal).toLocaleString()} for meter #${meterNumVal} was processed successfully.`;
-                        successResponseModal.classList.add('open');
-                    }
-                    resetSubmitButton();
-                } else {
-                    showNotification(data.error || "Transaction authentication failed.");
-                    resetSubmitButton();
-                }
-            } catch (err) {
-                showNotification("Communication connection breakdown. Please retry.");
-                resetSubmitButton();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
             }
+
+            resetMeterVerification();
         });
-
-        function resetSubmitButton() {
-            submitBtnLabel.innerText = "Pay electricity bill";
-            submitBtn.disabled = false;
-        }
-
-        window.onload = function() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (!user) { window.location.href = "login.html"; return; }
-
-            fetchLiveElectricityDiscos();
-        }
     </script>
 </body>
 </html>
