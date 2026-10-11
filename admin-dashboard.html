@@ -1,652 +1,3160 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Command Center | Bigotic Data</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060915">
+<title>Admin Command Center | Bigotic Data</title>
 
-    <script>
-        (function(){
-            const saved = localStorage.getItem('bigotic-theme');
-            document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
-        })();
-    </script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        :root{ --electric:#3b6bff; --electric-soft:#7c9bff; --cyan:#28e0d6; --emerald:#34d399; --rose:#f97066; --gold:#f4b740; }
-        html[data-theme="dark"]{
-            --bg:#060915; --bg-elevated:#0d1330; --card:#0f1638; --card-2:linear-gradient(165deg,#121a42,#0d1330);
-            --border: rgba(148,163,255,0.14); --text-hi:#eef1ff; --text-mid:#aab0d6; --text-dim:#6b71a0;
-            --nav-bg: rgba(6,9,21,0.78); --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07); --input-bg: rgba(255,255,255,.04); --divider: rgba(148,163,255,0.1);
-            --thead-bg: rgba(255,255,255,.03);
-        }
-        html[data-theme="light"]{
-            --bg:#f2f4fb; --bg-elevated:#ffffff; --card:#ffffff; --card-2:linear-gradient(165deg,#ffffff,#f6f8ff);
-            --border:#e6e9f6; --text-hi:#0f1428; --text-mid:#5b6178; --text-dim:#98a0c2;
-            --nav-bg: rgba(255,255,255,.85); --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05); --input-bg: #f5f7fd; --divider: #eef0fa;
-            --thead-bg: #f7f9ff;
-        }
-        *{ box-sizing:border-box; }
-        html, body{ margin:0; padding:0; }
-        body{
-            font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-hi); min-height:100vh;
-            display:flex; overflow-x:hidden; transition: background .35s ease, color .35s ease;
-        }
-        .font-display{ font-family:'Space Grotesk',sans-serif; }
-        .font-mono{ font-family:'JetBrains Mono',monospace; }
-        a{ text-decoration:none; color:inherit; }
-        button{ font-family:inherit; }
-        @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+<script>
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light' : 'dark';
+} catch (e) {
+    document.documentElement.dataset.theme = 'dark';
+}
+</script>
 
-        /* ---------- sidebar (desktop) ---------- */
-        .aside{ width:250px; background:var(--bg-elevated); border-right:1px solid var(--border); display:none; flex-direction:column; justify-content:space-between; height:100vh; position:sticky; top:0; }
-        @media (min-width:900px){ .aside{ display:flex; } }
-        .aside-head{ padding:22px 20px; border-bottom:1px solid var(--border); }
-        .brand-mark{ display:flex; align-items:center; gap:9px; }
-        .brand-mark .mark{ width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#d97706); display:flex;align-items:center;justify-content:center; box-shadow:0 8px 18px rgba(217,119,6,.3); flex-shrink:0; }
-        .brand-mark .word{ font-size:15px; font-weight:700; letter-spacing:-.02em; }
-        .brand-mark .word span{ color:var(--gold); font-weight:600; }
-        .aside-sub{ font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color:var(--text-dim); margin:6px 0 0; }
-        .aside-nav{ padding:16px 12px; display:flex; flex-direction:column; gap:4px; flex:1; }
-        .nav-btn{
-            display:flex; align-items:center; gap:11px; padding:12px 14px; border-radius:12px; border:none; background:none; cursor:pointer;
-            color:var(--text-mid); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; transition:background .2s ease, color .2s ease; text-align:left; width:100%;
-        }
-        .nav-btn:hover{ background:var(--row-hover); }
-        .nav-btn.active{ background:rgba(59,107,255,.14); color:var(--electric-soft); }
-        .nav-btn i{ width:16px; height:16px; flex-shrink:0; }
-        .aside-foot{ padding:16px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:10px; }
-        .theme-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:12px; background:var(--card-2); border:1px solid var(--border); }
-        .theme-row span{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-mid); display:flex; align-items:center; gap:7px; }
-        .theme-switch{ width:40px; height:22px; border-radius:999px; background:var(--border); position:relative; cursor:pointer; border:none; padding:0; flex-shrink:0; }
-        .theme-switch .knob{ position:absolute; top:2.5px; left:2.5px; width:17px; height:17px; border-radius:50%; background:linear-gradient(135deg,var(--electric),var(--cyan)); transition:transform .3s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; color:#fff; }
-        html[data-theme="light"] .theme-switch .knob{ transform:translateX(18px); }
-        .exit-btn{ display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border-radius:12px; background:rgba(249,112,102,.1); border:1px solid rgba(249,112,102,.28); color:var(--rose); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; transition:background .2s ease; }
-        .exit-btn:hover{ background:rgba(249,112,102,.18); }
+<style>
+:root {
+    --blue: #3b6bff;
+    --soft: #7c9bff;
+    --cyan: #28e0d6;
+    --green: #34d399;
+    --red: #f97066;
+    --amber: #f4b740;
+}
 
-        /* ---------- main ---------- */
-        .content{ flex:1; overflow-y:auto; padding:26px 22px 100px; max-width:1180px; margin:0 auto; width:100%; }
-        @media (min-width:640px){ .content{ padding:32px 32px 40px; } }
-        .mobile-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-        @media (min-width:900px){ .mobile-topbar{ display:none; } }
-        .mobile-topbar .brand-mark .word{ font-size:14px; }
+html[data-theme="dark"] {
+    --bg: #060915;
+    --surface: #0d1330;
+    --card: #0f1638;
+    --border: rgba(148,163,255,.14);
+    --high: #eef1ff;
+    --mid: #aab0d6;
+    --dim: #737aa7;
+    --hover: rgba(124,155,255,.07);
+    --input: rgba(255,255,255,.04);
+    --nav: rgba(6,9,21,.9);
+    --shadow: 0 20px 45px -14px rgba(0,0,0,.45);
+}
 
-        .tab-content{ display:none; }
-        .tab-content.active{ display:block; }
+html[data-theme="light"] {
+    --bg: #f2f4fb;
+    --surface: #fff;
+    --card: #fff;
+    --border: #e6e9f6;
+    --high: #0f1428;
+    --mid: #5b6178;
+    --dim: #8a94b5;
+    --hover: rgba(59,107,255,.06);
+    --input: #f5f7fd;
+    --nav: rgba(255,255,255,.92);
+    --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
+}
 
-        .page-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; gap:12px; flex-wrap:wrap; }
-        .page-head h2{ font-size:19px; font-weight:700; margin:0; letter-spacing:-.01em; }
-        .page-sub{ font-size:11px; color:var(--text-dim); font-weight:600; margin:3px 0 0; text-transform:uppercase; letter-spacing:.06em; }
-        .icon-btn{ width:36px; height:36px; border-radius:11px; border:1px solid var(--border); background:var(--card); color:var(--text-mid); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease, transform .2s ease; }
-        .icon-btn:hover{ background:var(--row-hover); }
-        .icon-btn.spinning i{ animation:spin 0.9s linear infinite; }
-        @keyframes spin{ to{ transform:rotate(360deg); } }
+* { box-sizing: border-box; }
 
-        /* ---------- stat cards ---------- */
-        .stat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:28px; }
-        @media (min-width:640px){ .stat-grid{ grid-template-columns:repeat(4,1fr); } }
-        .stat-card{ background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
-        .stat-card .bar{ position:absolute; left:0; top:0; bottom:0; width:3px; }
-        .stat-lbl{ font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); margin:0 0 8px; }
-        .stat-val{ font-size:19px; font-weight:700; font-family:'JetBrains Mono',monospace; margin:0; }
-        .stat-card.hero{ background:linear-gradient(135deg,var(--electric),#1d3fbf 70%,var(--cyan)); color:#fff; cursor:pointer; transition:transform .2s ease; }
-        .stat-card.hero:hover{ transform:translateY(-3px); }
-        .stat-card.hero .stat-lbl{ color:rgba(255,255,255,.75); }
-        .stat-card.hero .stat-val{ color:#fff; }
-        .stat-card.hero .hint{ font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:rgba(255,255,255,.65); margin-top:6px; }
+[hidden] { display: none !important; }
 
-        /* ---------- table cards ---------- */
-        .group-label{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color:var(--text-dim); margin:0 0 12px 2px; }
-        .table-card{ background:var(--card); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); overflow:hidden; }
-        .table-scroll{ overflow-x:auto; }
-        table{ width:100%; border-collapse:collapse; white-space:nowrap; }
-        thead{ background:var(--thead-bg); border-bottom:1px solid var(--border); }
-        th{ padding:13px 16px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); text-align:left; }
-        th.right{ text-align:right; }
-        td{ padding:13px 16px; font-size:11.5px; font-weight:600; border-bottom:1px solid var(--divider); }
-        tbody tr:last-child td{ border-bottom:none; }
-        tbody tr{ transition:background .2s ease; }
-        tbody tr:hover{ background:var(--row-hover); }
-        .cell-strong{ font-weight:700; color:var(--text-hi); }
-        .cell-mono{ font-family:'JetBrains Mono',monospace; color:var(--text-mid); }
-        .cell-dim{ color:var(--text-dim); font-size:10.5px; text-align:right; }
-        .pill{ display:inline-flex; padding:3px 10px; border-radius:999px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; background:var(--row-hover); color:var(--text-mid); border:1px solid var(--border); }
-        .pill.blue{ background:rgba(59,107,255,.12); color:var(--electric-soft); border-color:rgba(124,155,255,.3); }
-        .adjust-btn{ background:rgba(59,107,255,.12); color:var(--electric-soft); border:none; padding:7px 13px; border-radius:9px; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; transition:background .2s ease; }
-        .adjust-btn:hover{ background:rgba(59,107,255,.22); }
-        .empty-row td{ text-align:center; padding:44px 20px; color:var(--text-dim); font-weight:800; text-transform:uppercase; letter-spacing:.05em; font-size:11px; }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--high);
+    font-family: Inter, sans-serif;
+}
 
-        .search-wrap{ position:relative; max-width:280px; width:100%; }
-        .search-wrap i{ position:absolute; left:13px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-dim); }
-        .search-wrap input{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:12px; padding:11px 13px 11px 36px;
-            font-size:12px; font-weight:600; color:var(--text-hi); outline:none; transition:border-color .2s ease;
-        }
-        .search-wrap input:focus{ border-color:var(--electric-soft); }
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
 
-        .profit-chip{ background:rgba(52,211,153,.14); border:1px solid rgba(52,211,153,.3); color:var(--emerald); padding:9px 16px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
-        .profit-chip span{ font-family:'JetBrains Mono',monospace; }
+button { cursor: pointer; }
 
-        /* ---------- popup control panel ---------- */
-        .popup-form-card{ background:var(--card); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); padding:24px; max-width:480px; }
-        .field-label{ font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; color:var(--text-dim); margin-bottom:8px; display:block; }
-        .form-input{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:12px;
-            padding:12px 14px; color:var(--text-hi); font-size:13px; font-family:'Inter',sans-serif; outline:none;
-            margin-bottom:16px; transition:border-color .2s ease; resize:vertical;
-        }
-        .form-input:focus{ border-color:var(--electric-soft); }
-        .popup-preview-thumb{ width:100%; max-height:140px; object-fit:cover; border-radius:12px; margin:-4px 0 16px; display:none; border:1px solid var(--border); }
-        .mode-row{ display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:20px; }
-        .mode-btn{ padding:11px; border-radius:11px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; border:2px solid var(--border); background:var(--card); color:var(--text-mid); transition:all .2s ease; }
-        .mode-btn.add.active{ border-color:var(--electric); background:rgba(59,107,255,.12); color:var(--electric-soft); }
-        .mode-btn.deduct.active{ border-color:var(--rose); background:rgba(249,112,102,.12); color:var(--rose); }
-        .modal-actions{ display:flex; gap:10px; }
-        .modal-actions button{ flex:1; padding:13px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; cursor:pointer; border:none; }
-        .apply-btn{ background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff; display:flex; align-items:center; justify-content:center; gap:8px; }
-        .cancel-btn{ background:var(--row-hover); color:var(--text-mid); }
-        .status-badge{ display:inline-flex; align-items:center; gap:6px; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; padding:5px 11px; border-radius:999px; margin-bottom:18px; }
-        .status-badge.live{ background:rgba(52,211,153,.14); color:var(--emerald); border:1px solid rgba(52,211,153,.3); }
-        .status-badge.off{ background:var(--row-hover); color:var(--text-dim); border:1px solid var(--border); }
-        .status-badge .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+button:disabled {
+    opacity: .55;
+    cursor: wait;
+}
 
-        /* ---------- mobile bottom nav ---------- */
-        .bottom-nav-wrap{ position:fixed; bottom:0; left:0; right:0; z-index:45; padding:0 16px 16px; }
-        @media (min-width:900px){ .bottom-nav-wrap{ display:none; } }
-        .bottom-nav{ max-width:460px; margin:0 auto; background:var(--nav-bg); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:20px; height:64px; display:flex; align-items:center; justify-content:space-around; box-shadow:0 -14px 34px -14px rgba(0,0,0,.25); }
-        .bnav-item{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:58px; color:var(--text-dim); gap:3px; background:none; border:none; cursor:pointer; }
-        .bnav-item.active{ color:var(--electric-soft); }
-        .bnav-item i{ width:15px; height:15px; }
-        .bnav-item span{ font-size:7.5px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
-        /* ---------- fund adjustment modal ---------- */
-        .modal-overlay{ position:fixed; inset:0; z-index:90; background:rgba(3,5,14,.62); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .28s ease; }
-        .modal-overlay.open{ opacity:1; pointer-events:auto; }
-        .modal-card{ width:100%; max-width:380px; background:var(--card-2); border:1px solid var(--border); border-radius:24px; padding:28px; position:relative; overflow:hidden; transform:translateY(18px) scale(.96); transition:transform .32s cubic-bezier(.16,1,.3,1); }
-        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-        .modal-card::before{ content:''; position:absolute; top:-60%; left:-20%; width:140%; height:140%; background:radial-gradient(circle, rgba(59,107,255,.14), transparent 60%); pointer-events:none; }
-        .modal-icon{ width:44px; height:44px; border-radius:13px; background:rgba(59,107,255,.14); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; margin-bottom:14px; position:relative; z-index:1; }
-        .modal-card h3{ font-size:16px; font-weight:700; margin:0 0 3px; position:relative; z-index:1; }
-        .modal-card .fund-name{ font-size:12px; font-weight:700; color:var(--text-hi); margin:0; position:relative; z-index:1; }
-        .modal-card .fund-email{ font-size:10.5px; font-family:'JetBrains Mono',monospace; color:var(--text-dim); margin:2px 0 18px; position:relative; z-index:1; }
-        .modal-card input[type="number"]{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:12px; padding:13px 14px;
-            font-size:15px; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--text-hi); outline:none; margin-bottom:18px; position:relative; z-index:1;
-        }
-        .spinner{ width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--soft);
+    outline-offset: 3px;
+}
 
-        /* ---------- toasts ---------- */
-        #toastContainer{ position:fixed; top:18px; right:18px; z-index:99; display:flex; flex-direction:column; gap:11px; max-width:340px; width:calc(100% - 36px); pointer-events:none; }
-        .toast{ pointer-events:auto; position:relative; overflow:hidden; display:flex; align-items:flex-start; gap:11px; padding:15px 16px 14px; border-radius:16px; background:var(--card-2); border:1px solid var(--border); box-shadow:0 24px 55px -16px rgba(0,0,0,.35); transform:translateY(-14px) scale(.96); opacity:0; transition:transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
-        .toast.show{ transform:translateY(0) scale(1); opacity:1; }
-        .toast::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
-        .toast.success::before{ background:linear-gradient(180deg,var(--emerald),#1fae7d); }
-        .toast.error::before{ background:linear-gradient(180deg,var(--rose),#c8362a); }
-        .toast::after{ content:''; position:absolute; left:0; bottom:0; height:2px; width:100%; transform-origin:left; animation: toast-countdown 3.8s linear forwards; }
-        .toast:hover::after{ animation-play-state:paused; }
-        .toast.success::after{ background:linear-gradient(90deg,var(--emerald),transparent); }
-        .toast.error::after{ background:linear-gradient(90deg,var(--rose),transparent); }
-        @keyframes toast-countdown{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
-        .toast .icon{ width:31px; height:31px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-        .toast.success .icon{ background:rgba(52,211,153,.16); color:var(--emerald); }
-        .toast.error .icon{ background:rgba(249,112,102,.16); color:var(--rose); }
-        .toast .title{ margin:0 0 2px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
-        .toast p.msg{ margin:0; font-size:11.5px; font-weight:500; color:var(--text-mid); line-height:1.5; }
-        .toast .dismiss{ background:none; border:none; color:var(--text-dim); cursor:pointer; padding:3px; border-radius:6px; flex-shrink:0; }
-    </style>
+.display {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* MAIN LAYOUT */
+
+.shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    padding: 25px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.mark {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: linear-gradient(135deg,var(--blue),var(--cyan));
+    color: #fff;
+}
+
+.mark svg { width: 18px; }
+
+.brand em {
+    color: var(--soft);
+    font-style: normal;
+}
+
+.eyebrow {
+    color: var(--dim);
+    font-size: 9px;
+    letter-spacing: .14em;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 9px 0 0;
+}
+
+.side-links {
+    padding: 17px 10px;
+    flex: 1;
+    overflow: auto;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 0;
+    width: 100%;
+    background: none;
+    color: var(--mid);
+    padding: 13px 12px;
+    border-radius: 12px;
+    text-align: left;
+    font-weight: 800;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    margin-bottom: 5px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--soft);
+    background: var(--hover);
+}
+
+.nav-link svg {
+    width: 17px;
+    height: 17px;
+}
+
+.side-foot {
+    padding: 15px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 9px;
+}
+
+.side-foot a,
+.side-foot button {
+    background: var(--hover);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 12px;
+    color: var(--mid);
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.content {
+    min-width: 0;
+    flex: 1;
+    max-width: 1300px;
+    padding: 28px 28px 75px;
+    margin: 0 auto;
+}
+
+.mobile-header {
+    display: none;
+}
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.page-head h1 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    letter-spacing: -.025em;
+}
+
+.page-head p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--soft);
+    display: grid;
+    place-items: center;
+}
+
+.icon-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.badge {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--soft);
+    border: 1px solid rgba(59,107,255,.25);
+    background: var(--hover);
+    padding: 7px 10px;
+    border-radius: 99px;
+}
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* METRICS */
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 13px;
+    margin-bottom: 23px;
+}
+
+.metric {
+    min-width: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 19px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+}
+
+.metric small {
+    display: block;
+    font-size: 10px;
+    color: var(--dim);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 11px;
+}
+
+.metric strong {
+    font: 700 clamp(16px,2vw,23px) 'JetBrains Mono',monospace;
+    overflow-wrap: anywhere;
+}
+
+.metric p {
+    font-size: 9px;
+    color: var(--dim);
+    line-height: 1.6;
+    margin: 8px 0 0;
+}
+
+.metric.primary {
+    background: linear-gradient(135deg,var(--blue),#1d3fbf);
+    color: #fff;
+}
+
+.metric.primary small,
+.metric.primary p {
+    color: rgba(255,255,255,.77);
+}
+
+/* TABLES */
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 22px;
+}
+
+.card-header {
+    padding: 17px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-header strong {
+    font-size: 12px;
+}
+
+.card-header small {
+    display: block;
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 4px;
+}
+
+.table-scroll { overflow: auto; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 650px;
+}
+
+th {
+    color: var(--dim);
+    background: var(--hover);
+    font-size: 9px;
+    text-transform: uppercase;
+    text-align: left;
+    letter-spacing: .06em;
+    padding: 13px 15px;
+}
+
+td {
+    border-top: 1px solid var(--border);
+    padding: 14px 15px;
+    font-size: 11px;
+    color: var(--mid);
+    vertical-align: middle;
+}
+
+td strong {
+    color: var(--high);
+    font-size: 11px;
+}
+
+td .mono {
+    font-size: 10px;
+    word-break: break-word;
+}
+
+tbody tr:hover { background: var(--hover); }
+
+.empty {
+    text-align: center;
+    padding: 38px;
+    color: var(--dim);
+}
+
+.pill {
+    display: inline-block;
+    border-radius: 99px;
+    background: var(--hover);
+    color: var(--soft);
+    border: 1px solid var(--border);
+    font-size: 9px;
+    font-weight: 800;
+    padding: 5px 9px;
+}
+
+.pill.success {
+    color: var(--green);
+    background: rgba(52,211,153,.1);
+}
+
+.pill.failed {
+    color: var(--red);
+    background: rgba(249,112,102,.1);
+}
+
+.pill.pending {
+    color: var(--amber);
+    background: rgba(244,183,64,.1);
+}
+
+/* INPUTS & BUTTONS */
+
+.search {
+    border: 1px solid var(--border);
+    background: var(--input);
+    border-radius: 11px;
+    padding: 11px 13px;
+    outline: none;
+    color: var(--high);
+    font-size: 12px;
+    max-width: 270px;
+    width: 100%;
+}
+
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+    border-radius: 11px;
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.btn.soft {
+    background: var(--hover);
+    color: var(--soft);
+    border: 1px solid var(--border);
+}
+
+.btn.danger {
+    background: rgba(249,112,102,.13);
+    color: var(--red);
+    border: 1px solid rgba(249,112,102,.3);
+}
+
+.btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.hint {
+    font-size: 10px;
+    color: var(--dim);
+    line-height: 1.65;
+}
+
+.notice {
+    border: 1px solid rgba(244,183,64,.25);
+    background: rgba(244,183,64,.08);
+    color: var(--mid);
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 11px;
+    line-height: 1.75;
+    margin-bottom: 18px;
+}
+
+.notice strong { color: var(--amber); }
+
+.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 17px;
+}
+
+.form-card { padding: 20px; }
+
+.field { margin: 0 0 15px; }
+
+.field label {
+    display: block;
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 7px;
+}
+
+.field input,
+.field textarea,
+.field select {
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 12px 13px;
+    color: var(--high);
+    width: 100%;
+    outline: none;
+    font-size: 12px;
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.field select option {
+    background: var(--surface);
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: var(--soft);
+}
+
+/* MODE BUTTONS */
+
+.toggle {
+    display: flex;
+    gap: 9px;
+    margin: 0 0 16px;
+}
+
+.toggle button {
+    flex: 1;
+    border: 1px solid var(--border);
+    background: var(--hover);
+    color: var(--mid);
+    padding: 11px;
+    border-radius: 11px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.toggle button.active {
+    border-color: var(--blue);
+    color: var(--soft);
+    background: rgba(59,107,255,.13);
+}
+
+.toggle button.deduct.active {
+    border-color: var(--red);
+    color: var(--red);
+    background: rgba(249,112,102,.12);
+}
+
+/* ANNOUNCEMENT PREVIEW */
+
+.preview {
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    background: var(--hover);
+    padding: 17px;
+    min-height: 160px;
+}
+
+.preview img {
+    max-width: 100%;
+    max-height: 160px;
+    object-fit: contain;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto 12px;
+}
+
+.preview p {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.7;
+}
+
+.preview a {
+    font-size: 11px;
+    color: var(--soft);
+    font-weight: 800;
+}
+
+.switch-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mid);
+    margin-bottom: 17px;
+}
+
+.switch-row input {
+    accent-color: var(--blue);
+    width: 17px;
+    height: 17px;
+}
+
+/* MODALS */
+
+.modal-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: rgba(3,5,14,.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.modal-wrap.open {
+    display: flex;
+}
+
+.modal {
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 17px;
+}
+
+.modal-head h3 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.user-target {
+    background: var(--hover);
+    border: 1px solid var(--border);
+    padding: 13px;
+    border-radius: 12px;
+    margin: 0 0 17px;
+}
+
+.user-target strong {
+    display: block;
+    font-size: 12px;
+}
+
+.user-target small {
+    display: block;
+    word-break: break-word;
+    color: var(--dim);
+    margin-top: 5px;
+}
+
+.checkline {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    color: var(--mid);
+    font-size: 11px;
+    line-height: 1.6;
+    margin: 5px 0 16px;
+}
+
+.checkline input {
+    accent-color: var(--blue);
+    margin-top: 3px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    flex: 1;
+}
+
+.modal-warning {
+    border: 1px solid rgba(249,112,102,.26);
+    color: var(--mid);
+    background: rgba(249,112,102,.08);
+    padding: 11px 13px;
+    border-radius: 10px;
+    font-size: 10px;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+/* TOASTS */
+
+.toast-region {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 100;
+    width: min(350px,calc(100% - 28px));
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 14px;
+    margin-bottom: 9px;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+.toast.error { border-left-color: var(--red); }
+.toast.success { border-left-color: var(--green); }
+
+.mobile-nav { display: none; }
+
+.danger-text { color: var(--red); }
+
+/* RESPONSIVE */
+
+@media (max-width:1050px) {
+    .sidebar { width: 215px; }
+    .content { padding: 24px 18px 80px; }
+}
+
+@media (max-width:899px) {
+    .sidebar { display: none; }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .content {
+        padding: 20px 16px 115px;
+    }
+
+    .mobile-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        z-index: 40;
+        margin: 0 auto;
+        padding: 9px 6px max(12px,env(safe-area-inset-bottom));
+        background: var(--nav);
+        border-top: 1px solid var(--border);
+        backdrop-filter: blur(15px);
+    }
+
+    .mobile-nav button,
+    .mobile-nav a {
+        border: 0;
+        background: none;
+        color: var(--dim);
+        font-size: 9px;
+        font-weight: 800;
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+        padding: 8px 6px;
+    }
+
+    .mobile-nav .active {
+        color: var(--soft);
+    }
+
+    .mobile-nav svg {
+        width: 17px;
+        height: 17px;
+    }
+}
+
+@media (max-width:640px) {
+    .metrics {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    .grid2 {
+        grid-template-columns: 1fr;
+    }
+
+    .page-head h1 {
+        font-size: 21px;
+    }
+
+    .metric {
+        padding: 14px;
+    }
+
+    .metric strong {
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    *,
+    *:before,
+    *:after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <aside class="aside">
+<div class="shell">
+
+<!-- DESKTOP SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-row display">
+            <span class="mark">
+                <i data-lucide="shield-check"></i>
+            </span>
+            BIGOTIC<em>ADMIN</em>
+        </div>
+
+        <p class="eyebrow">
+            Management Command Center
+        </p>
+    </div>
+
+    <nav class="side-links" aria-label="Admin sections">
+
+        <button
+            type="button"
+            class="nav-link active"
+            data-tab="overview"
+        >
+            <i data-lucide="layout-dashboard"></i>
+            Overview
+        </button>
+
+        <button
+            type="button"
+            class="nav-link"
+            data-tab="users"
+        >
+            <i data-lucide="users"></i>
+            Users &amp; Wallets
+        </button>
+
+        <button
+            type="button"
+            class="nav-link"
+            data-tab="profits"
+        >
+            <i data-lucide="trending-up"></i>
+            Profit Ledger
+        </button>
+
+        <button
+            type="button"
+            class="nav-link"
+            data-tab="popup"
+        >
+            <i data-lucide="bell-ring"></i>
+            Announcements
+        </button>
+
+    </nav>
+
+    <div class="side-foot">
+
+        <button type="button" id="desktopTheme">
+            <i
+                data-lucide="sun-moon"
+                style="width:14px;height:14px;vertical-align:middle"
+            ></i>
+            Switch Theme
+        </button>
+
+        <a href="dashboard.html">
+            Return to Dashboard
+        </a>
+
+    </div>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+
+<div class="content" id="content" hidden>
+
+    <!-- MOBILE HEADER -->
+
+    <header class="mobile-header">
+
+        <div class="brand-row display">
+
+            <span class="mark">
+                <i data-lucide="shield-check"></i>
+            </span>
+
+            BIGOTIC<em style="font-style:normal;color:var(--soft)">
+                ADMIN
+            </em>
+
+        </div>
+
+        <button
+            type="button"
+            id="mobileTheme"
+            class="icon-btn"
+            aria-label="Switch theme"
+        >
+            <i data-lucide="sun-moon"></i>
+        </button>
+
+    </header>
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-head">
+
         <div>
-            <div class="aside-head">
-                <div class="brand-mark"><span class="mark"><i data-lucide="shield" style="width:16px;height:16px;color:#fff;"></i></span><span class="font-display word">BIGOTIC<span>ADMIN</span></span></div>
-                <p class="aside-sub">Central Management Control</p>
-            </div>
-            <nav class="aside-nav">
-                <button id="btn-overview" onclick="switchTab('overview')" class="nav-btn active"><i data-lucide="layout-dashboard"></i> System Overview</button>
-                <button id="btn-users" onclick="switchTab('users')" class="nav-btn"><i data-lucide="users"></i> Manage Accounts</button>
-                <button id="btn-profits" onclick="switchTab('profits')" class="nav-btn"><i data-lucide="trending-up"></i> Profit Earnings</button>
-                <button id="btn-popup" onclick="switchTab('popup')" class="nav-btn"><i data-lucide="bell-ring"></i> Popup Notice</button>
-            </nav>
-        </div>
-        <div class="aside-foot">
-            <div class="theme-row">
-                <span><i data-lucide="sun-moon" style="width:13px;height:13px;"></i> Theme</span>
-                <button class="theme-switch" onclick="toggleTheme()" aria-label="Toggle theme"><span class="knob" id="themeKnob"><i data-lucide="moon" style="width:10px;height:10px;"></i></span></button>
-            </div>
-            <a href="dashboard.html" class="exit-btn"><i data-lucide="log-out" style="width:14px;height:14px;"></i> Exit Command Console</a>
-        </div>
-    </aside>
+            <h1 class="display" id="pageTitle">
+                System Overview
+            </h1>
 
-    <div class="content">
-        <div class="mobile-topbar">
-            <div class="brand-mark"><span class="mark"><i data-lucide="shield" style="width:14px;height:14px;color:#fff;"></i></span><span class="font-display word">BIGOTIC<span>ADMIN</span></span></div>
-            <button class="theme-quick icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><i data-lucide="sun-moon" id="themeIconMobile" style="width:15px;height:15px;"></i></button>
+            <p id="pageDescription">
+                Operational metrics and platform activity
+            </p>
         </div>
 
-        <div id="toastContainer"></div>
+        <div class="toolbar">
 
-        <div id="overview" class="tab-content active">
-            <div class="page-head">
-                <div><h2 class="font-display">System analytics overview</h2><p class="page-sub">Live platform health at a glance</p></div>
-                <button onclick="loadData()" class="icon-btn" id="refreshBtn"><i data-lucide="refresh-cw" style="width:15px;height:15px;"></i></button>
-            </div>
+            <span class="badge" id="syncLabel">
+                Awaiting sync
+            </span>
 
-            <div class="stat-grid">
-                <div class="stat-card"><span class="bar" style="background:var(--electric);"></span><p class="stat-lbl">Registered profiles</p><h2 id="metric-users" class="stat-val">&hellip;</h2></div>
-                <div class="stat-card"><span class="bar" style="background:var(--gold);"></span><p class="stat-lbl">Aggregate liability</p><h2 id="metric-liability" class="stat-val" style="color:var(--gold);">&#8358;0.00</h2></div>
-                <div class="stat-card"><span class="bar" style="background:#a78bfa;"></span><p class="stat-lbl">Gross sales turnover</p><h2 id="metric-sales" class="stat-val" style="color:#a78bfa;">&#8358;0.00</h2></div>
-                <div class="stat-card hero" onclick="switchTab('profits')">
-                    <p class="stat-lbl">Platform net profit</p>
-                    <h2 id="metric-profit" class="stat-val">&#8358;0.00</h2>
-                    <p class="hint">Click to audit tracks &rarr;</p>
-                </div>
-            </div>
+            <button
+                type="button"
+                id="refreshBtn"
+                class="icon-btn"
+                title="Refresh platform data"
+                aria-label="Refresh platform data"
+            >
+                <i data-lucide="refresh-cw"></i>
+            </button>
 
-            <p class="group-label">Global system logs (last 10 actions)</p>
-            <div class="table-card">
-                <div class="table-scroll">
-                    <table>
-                        <thead><tr><th>Subscriber</th><th>Utility type</th><th>Settlement cost</th><th class="right">Timestamp</th></tr></thead>
-                        <tbody id="recent-transactions-body"><tr class="empty-row"><td colspan="4">Synchronizing platform data&hellip;</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
         </div>
 
-        <div id="users" class="tab-content">
-            <div class="page-head">
-                <div><h2 class="font-display">Account control matrix</h2><p class="page-sub">Search and adjust user wallets</p></div>
-                <div class="search-wrap"><i data-lucide="search"></i><input type="text" id="userSearch" oninput="filterUserTable()" placeholder="Search fullname or email&hellip;"></div>
-            </div>
-            <div class="table-card">
-                <div class="table-scroll">
-                    <table>
-                        <thead><tr><th>Full name</th><th>Email address</th><th>Wallet balance</th><th class="right">Actions</th></tr></thead>
-                        <tbody id="admin-user-table"><tr class="empty-row"><td colspan="4">Loading user accounts&hellip;</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="profits" class="tab-content">
-            <div class="page-head">
-                <div><h2 class="font-display">Net profit audit ledger</h2><p class="page-sub">How revenue flows from live purchases</p></div>
-                <div class="profit-chip">Total earning: <span id="ledger-total-profit">&#8358;0.00</span></div>
-            </div>
-            <div class="table-card">
-                <div class="table-scroll">
-                    <table>
-                        <thead><tr><th>Source</th><th>Category</th><th>Details</th><th>Gross cost</th><th>Profit earned</th><th class="right">Date</th></tr></thead>
-                        <tbody id="admin-profit-table"><tr class="empty-row"><td colspan="6">Sorting transaction margins&hellip;</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="popup" class="tab-content">
-            <div class="page-head">
-                <div><h2 class="font-display">Popup notification</h2><p class="page-sub">Shown once to every user on their dashboard</p></div>
-            </div>
-
-            <div id="popupStatusBadge" class="status-badge off"><span class="dot"></span> <span id="popupStatusText">Currently inactive</span></div>
-
-            <div class="popup-form-card">
-                <label class="field-label">Image URL (optional)</label>
-                <input type="text" id="popupImageUrl" class="form-input" placeholder="https://example.com/banner.png" oninput="previewPopupImage()">
-                <img id="popupPreviewThumb" class="popup-preview-thumb" src="" alt="">
-
-                <label class="field-label">Message</label>
-                <textarea id="popupText" class="form-input" rows="3" placeholder="Your announcement to all users..."></textarea>
-
-                <label class="field-label">Link (optional)</label>
-                <input type="text" id="popupLink" class="form-input" placeholder="https://example.com/promo">
-
-                <label class="field-label">Status</label>
-                <div class="mode-row">
-                    <button type="button" id="popupToggleOn" class="mode-btn add" onclick="setPopupActive(true)">Active</button>
-                    <button type="button" id="popupToggleOff" class="mode-btn deduct active" onclick="setPopupActive(false)">Inactive</button>
-                </div>
-
-                <div class="modal-actions">
-                    <button onclick="savePopup()" id="popupSaveBtn" class="apply-btn"><span id="popupSaveLabel">Save &amp; publish</span></button>
-                    <button onclick="loadPopupAdmin()" class="cancel-btn">Reset</button>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div id="fundModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-icon"><i data-lucide="sliders" style="width:19px;height:19px;"></i></div>
-            <h3 class="font-display">Modify capital reserve</h3>
-            <p class="fund-name" id="fund-target-name"></p>
-            <p class="fund-email" id="fund-target-email"></p>
+    <!-- ===================================
+         OVERVIEW TAB
+    ==================================== -->
 
-            <label class="field-label">Adjustment flow type</label>
-            <div class="mode-row">
-                <button type="button" id="toggle-add" class="mode-btn add active" onclick="setAdjustmentMode('ADD')">Add capital</button>
-                <button type="button" id="toggle-deduct" class="mode-btn deduct" onclick="setAdjustmentMode('DEDUCT')">Clear / deduct</button>
+    <section id="overview" class="section active">
+
+        <div class="metrics">
+
+            <div class="metric">
+                <small>Registered Users</small>
+                <strong id="metricUsers">—</strong>
+                <p>Returned account records</p>
             </div>
 
-            <label class="field-label">Adjustment value (&#8358;)</label>
-            <input type="number" id="fund-amount" placeholder="0.00">
-
-            <div class="modal-actions">
-                <button onclick="executeFundingAdjustment()" id="fund-btn" class="apply-btn"><span id="fund-btn-label">Apply adjustment</span></button>
-                <button onclick="closeFundModal()" class="cancel-btn">Cancel</button>
+            <div class="metric">
+                <small>Wallet Liability</small>
+                <strong id="metricLiability">—</strong>
+                <p>Sum of user balances</p>
             </div>
+
+            <div class="metric">
+                <small>Recorded Sales</small>
+                <strong id="metricSales">—</strong>
+                <p>Excludes known wallet funding</p>
+            </div>
+
+            <div class="metric primary">
+                <small>Tracked Profit</small>
+                <strong id="metricProfit">—</strong>
+                <p>Sum of reported profit fields</p>
+            </div>
+
         </div>
+
+        <div class="notice">
+            <strong>Operational accounting:</strong>
+            These figures are derived from the records returned by
+            the API, not a reconciled bank or accounting statement.
+            Pending and failed transactions are excluded where
+            their status is supplied.
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <strong>Recent Platform Activity</strong>
+                    <small>
+                        Latest 10 returned transactions
+                    </small>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn soft"
+                    id="exportTransactions"
+                >
+                    <i data-lucide="download"></i>
+                    Export CSV
+                </button>
+
+            </div>
+
+            <div class="table-scroll">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recentBody">
+                        <tr>
+                            <td colspan="5" class="empty">
+                                Loading platform activity...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ===================================
+         USERS TAB
+    ==================================== -->
+
+    <section id="users" class="section">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <strong>Registered Accounts</strong>
+                    <small>
+                        Wallet adjustments require independent verification
+                    </small>
+                </div>
+
+                <input
+                    class="search"
+                    id="userSearch"
+                    type="search"
+                    placeholder="Search name, email or phone"
+                    aria-label="Search users"
+                >
+
+            </div>
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Email</th>
+                            <th>Wallet Balance</th>
+                            <th>Dedicated Account</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usersBody">
+                        <tr>
+                            <td colspan="5" class="empty">
+                                Loading customers...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ===================================
+         PROFITS TAB
+    ==================================== -->
+
+    <section id="profits" class="section">
+
+        <div
+            class="metrics"
+            style="grid-template-columns:repeat(2,minmax(0,1fr))"
+        >
+
+            <div class="metric primary">
+                <small>Tracked Profit</small>
+                <strong id="ledgerProfit">—</strong>
+                <p>Based on reported profit, not estimated</p>
+            </div>
+
+            <div class="metric">
+                <small>Profit Records</small>
+                <strong id="profitCount">—</strong>
+                <p>Transactions with nonzero profit fields</p>
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <strong>Profit Audit Ledger</strong>
+                    <small>
+                        Read-only transaction margins
+                    </small>
+                </div>
+
+                <div class="toolbar">
+
+                    <input
+                        type="search"
+                        id="profitSearch"
+                        class="search"
+                        placeholder="Search customer or service"
+                        aria-label="Search profits"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn soft"
+                        id="exportProfits"
+                    >
+                        <i data-lucide="download"></i>
+                        CSV
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Details</th>
+                            <th>Sale Amount</th>
+                            <th>Recorded Profit</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="profitsBody">
+                        <tr>
+                            <td colspan="6" class="empty">
+                                Loading profit records...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ===================================
+         ANNOUNCEMENTS TAB
+    ==================================== -->
+
+    <section id="popup" class="section">
+
+        <div class="grid2">
+
+            <div>
+
+                <div class="notice">
+                    <strong>Customer notifications:</strong>
+                    Your Dashboard V2 uses
+                    <span class="mono">/popup/active</span>
+                    to detect announcements. Publish a different
+                    message or image to create a new notification.
+                </div>
+
+                <div class="card form-card">
+
+                    <form id="popupForm">
+
+                        <div class="field">
+                            <label for="popupText">
+                                Announcement Message
+                            </label>
+
+                            <textarea
+                                id="popupText"
+                                placeholder="Write your announcement..."
+                                maxlength="3000"
+                            ></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label for="popupImageUrl">
+                                Image URL (optional, HTTPS)
+                            </label>
+
+                            <input
+                                id="popupImageUrl"
+                                type="url"
+                                placeholder="https://example.com/banner.png"
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="popupLink">
+                                Action Link (optional, HTTPS)
+                            </label>
+
+                            <input
+                                id="popupLink"
+                                type="url"
+                                placeholder="https://bigoticdata.com.ng/fund.html"
+                            >
+                        </div>
+
+                        <label class="switch-row">
+                            <input
+                                id="popupActive"
+                                type="checkbox"
+                            >
+                            Publish as active announcement
+                        </label>
+
+                        <div class="toolbar">
+
+                            <button
+                                type="submit"
+                                class="btn"
+                                id="popupSaveBtn"
+                            >
+                                Save Announcement
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn soft"
+                                id="popupResetBtn"
+                            >
+                                Reload
+                            </button>
+
+                        </div>
+
+                        <p class="hint">
+                            Announcements are global. Only publish
+                            accurate messages intended for every customer.
+                        </p>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div>
+
+                <div class="card form-card">
+
+                    <div
+                        class="card-header"
+                        style="padding:0 0 14px;margin-bottom:17px"
+                    >
+
+                        <strong>
+                            Customer Preview
+                        </strong>
+
+                        <span class="pill" id="popupBadge">
+                            Inactive
+                        </span>
+
+                    </div>
+
+                    <div class="preview">
+
+                        <img
+                            id="previewImage"
+                            alt="Announcement preview"
+                            hidden
+                        >
+
+                        <strong style="font-size:12px">
+                            Bigotic Data Update
+                        </strong>
+
+                        <p id="previewText">
+                            Your announcement will appear here.
+                        </p>
+
+                        <a
+                            id="previewLink"
+                            href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            hidden
+                        >
+                            Learn more ↗
+                        </a>
+
+                    </div>
+
+                    <p class="hint" style="margin-top:13px">
+                        Preview only. The customer dashboard
+                        decides when to display the actual popup
+                        and unread bell.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+</div>
+
+<!-- ===================================
+     MOBILE NAVIGATION
+==================================== -->
+
+<nav
+    class="mobile-nav"
+    aria-label="Admin navigation"
+    id="mobileNav"
+    hidden
+>
+
+    <button
+        type="button"
+        class="active"
+        data-tab="overview"
+    >
+        <i data-lucide="layout-dashboard"></i>
+        Overview
+    </button>
+
+    <button
+        type="button"
+        data-tab="users"
+    >
+        <i data-lucide="users"></i>
+        Users
+    </button>
+
+    <button
+        type="button"
+        data-tab="profits"
+    >
+        <i data-lucide="trending-up"></i>
+        Profits
+    </button>
+
+    <button
+        type="button"
+        data-tab="popup"
+    >
+        <i data-lucide="bell"></i>
+        Notice
+    </button>
+
+    <a href="dashboard.html">
+        <i data-lucide="arrow-left"></i>
+        Exit
+    </a>
+
+</nav>
+
+<!-- ===================================
+     WALLET ADJUSTMENT MODAL
+==================================== -->
+
+<div
+    id="fundModal"
+    class="modal-wrap"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="fundModalTitle"
+>
+
+    <div class="modal">
+
+        <div class="modal-head">
+
+            <h3 class="display" id="fundModalTitle">
+                Adjust Customer Wallet
+            </h3>
+
+            <button
+                type="button"
+                class="icon-btn"
+                id="closeFund"
+                aria-label="Close"
+            >
+                <i data-lucide="x"></i>
+            </button>
+
+        </div>
+
+        <div class="user-target">
+
+            <strong id="fundTargetName">
+                —
+            </strong>
+
+            <small id="fundTargetEmail">
+                —
+            </small>
+
+            <small id="fundCurrentBalance">
+                —
+            </small>
+
+        </div>
+
+        <form id="fundForm">
+
+            <div class="toggle">
+
+                <button
+                    type="button"
+                    id="addMode"
+                    class="active"
+                >
+                    Credit Wallet
+                </button>
+
+                <button
+                    type="button"
+                    id="deductMode"
+                    class="deduct"
+                >
+                    Debit Wallet
+                </button>
+
+            </div>
+
+            <div class="field">
+
+                <label for="fundAmount">
+                    Amount (₦)
+                </label>
+
+                <input
+                    id="fundAmount"
+                    type="number"
+                    inputmode="decimal"
+                    step="0.01"
+                    min="0.01"
+                    required
+                    placeholder="e.g. 5000"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label for="fundReason">
+                    Reason
+                </label>
+
+                <select id="fundReason" required>
+
+                    <option value="manual">
+                        Verified manual PalmPay deposit
+                    </option>
+
+                    <option value="correction">
+                        Balance correction
+                    </option>
+
+                    <option value="refund">
+                        Refund / reversal
+                    </option>
+
+                    <option value="other">
+                        Other authorized adjustment
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <label for="fundReference">
+                    Bank / transaction reference
+                </label>
+
+                <input
+                    id="fundReference"
+                    maxlength="100"
+                    placeholder="Required for manual bank deposits"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label for="fundNote">
+                    Internal note
+                </label>
+
+                <textarea
+                    id="fundNote"
+                    rows="2"
+                    maxlength="350"
+                    placeholder="Why this adjustment is being made"
+                ></textarea>
+
+            </div>
+
+            <label class="checkline">
+
+                <input
+                    id="verifyPayment"
+                    type="checkbox"
+                    required
+                >
+
+                <span id="verificationText">
+                    I independently verified this transfer
+                    in the actual receiving bank account,
+                    checked for duplicate credit, and confirmed
+                    the amount and recipient.
+                </span>
+
+            </label>
+
+            <div class="modal-warning">
+                This screen is not a payment verification service.
+                A screenshot or WhatsApp receipt alone is not proof
+                of funds. The current backend may not store
+                reason/reference metadata or block duplicates
+                unless you implement that logic there.
+            </div>
+
+            <div class="modal-buttons">
+
+                <button
+                    type="button"
+                    class="btn soft"
+                    id="cancelFund"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn"
+                    id="submitFund"
+                >
+                    Review Adjustment
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div class="bottom-nav-wrap">
-        <div class="bottom-nav">
-            <button onclick="switchTab('overview')" id="bnav-overview" class="bnav-item active"><i data-lucide="layout-dashboard"></i><span>Overview</span></button>
-            <button onclick="switchTab('users')" id="bnav-users" class="bnav-item"><i data-lucide="users"></i><span>Users</span></button>
-            <button onclick="switchTab('profits')" id="bnav-profits" class="bnav-item"><i data-lucide="trending-up"></i><span>Profits</span></button>
-            <button onclick="switchTab('popup')" id="bnav-popup" class="bnav-item"><i data-lucide="bell-ring"></i><span>Popup</span></button>
-            <a href="dashboard.html" class="bnav-item" style="color:var(--rose);"><i data-lucide="log-out"></i><span>Exit</span></a>
+</div>
+
+<!-- ===================================
+     FINAL ADJUSTMENT CONFIRMATION
+==================================== -->
+
+<div
+    id="confirmModal"
+    class="modal-wrap"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirmTitle"
+>
+
+    <div class="modal">
+
+        <div class="modal-head">
+
+            <h3 class="display" id="confirmTitle">
+                Confirm Wallet Adjustment
+            </h3>
+
+            <button
+                type="button"
+                class="icon-btn"
+                id="closeConfirm"
+                aria-label="Close"
+            >
+                <i data-lucide="x"></i>
+            </button>
+
         </div>
+
+        <p
+            id="confirmSummary"
+            class="notice"
+            style="white-space:pre-wrap"
+        ></p>
+
+        <div class="modal-warning">
+            Double-check the recipient and transfer reference.
+            This action sends a financial adjustment request
+            to your existing backend.
+        </div>
+
+        <div class="modal-buttons">
+
+            <button
+                type="button"
+                class="btn soft"
+                id="backConfirm"
+            >
+                Back
+            </button>
+
+            <button
+                type="button"
+                class="btn danger"
+                id="executeFund"
+            >
+                Confirm &amp; Apply
+            </button>
+
+        </div>
+
     </div>
 
-    <script>
+</div>
+
+<div
+    class="toast-region"
+    id="toastRegion"
+    aria-live="polite"
+></div>
+
+<script>
+'use strict';
+
+// ============================================
+// CONFIGURATION
+// ============================================
+
+const API = 'https://bigoticdata-backend.onrender.com';
+
+const ADMIN_EMAIL = 'ichinonso650@gmail.com';
+
+const $ = id => document.getElementById(id);
+
+const icon = () => {
+    if (window.lucide) {
         lucide.createIcons();
-        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
-        const ADMIN_EMAIL = "ichinonso650@gmail.com";
+    }
+};
 
-        let localUsersCache = [];
-        let adjustmentMode = 'ADD';
-        let currentFundEmail = '';
-        let popupActiveState = false;
+const asText = (value, fallback = '—') => {
+    if (
+        value === undefined ||
+        value === null ||
+        String(value).trim() === ''
+    ) {
+        return fallback;
+    }
 
-        // ---------------- theme ----------------
-        function applyThemeIcon(){
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            document.querySelector('#themeKnob i')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            document.getElementById('themeIconMobile')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            lucide.createIcons();
+    return String(value);
+};
+
+const numeric = value => {
+    const n = Number(
+        String(value ?? '').replace(/[₦,\s]/g, '')
+    );
+
+    return Number.isFinite(n) ? n : 0;
+};
+
+const naira = value =>
+    '₦' + numeric(value).toLocaleString(
+        'en-NG',
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         }
-        function toggleTheme(){
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('bigotic-theme', next);
-            applyThemeIcon();
-        }
-        applyThemeIcon();
+    );
 
-        // ---------------- rich toasts (replaces every alert()) ----------------
-        function showNotification(message, type = 'success', title) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            const iconName = type === 'success' ? 'check-circle-2' : 'alert-circle';
-            const t = title || (type === 'success' ? 'Success' : 'Something needs attention');
-            toast.innerHTML = `
-                <span class="icon"><i data-lucide="${iconName}" style="width:15px;height:15px;"></i></span>
-                <div style="flex:1;"><p class="title">${t}</p><p class="msg">${message}</p></div>
-                <button class="dismiss" aria-label="Dismiss"><i data-lucide="x" style="width:13px;height:13px;"></i></button>
-            `;
-            container.appendChild(toast);
-            lucide.createIcons();
-            requestAnimationFrame(() => toast.classList.add('show'));
-            let dismissed = false;
-            const remove = () => { if (dismissed) return; dismissed = true; toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); };
-            toast.querySelector('.dismiss').addEventListener('click', remove);
-            let timer = setTimeout(remove, 3800);
-            toast.addEventListener('mouseenter', () => clearTimeout(timer));
-            toast.addEventListener('mouseleave', () => { timer = setTimeout(remove, 1200); });
+const dt = value => {
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime())
+        ? 'Date unavailable'
+        : date.toLocaleString(
+            'en-NG',
+            {
+                timeZone: 'Africa/Lagos',
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            }
+        );
+};
+
+let me = null;
+
+let users = [];
+let transactions = [];
+
+let tab = 'overview';
+let fundUser = null;
+let mode = 'ADD';
+
+let pendingAdjustment = null;
+
+let working = false;
+let loaded = false;
+
+let selectedProfit = [];
+
+// ============================================
+// USER / ADMIN SESSION
+// ============================================
+
+function currentUser() {
+    try {
+        const user = JSON.parse(
+            localStorage.getItem('user') || 'null'
+        );
+
+        return (
+            user &&
+            typeof user.email === 'string'
+        ) ? user : null;
+
+    } catch (error) {
+        return null;
+    }
+}
+
+/*
+ * Compatibility with existing admin endpoints.
+ *
+ * IMPORTANT:
+ * This header is NOT secure authentication.
+ * The backend must verify real authenticated
+ * admin identity and permissions.
+ */
+function headers(json = false) {
+    return {
+        'admin-email': me.email,
+        ...(json ? {
+            'Content-Type': 'application/json'
+        } : {})
+    };
+}
+
+// ============================================
+// BACKEND REQUEST HELPER
+// ============================================
+
+async function request(path, options = {}) {
+    const controller = new AbortController();
+
+    const timer = setTimeout(
+        () => controller.abort(),
+        25000
+    );
+
+    try {
+        const response = await fetch(
+            API + path,
+            {
+                cache: 'no-store',
+                ...options,
+                signal: controller.signal
+            }
+        );
+
+        let data;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            data = {};
         }
 
-        // ---------------- tabs ----------------
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            ['overview','users','profits','popup'].forEach(id => {
-                document.getElementById(`btn-${id}`)?.classList.toggle('active', id === tabId);
-                document.getElementById(`bnav-${id}`)?.classList.toggle('active', id === tabId);
-            });
+        if (!response.ok) {
+            throw new Error(
+                asText(
+                    data.message || data.error,
+                    'Server returned HTTP ' + response.status
+                )
+            );
         }
 
-        // ---------------- data loading ----------------
-        async function loadData() {
-            const refreshBtn = document.getElementById('refreshBtn');
-            refreshBtn?.classList.add('spinning');
-            try {
-                const adminCheck = JSON.parse(localStorage.getItem('user'));
-                if (!adminCheck || adminCheck.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
-                    showNotification('You do not have administrative access. Redirecting to your dashboard.', 'error', 'Unauthorized');
-                    setTimeout(() => { window.location.href = "dashboard.html"; }, 1600);
-                    return;
+        return data;
+
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+// ============================================
+// TOAST
+// ============================================
+
+function toast(message, type = 'info') {
+    const node = document.createElement('div');
+
+    node.className = 'toast ' + type;
+
+    node.textContent = String(message);
+
+    $('toastRegion').appendChild(node);
+
+    setTimeout(
+        () => node.remove(),
+        5500
+    );
+}
+
+// ============================================
+// THEME
+// ============================================
+
+function toggleTheme() {
+    const next =
+        document.documentElement.dataset.theme === 'light'
+            ? 'dark'
+            : 'light';
+
+    document.documentElement.dataset.theme = next;
+
+    try {
+        localStorage.setItem(
+            'bigotic-theme',
+            next
+        );
+    } catch (error) {}
+}
+
+$('desktopTheme').onclick = toggleTheme;
+$('mobileTheme').onclick = toggleTheme;
+
+// ============================================
+// TAB NAVIGATION
+// ============================================
+
+const titles = {
+    overview: [
+        'System Overview',
+        'Operational metrics and platform activity'
+    ],
+
+    users: [
+        'Users & Wallets',
+        'Search accounts and review wallet adjustments'
+    ],
+
+    profits: [
+        'Profit Ledger',
+        'Recorded commercial margin and transactions'
+    ],
+
+    popup: [
+        'Customer Announcements',
+        'Manage the dashboard popup and notification bell'
+    ]
+};
+
+function switchTab(selected) {
+    if (!titles[selected]) return;
+
+    tab = selected;
+
+    document.querySelectorAll(
+        '.section'
+    ).forEach(section => {
+        section.classList.toggle(
+            'active',
+            section.id === selected
+        );
+    });
+
+    document.querySelectorAll(
+        '[data-tab]'
+    ).forEach(button => {
+        button.classList.toggle(
+            'active',
+            button.dataset.tab === selected
+        );
+    });
+
+    $('pageTitle').textContent =
+        titles[selected][0];
+
+    $('pageDescription').textContent =
+        titles[selected][1];
+}
+
+document.querySelectorAll(
+    '[data-tab]'
+).forEach(button => {
+    button.onclick = () => {
+        switchTab(button.dataset.tab);
+    };
+});
+
+// ============================================
+// SAFE TABLE HELPERS
+// ============================================
+
+function td(row, value, className = '') {
+    const cell = document.createElement('td');
+
+    if (className) {
+        cell.className = className;
+    }
+
+    cell.textContent = String(value);
+
+    row.appendChild(cell);
+
+    return cell;
+}
+
+function clearTable(id, columns, message) {
+    const body = $(id);
+
+    body.replaceChildren();
+
+    const row = document.createElement('tr');
+
+    const cell = td(row, message, 'empty');
+
+    cell.colSpan = columns;
+
+    body.appendChild(row);
+}
+
+// ============================================
+// TRANSACTION STATUS
+// ============================================
+
+function status(transaction) {
+    const value = asText(
+        transaction.status ??
+        transaction.transactionStatus ??
+        transaction.paymentStatus,
+        'recorded'
+    ).toLowerCase().trim();
+
+    if ([
+        'successful',
+        'success',
+        'completed',
+        'approved',
+        'paid',
+        'delivered',
+        'done'
+    ].includes(value)) {
+        return 'successful';
+    }
+
+    if ([
+        'pending',
+        'processing',
+        'queued',
+        'initiated',
+        'unconfirmed'
+    ].includes(value)) {
+        return 'pending';
+    }
+
+    if ([
+        'failed',
+        'cancelled',
+        'canceled',
+        'declined',
+        'rejected',
+        'reversed',
+        'error'
+    ].includes(value)) {
+        return 'failed';
+    }
+
+    return 'recorded';
+}
+
+// ============================================
+// FUNDING TYPE DETECTION
+// ============================================
+
+function isFunding(transaction) {
+    const value = asText(
+        transaction.type,
+        ''
+    ).toLowerCase().replace(/[_-]/g, ' ');
+
+    return [
+        'fund',
+        'funding',
+        'wallet funding',
+        'admin fund',
+        'admin funding',
+        'deposit',
+        'credit',
+        'wallet topup',
+        'wallet top up',
+        'referral bonus',
+        'refund'
+    ].some(type => value === type);
+}
+
+function acceptable(transaction) {
+    return ![
+        'failed',
+        'pending'
+    ].includes(status(transaction));
+}
+
+// ============================================
+// RESPONSE COMPATIBILITY
+// ============================================
+
+function valuesArray(data, keys) {
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    for (const key of keys) {
+        if (Array.isArray(data?.[key])) {
+            return data[key];
+        }
+
+        if (
+            Array.isArray(data?.data?.[key])
+        ) {
+            return data.data[key];
+        }
+    }
+
+    if (Array.isArray(data?.data)) {
+        return data.data;
+    }
+
+    throw new Error(
+        'Unexpected API response format'
+    );
+}
+
+// ============================================
+// LOAD ADMIN DATA
+// ============================================
+
+async function loadData() {
+    if (working) return;
+
+    working = true;
+
+    $('refreshBtn').disabled = true;
+
+    $('syncLabel').textContent = 'Refreshing...';
+
+    try {
+        const [userResult, transactionResult] =
+            await Promise.all([
+                request(
+                    '/admin/users',
+                    {
+                        headers: headers()
+                    }
+                ),
+
+                request(
+                    '/admin/transactions',
+                    {
+                        headers: headers()
+                    }
+                )
+            ]);
+
+        users = valuesArray(
+            userResult,
+            ['users', 'accounts']
+        );
+
+        transactions = valuesArray(
+            transactionResult,
+            ['transactions', 'history']
+        );
+
+        transactions.sort(
+            (a, b) =>
+                new Date(b.date || b.createdAt || 0) -
+                new Date(a.date || a.createdAt || 0)
+        );
+
+        loaded = true;
+
+        renderStats();
+        renderUsers();
+        renderRecent();
+        renderProfits();
+
+        $('syncLabel').textContent =
+            'Updated ' +
+            new Date().toLocaleTimeString(
+                'en-NG',
+                {
+                    hour: '2-digit',
+                    minute: '2-digit'
                 }
+            );
 
-                const userRes = await fetch(`${BACKEND_URL}/admin/users`, { headers: { 'admin-email': ADMIN_EMAIL } });
-                localUsersCache = await userRes.json();
+        toast(
+            'Admin data refreshed',
+            'success'
+        );
 
-                const txRes = await fetch(`${BACKEND_URL}/admin/transactions`, { headers: { 'admin-email': ADMIN_EMAIL } });
-                const txs = await txRes.json();
+    } catch (error) {
+        $('syncLabel').textContent =
+            loaded
+                ? 'Refresh failed'
+                : 'Connection error';
 
-                renderStats(localUsersCache, txs);
-                renderUsers(localUsersCache);
-                renderTransactions(txs);
-                renderProfitLedger(txs);
-            } catch (e) {
-                console.error("ADMIN CONSOLE SYNC FAULT:", e);
-                showNotification('Could not reach the backend. Try refreshing shortly.', 'error', 'Sync Error');
+        toast(
+            error.message || 'Unable to load data',
+            'error'
+        );
+
+        if (!loaded) {
+            clearTable(
+                'recentBody',
+                5,
+                'Could not load activity'
+            );
+
+            clearTable(
+                'usersBody',
+                5,
+                'Could not load accounts'
+            );
+
+            clearTable(
+                'profitsBody',
+                6,
+                'Could not load profits'
+            );
+        }
+
+    } finally {
+        working = false;
+
+        $('refreshBtn').disabled = false;
+    }
+}
+
+// ============================================
+// RENDER OVERVIEW METRICS
+// ============================================
+
+function renderStats() {
+    const liability = users.reduce(
+        (sum, user) =>
+            sum + numeric(user.balance),
+        0
+    );
+
+    const valid = transactions.filter(
+        acceptable
+    );
+
+    const sales = valid
+        .filter(transaction => !isFunding(transaction))
+        .reduce(
+            (sum, transaction) =>
+                sum + Math.max(
+                    0,
+                    numeric(transaction.amount)
+                ),
+            0
+        );
+
+    const profit = valid.reduce(
+        (sum, transaction) =>
+            sum + numeric(transaction.profit),
+        0
+    );
+
+    $('metricUsers').textContent =
+        users.length.toLocaleString();
+
+    $('metricLiability').textContent =
+        naira(liability);
+
+    $('metricSales').textContent =
+        naira(sales);
+
+    $('metricProfit').textContent =
+        naira(profit);
+
+    $('ledgerProfit').textContent =
+        naira(profit);
+}
+
+// ============================================
+// RECENT TRANSACTIONS
+// ============================================
+
+function renderRecent() {
+    const body = $('recentBody');
+
+    body.replaceChildren();
+
+    if (!transactions.length) {
+        clearTable(
+            'recentBody',
+            5,
+            'No transactions found'
+        );
+
+        return;
+    }
+
+    for (const transaction of transactions.slice(0, 10)) {
+        const row = document.createElement('tr');
+
+        td(
+            row,
+            asText(transaction.email),
+            'mono'
+        );
+
+        td(
+            row,
+            asText(transaction.type, 'Transaction')
+        );
+
+        td(
+            row,
+            naira(transaction.amount)
+        );
+
+        const statusCell = td(
+            row,
+            status(transaction)
+        );
+
+        statusCell.className =
+            'pill ' + status(transaction);
+
+        td(
+            row,
+            dt(transaction.date || transaction.createdAt)
+        );
+
+        body.appendChild(row);
+    }
+}
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
+function renderUsers() {
+    const query =
+        $('userSearch').value.trim().toLowerCase();
+
+    const list = users.filter(user => {
+        return [
+            user.fullName,
+            user.username,
+            user.email,
+            user.phone
+        ].some(value => {
+            return String(value || '')
+                .toLowerCase()
+                .includes(query);
+        });
+    }).slice(0, 200);
+
+    const body = $('usersBody');
+
+    body.replaceChildren();
+
+    if (!list.length) {
+        clearTable(
+            'usersBody',
+            5,
+            'No matching accounts'
+        );
+
+        return;
+    }
+
+    for (const user of list) {
+        const row = document.createElement('tr');
+
+        td(
+            row,
+            asText(
+                user.fullName || user.username,
+                'Unnamed customer'
+            )
+        );
+
+        td(
+            row,
+            asText(user.email),
+            'mono'
+        );
+
+        td(
+            row,
+            naira(user.balance)
+        );
+
+        td(
+            row,
+            user.virtualAccountNumber
+                ? 'Generated'
+                : 'Not generated'
+        );
+
+        const action = document.createElement('td');
+
+        const button = document.createElement('button');
+
+        button.className = 'btn soft';
+
+        button.textContent = 'Adjust Wallet';
+
+        button.onclick = () => {
+            openFundModal(user);
+        };
+
+        action.appendChild(button);
+
+        row.appendChild(action);
+
+        body.appendChild(row);
+    }
+}
+
+// ============================================
+// PROFIT LEDGER
+// ============================================
+
+function profitRecords() {
+    return transactions.filter(
+        transaction =>
+            acceptable(transaction) &&
+            numeric(transaction.profit) !== 0
+    );
+}
+
+function renderProfits() {
+    const query =
+        $('profitSearch').value.toLowerCase().trim();
+
+    selectedProfit = profitRecords().filter(
+        transaction => [
+            transaction.email,
+            transaction.type,
+            transaction.details,
+            transaction.recipient,
+            transaction.reference
+        ].some(
+            value => String(value || '')
+                .toLowerCase()
+                .includes(query)
+        )
+    );
+
+    $('profitCount').textContent =
+        profitRecords().length.toLocaleString();
+
+    const body = $('profitsBody');
+
+    body.replaceChildren();
+
+    if (!selectedProfit.length) {
+        clearTable(
+            'profitsBody',
+            6,
+            'No matching profit records'
+        );
+
+        return;
+    }
+
+    for (const transaction of selectedProfit.slice(0, 250)) {
+        const row = document.createElement('tr');
+
+        td(
+            row,
+            asText(transaction.email),
+            'mono'
+        );
+
+        td(
+            row,
+            asText(transaction.type, 'Order')
+        );
+
+        td(
+            row,
+            asText(
+                transaction.details || transaction.recipient
+            )
+        );
+
+        td(
+            row,
+            naira(transaction.amount)
+        );
+
+        td(
+            row,
+            naira(transaction.profit)
+        );
+
+        td(
+            row,
+            dt(transaction.date || transaction.createdAt)
+        );
+
+        body.appendChild(row);
+    }
+}
+
+$('userSearch').addEventListener(
+    'input',
+    renderUsers
+);
+
+$('profitSearch').addEventListener(
+    'input',
+    renderProfits
+);
+
+$('refreshBtn').onclick = loadData;
+
+// ============================================
+// CSV EXPORT
+// ============================================
+
+function csvSafe(value) {
+    let text = String(value ?? '');
+
+    // Prevent spreadsheet formula execution
+    // when opening exported customer data.
+    if (/^[\s]*[=+@\-\t\r]/.test(text)) {
+        text = "'" + text;
+    }
+
+    return '"' +
+        text.replace(/"/g, '""') +
+        '"';
+}
+
+function exportCSV(filename, headers, rows) {
+    const csv = [
+        headers,
+        ...rows
+    ].map(
+        row => row.map(csvSafe).join(',')
+    ).join('\r\n');
+
+    const url = URL.createObjectURL(
+        new Blob(
+            ['\ufeff', csv],
+            {
+                type: 'text/csv;charset=utf-8'
             }
-            refreshBtn?.classList.remove('spinning');
+        )
+    );
+
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+
+    link.click();
+    link.remove();
+
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+    );
+}
+
+$('exportTransactions').onclick = () => {
+    exportCSV(
+        'bigotic-transactions.csv',
+        [
+            'Email',
+            'Type',
+            'Amount',
+            'Profit',
+            'Status',
+            'Reference',
+            'Date'
+        ],
+        transactions.map(transaction => [
+            transaction.email,
+            transaction.type,
+            transaction.amount,
+            transaction.profit,
+            status(transaction),
+            transaction.reference,
+            transaction.date || transaction.createdAt
+        ])
+    );
+};
+
+$('exportProfits').onclick = () => {
+    exportCSV(
+        'bigotic-profit-ledger.csv',
+        [
+            'Email',
+            'Type',
+            'Amount',
+            'Profit',
+            'Details',
+            'Reference',
+            'Date'
+        ],
+        selectedProfit.map(transaction => [
+            transaction.email,
+            transaction.type,
+            transaction.amount,
+            transaction.profit,
+            transaction.details,
+            transaction.reference,
+            transaction.date || transaction.createdAt
+        ])
+    );
+};
+
+// ============================================
+// WALLET ADJUSTMENT
+// ============================================
+
+function setMode(value) {
+    mode = value;
+
+    $('addMode').classList.toggle(
+        'active',
+        value === 'ADD'
+    );
+
+    $('deductMode').classList.toggle(
+        'active',
+        value === 'DEDUCT'
+    );
+
+    $('verificationText').textContent =
+        value === 'ADD'
+            ? 'I verified this credit against trustworthy records, checked for duplicate credits, and confirmed the correct customer.'
+            : 'I verified that this debit is authorized, correct, and supported by appropriate records.';
+}
+
+$('addMode').onclick = () => {
+    setMode('ADD');
+    $('fundReason').value = 'manual';
+};
+
+$('deductMode').onclick = () => {
+    setMode('DEDUCT');
+    $('fundReason').value = 'correction';
+};
+
+// ============================================
+// OPEN FUNDING MODAL
+// ============================================
+
+function openFundModal(user) {
+    fundUser = user;
+
+    setMode('ADD');
+
+    $('fundForm').reset();
+
+    $('fundTargetName').textContent =
+        asText(user.fullName || user.username);
+
+    $('fundTargetEmail').textContent =
+        asText(user.email);
+
+    $('fundCurrentBalance').textContent =
+        'Current balance: ' + naira(user.balance);
+
+    $('fundModal').classList.add('open');
+
+    $('fundAmount').focus();
+}
+
+function closeFundModal() {
+    if (working) return;
+
+    $('fundModal').classList.remove('open');
+
+    fundUser = null;
+}
+
+$('closeFund').onclick = closeFundModal;
+$('cancelFund').onclick = closeFundModal;
+
+// ============================================
+// REVIEW ADJUSTMENT
+// ============================================
+
+$('fundForm').addEventListener(
+    'submit',
+    event => {
+        event.preventDefault();
+
+        if (!fundUser || working) {
+            return;
         }
 
-        function renderStats(users, txs) {
-            let liability = users.reduce((acc, u) => acc + (parseFloat(u.balance) || 0), 0);
-            let profit = txs.reduce((acc, t) => acc + (parseFloat(t.profit) || 0), 0);
-            let sales = txs.filter(t => !['Wallet Funding','Admin Funding','Fund','Admin Fund'].includes(t.type))
-                           .reduce((acc, t) => acc + (parseFloat(t.amount) || 0), 0);
+        const amount =
+            Number($('fundAmount').value);
 
-            const fmt = n => `\u20a6${n.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const reason =
+            $('fundReason').value;
 
-            document.getElementById('metric-users').innerText = users.length.toLocaleString();
-            document.getElementById('metric-liability').innerText = fmt(liability);
-            document.getElementById('metric-sales').innerText = fmt(sales);
-            document.getElementById('metric-profit').innerText = fmt(profit);
-            document.getElementById('ledger-total-profit').innerText = fmt(profit);
+        const reference =
+            $('fundReference').value.trim();
+
+        const note =
+            $('fundNote').value.trim();
+
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0 ||
+            Math.round(amount * 100) !== amount * 100
+        ) {
+            toast(
+                'Enter a valid amount with up to two decimals.',
+                'error'
+            );
+
+            return;
         }
 
-        function renderUsers(users) {
-            const tbody = document.getElementById('admin-user-table');
-            if (!users || users.length === 0) {
-                tbody.innerHTML = `<tr class="empty-row"><td colspan="4">No matching accounts found</td></tr>`;
-                return;
+        if (
+            mode === 'DEDUCT' &&
+            amount > numeric(fundUser.balance)
+        ) {
+            toast(
+                'Debit exceeds the displayed wallet balance. Refresh first.',
+                'error'
+            );
+
+            return;
+        }
+
+        if (
+            reason === 'manual' &&
+            mode === 'ADD' &&
+            !reference
+        ) {
+            toast(
+                'Enter the verified bank reference for a manual deposit.',
+                'error'
+            );
+
+            return;
+        }
+
+        if (!$('verifyPayment').checked) {
+            toast(
+                'Complete the independent verification checkbox.',
+                'error'
+            );
+
+            return;
+        }
+
+        pendingAdjustment = {
+            email: fundUser.email,
+            amount:
+                mode === 'ADD'
+                    ? amount
+                    : -amount,
+            reason,
+            reference,
+            note
+        };
+
+        $('confirmSummary').textContent = [
+            'Customer: ' + fundUser.email,
+            'Action: ' + (
+                mode === 'ADD' ? 'CREDIT' : 'DEBIT'
+            ),
+            'Amount: ' + naira(amount),
+            'Reason: ' + reason,
+            'Reference: ' + (
+                reference || 'Not supplied'
+            ),
+            'Note: ' + (
+                note || '—'
+            )
+        ].join('\n');
+
+        $('fundModal').classList.remove('open');
+
+        $('confirmModal').classList.add('open');
+    }
+);
+
+// ============================================
+// CONFIRMATION NAVIGATION
+// ============================================
+
+function backConfirm() {
+    if (working) return;
+
+    $('confirmModal').classList.remove('open');
+
+    $('fundModal').classList.add('open');
+}
+
+$('closeConfirm').onclick = backConfirm;
+$('backConfirm').onclick = backConfirm;
+
+// ============================================
+// EXECUTE WALLET ADJUSTMENT
+// ============================================
+
+$('executeFund').onclick = async () => {
+    if (!pendingAdjustment || working) {
+        return;
+    }
+
+    working = true;
+
+    $('executeFund').disabled = true;
+
+    const adjustment = pendingAdjustment;
+
+    try {
+        const result = await request(
+            '/admin/fund-wallet',
+            {
+                method: 'POST',
+
+                headers: headers(true),
+
+                body: JSON.stringify(adjustment)
             }
-            tbody.innerHTML = users.map(user => {
-                const computedName = user.fullName || user.username || 'Not Provided';
-                return `
-                    <tr>
-                        <td class="cell-strong" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;">${computedName}</td>
-                        <td class="cell-mono">${user.email}</td>
-                        <td style="color:var(--emerald);font-weight:800;">&#8358;${(parseFloat(user.balance) || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                        <td style="text-align:right;"><button onclick="openFundModal('${user.email}', '${escape(computedName)}')" class="adjust-btn">Adjust capital</button></td>
-                    </tr>`;
-            }).join('');
+        );
+
+        if (result.success !== true) {
+            throw new Error(
+                asText(
+                    result.message || result.error,
+                    'Backend did not confirm the adjustment'
+                )
+            );
         }
 
-        function renderTransactions(txs) {
-            const tbody = document.getElementById('recent-transactions-body');
-            if (!txs || txs.length === 0) {
-                tbody.innerHTML = `<tr class="empty-row"><td colspan="4">No platform activity logged yet</td></tr>`;
-                return;
+        $('confirmModal').classList.remove('open');
+
+        $('fundModal').classList.remove('open');
+
+        fundUser = null;
+        pendingAdjustment = null;
+
+        toast(
+            'Wallet adjustment accepted by backend. Reconcile the bank ledger and customer balance.',
+            'success'
+        );
+
+    } catch (error) {
+        toast(
+            'Adjustment not confirmed: ' +
+            error.message +
+            '. Review records before retrying.',
+            'error'
+        );
+
+    } finally {
+        working = false;
+
+        $('executeFund').disabled = false;
+
+        await loadData();
+    }
+};
+
+// ============================================
+// POPUP URL VALIDATION
+// ============================================
+
+function safeURL(value) {
+    const text = String(value || '').trim();
+
+    if (!text) {
+        return '';
+    }
+
+    try {
+        const url = new URL(text);
+
+        return url.protocol === 'https:'
+            ? url.href
+            : '';
+
+    } catch (error) {
+        return '';
+    }
+}
+
+// ============================================
+// CUSTOMER ANNOUNCEMENT PREVIEW
+// ============================================
+
+function renderPreview() {
+    const text =
+        $('popupText').value.trim();
+
+    const imageUrl =
+        $('popupImageUrl').value.trim();
+
+    const link =
+        $('popupLink').value.trim();
+
+    $('previewText').textContent =
+        text || 'Your announcement will appear here.';
+
+    $('popupBadge').textContent =
+        $('popupActive').checked
+            ? 'Selected: Active'
+            : 'Selected: Inactive';
+
+    const validImage =
+        safeURL(imageUrl);
+
+    $('previewImage').hidden = !validImage;
+
+    if (validImage) {
+        $('previewImage').src = validImage;
+    } else {
+        $('previewImage').removeAttribute('src');
+    }
+
+    const validLink =
+        safeURL(link);
+
+    $('previewLink').hidden = !validLink;
+
+    if (validLink) {
+        $('previewLink').href = validLink;
+    } else {
+        $('previewLink').removeAttribute('href');
+    }
+}
+
+[
+    'popupText',
+    'popupImageUrl',
+    'popupLink',
+    'popupActive'
+].forEach(id => {
+    $(id).addEventListener(
+        'input',
+        renderPreview
+    );
+});
+
+$('previewImage').onerror = () => {
+    $('previewImage').hidden = true;
+};
+
+// ============================================
+// LOAD EXISTING ANNOUNCEMENT
+// ============================================
+
+async function loadPopupAdmin() {
+    try {
+        const popup = await request(
+            '/admin/popup',
+            {
+                headers: headers()
             }
-            tbody.innerHTML = txs.slice(0, 10).map(tx => `
-                <tr>
-                    <td class="cell-mono" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;">${tx.email}</td>
-                    <td><span class="pill">${tx.type || 'VTU Order'}</span></td>
-                    <td style="color:var(--electric-soft);font-weight:800;">&#8358;${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                    <td class="cell-dim">${new Date(tx.date).toLocaleDateString()}</td>
-                </tr>`).join('');
+        );
+
+        $('popupText').value =
+            asText(popup.text, '');
+
+        $('popupImageUrl').value =
+            asText(popup.imageUrl, '');
+
+        $('popupLink').value =
+            asText(popup.link, '');
+
+        $('popupActive').checked =
+            !!popup.active;
+
+        renderPreview();
+
+    } catch (error) {
+        toast(
+            'Unable to load announcement: ' +
+            error.message,
+            'error'
+        );
+    }
+}
+
+$('popupResetBtn').onclick =
+    loadPopupAdmin;
+
+// ============================================
+// SAVE ANNOUNCEMENT
+// ============================================
+
+$('popupForm').addEventListener(
+    'submit',
+    async event => {
+        event.preventDefault();
+
+        const text =
+            $('popupText').value.trim();
+
+        const imageUrl =
+            $('popupImageUrl').value.trim();
+
+        const link =
+            $('popupLink').value.trim();
+
+        const active =
+            $('popupActive').checked;
+
+        if (
+            active &&
+            !text &&
+            !imageUrl
+        ) {
+            toast(
+                'Enter a message or image before publishing.',
+                'error'
+            );
+
+            return;
         }
 
-        function renderProfitLedger(txs) {
-            const tbody = document.getElementById('admin-profit-table');
-            const profitOrders = txs.filter(t => parseFloat(t.profit) > 0);
-            if (!profitOrders || profitOrders.length === 0) {
-                tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No commercial margin revenue tracked yet</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = profitOrders.map(tx => `
-                <tr>
-                    <td class="cell-mono" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;" title="${tx.email}">${tx.email}</td>
-                    <td><span class="pill blue">${tx.type || 'DATA'}</span></td>
-                    <td>${tx.details || 'VTU Custom Fulfillment'} &rarr; (${tx.recipient || 'N/A'})</td>
-                    <td class="cell-mono">&#8358;${Number(tx.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                    <td style="color:var(--emerald);font-weight:800;">+&#8358;${Number(tx.profit).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</td>
-                    <td class="cell-dim">${new Date(tx.date).toLocaleString()}</td>
-                </tr>`).join('');
+        if (
+            imageUrl &&
+            !safeURL(imageUrl)
+        ) {
+            toast(
+                'Image URL must start with https://',
+                'error'
+            );
+
+            return;
         }
 
-        function filterUserTable() {
-            const searchVal = document.getElementById('userSearch').value.toLowerCase().trim();
-            if (!searchVal) { renderUsers(localUsersCache); return; }
-            const filtered = localUsersCache.filter(u => {
-                const name = (u.fullName || u.username || '').toLowerCase();
-                const email = (u.email || '').toLowerCase();
-                return name.includes(searchVal) || email.includes(searchVal);
-            });
-            renderUsers(filtered);
+        if (
+            link &&
+            !safeURL(link)
+        ) {
+            toast(
+                'Action URL must start with https://',
+                'error'
+            );
+
+            return;
         }
 
-        // ---------------- fund modal ----------------
-        function setAdjustmentMode(mode) {
-            adjustmentMode = mode;
-            document.getElementById('toggle-add').classList.toggle('active', mode === 'ADD');
-            document.getElementById('toggle-deduct').classList.toggle('active', mode === 'DEDUCT');
-        }
+        const button =
+            $('popupSaveBtn');
 
-        function openFundModal(email, escapedName) {
-            currentFundEmail = email;
-            document.getElementById('fund-target-name').innerText = unescape(escapedName);
-            document.getElementById('fund-target-email').innerText = email;
-            setAdjustmentMode('ADD');
-            document.getElementById('fund-amount').value = '';
-            document.getElementById('fundModal').classList.add('open');
-        }
-        function closeFundModal() { document.getElementById('fundModal').classList.remove('open'); }
+        button.disabled = true;
 
-        async function executeFundingAdjustment() {
-            const amountInput = document.getElementById('fund-amount').value;
-            const amount = parseFloat(amountInput);
-            const btn = document.getElementById('fund-btn');
-            const btnLabel = document.getElementById('fund-btn-label');
-
-            if (!amountInput || isNaN(amount) || amount <= 0) {
-                showNotification('Enter a valid, positive amount to continue.', 'error', 'Invalid Amount');
-                return;
-            }
-
-            btn.disabled = true;
-            btnLabel.innerHTML = '<span class="spinner"></span> Applying&hellip;';
-
-            const validatedAmountPayload = adjustmentMode === 'ADD' ? amount : (amount * -1);
-
-            try {
-                const res = await fetch(`${BACKEND_URL}/admin/fund-wallet`, {
+        try {
+            const result = await request(
+                '/admin/popup',
+                {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'admin-email': ADMIN_EMAIL },
-                    body: JSON.stringify({ email: currentFundEmail, amount: validatedAmountPayload })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showNotification(`\u20a6${amount.toLocaleString()} ${adjustmentMode === 'ADD' ? 'added to' : 'deducted from'} the wallet successfully.`, 'success', 'Balance Updated');
-                    closeFundModal();
-                    loadData();
-                } else {
-                    showNotification(data.message || 'Failed to process this balance adjustment.', 'error', 'Processing Error');
+
+                    headers: headers(true),
+
+                    body: JSON.stringify({
+                        text,
+                        imageUrl,
+                        link,
+                        active
+                    })
                 }
-            } catch {
-                showNotification('Server connection timed out. Please try again.', 'error', 'Network Error');
-            }
-            btnLabel.innerText = "Apply adjustment";
-            btn.disabled = false;
-        }
+            );
 
-        // ---------------- popup notification control ----------------
-        function setPopupActive(state) {
-            popupActiveState = state;
-            document.getElementById('popupToggleOn').classList.toggle('active', state);
-            document.getElementById('popupToggleOff').classList.toggle('active', !state);
-            const badge = document.getElementById('popupStatusBadge');
-            const text = document.getElementById('popupStatusText');
-            badge.classList.toggle('live', state);
-            badge.classList.toggle('off', !state);
-            text.innerText = state ? 'Currently live on user dashboards' : 'Currently inactive';
-        }
-
-        function previewPopupImage() {
-            const url = document.getElementById('popupImageUrl').value.trim();
-            const thumb = document.getElementById('popupPreviewThumb');
-            if (url) {
-                thumb.src = url;
-                thumb.style.display = 'block';
-                thumb.onerror = () => { thumb.style.display = 'none'; };
-            } else {
-                thumb.style.display = 'none';
-            }
-        }
-
-        async function loadPopupAdmin() {
-            try {
-                const res = await fetch(`${BACKEND_URL}/admin/popup`, { headers: { 'admin-email': ADMIN_EMAIL } });
-                const popup = await res.json();
-                document.getElementById('popupImageUrl').value = popup?.imageUrl || '';
-                document.getElementById('popupText').value = popup?.text || '';
-                document.getElementById('popupLink').value = popup?.link || '';
-                setPopupActive(!!popup?.active);
-                previewPopupImage();
-            } catch (err) {
-                console.error("Popup load failed:", err);
-                showNotification('Could not load current popup settings.', 'error', 'Load Error');
-            }
-        }
-
-        async function savePopup() {
-            const imageUrl = document.getElementById('popupImageUrl').value.trim();
-            const text = document.getElementById('popupText').value.trim();
-            const link = document.getElementById('popupLink').value.trim();
-
-            if (popupActiveState && !text && !imageUrl) {
-                showNotification('Add a message or image before activating.', 'error', 'Missing Content');
-                return;
+            if (result.success !== true) {
+                throw new Error(
+                    asText(
+                        result.error || result.message,
+                        'Backend did not confirm saving'
+                    )
+                );
             }
 
-            const btn = document.getElementById('popupSaveBtn');
-            const label = document.getElementById('popupSaveLabel');
-            btn.disabled = true;
-            label.innerHTML = '<span class="spinner"></span> Saving&hellip;';
+            toast(
+                active
+                    ? 'Announcement published successfully.'
+                    : 'Announcement saved as inactive.',
+                'success'
+            );
 
-            try {
-                const res = await fetch(`${BACKEND_URL}/admin/popup`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'admin-email': ADMIN_EMAIL },
-                    body: JSON.stringify({ imageUrl, text, link, active: popupActiveState })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showNotification(popupActiveState ? 'Popup is now live on user dashboards.' : 'Popup saved as inactive.', 'success', 'Popup Updated');
-                } else {
-                    showNotification(data.error || 'Failed to save popup.', 'error', 'Save Error');
-                }
-            } catch {
-                showNotification('Server connection failed.', 'error', 'Network Error');
-            }
-            btn.disabled = false;
-            label.innerText = 'Save & publish';
+            await loadPopupAdmin();
+
+        } catch (error) {
+            toast(
+                'Announcement not saved: ' +
+                error.message,
+                'error'
+            );
+
+        } finally {
+            button.disabled = false;
+        }
+    }
+);
+
+// ============================================
+// INITIALIZE ADMIN DASHBOARD
+// ============================================
+
+window.addEventListener(
+    'load',
+    async () => {
+        me = currentUser();
+
+        if (
+            !me ||
+            me.email.toLowerCase().trim() !== ADMIN_EMAIL
+        ) {
+            location.replace('dashboard.html');
+            return;
         }
 
-        window.onload = () => { loadData(); loadPopupAdmin(); };
-    </script>
+        $('content').hidden = false;
+        $('mobileNav').hidden = false;
+
+        renderPreview();
+
+        icon();
+
+        await Promise.all([
+            loadData(),
+            loadPopupAdmin()
+        ]);
+    }
+);
+
+// ============================================
+// ESCAPE KEY
+// ============================================
+
+window.addEventListener(
+    'keydown',
+    event => {
+        if (
+            event.key === 'Escape' &&
+            !working
+        ) {
+            $('fundModal').classList.remove('open');
+
+            $('confirmModal').classList.remove('open');
+        }
+    }
+);
+</script>
+
 </body>
 </html>
