@@ -1,483 +1,2623 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings | Bigotic Data</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060915">
+<title>Account Settings | Bigotic Data</title>
 
-    <script>
-        (function(){
-            const saved = localStorage.getItem('bigotic-theme');
-            document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
-        })();
-    </script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        :root{ --electric:#3b6bff; --electric-soft:#7c9bff; --cyan:#28e0d6; --emerald:#34d399; --rose:#f97066; --gold:#f4b740; }
-        html[data-theme="dark"]{
-            --bg:#060915; --bg-elevated:#0d1330; --card:#0f1638; --card-2:linear-gradient(165deg,#121a42,#0d1330);
-            --border: rgba(148,163,255,0.14); --text-hi:#eef1ff; --text-mid:#aab0d6; --text-dim:#6b71a0;
-            --nav-bg: rgba(6,9,21,0.78); --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07); --input-bg: rgba(255,255,255,.04); --divider: rgba(148,163,255,0.1);
-        }
-        html[data-theme="light"]{
-            --bg:#f2f4fb; --bg-elevated:#ffffff; --card:#ffffff; --card-2:linear-gradient(165deg,#ffffff,#f6f8ff);
-            --border:#e6e9f6; --text-hi:#0f1428; --text-mid:#5b6178; --text-dim:#98a0c2;
-            --nav-bg: rgba(255,255,255,.85); --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05); --input-bg: #f5f7fd; --divider: #eef0fa;
-        }
-        *{ box-sizing:border-box; }
-        html, body{ margin:0; padding:0; }
-        body{
-            font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-hi); min-height:100vh;
-            overflow-x:hidden; padding-bottom:100px; transition: background .35s ease, color .35s ease;
-        }
-        .font-display{ font-family:'Space Grotesk',sans-serif; }
-        .font-mono{ font-family:'JetBrains Mono',monospace; }
-        a{ text-decoration:none; color:inherit; }
-        button{ font-family:inherit; }
-        @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+<script>
+(function () {
+    try {
+        document.documentElement.dataset.theme =
+            localStorage.getItem('bigotic-theme') === 'light'
+                ? 'light' : 'dark';
+    } catch (_) {
+        document.documentElement.dataset.theme = 'dark';
+    }
+})();
+</script>
 
-        /* ---------- top bar ---------- */
-        .topbar{
-            position:sticky; top:0; z-index:40; height:60px; display:flex; align-items:center; justify-content:space-between;
-            padding:0 18px; background:var(--nav-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border);
-        }
-        .back-btn{ display:flex; align-items:center; gap:7px; color:var(--text-mid); font-size:12px; font-weight:700; }
-        .back-btn i{ width:16px; height:16px; }
-        .topbar-title{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
-        .theme-quick{
-            width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:var(--card);
-            display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-mid); transition:background .2s ease;
-        }
-        .theme-quick:hover{ background:var(--row-hover); }
+<style>
+:root {
+    --blue: #3b6bff;
+    --soft: #7c9bff;
+    --cyan: #28e0d6;
+    --green: #34d399;
+    --red: #f97066;
+    --gold: #f4b740;
+}
 
-        main{ max-width:460px; margin:0 auto; padding:22px 18px 0; }
+html[data-theme="dark"] {
+    --bg: #060915;
+    --surface: #0d1330;
+    --card: #0f1638;
+    --border: rgba(148,163,255,.14);
+    --high: #eef1ff;
+    --mid: #aab0d6;
+    --dim: #737aa7;
+    --nav: rgba(6,9,21,.88);
+    --hover: rgba(124,155,255,.08);
+    --input: rgba(255,255,255,.04);
+    --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
+}
 
-        /* ---------- profile hero ---------- */
-        .hero{
-            border-radius:26px; padding:26px 22px; margin-bottom:24px; position:relative; overflow:hidden;
-            background: linear-gradient(140deg, var(--electric), #1d3fbf 60%, var(--cyan));
-            box-shadow: 0 24px 55px -18px rgba(59,107,255,.5); color:#fff; text-align:center;
-        }
-        .hero::before{ content:''; position:absolute; top:-60px; right:-40px; width:180px; height:180px; background:rgba(40,224,214,.28); border-radius:50%; filter:blur(30px); }
-        .hero::after{ content:''; position:absolute; bottom:-70px; left:-50px; width:200px; height:200px; background:rgba(255,255,255,.1); border-radius:50%; filter:blur(6px); }
-        .hero-inner{ position:relative; z-index:1; }
-        .hero-avatar{
-            width:72px; height:72px; border-radius:50%; margin:0 auto 12px; background:rgba(255,255,255,.16);
-            border:2px solid rgba(255,255,255,.4); display:flex; align-items:center; justify-content:center;
-            font-size:26px; font-weight:800; backdrop-filter:blur(6px);
-        }
-        .hero-name{ font-size:17px; font-weight:700; margin:0 0 3px; }
-        .hero-email{ font-size:11.5px; color:rgba(255,255,255,.85); margin:0 0 12px; font-family:'JetBrains Mono',monospace; }
-        .hero-badge{ display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.28); padding:5px 13px; border-radius:999px; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+html[data-theme="light"] {
+    --bg: #f2f4fb;
+    --surface: #fff;
+    --card: #fff;
+    --border: #e6e9f6;
+    --high: #0f1428;
+    --mid: #5b6178;
+    --dim: #9399bc;
+    --nav: rgba(255,255,255,.9);
+    --hover: rgba(59,107,255,.05);
+    --input: #f5f7fd;
+    --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
+}
 
-        /* ---------- grouped settings list ---------- */
-        .group-label{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color:var(--text-dim); margin:0 0 10px 4px; }
-        .group{ background:var(--card); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; padding: 0; }
 
-        .row{
-            display:flex; align-items:center; gap:13px; padding:15px 16px; cursor:pointer; transition:background .2s ease;
-            border-bottom:1px solid var(--divider);
-        }
-        .group .row:last-child{ border-bottom:none; }
-        .row:hover{ background:var(--row-hover); }
-        .row.static{ cursor:default; }
-        .row.static:hover{ background:none; }
-        .row-icon{ width:36px; height:36px; border-radius:11px; background:var(--row-hover); color:var(--electric-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .row-body{ flex:1; min-width:0; }
-        .row-title{ font-size:12.5px; font-weight:700; margin:0; }
-        .row-sub{ font-size:11px; color:var(--text-dim); margin:2px 0 0; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .row-value{ font-size:11.5px; font-weight:700; color:var(--text-mid); font-family:'JetBrains Mono',monospace; }
-        .row-chevron{ color:var(--text-dim); flex-shrink:0; transition:transform .3s cubic-bezier(.16,1,.3,1); }
-        .row.open .row-chevron{ transform:rotate(90deg); }
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--high);
+    font-family: Inter, sans-serif;
+    padding-bottom: 112px;
+    overflow-x: hidden;
+    transition: background .3s, color .3s;
+}
 
-        /* accordion */
-        .accordion{ max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.16,1,.3,1); background:var(--card-2); }
-        .accordion-inner{ padding:6px 18px 20px; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; }
 
-        .field{ margin-bottom:14px; }
-        .field label{ display:block; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--text-dim); margin-bottom:7px; }
-        .field input{
-            width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:12px; padding:12px 13px;
-            color:var(--text-hi); font-size:12.5px; font-family:'Inter',sans-serif; outline:none; transition:border-color .2s ease;
-        }
-        .field input:focus{ border-color:var(--electric-soft); }
-        .field input.pin{ text-align:center; font-size:19px; letter-spacing:.55em; font-weight:800; font-family:'JetBrains Mono',monospace; padding-left:8px; }
+button:disabled {
+    opacity: .6;
+    cursor: wait;
+}
 
-        .pin-dots{ display:flex; gap:9px; justify-content:center; margin:2px 0 16px; }
-        .pin-dots span{ width:11px; height:11px; border-radius:50%; background:var(--border); transition:background .2s ease, transform .2s ease; }
-        .pin-dots span.filled{ background:var(--electric); transform:scale(1.15); }
+button:focus-visible,
+input:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+    outline: 2px solid var(--soft);
+    outline-offset: 3px;
+}
 
-        .submit-btn{
-            width:100%; border:none; cursor:pointer; background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff;
-            padding:13px; border-radius:12px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
-            display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 12px 26px rgba(59,107,255,.28);
-            transition:transform .2s ease, opacity .2s ease;
-        }
-        .submit-btn:hover:not(:disabled){ transform:translateY(-2px); }
-        .submit-btn:disabled{ opacity:.7; cursor:progress; }
-        .spinner{ width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; animation:spin .7s linear infinite; }
-        @keyframes spin{ to{ transform:rotate(360deg); } }
+.display { font-family: 'Space Grotesk', sans-serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* inline theme switch inside a row */
-        .theme-switch{ width:44px; height:24px; border-radius:999px; background:var(--border); position:relative; cursor:pointer; border:none; padding:0; flex-shrink:0; }
-        .theme-switch .knob{ position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,var(--electric),var(--cyan)); transition:transform .3s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; color:#fff; }
-        html[data-theme="light"] .theme-switch .knob{ transform:translateX(20px); }
+svg { flex-shrink: 0; }
 
-        /* danger zone + admin */
-        .danger-btn{
-            width:100%; background:rgba(249,112,102,.1); border:1px solid rgba(249,112,102,.28); color:var(--rose);
-            padding:15px; border-radius:14px; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
-            display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:background .2s ease;
-        }
-        .danger-btn:hover{ background:rgba(249,112,102,.18); }
-        .admin-row{
-            display:flex; align-items:center; gap:12px; padding:15px 16px; cursor:pointer;
-            background:linear-gradient(120deg, rgba(244,183,64,.14), rgba(217,119,6,.06)); border:1px solid rgba(244,183,64,.3);
-        }
-        .admin-row .row-icon{ background:rgba(244,183,64,.2); color:var(--gold); }
+.topbar {
+    height: 62px;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--nav);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+}
 
-        /* ---------- WhatsApp float ---------- */
-        .wa-fab{
-            position:fixed; bottom:24px; right:20px; z-index:50; width:54px; height:54px; border-radius:50%;
-            background:#22C55E; display:flex; align-items:center; justify-content:center; color:#fff;
-            box-shadow:0 14px 30px rgba(34,197,94,.4); animation: wa-pulse 3s ease-in-out infinite;
-        }
-        @keyframes wa-pulse{ 0%,100%{ transform:scale(1); box-shadow:0 14px 30px rgba(34,197,94,.4);} 50%{ transform:scale(1.05); box-shadow:0 18px 38px rgba(34,197,94,.55);} }
+.back {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mid);
+}
 
-        /* ---------- premium status modal ---------- */
-        .modal-overlay{ position:fixed; inset:0; z-index:90; background:rgba(3,5,14,.6); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .28s ease; }
-        .modal-overlay.open{ opacity:1; pointer-events:auto; }
-        .modal-card{
-            width:100%; max-width:340px; background:var(--card-2); border:1px solid var(--border); border-radius:24px; padding:30px;
-            text-align:center; box-shadow:0 40px 100px -20px rgba(0,0,0,.5); transform:translateY(18px) scale(.96);
-            transition:transform .32s cubic-bezier(.16,1,.3,1); position:relative; overflow:hidden;
-        }
-        .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-        .modal-icon{ width:58px; height:58px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; position:relative; }
-        .modal-icon::before{ content:''; position:absolute; inset:-8px; border-radius:50%; opacity:.5; animation: modal-icon-pulse 1.8s ease-out infinite; }
-        @keyframes modal-icon-pulse{ 0%{ opacity:.5; transform:scale(1); } 100%{ opacity:0; transform:scale(1.4); } }
-        .modal-card h3{ font-size:16px; font-weight:700; margin:0 0 7px; }
-        .modal-card p{ font-size:12px; color:var(--text-mid); line-height:1.6; margin:0 0 20px; }
-        .modal-btn{ width:100%; border:none; cursor:pointer; background:linear-gradient(135deg,var(--electric),#1d3fbf); color:#fff; padding:12px; border-radius:11px; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
-    </style>
+.back i { width: 16px; height: 16px; }
+
+.top-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.top-title i {
+    width: 15px;
+    height: 15px;
+    color: var(--soft);
+}
+
+.theme-button {
+    width: 35px;
+    height: 35px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--mid);
+}
+
+.theme-button i {
+    width: 16px;
+    height: 16px;
+}
+
+main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 22px 18px 0;
+}
+
+/* PROFILE HERO */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 25px;
+    padding: 26px 20px;
+    background: linear-gradient(
+        135deg, #3b6bff, #1d3fbf 65%, #28e0d6
+    );
+    color: #fff;
+    box-shadow: 0 25px 55px -18px rgba(59,107,255,.5);
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,.12);
+    border-radius: 50%;
+    right: -100px;
+    top: -100px;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    background: rgba(40,224,214,.2);
+    border-radius: 50%;
+    bottom: -110px;
+    left: -70px;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.avatar {
+    width: 73px;
+    height: 73px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 13px;
+    background: rgba(255,255,255,.16);
+    backdrop-filter: blur(6px);
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.hero-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 5px;
+    overflow-wrap: anywhere;
+}
+
+.hero-email {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,.85);
+    margin: 0 0 13px;
+    overflow-wrap: anywhere;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.hero-badge i { width: 12px; height: 12px; }
+
+.hero-footnote {
+    color: rgba(255,255,255,.78);
+    font-size: 10px;
+    margin: 13px 0 0;
+}
+
+/* SECTION GROUPS */
+
+.section-label {
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    font-size: 10px;
+    font-weight: 800;
+    margin: 0 0 11px 4px;
+}
+
+.group {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 23px;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 16px;
+    min-height: 68px;
+    border-bottom: 1px solid var(--border);
+}
+
+.setting-row:last-child {
+    border-bottom: none;
+}
+
+.setting-row.action {
+    transition: background .2s;
+}
+
+.setting-row.action:hover {
+    background: var(--hover);
+}
+
+.row-icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: var(--hover);
+    color: var(--soft);
+}
+
+.row-icon i {
+    width: 17px;
+    height: 17px;
+}
+
+.row-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.row-title {
+    font-size: 12px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.row-sub {
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--dim);
+    margin: 4px 0 0;
+}
+
+.row-value {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: right;
+    color: var(--mid);
+    max-width: 50%;
+    overflow-wrap: anywhere;
+}
+
+.row-arrow {
+    width: 16px;
+    height: 16px;
+    color: var(--dim);
+    flex-shrink: 0;
+}
+
+.row-link {
+    width: 100%;
+    color: inherit;
+}
+
+.row-button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+}
+
+.status-pill {
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+    background: rgba(124,155,255,.13);
+    color: var(--soft);
+    white-space: nowrap;
+}
+
+.status-pill.success {
+    background: rgba(52,211,153,.12);
+    color: var(--green);
+}
+
+.status-pill.warning {
+    background: rgba(244,183,64,.12);
+    color: var(--gold);
+}
+
+/* EXPANDABLE SECURITY FORMS */
+
+details.setting-details {
+    border-bottom: 1px solid var(--border);
+}
+
+details.setting-details:last-child {
+    border-bottom: none;
+}
+
+.setting-details > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.setting-details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.setting-details[open] > summary {
+    background: var(--hover);
+    border-bottom: 1px solid var(--border);
+}
+
+.setting-details[open] .row-arrow {
+    transform: rotate(90deg);
+}
+
+.form-body {
+    padding: 20px 17px;
+    background: var(--surface);
+}
+
+.form-intro {
+    color: var(--mid);
+    font-size: 11px;
+    line-height: 1.7;
+    margin: 0 0 17px;
+}
+
+.form-field {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    display: block;
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 8px;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--input);
+    border-radius: 12px;
+    outline: none;
+    color: var(--high);
+    padding: 13px;
+    font-size: 13px;
+}
+
+.input-wrap .form-input {
+    padding-right: 45px;
+}
+
+.form-input:focus {
+    border-color: var(--soft);
+}
+
+.form-input::placeholder {
+    color: var(--dim);
+}
+
+.pin-input {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .33em;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.show-pass {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+}
+
+.show-pass i {
+    width: 16px;
+    height: 16px;
+}
+
+.field-hint {
+    color: var(--dim);
+    font-size: 10px;
+    line-height: 1.55;
+    margin: 7px 0 0;
+}
+
+.submit-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #fff;
+    background: linear-gradient(135deg,var(--blue),#1d3fbf);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.submit-btn i {
+    width: 15px;
+    height: 15px;
+}
+
+.form-feedback {
+    font-size: 11px;
+    line-height: 1.6;
+    border-radius: 11px;
+    padding: 12px;
+    margin: 0 0 14px;
+    background: rgba(59,107,255,.09);
+    color: var(--soft);
+    border: 1px solid rgba(59,107,255,.2);
+}
+
+.form-feedback.error {
+    color: var(--red);
+    border-color: rgba(249,112,102,.25);
+    background: rgba(249,112,102,.09);
+}
+
+.form-feedback.success {
+    color: var(--green);
+    border-color: rgba(52,211,153,.25);
+    background: rgba(52,211,153,.09);
+}
+
+.pin-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.pin-dots span {
+    width: 9px;
+    height: 9px;
+    background: var(--border);
+    border-radius: 50%;
+}
+
+.pin-dots span.filled {
+    background: var(--blue);
+}
+
+/* SECURITY NOTICE */
+
+.security-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+    margin-bottom: 22px;
+    background: rgba(59,107,255,.07);
+    border: 1px solid rgba(59,107,255,.2);
+    border-radius: 14px;
+    color: var(--mid);
+    font-size: 10.5px;
+    line-height: 1.7;
+}
+
+.security-notice i {
+    color: var(--soft);
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+}
+
+.security-notice strong {
+    color: var(--high);
+}
+
+/* THEME SWITCH */
+
+.theme-switch {
+    width: 45px;
+    height: 25px;
+    border: none;
+    padding: 0;
+    background: var(--border);
+    border-radius: 999px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.theme-switch .knob {
+    position: absolute;
+    width: 19px;
+    height: 19px;
+    left: 3px;
+    top: 3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,var(--blue),var(--cyan));
+    transition: transform .25s;
+}
+
+html[data-theme="light"] .knob {
+    transform: translateX(20px);
+}
+
+/* SUPPORT / SESSION */
+
+.support-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px;
+    border: 1px solid rgba(52,211,153,.24);
+    background: rgba(52,211,153,.07);
+    border-radius: 16px;
+    margin-bottom: 22px;
+}
+
+.support-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: rgba(52,211,153,.14);
+    color: var(--green);
+}
+
+.support-icon i {
+    width: 20px;
+    height: 20px;
+}
+
+.support-banner strong {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.support-banner p {
+    color: var(--mid);
+    font-size: 10px;
+    margin: 0;
+}
+
+.support-banner .arrow {
+    margin-left: auto;
+    color: var(--green);
+}
+
+.logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 1px solid rgba(249,112,102,.3);
+    border-radius: 14px;
+    padding: 15px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: rgba(249,112,102,.1);
+    color: var(--red);
+    margin-bottom: 12px;
+}
+
+.logout-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+.footer-note {
+    color: var(--dim);
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.7;
+    margin: 18px 0 10px;
+}
+
+.footer-note strong {
+    color: var(--soft);
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    padding: 0 16px 16px;
+}
+
+.bottom-nav {
+    max-width: 480px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 64px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--nav);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 -14px 34px -14px rgba(0,0,0,.25);
+}
+
+.bnav-item {
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--dim);
+    text-transform: uppercase;
+}
+
+.bnav-item.active {
+    color: var(--soft);
+}
+
+.bnav-item i {
+    width: 17px;
+    height: 17px;
+}
+
+.bnav-center {
+    position: relative;
+    top: -15px;
+}
+
+.bnav-center a {
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: linear-gradient(135deg,var(--blue),#1d3fbf);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(59,107,255,.4);
+}
+
+.bnav-center i {
+    width: 20px;
+    height: 20px;
+}
+
+/* MODAL */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(3,5,14,.7);
+    backdrop-filter: blur(6px);
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 35px 90px rgba(0,0,0,.4);
+    width: 100%;
+    max-width: 360px;
+    padding: 27px 22px;
+    text-align: center;
+}
+
+.modal-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: rgba(59,107,255,.13);
+    color: var(--soft);
+    display: grid;
+    place-items: center;
+}
+
+.modal-icon i {
+    width: 26px;
+    height: 26px;
+}
+
+.modal-card h3 {
+    font-size: 18px;
+    margin: 0 0 8px;
+}
+
+.modal-card p {
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--mid);
+    margin: 0 0 21px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 9px;
+}
+
+.modal-actions button {
+    flex: 1;
+    border: none;
+    border-radius: 11px;
+    padding: 13px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.modal-cancel {
+    background: var(--hover);
+    color: var(--mid);
+}
+
+.modal-confirm {
+    background: var(--blue);
+    color: #fff;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 360px) {
+    main { padding: 17px 12px 0; }
+    .topbar { padding: 0 12px; }
+    .hero { padding: 23px 14px; }
+    .setting-row { padding: 13px 11px; }
+    .row-value { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <nav class="topbar">
-        <a href="dashboard.html" class="back-btn"><i data-lucide="arrow-left"></i> Dashboard</a>
-        <div class="topbar-title">Settings</div>
-        <button class="theme-quick" onclick="toggleTheme()" aria-label="Toggle theme"><i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i></button>
-    </nav>
+<!-- TOP BAR -->
 
-    <main>
-        <div class="hero">
-            <div class="hero-inner">
-                <div class="hero-avatar" id="hero-initial">B</div>
-                <h1 class="hero-name font-display" id="hero-name">User</h1>
-                <p class="hero-email" id="hero-email">Loading&hellip;</p>
-                <span class="hero-badge"><i data-lucide="sparkles" style="width:11px;height:11px;"></i> Special Account</span>
-            </div>
-        </div>
-
-        <p class="group-label">Profile</p>
-        <div class="group">
-            <div class="row static">
-                <div class="row-icon"><i data-lucide="user" style="width:16px;height:16px;"></i></div>
-                <div class="row-body"><p class="row-title">Full name</p></div>
-                <span class="row-value" id="row-fullname">&mdash;</span>
-            </div>
-            <div class="row static">
-                <div class="row-icon"><i data-lucide="phone" style="width:16px;height:16px;"></i></div>
-                <div class="row-body"><p class="row-title">Mobile line</p></div>
-                <span class="row-value" id="row-phone">&mdash;</span>
-            </div>
-        </div>
-
-        <p class="group-label">Security</p>
-        <div class="group">
-            <div class="row" id="rowPassword" onclick="toggleAccordion('accPassword', 'rowPassword')">
-                <div class="row-icon"><i data-lucide="lock" style="width:16px;height:16px;"></i></div>
-                <div class="row-body"><p class="row-title">Account password</p><p class="row-sub">Last changed &mdash; unknown</p></div>
-                <i data-lucide="chevron-right" class="row-chevron" style="width:16px;height:16px;"></i>
-            </div>
-            <div class="accordion" id="accPassword">
-                <div class="accordion-inner">
-                    <form id="passwordForm">
-                        <div class="field"><label for="oldPassword">Current password</label><input type="password" id="oldPassword" required placeholder="Enter current password"></div>
-                        <div class="field"><label for="newPassword">New password</label><input type="password" id="newPassword" required minlength="6" placeholder="Minimum 6 characters"></div>
-                        <button type="submit" id="passBtn" class="submit-btn"><span id="passBtnLabel">Update password</span></button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="row" id="rowPin" onclick="toggleAccordion('accPin', 'rowPin')">
-                <div class="row-icon"><i data-lucide="key-round" style="width:16px;height:16px;"></i></div>
-                <div class="row-body"><p class="row-title" id="pinCardTitle">Create security PIN</p><p class="row-sub" id="pinRowSub">Not configured</p></div>
-                <i data-lucide="chevron-right" class="row-chevron" style="width:16px;height:16px;"></i>
-            </div>
-            <div class="accordion" id="accPin">
-                <div class="accordion-inner">
-                    <form id="pinForm">
-                        <div id="oldPinWrapper" style="display:none;">
-                            <label style="display:block;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:7px;">Verify current PIN</label>
-                            <input type="password" id="oldPin" class="pin" maxlength="4" pattern="[0-9]{4}" placeholder="&bull;&bull;&bull;&bull;" inputmode="numeric" style="width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;font-size:19px;letter-spacing:.55em;font-weight:800;font-family:'JetBrains Mono',monospace;outline:none;margin-bottom:14px;">
-                        </div>
-                        <label id="newPinLabel" style="display:block;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:9px;">New 4-digit PIN</label>
-                        <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
-                        <input type="password" id="newPin" required maxlength="4" pattern="[0-9]{4}" placeholder="&bull;&bull;&bull;&bull;" inputmode="numeric" class="pin" style="margin-bottom:14px;" oninput="updatePinDots()">
-                        <button type="submit" id="pinBtn" class="submit-btn"><span id="pinBtnLabel">Update PIN</span></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <p class="group-label">Preferences</p>
-        <div class="group">
-            <div class="row static">
-                <div class="row-icon"><i data-lucide="sun-moon" style="width:16px;height:16px;"></i></div>
-                <div class="row-body"><p class="row-title">Appearance</p><p class="row-sub" id="themeRowSub">Dark mode</p></div>
-                <button class="theme-switch" onclick="toggleTheme()" aria-label="Toggle theme"><span class="knob" id="themeKnob"><i data-lucide="moon" style="width:11px;height:11px;"></i></span></button>
-            </div>
-            <div class="row static">
-                <div class="row-icon"><i data-lucide="message-circle" style="width:16px;height:16px;"></i></div>
-                <div class="row-body"><p class="row-title">Support</p><p class="row-sub">Chat with the Bigotic team</p></div>
-                <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Support,%20I%20need%20assistance%20with%20my%20VTU%20account." target="_blank" class="row-value" style="color:var(--electric-soft);">Open &rarr;</a>
-            </div>
-        </div>
-
-        <div id="admin-gate-box" style="display:none;">
-            <p class="group-label">Administration</p>
-            <div class="group">
-                <a href="admin-dashboard.html" class="admin-row">
-                    <div class="row-icon"><i data-lucide="sliders" style="width:16px;height:16px;"></i></div>
-                    <div class="row-body"><p class="row-title">System admin dashboard</p><p class="row-sub">Restricted access</p></div>
-                    <i data-lucide="chevron-right" class="row-chevron" style="width:16px;height:16px;"></i>
-                </a>
-            </div>
-        </div>
-
-        <p class="group-label">Session</p>
-        <button onclick="handleLogout()" class="danger-btn" style="margin-bottom:24px;"><i data-lucide="log-out" style="width:15px;height:15px;"></i> Close session &amp; sign out</button>
-    </main>
-
-    <a href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Support,%20I%20need%20assistance%20with%20my%20VTU%20account." target="_blank" rel="noopener noreferrer" class="wa-fab" title="Chat with support">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:25px;height:25px;">
-            <path fill-rule="evenodd" d="M1.5 12a10.5 10.5 0 0 1 18.237-7.257l1.79-1.79a.75.75 0 1 1 1.06 1.061l-2.732 2.73a10.5 10.5 0 1 1-18.355 5.256H1.5V12Zm11.03 5.47a.75.75 0 0 1 0-1.06l1.22-1.22H9.75a4.75 4.75 0 0 1-4.75-4.75v-.75a.75.75 0 0 1 1.5 0v.75a3.25 3.25 0 0 0 3.25 3.25h4.06l-1.22-1.22a.75.75 0 1 1 1.06-1.06l2.5 2.5a.75.75 0 0 1 0 1.06l-2.5 2.5a.75.75 0 0 1-1.06 0Z" clip-rule="evenodd" />
-            <path d="M12.75 6a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75ZM11.25 12a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0Z" />
-            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 1.83.493 3.543 1.353 5.019L2.052 22l5.122-1.343A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2Zm-1.564 15.604c-1.42-.144-2.7-.751-3.717-1.688l-.297-.275-2.923.766.78-2.846-.22-.35a8.432 8.432 0 0 1-1.127-4.21A8.47 8.47 0 0 1 12 3.53a8.47 8.47 0 0 1 8.468 8.47 8.47 8.47 0 0 1-8.468 8.47c-1.442 0-2.812-.361-4.032-1.026l-.317-.174-2.86.75.764-2.784-.211-.336a8.432 8.432 0 0 1-1.111-4.152c0-4.67 3.8-8.47 8.468-8.47a8.47 8.47 0 0 1 8.468 8.47c0 4.67-3.8 8.47-8.468 8.47-.417 0-.829-.03-1.233-.09Z" clip-rule="evenodd"/>
-        </svg>
+<nav class="topbar">
+    <a href="dashboard.html" class="back">
+        <i data-lucide="arrow-left"></i>
+        Dashboard
     </a>
 
-    <div id="statusModal" class="modal-overlay">
-        <div class="modal-card">
-            <div id="modalIcon" class="modal-icon"></div>
-            <h3 id="modalTitle"></h3>
-            <p id="modalMsg"></p>
-            <button onclick="closeStatusModal()" class="modal-btn">Acknowledge</button>
+    <div class="top-title">
+        <i data-lucide="settings"></i>
+        Settings
+    </div>
+
+    <button
+        type="button"
+        class="theme-button"
+        id="topThemeBtn"
+        aria-label="Toggle theme"
+    >
+        <i data-lucide="sun-moon"></i>
+    </button>
+</nav>
+
+<main>
+
+    <!-- PROFILE HERO -->
+
+    <section class="hero">
+        <div class="hero-content">
+
+            <div class="avatar" id="heroInitial">
+                B
+            </div>
+
+            <h1
+                class="hero-name display"
+                id="heroName"
+            >
+                User
+            </h1>
+
+            <p class="hero-email" id="heroEmail">
+                Loading...
+            </p>
+
+            <span class="hero-badge">
+                <i data-lucide="shield-check"></i>
+                Bigotic Data Member
+            </span>
+
+            <p class="hero-footnote">
+                Manage your profile, security and preferences.
+            </p>
+
+        </div>
+    </section>
+
+    <!-- PERSONAL INFORMATION -->
+
+    <h2 class="section-label">
+        Personal Information
+    </h2>
+
+    <section class="group">
+
+        <div class="setting-row">
+
+            <div class="row-icon">
+                <i data-lucide="user-round"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">Full Name</p>
+                <p class="row-sub">Registered account name</p>
+            </div>
+
+            <span class="row-value" id="fullNameValue">
+                —
+            </span>
+
+        </div>
+
+        <div class="setting-row">
+
+            <div class="row-icon">
+                <i data-lucide="mail"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">Email Address</p>
+                <p class="row-sub">Your registered email</p>
+            </div>
+
+            <span class="row-value" id="emailValue">
+                —
+            </span>
+
+        </div>
+
+        <div class="setting-row">
+
+            <div class="row-icon">
+                <i data-lucide="phone"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">Phone Number</p>
+                <p class="row-sub">Registered mobile number</p>
+            </div>
+
+            <span class="row-value" id="phoneValue">
+                —
+            </span>
+
+        </div>
+
+        <div class="setting-row">
+
+            <div class="row-icon">
+                <i data-lucide="at-sign"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">Username</p>
+                <p class="row-sub">Referral identity</p>
+            </div>
+
+            <span class="row-value" id="usernameValue">
+                —
+            </span>
+
+        </div>
+
+    </section>
+
+    <!-- SECURITY -->
+
+    <h2 class="section-label">
+        Account Security
+    </h2>
+
+    <div class="security-notice">
+        <i data-lucide="shield-check"></i>
+
+        <div>
+            <strong>Keep your account protected.</strong>
+            Never share your password, transaction PIN,
+            or verification codes with anyone, including support.
         </div>
     </div>
 
-    <script>
+    <section class="group">
+
+        <!-- PASSWORD -->
+
+        <details class="setting-details" id="passwordDetails">
+
+            <summary class="setting-row action">
+
+                <div class="row-icon">
+                    <i data-lucide="lock-keyhole"></i>
+                </div>
+
+                <div class="row-text">
+                    <p class="row-title">
+                        Change Password
+                    </p>
+
+                    <p class="row-sub">
+                        Update your login credentials
+                    </p>
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="row-arrow"
+                ></i>
+
+            </summary>
+
+            <div class="form-body">
+
+                <p class="form-intro">
+                    Use a strong password that you do not use
+                    for any other account.
+                </p>
+
+                <form id="passwordForm">
+
+                    <div class="form-field">
+                        <label for="oldPassword">
+                            Current Password
+                        </label>
+
+                        <div class="input-wrap">
+                            <input
+                                class="form-input"
+                                type="password"
+                                id="oldPassword"
+                                placeholder="Enter current password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-pass"
+                                data-toggle-password="oldPassword"
+                                aria-label="Show or hide password"
+                            >
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="newPassword">
+                            New Password
+                        </label>
+
+                        <div class="input-wrap">
+                            <input
+                                class="form-input"
+                                type="password"
+                                id="newPassword"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                minlength="8"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-pass"
+                                data-toggle-password="newPassword"
+                                aria-label="Show or hide password"
+                            >
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+
+                        <p class="field-hint">
+                            Use at least 8 characters and a mix of
+                            letters, numbers, and symbols.
+                        </p>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="confirmPassword">
+                            Confirm New Password
+                        </label>
+
+                        <div class="input-wrap">
+                            <input
+                                class="form-input"
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Re-enter new password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-pass"
+                                data-toggle-password="confirmPassword"
+                                aria-label="Show or hide password"
+                            >
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div
+                        class="form-feedback"
+                        id="passwordFeedback"
+                        role="status"
+                        aria-live="polite"
+                        hidden
+                    ></div>
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                        id="passwordBtn"
+                    >
+                        <i data-lucide="shield-check"></i>
+                        <span id="passwordBtnText">
+                            Update Password
+                        </span>
+                    </button>
+
+                </form>
+
+            </div>
+
+        </details>
+
+        <!-- TRANSACTION PIN -->
+
+        <details class="setting-details" id="pinDetails">
+
+            <summary class="setting-row action">
+
+                <div class="row-icon">
+                    <i data-lucide="key-round"></i>
+                </div>
+
+                <div class="row-text">
+                    <p class="row-title" id="pinTitle">
+                        Transaction PIN
+                    </p>
+
+                    <p class="row-sub">
+                        Authorize wallet purchases securely
+                    </p>
+                </div>
+
+                <span
+                    class="status-pill"
+                    id="pinStatus"
+                >
+                    Checking
+                </span>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="row-arrow"
+                ></i>
+
+            </summary>
+
+            <div class="form-body">
+
+                <p class="form-intro">
+                    Your 4-digit PIN is used to authorize
+                    supported wallet transactions.
+                    Keep it private.
+                </p>
+
+                <form id="pinForm">
+
+                    <div
+                        class="form-field"
+                        id="oldPinGroup"
+                    >
+
+                        <label for="oldPin">
+                            Current PIN
+                            <span id="oldPinOptional">
+                                (if already configured)
+                            </span>
+                        </label>
+
+                        <div class="input-wrap">
+                            <input
+                                class="form-input pin-input"
+                                id="oldPin"
+                                type="password"
+                                inputmode="numeric"
+                                maxlength="4"
+                                pattern="[0-9]{4}"
+                                placeholder="••••"
+                                autocomplete="off"
+                            >
+
+                            <button
+                                type="button"
+                                class="show-pass"
+                                data-toggle-password="oldPin"
+                                aria-label="Show or hide PIN"
+                            >
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+
+                        <label for="newPin">
+                            New 4-Digit PIN
+                        </label>
+
+                        <div class="input-wrap">
+                            <input
+                                class="form-input pin-input"
+                                id="newPin"
+                                type="password"
+                                inputmode="numeric"
+                                maxlength="4"
+                                minlength="4"
+                                pattern="[0-9]{4}"
+                                placeholder="••••"
+                                autocomplete="off"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-pass"
+                                data-toggle-password="newPin"
+                                aria-label="Show or hide PIN"
+                            >
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+
+                        <div class="pin-dots" id="pinDots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+                    <div class="form-field">
+
+                        <label for="confirmPin">
+                            Confirm New PIN
+                        </label>
+
+                        <div class="input-wrap">
+                            <input
+                                class="form-input pin-input"
+                                id="confirmPin"
+                                type="password"
+                                inputmode="numeric"
+                                maxlength="4"
+                                minlength="4"
+                                pattern="[0-9]{4}"
+                                placeholder="••••"
+                                autocomplete="off"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="show-pass"
+                                data-toggle-password="confirmPin"
+                                aria-label="Show or hide PIN"
+                            >
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+
+                        <p class="field-hint">
+                            Avoid obvious PINs such as 1234
+                            or 0000.
+                        </p>
+                    </div>
+
+                    <div
+                        class="form-feedback"
+                        id="pinFeedback"
+                        role="status"
+                        aria-live="polite"
+                        hidden
+                    ></div>
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                        id="pinBtn"
+                    >
+                        <i data-lucide="key-round"></i>
+                        <span id="pinBtnText">
+                            Save Transaction PIN
+                        </span>
+                    </button>
+
+                </form>
+
+            </div>
+
+        </details>
+
+    </section>
+
+    <!-- FUNDING / ACCOUNT -->
+
+    <h2 class="section-label">
+        Wallet &amp; Banking
+    </h2>
+
+    <section class="group">
+
+        <a
+            href="fund.html"
+            class="setting-row action row-link"
+        >
+            <div class="row-icon">
+                <i data-lucide="wallet"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">
+                    Fund Wallet
+                </p>
+                <p class="row-sub">
+                    Manual PalmPay or automated bank transfer
+                </p>
+            </div>
+
+            <i
+                data-lucide="chevron-right"
+                class="row-arrow"
+            ></i>
+        </a>
+
+        <div class="setting-row">
+
+            <div class="row-icon">
+                <i data-lucide="landmark"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">
+                    Dedicated Account
+                </p>
+                <p class="row-sub" id="dedicatedAccountSub">
+                    Checking account status...
+                </p>
+            </div>
+
+            <span
+                class="status-pill"
+                id="dedicatedAccountStatus"
+            >
+                Checking
+            </span>
+
+        </div>
+
+        <a
+            href="history.html"
+            class="setting-row action row-link"
+        >
+            <div class="row-icon">
+                <i data-lucide="receipt-text"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">
+                    Transaction History
+                </p>
+                <p class="row-sub">
+                    View payments and professional receipts
+                </p>
+            </div>
+
+            <i
+                data-lucide="chevron-right"
+                class="row-arrow"
+            ></i>
+        </a>
+
+    </section>
+
+    <!-- PREFERENCES -->
+
+    <h2 class="section-label">
+        Preferences
+    </h2>
+
+    <section class="group">
+
+        <div class="setting-row">
+
+            <div class="row-icon">
+                <i data-lucide="sun-moon"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">
+                    Appearance
+                </p>
+                <p
+                    class="row-sub"
+                    id="themeDescription"
+                >
+                    Dark Mode
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="theme-switch"
+                id="themeSwitch"
+                role="switch"
+                aria-label="Light mode"
+                aria-checked="false"
+            >
+                <span class="knob"></span>
+            </button>
+
+        </div>
+
+        <a
+            href="https://wa.me/2349159436827?text=Hello%20Bigotic%20Data%20Support%2C%20I%20need%20assistance%20with%20my%20account."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="setting-row action row-link"
+        >
+
+            <div class="row-icon">
+                <i data-lucide="headset"></i>
+            </div>
+
+            <div class="row-text">
+                <p class="row-title">
+                    Help &amp; Support
+                </p>
+                <p class="row-sub">
+                    Chat with our support team
+                </p>
+            </div>
+
+            <i
+                data-lucide="external-link"
+                class="row-arrow"
+            ></i>
+
+        </a>
+
+    </section>
+
+    <!-- ADMIN ACCESS -->
+
+    <section id="adminSection" hidden>
+
+        <h2 class="section-label">
+            Administration
+        </h2>
+
+        <div class="group">
+
+            <a
+                href="admin-dashboard.html"
+                class="setting-row action row-link"
+            >
+                <div class="row-icon">
+                    <i data-lucide="shield"></i>
+                </div>
+
+                <div class="row-text">
+                    <p class="row-title">
+                        Admin Dashboard
+                    </p>
+                    <p class="row-sub">
+                        Restricted administrative tools
+                    </p>
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="row-arrow"
+                ></i>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- SUPPORT -->
+
+    <a
+        class="support-banner"
+        href="https://wa.me/2349159436827"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        <div class="support-icon">
+            <i data-lucide="message-circle"></i>
+        </div>
+
+        <div>
+            <strong>
+                Need assistance?
+            </strong>
+            <p>
+                WhatsApp Support: 09159436827
+            </p>
+        </div>
+
+        <i
+            data-lucide="arrow-up-right"
+            class="arrow"
+            style="width:18px;height:18px"
+        ></i>
+    </a>
+
+    <!-- LOGOUT -->
+
+    <h2 class="section-label">
+        Account Session
+    </h2>
+
+    <button
+        type="button"
+        id="logoutBtn"
+        class="logout-btn"
+    >
+        <i data-lucide="log-out"></i>
+        Sign Out of Account
+    </button>
+
+    <p class="footer-note">
+        <strong>BIGOTIC DATA</strong>
+        <br>
+        Fast. Reliable. Digital.
+        <br>
+        Powered by Bigotic Group
+    </p>
+
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+
+<div class="bottom-nav-wrap">
+
+    <nav class="bottom-nav">
+
+        <a
+            href="buy-airtime.html"
+            class="bnav-item"
+        >
+            <i data-lucide="phone"></i>
+            <span>Airtime</span>
+        </a>
+
+        <a
+            href="buy-data.html"
+            class="bnav-item"
+        >
+            <i data-lucide="wifi"></i>
+            <span>Data</span>
+        </a>
+
+        <div class="bnav-center">
+            <a
+                href="dashboard.html"
+                aria-label="Dashboard"
+            >
+                <i data-lucide="home"></i>
+            </a>
+        </div>
+
+        <a
+            href="history.html"
+            class="bnav-item"
+        >
+            <i data-lucide="clock"></i>
+            <span>History</span>
+        </a>
+
+        <a
+            href="settings.html"
+            class="bnav-item active"
+        >
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+</div>
+
+<!-- LOGOUT CONFIRMATION -->
+
+<div
+    id="logoutModal"
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="logoutTitle"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon">
+            <i data-lucide="log-out"></i>
+        </div>
+
+        <h3
+            class="display"
+            id="logoutTitle"
+        >
+            Sign out?
+        </h3>
+
+        <p>
+            You will be signed out on this browser
+            and redirected to the login page.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="modal-cancel"
+                id="cancelLogoutBtn"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="modal-confirm"
+                id="confirmLogoutBtn"
+            >
+                Sign Out
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+'use strict';
+
+// ============================================
+// CONFIGURATION
+// ============================================
+
+const BACKEND_URL =
+    'https://bigoticdata-backend.onrender.com';
+
+// This email check only controls whether to show
+// the admin navigation link. It does not grant
+// permission to access admin APIs.
+const ADMIN_EMAIL = 'ichinonso650@gmail.com';
+
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let pinConfigured = null;
+
+let passwordBusy = false;
+let pinBusy = false;
+let profileLoading = false;
+
+function refreshIcons() {
+    if (window.lucide) {
         lucide.createIcons();
+    }
+}
 
-        const ADMIN_EMAIL = "ichinonso650@gmail.com";
-        const BACKEND_URL = "https://bigoticdata-backend.onrender.com";
-        const statusModal = document.getElementById('statusModal');
+refreshIcons();
 
-        // ---------------- theme ----------------
-        function applyThemeIcon(){
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-            document.getElementById('themeIconTop')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            document.querySelector('#themeKnob i')?.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            const sub = document.getElementById('themeRowSub');
-            if (sub) sub.innerText = isLight ? 'Light mode' : 'Dark mode';
-            lucide.createIcons();
+// ============================================
+// SESSION / SAFE PROFILE STORAGE
+// ============================================
+
+function cleanUserProfile(raw) {
+    if (
+        !raw ||
+        typeof raw !== 'object' ||
+        Array.isArray(raw)
+    ) {
+        return null;
+    }
+
+    const cleaned = { ...raw };
+
+    // Never keep credentials inside the
+    // browser's cached user profile.
+    delete cleaned.password;
+    delete cleaned.pin;
+    delete cleaned.oldPassword;
+    delete cleaned.oldPin;
+    delete cleaned.newPassword;
+    delete cleaned.confirmPassword;
+    delete cleaned.confirmPin;
+    delete cleaned.tokenPin;
+
+    return cleaned;
+}
+
+function detectPinConfigured(raw) {
+    if (!raw || typeof raw !== 'object') {
+        return null;
+    }
+
+    if (typeof raw.hasPin === 'boolean') {
+        return raw.hasPin;
+    }
+
+    if (typeof raw.pinConfigured === 'boolean') {
+        return raw.pinConfigured;
+    }
+
+    if (typeof raw.hasTransactionPin === 'boolean') {
+        return raw.hasTransactionPin;
+    }
+
+    // Legacy profile compatibility:
+    // only inspect whether the old pin field was
+    // populated, without preserving its value.
+    if (raw.pin !== undefined && raw.pin !== null) {
+        return String(raw.pin).trim() !== '';
+    }
+
+    return null;
+}
+
+function saveSafeUser(raw) {
+    const safe = cleanUserProfile(raw);
+
+    if (
+        !safe ||
+        typeof safe.email !== 'string' ||
+        !safe.email.trim()
+    ) {
+        return null;
+    }
+
+    try {
+        localStorage.setItem(
+            'user',
+            JSON.stringify(safe)
+        );
+    } catch (_) {}
+
+    return safe;
+}
+
+function loadCurrentUser() {
+    try {
+        const raw = JSON.parse(
+            localStorage.getItem('user') || 'null'
+        );
+
+        const detected = detectPinConfigured(raw);
+
+        if (detected !== null) {
+            pinConfigured = detected;
         }
-        function toggleTheme(){
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('bigotic-theme', next);
-            applyThemeIcon();
+
+        const safe = saveSafeUser(raw);
+
+        return safe;
+    } catch (_) {
+        return null;
+    }
+}
+
+// ============================================
+// THEME
+// ============================================
+
+function updateThemeUI() {
+    const light =
+        document.documentElement.dataset.theme === 'light';
+
+    $('themeDescription').textContent =
+        light ? 'Light Mode' : 'Dark Mode';
+
+    $('themeSwitch').setAttribute(
+        'aria-checked',
+        String(light)
+    );
+}
+
+function toggleTheme() {
+    const next =
+        document.documentElement.dataset.theme === 'light'
+            ? 'dark'
+            : 'light';
+
+    document.documentElement.dataset.theme = next;
+
+    try {
+        localStorage.setItem(
+            'bigotic-theme',
+            next
+        );
+    } catch (_) {}
+
+    updateThemeUI();
+}
+
+$('topThemeBtn').addEventListener(
+    'click',
+    toggleTheme
+);
+
+$('themeSwitch').addEventListener(
+    'click',
+    toggleTheme
+);
+
+updateThemeUI();
+
+// ============================================
+// PROFILE INFORMATION
+// ============================================
+
+function getDisplayName(user) {
+    return String(
+        user.fullName ||
+        user.username ||
+        user.email.split('@')[0] ||
+        'User'
+    ).trim();
+}
+
+function renderUserProfile(user) {
+    if (!user) return;
+
+    const name = getDisplayName(user);
+
+    $('heroName').textContent = name;
+
+    $('heroInitial').textContent =
+        name.charAt(0).toUpperCase() || 'B';
+
+    $('heroEmail').textContent =
+        user.email;
+
+    $('fullNameValue').textContent =
+        user.fullName || name;
+
+    $('emailValue').textContent =
+        user.email;
+
+    $('phoneValue').textContent =
+        user.phone ||
+        user.phoneNumber ||
+        'Not set';
+
+    $('usernameValue').textContent =
+        user.username || 'Not set';
+
+    // Admin link visibility only.
+    // The backend must authorize all admin actions.
+    $('adminSection').hidden =
+        user.email.toLowerCase().trim() !==
+        ADMIN_EMAIL.toLowerCase();
+
+    const account =
+        String(user.virtualAccountNumber || '').trim();
+
+    if (/^\d{10}$/.test(account)) {
+        $('dedicatedAccountStatus').textContent =
+            'Active';
+
+        $('dedicatedAccountStatus').className =
+            'status-pill success';
+
+        $('dedicatedAccountSub').textContent =
+            (user.virtualBankName || 'Dedicated account') +
+            ' • ' + account;
+    } else {
+        $('dedicatedAccountStatus').textContent =
+            'Not set';
+
+        $('dedicatedAccountStatus').className =
+            'status-pill warning';
+
+        $('dedicatedAccountSub').textContent =
+            'Generate an account from Fund Wallet';
+    }
+
+    updatePinUI();
+}
+
+// ============================================
+// REFRESH PROFILE
+// ============================================
+
+async function refreshProfile() {
+    if (!currentUser || profileLoading) return;
+
+    profileLoading = true;
+
+    try {
+        const response = await fetch(
+            BACKEND_URL +
+            '/user-profile?email=' +
+            encodeURIComponent(currentUser.email),
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            }
+        );
+
+        if (!response.ok) return;
+
+        const payload = await response.json();
+
+        const profile =
+            payload.user ||
+            payload.data ||
+            payload;
+
+        if (
+            !profile ||
+            !profile.email ||
+            String(profile.email).toLowerCase() !==
+            currentUser.email.toLowerCase()
+        ) {
+            return;
         }
-        applyThemeIcon();
 
-        // ---------------- accordion rows ----------------
-        function toggleAccordion(accId, rowId){
-            const acc = document.getElementById(accId);
-            const row = document.getElementById(rowId);
-            const isOpen = row.classList.contains('open');
+        const detected =
+            detectPinConfigured(profile);
 
-            document.querySelectorAll('.accordion').forEach(a => { if (a.id !== accId) a.style.maxHeight = null; });
-            document.querySelectorAll('.row.open').forEach(r => { if (r.id !== rowId) r.classList.remove('open'); });
+        if (detected !== null) {
+            pinConfigured = detected;
+        }
 
-            if (isOpen){
-                acc.style.maxHeight = null;
-                row.classList.remove('open');
+        // Only accept known profile fields from
+        // the refresh response.
+        const allowed = [
+            'fullName',
+            'username',
+            'phone',
+            'phoneNumber',
+            'balance',
+            'virtualAccountNumber',
+            'virtualBankName',
+            'virtualAccountName',
+            'hasPin',
+            'pinConfigured',
+            'hasTransactionPin'
+        ];
+
+        const merged = { ...currentUser };
+
+        for (const key of allowed) {
+            if (profile[key] !== undefined) {
+                merged[key] = profile[key];
+            }
+        }
+
+        currentUser =
+            saveSafeUser(merged) || currentUser;
+
+        renderUserProfile(currentUser);
+
+    } catch (error) {
+        console.warn(
+            'Profile refresh unavailable:',
+            error
+        );
+    } finally {
+        profileLoading = false;
+    }
+}
+
+// ============================================
+// PIN CONFIGURATION STATUS
+// ============================================
+
+function updatePinUI() {
+    const pill = $('pinStatus');
+    const oldGroup = $('oldPinGroup');
+    const oldField = $('oldPin');
+    const optional = $('oldPinOptional');
+
+    if (pinConfigured === true) {
+        $('pinTitle').textContent =
+            'Change Transaction PIN';
+
+        pill.textContent = 'Configured';
+        pill.className = 'status-pill success';
+
+        oldGroup.hidden = false;
+        oldField.required = true;
+        optional.textContent = '';
+
+        $('pinBtnText').textContent =
+            'Change Transaction PIN';
+
+    } else if (pinConfigured === false) {
+        $('pinTitle').textContent =
+            'Create Transaction PIN';
+
+        pill.textContent = 'Not set';
+        pill.className = 'status-pill warning';
+
+        oldGroup.hidden = true;
+        oldField.required = false;
+        oldField.value = '';
+
+        $('pinBtnText').textContent =
+            'Create Transaction PIN';
+
+    } else {
+        $('pinTitle').textContent =
+            'Transaction PIN';
+
+        pill.textContent = 'Manage';
+        pill.className = 'status-pill';
+
+        oldGroup.hidden = false;
+        oldField.required = false;
+
+        optional.textContent =
+            '(if already configured)';
+
+        $('pinBtnText').textContent =
+            'Save Transaction PIN';
+    }
+}
+
+// ============================================
+// SHOW / HIDE PASSWORD
+// ============================================
+
+document.querySelectorAll(
+    '[data-toggle-password]'
+).forEach(button => {
+    button.addEventListener('click', () => {
+        const input = $(
+            button.dataset.togglePassword
+        );
+
+        if (!input) return;
+
+        input.type =
+            input.type === 'password'
+                ? 'text'
+                : 'password';
+
+        button.setAttribute(
+            'aria-label',
+            input.type === 'password'
+                ? 'Show value'
+                : 'Hide value'
+        );
+
+        const icon =
+            button.querySelector('i');
+
+        if (icon) {
+            icon.setAttribute(
+                'data-lucide',
+                input.type === 'password'
+                    ? 'eye'
+                    : 'eye-off'
+            );
+        }
+
+        refreshIcons();
+    });
+});
+
+// ============================================
+// FORM FEEDBACK
+// ============================================
+
+function showFeedback(id, message, type = 'info') {
+    const box = $(id);
+
+    box.textContent = message;
+    box.className =
+        'form-feedback ' + type;
+
+    box.hidden = false;
+}
+
+function clearFeedback(id) {
+    const box = $(id);
+
+    box.textContent = '';
+    box.hidden = true;
+}
+
+function setBusy(buttonId, labelId, busy, label) {
+    $(buttonId).disabled = busy;
+    $(labelId).textContent = label;
+}
+
+// ============================================
+// RESPONSE READER
+// ============================================
+
+async function readJsonResponse(response) {
+    try {
+        return await response.json();
+    } catch (_) {
+        return {};
+    }
+}
+
+// ============================================
+// PASSWORD VALIDATION
+// ============================================
+
+function validatePassword(value) {
+    if (value.length < 8) {
+        return 'Password must contain at least 8 characters.';
+    }
+
+    if (value.length > 128) {
+        return 'Password is too long.';
+    }
+
+    if (!/[a-zA-Z]/.test(value)) {
+        return 'Include at least one letter.';
+    }
+
+    if (!/[0-9]/.test(value)) {
+        return 'Include at least one number.';
+    }
+
+    return null;
+}
+
+// ============================================
+// UPDATE PASSWORD
+// ============================================
+
+$('passwordForm').addEventListener(
+    'submit',
+    async event => {
+        event.preventDefault();
+
+        if (passwordBusy) return;
+
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        clearFeedback('passwordFeedback');
+
+        const currentPassword =
+            $('oldPassword').value;
+
+        const newPassword =
+            $('newPassword').value;
+
+        const confirmPassword =
+            $('confirmPassword').value;
+
+        if (!currentPassword) {
+            showFeedback(
+                'passwordFeedback',
+                'Enter your current password.',
+                'error'
+            );
+            return;
+        }
+
+        const validation =
+            validatePassword(newPassword);
+
+        if (validation) {
+            showFeedback(
+                'passwordFeedback',
+                validation,
+                'error'
+            );
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            showFeedback(
+                'passwordFeedback',
+                'New password and confirmation do not match.',
+                'error'
+            );
+            return;
+        }
+
+        if (newPassword === currentPassword) {
+            showFeedback(
+                'passwordFeedback',
+                'Your new password must be different from the current one.',
+                'error'
+            );
+            return;
+        }
+
+        passwordBusy = true;
+
+        setBusy(
+            'passwordBtn',
+            'passwordBtnText',
+            true,
+            'Updating Password...'
+        );
+
+        const controller = new AbortController();
+
+        const timeout = setTimeout(
+            () => controller.abort(),
+            30000
+        );
+
+        try {
+            const response = await fetch(
+                BACKEND_URL + '/update-password',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: currentUser.email,
+                        oldPassword: currentPassword,
+                        password: newPassword
+                    }),
+                    signal: controller.signal
+                }
+            );
+
+            const result =
+                await readJsonResponse(response);
+
+            if (
+                response.ok &&
+                result.success === true
+            ) {
+                $('passwordForm').reset();
+
+                showFeedback(
+                    'passwordFeedback',
+                    'Your password has been updated successfully. Use the new password next time you sign in.',
+                    'success'
+                );
+
+                // Do not store any passwords
+                // in localStorage or sessionStorage.
+
             } else {
-                acc.style.maxHeight = acc.scrollHeight + 'px';
-                row.classList.add('open');
-            }
-        }
-
-        function updatePinDots(){
-            const val = document.getElementById('newPin').value || '';
-            document.querySelectorAll('#pinDots span').forEach((dot, i) => dot.classList.toggle('filled', i < val.length));
-            const acc = document.getElementById('accPin');
-            if (acc.style.maxHeight) acc.style.maxHeight = acc.scrollHeight + 'px';
-        }
-
-        function closeStatusModal() { statusModal.classList.remove('open'); }
-
-        function handleLogout() {
-            localStorage.removeItem('user');
-            window.location.href = "login.html";
-        }
-
-        function showNotification(type, title, msg) {
-            const iconBox = document.getElementById('modalIcon');
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMsg').innerText = msg;
-            if (type === 'success') {
-                iconBox.style.background = 'rgba(52,211,153,.16)'; iconBox.style.color = 'var(--emerald)';
-                iconBox.innerHTML = `<i data-lucide="check-circle-2" style="width:26px;height:26px;"></i>`;
-            } else {
-                iconBox.style.background = 'rgba(249,112,102,.16)'; iconBox.style.color = 'var(--rose)';
-                iconBox.innerHTML = `<i data-lucide="alert-circle" style="width:26px;height:26px;"></i>`;
-            }
-            statusModal.classList.add('open');
-            lucide.createIcons();
-        }
-
-        function evaluatePinTitleText(userObject) {
-            const titleSpan = document.getElementById('pinCardTitle');
-            const subSpan = document.getElementById('pinRowSub');
-            const oldPinWrapper = document.getElementById('oldPinWrapper');
-            const newPinLabel = document.getElementById('newPinLabel');
-            const oldPinField = document.getElementById('oldPin');
-
-            if (userObject && userObject.pin && String(userObject.pin).trim() !== "") {
-                titleSpan.innerText = "Change security PIN";
-                subSpan.innerText = "PIN configured";
-                oldPinWrapper.style.display = 'block';
-                oldPinField.required = true;
-                newPinLabel.innerText = "New 4-digit PIN";
-            } else {
-                titleSpan.innerText = "Create security PIN";
-                subSpan.innerText = "Not configured";
-                oldPinWrapper.style.display = 'none';
-                oldPinField.required = false;
-                oldPinField.value = '';
-                newPinLabel.innerText = "Configure 4-digit PIN";
-            }
-        }
-
-        window.onload = function() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (!user || !user.email) { window.location.href = "login.html"; return; }
-
-            const displayName = user.fullName || user.username || user.email.split('@')[0];
-            document.getElementById('hero-name').innerText = displayName;
-            document.getElementById('hero-email').innerText = user.email;
-            document.getElementById('row-fullname').innerText = displayName;
-            document.getElementById('hero-initial').innerText = displayName.charAt(0).toUpperCase();
-
-            evaluatePinTitleText(user);
-
-            if (user.phone && String(user.phone).trim() !== "" && String(user.phone).trim() !== "undefined") {
-                document.getElementById('row-phone').innerText = String(user.phone).trim();
-            } else {
-                document.getElementById('row-phone').innerText = "Not set";
+                showFeedback(
+                    'passwordFeedback',
+                    String(
+                        result.error ||
+                        result.message ||
+                        'Password update failed. Please verify your current password.'
+                    ),
+                    'error'
+                );
             }
 
-            if (user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim()) {
-                document.getElementById('admin-gate-box').style.display = 'block';
-            }
-        };
+        } catch (_) {
+            showFeedback(
+                'passwordFeedback',
+                'Unable to confirm the update. Check your connection and try signing in with the appropriate password before resubmitting.',
+                'error'
+            );
+        } finally {
+            clearTimeout(timeout);
 
-        document.getElementById('pinForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const pinBtn = document.getElementById('pinBtn');
-            const pinBtnLabel = document.getElementById('pinBtnLabel');
-            const pinValue = document.getElementById('newPin').value;
-            const oldPinField = document.getElementById('oldPin');
-            const user = JSON.parse(localStorage.getItem('user'));
+            passwordBusy = false;
 
-            if (!/^\d{4}$/.test(pinValue)) {
-                showNotification('error', 'Invalid Input', 'PIN sequence must measure exactly 4 numerical digits.');
+            setBusy(
+                'passwordBtn',
+                'passwordBtnText',
+                false,
+                'Update Password'
+            );
+        }
+    }
+);
+
+// ============================================
+// PIN INPUTS
+// ============================================
+
+['oldPin', 'newPin', 'confirmPin'].forEach(id => {
+    $(id).addEventListener('input', event => {
+        event.target.value =
+            event.target.value
+                .replace(/\D/g, '')
+                .slice(0, 4);
+
+        if (id === 'newPin') {
+            updatePinDots();
+        }
+    });
+});
+
+function updatePinDots() {
+    const length = $('newPin').value.length;
+
+    document.querySelectorAll(
+        '#pinDots span'
+    ).forEach((dot, index) => {
+        dot.classList.toggle(
+            'filled',
+            index < length
+        );
+    });
+}
+
+// ============================================
+// UPDATE TRANSACTION PIN
+// ============================================
+
+$('pinForm').addEventListener(
+    'submit',
+    async event => {
+        event.preventDefault();
+
+        if (pinBusy) return;
+
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        clearFeedback('pinFeedback');
+
+        const oldPin = $('oldPin').value.trim();
+        const newPin = $('newPin').value.trim();
+        const confirmPin = $('confirmPin').value.trim();
+
+        if (pinConfigured === true) {
+            if (!/^\d{4}$/.test(oldPin)) {
+                showFeedback(
+                    'pinFeedback',
+                    'Enter your current 4-digit PIN.',
+                    'error'
+                );
                 return;
             }
+        }
 
-            pinBtn.disabled = true;
-            pinBtnLabel.innerHTML = '<span class="spinner"></span> Updating&hellip;';
+        if (
+            oldPin &&
+            !/^\d{4}$/.test(oldPin)
+        ) {
+            showFeedback(
+                'pinFeedback',
+                'Current PIN must contain exactly 4 digits.',
+                'error'
+            );
+            return;
+        }
 
-            try {
-                const response = await fetch(`${BACKEND_URL}/update-pin`, {
+        if (!/^\d{4}$/.test(newPin)) {
+            showFeedback(
+                'pinFeedback',
+                'New transaction PIN must contain exactly 4 digits.',
+                'error'
+            );
+            return;
+        }
+
+        if (newPin !== confirmPin) {
+            showFeedback(
+                'pinFeedback',
+                'New PIN and confirmation do not match.',
+                'error'
+            );
+            return;
+        }
+
+        if (
+            /^(0000|1111|2222|3333|4444|5555|6666|7777|8888|9999|1234|4321)$/.test(newPin)
+        ) {
+            showFeedback(
+                'pinFeedback',
+                'Choose a less predictable 4-digit PIN.',
+                'error'
+            );
+            return;
+        }
+
+        if (oldPin && oldPin === newPin) {
+            showFeedback(
+                'pinFeedback',
+                'Your new PIN must be different from your current PIN.',
+                'error'
+            );
+            return;
+        }
+
+        pinBusy = true;
+
+        setBusy(
+            'pinBtn',
+            'pinBtnText',
+            true,
+            'Saving PIN...'
+        );
+
+        const controller = new AbortController();
+
+        const timeout = setTimeout(
+            () => controller.abort(),
+            30000
+        );
+
+        try {
+            const response = await fetch(
+                BACKEND_URL + '/update-pin',
+                {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email, pin: pinValue, oldPin: oldPinField.value.trim() })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showNotification('success', 'Security Pin Saved', 'Your transaction authorization pin has been securely synchronized.');
-                    user.pin = pinValue;
-                    localStorage.setItem('user', JSON.stringify(user));
-                    evaluatePinTitleText(user);
-                    document.getElementById('newPin').value = '';
-                    oldPinField.value = '';
-                    updatePinDots();
-                } else {
-                    showNotification('error', 'Processing Error', data.message || 'Unable to update transaction pin details.');
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: currentUser.email,
+                        pin: newPin,
+                        oldPin: oldPin
+                    }),
+                    signal: controller.signal
                 }
-            } catch {
-                showNotification('error', 'Network Error', 'Check your internet configuration profiles and re-attempt submission.');
-            }
-            pinBtnLabel.innerText = "Update PIN";
-            pinBtn.disabled = false;
-        });
+            );
 
-        document.getElementById('passwordForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const passBtn = document.getElementById('passBtn');
-            const passBtnLabel = document.getElementById('passBtnLabel');
-            const oldPasswordValue = document.getElementById('oldPassword').value;
-            const passwordValue = document.getElementById('newPassword').value;
-            const user = JSON.parse(localStorage.getItem('user'));
+            const result =
+                await readJsonResponse(response);
 
-            if (passwordValue.length < 6) {
-                showNotification('error', 'Security Alert', 'Passwords must contain a minimum count length of 6 characters.');
-                return;
-            }
+            if (
+                response.ok &&
+                result.success === true
+            ) {
+                $('pinForm').reset();
 
-            passBtn.disabled = true;
-            passBtnLabel.innerHTML = '<span class="spinner"></span> Updating&hellip;';
+                updatePinDots();
 
-            try {
-                const response = await fetch(`${BACKEND_URL}/update-password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: user.email, oldPassword: oldPasswordValue, password: passwordValue })
-                });
-                const data = await response.json();
-                if (response.ok && data.success) {
-                    showNotification('success', 'Password Updated', 'Your account security credentials have been updated securely.');
-                    user.password = passwordValue;
-                    localStorage.setItem('user', JSON.stringify(user));
-                    document.getElementById('oldPassword').value = '';
-                    document.getElementById('newPassword').value = '';
-                } else {
-                    showNotification('error', 'Authentication Failure', data.error || data.message || 'The current password provided is incorrect.');
+                pinConfigured = true;
+
+                if (currentUser) {
+                    currentUser.hasPin = true;
+
+                    currentUser =
+                        saveSafeUser(currentUser) ||
+                        currentUser;
                 }
-            } catch {
-                showNotification('error', 'Network Error', 'Connection failed. Verify server access routes.');
+
+                updatePinUI();
+
+                showFeedback(
+                    'pinFeedback',
+                    'Your transaction PIN has been saved successfully.',
+                    'success'
+                );
+
+                // Never store the PIN itself in the browser.
+
+            } else {
+                showFeedback(
+                    'pinFeedback',
+                    String(
+                        result.error ||
+                        result.message ||
+                        'Unable to save PIN. Verify your existing PIN if one is already configured.'
+                    ),
+                    'error'
+                );
             }
-            passBtnLabel.innerText = "Update password";
-            passBtn.disabled = false;
-        });
-    </script>
+
+        } catch (_) {
+            showFeedback(
+                'pinFeedback',
+                'Unable to confirm the PIN update. Check your connection and account status before attempting again.',
+                'error'
+            );
+        } finally {
+            clearTimeout(timeout);
+
+            pinBusy = false;
+
+            setBusy(
+                'pinBtn',
+                'pinBtnText',
+                false,
+                pinConfigured === true
+                    ? 'Change Transaction PIN'
+                    : 'Save Transaction PIN'
+            );
+        }
+    }
+);
+
+// ============================================
+// LOGOUT CONFIRMATION
+// ============================================
+
+function openLogoutModal() {
+    $('logoutModal').classList.add('open');
+
+    $('cancelLogoutBtn').focus();
+}
+
+function closeLogoutModal() {
+    $('logoutModal').classList.remove('open');
+}
+
+function confirmLogout() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
+
+    currentUser = null;
+
+    window.location.replace('login.html');
+}
+
+$('logoutBtn').addEventListener(
+    'click',
+    openLogoutModal
+);
+
+$('cancelLogoutBtn').addEventListener(
+    'click',
+    closeLogoutModal
+);
+
+$('confirmLogoutBtn').addEventListener(
+    'click',
+    confirmLogout
+);
+
+$('logoutModal').addEventListener(
+    'click',
+    event => {
+        if (event.target === $('logoutModal')) {
+            closeLogoutModal();
+        }
+    }
+);
+
+document.addEventListener(
+    'keydown',
+    event => {
+        if (
+            event.key === 'Escape' &&
+            $('logoutModal').classList.contains('open')
+        ) {
+            closeLogoutModal();
+        }
+    }
+);
+
+// ============================================
+// PAGE INITIALIZATION
+// ============================================
+
+window.addEventListener(
+    'load',
+    async () => {
+        currentUser = loadCurrentUser();
+
+        if (!currentUser) {
+            window.location.replace('login.html');
+            return;
+        }
+
+        renderUserProfile(currentUser);
+
+        await refreshProfile();
+    }
+);
+
+</script>
+
 </body>
 </html>
