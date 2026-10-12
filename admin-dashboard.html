@@ -3,681 +3,924 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#060915">
 <title>Bigotic Data | Admin Command Center</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
+
 <script>
 try {
   document.documentElement.dataset.theme =
-    localStorage.getItem('bigotic-theme') === 'light' ? 'light' : 'dark';
-} catch (e) {}
+    localStorage.getItem('bigotic-theme') === 'light'
+      ? 'light'
+      : 'dark';
+} catch (error) {}
 </script>
+
 <style>
 :root {
-  --blue:#3b6bff;
-  --soft:#7c9bff;
-  --green:#34d399;
-  --red:#f97066;
-  --gold:#f4b740
+  --blue: #3b6bff;
+  --soft: #7c9bff;
+  --green: #34d399;
+  --red: #f97066;
+  --gold: #f4b740;
 }
-html[data-theme=dark] {
-  --bg:#060915;
-  --card:#0f1638;
-  --surface:#0d1330;
-  --text:#eef1ff;
-  --mid:#aab0d6;
-  --dim:#737aa7;
-  --line:rgba(148,163,255,.15);
-  --input:#101936;
-  --hover:#18234b
+
+html[data-theme="dark"] {
+  --bg: #060915;
+  --card: #0f1638;
+  --surface: #0d1330;
+  --text: #eef1ff;
+  --mid: #aab0d6;
+  --dim: #737aa7;
+  --line: rgba(148,163,255,.15);
+  --input: #101936;
+  --hover: #18234b;
 }
-html[data-theme=light] {
-  --bg:#f2f4fb;
-  --card:#fff;
-  --surface:#fff;
-  --text:#0f1428;
-  --mid:#5b6178;
-  --dim:#8a94b5;
-  --line:#e6e9f6;
-  --input:#f5f7fd;
-  --hover:#edf1fc
+
+html[data-theme="light"] {
+  --bg: #f2f4fb;
+  --card: #ffffff;
+  --surface: #ffffff;
+  --text: #0f1428;
+  --mid: #5b6178;
+  --dim: #8a94b5;
+  --line: #e6e9f6;
+  --input: #f5f7fd;
+  --hover: #edf1fc;
 }
-* {box-sizing:border-box}
-[hidden] {display:none!important}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
 body {
-  margin:0;
-  min-height:100vh;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Inter,Arial,sans-serif
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Arial, sans-serif;
 }
-button,input,textarea,select {font:inherit}
-button {cursor:pointer}
-button:disabled {opacity:.6;cursor:wait}
-a {color:inherit;text-decoration:none}
-h1,h2,h3 {font-family:'Space Grotesk',sans-serif}
-h1 {font-size:24px;margin:0 0 7px}
-h2 {font-size:16px;margin:0 0 12px}
-p {line-height:1.65}
-small,.muted {color:var(--dim)}
-.shell {display:flex;min-height:100vh}
+
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { font-family: "Space Grotesk", sans-serif; }
+h1 { font-size: 24px; margin: 0 0 7px; }
+h2 { font-size: 16px; margin: 0 0 12px; }
+p { line-height: 1.65; }
+small, .muted { color: var(--dim); }
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
 .sidebar {
-  width:245px;
-  flex-shrink:0;
-  background:var(--surface);
-  border-right:1px solid var(--line);
-  padding:23px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:22px
+  width: 245px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  padding: 23px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
+
 .brand {
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:0 9px;
-  font-weight:800
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 9px;
+  font-weight: 800;
 }
-.brand b {color:var(--soft)}
+
+.brand b { color: var(--soft); }
+
 .brand .logo {
-  display:grid;
-  place-items:center;
-  width:35px;
-  height:35px;
-  background:var(--blue);
-  color:#fff;
-  border-radius:11px
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 11px;
 }
-.side-nav {display:grid;gap:7px;flex:1}
+
+.side-nav {
+  display: grid;
+  gap: 7px;
+  flex: 1;
+}
+
 .nav-btn {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-align:left;
-  border:0;
-  border-radius:12px;
-  background:transparent;
-  color:var(--mid);
-  padding:13px;
-  font-size:11px;
-  font-weight:800;
-  text-transform:uppercase
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--mid);
+  padding: 13px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
-.nav-btn.active,.nav-btn:hover {
-  background:var(--hover);
-  color:var(--soft)
+
+.nav-btn.active,
+.nav-btn:hover {
+  background: var(--hover);
+  color: var(--soft);
 }
-.nav-btn svg {width:17px}
-.side-footer {display:grid;gap:10px}
+
+.nav-btn svg { width: 17px; }
+.side-footer { display: grid; gap: 10px; }
+
 .content {
-  width:100%;
-  min-width:0;
-  max-width:1300px;
-  margin:0 auto;
-  padding:29px 27px 100px
+  width: 100%;
+  min-width: 0;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 29px 27px 100px;
 }
+
 .top {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-bottom:22px
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
 }
-.top p {margin:0;font-size:11px;color:var(--dim)}
+
+.top p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--dim);
+}
+
 .toolbar {
-  display:flex;
-  gap:9px;
-  align-items:center;
-  flex-wrap:wrap
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
 }
+
 .tag {
-  font-size:10px;
-  color:var(--soft);
-  padding:8px 12px;
-  background:var(--hover);
-  border:1px solid var(--line);
-  border-radius:20px
+  font-size: 10px;
+  color: var(--soft);
+  padding: 8px 12px;
+  background: var(--hover);
+  border: 1px solid var(--line);
+  border-radius: 20px;
 }
-.btn,.icon-btn {
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:11px 14px;
-  background:var(--blue);
-  color:white;
-  font-size:11px;
-  font-weight:800
+
+.btn, .icon-btn {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 11px 14px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
 }
-.btn.soft,.icon-btn {
-  background:var(--hover);
-  color:var(--soft)
+
+.btn.soft, .icon-btn {
+  background: var(--hover);
+  color: var(--soft);
 }
-.btn.danger {background:#722f3d;color:#fff}
+
+.btn.danger {
+  background: #722f3d;
+  color: #fff;
+}
+
 .icon-btn {
-  width:38px;
-  height:38px;
-  display:grid;
-  place-items:center;
-  padding:0
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
 }
-.icon-btn svg,.btn svg {width:16px;height:16px}
-.tab {display:none}
-.tab.active {display:block}
+
+.icon-btn svg, .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tab { display: none; }
+.tab.active { display: block; }
+
 .metrics {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:13px;
-  margin-bottom:19px
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 19px;
 }
+
 .metric {
-  padding:19px;
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:var(--card)
+  padding: 19px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
 }
+
 .metric small {
-  display:block;
-  text-transform:uppercase;
-  font-size:9px;
-  font-weight:800;
-  margin-bottom:11px
+  display: block;
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 800;
+  margin-bottom: 11px;
 }
+
 .metric strong {
-  font-size:clamp(15px,2vw,23px);
-  overflow-wrap:anywhere
+  font-size: clamp(15px, 2vw, 23px);
+  overflow-wrap: anywhere;
 }
+
 .card {
-  border:1px solid var(--line);
-  border-radius:19px;
-  background:var(--card);
-  margin-bottom:20px;
-  overflow:hidden
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  background: var(--card);
+  margin-bottom: 20px;
+  overflow: hidden;
 }
-.pad {padding:19px}
+
+.pad { padding: 19px; }
+
 .card-head {
-  padding:16px 18px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.card-head strong {font-size:12px}
-.table-wrap {overflow:auto}
+
+.card-head strong { font-size: 12px; }
+.table-wrap { overflow: auto; }
+
 table {
-  width:100%;
-  min-width:650px;
-  border-collapse:collapse
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
 }
+
 th {
-  background:var(--hover);
-  color:var(--dim);
-  text-align:left;
-  text-transform:uppercase;
-  font-size:9px;
-  padding:13px 12px
+  background: var(--hover);
+  color: var(--dim);
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 9px;
+  padding: 13px 12px;
 }
+
 td {
-  border-top:1px solid var(--line);
-  padding:12px;
-  color:var(--mid);
-  font-size:11px;
-  vertical-align:middle
+  border-top: 1px solid var(--line);
+  padding: 12px;
+  color: var(--mid);
+  font-size: 11px;
+  vertical-align: middle;
 }
-td button {white-space:nowrap}
-.empty {text-align:center;padding:28px}
-.search,.field input,.field select,.field textarea {
-  background:var(--input);
-  border:1px solid var(--line);
-  border-radius:11px;
-  color:var(--text);
-  padding:12px;
-  font-size:12px;
-  min-width:0;
-  max-width:100%
-}
-.search {width:250px}
-.field {display:grid;gap:7px;margin-bottom:13px}
-.field label {
-  color:var(--dim);
-  font-size:10px;
-  text-transform:uppercase;
-  font-weight:800
-}
+
+td button { white-space: nowrap; }
+.empty { text-align: center; padding: 28px; }
+
+.search,
+.field input,
+.field select,
 .field textarea {
-  width:100%;
-  min-height:100px;
-  resize:vertical
+  background: var(--input);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  color: var(--text);
+  padding: 12px;
+  font-size: 12px;
+  min-width: 0;
+  max-width: 100%;
 }
-.field input,.field select {width:100%}
-.field option {background:var(--surface)}
+
+.search { width: 250px; }
+.field { display: grid; gap: 7px; margin-bottom: 13px; }
+
+.field label {
+  color: var(--dim);
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.field textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.field input, .field select { width: 100%; }
+.field option { background: var(--surface); }
+
 .grid2 {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
+
 .notice {
-  border:1px solid rgba(244,183,64,.28);
-  background:rgba(244,183,64,.07);
-  border-radius:12px;
-  color:var(--mid);
-  font-size:11px;
-  padding:14px;
-  line-height:1.7;
-  margin-bottom:19px
+  border: 1px solid rgba(244,183,64,.28);
+  background: rgba(244,183,64,.07);
+  border-radius: 12px;
+  color: var(--mid);
+  font-size: 11px;
+  padding: 14px;
+  line-height: 1.7;
+  margin-bottom: 19px;
 }
-.notice strong {color:var(--gold)}
+
+.notice strong { color: var(--gold); }
+
 .pill {
-  display:inline-block;
-  border-radius:30px;
-  padding:5px 9px;
-  font-size:9px;
-  font-weight:800;
-  background:var(--hover);
-  color:var(--soft)
+  display: inline-block;
+  border-radius: 30px;
+  padding: 5px 9px;
+  font-size: 9px;
+  font-weight: 800;
+  background: var(--hover);
+  color: var(--soft);
 }
-.pill.ok {color:var(--green)}
-.pill.bad {color:var(--red)}
-.pill.wait {color:var(--gold)}
+
+.pill.ok { color: var(--green); }
+.pill.bad { color: var(--red); }
+.pill.wait { color: var(--gold); }
+
 .modal-wrap {
-  position:fixed;
-  inset:0;
-  z-index:90;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(3,5,14,.77);
-  padding:17px
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3,5,14,.77);
+  padding: 17px;
 }
-.modal-wrap.open {display:flex}
+
+.modal-wrap.open { display: flex; }
+
 .modal {
-  width:min(480px,100%);
-  max-height:91vh;
-  overflow:auto;
-  background:var(--surface);
-  border:1px solid var(--line);
-  padding:22px;
-  border-radius:21px
+  width: min(480px, 100%);
+  max-height: 91vh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 22px;
+  border-radius: 21px;
 }
+
 .modal-head {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:14px
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
 }
-.modal-head h2 {margin:0}
+
+.modal-head h2 { margin: 0; }
+
 .actions {
-  display:flex;
-  gap:9px;
-  justify-content:flex-end;
-  flex-wrap:wrap
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
+
 .check {
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  font-size:11px;
-  color:var(--mid);
-  line-height:1.6;
-  margin:10px 0 16px
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--mid);
+  line-height: 1.6;
+  margin: 10px 0 16px;
 }
-.check input {accent-color:var(--blue)}
+
+.check input { accent-color: var(--blue); }
+
 .price-big {
-  font-size:25px;
-  font-weight:800;
-  color:var(--soft)
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--soft);
 }
+
 .preview {
-  padding:15px;
-  border:1px dashed var(--line);
-  border-radius:12px
+  padding: 15px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
 }
+
 .preview img {
-  max-width:100%;
-  max-height:170px;
-  display:block;
-  margin:auto
+  max-width: 100%;
+  max-height: 170px;
+  display: block;
+  margin: auto;
 }
+
 .preview p {
-  white-space:pre-wrap;
-  overflow-wrap:anywhere
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
+
 .toast-region {
-  position:fixed;
-  top:12px;
-  right:12px;
-  z-index:120;
-  width:min(350px,calc(100% - 24px));
-  pointer-events:none
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 120;
+  width: min(350px, calc(100% - 24px));
+  pointer-events: none;
 }
+
 .toast {
-  padding:14px;
-  margin-bottom:8px;
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-left:3px solid var(--red);
-  border-radius:12px;
-  box-shadow:0 14px 28px #0003;
-  font-size:11px
+  padding: 14px;
+  margin-bottom: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--red);
+  border-radius: 12px;
+  box-shadow: 0 14px 28px #0003;
+  font-size: 11px;
 }
-.toast.ok {border-left-color:var(--green)}
-.mobile-nav {display:none}
+
+.toast.ok { border-left-color: var(--green); }
+
+.mobile-nav { display: none; }
+
+.access-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  width: 100%;
+}
+
+.access-card {
+  width: min(460px, 100%);
+  padding: 30px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.access-card h2 { margin: 0 0 12px; }
+.access-card p { font-size: 12px; color: var(--mid); }
+.access-card .btn { display: inline-block; margin-top: 12px; }
+
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline:2px solid var(--soft);
-  outline-offset:2px
+  outline: 2px solid var(--soft);
+  outline-offset: 2px;
 }
+
 @media(max-width:940px) {
-  .sidebar {display:none}
-  .content {padding:20px 14px 110px}
+  .sidebar { display: none; }
+  .content { padding: 20px 14px 110px; }
+
   .mobile-nav {
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    display:flex;
-    justify-content:space-around;
-    background:var(--surface);
-    border-top:1px solid var(--line);
-    padding:10px 0 max(10px,env(safe-area-inset-bottom));
-    z-index:50
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+    z-index: 50;
   }
+
   .mobile-nav .nav-btn {
-    display:grid;
-    justify-items:center;
-    font-size:8px;
-    gap:3px;
-    padding:7px 3px
+    display: grid;
+    justify-items: center;
+    font-size: 8px;
+    gap: 3px;
+    padding: 7px 3px;
   }
-  .mobile-nav .nav-btn svg {width:18px}
+
+  .mobile-nav .nav-btn svg { width: 18px; }
 }
+
 @media(max-width:650px) {
-  .metrics {grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid2 {grid-template-columns:1fr}
-  .metric {padding:13px}
-  .metric strong {font-size:15px}
-  h1 {font-size:21px}
-  .search {width:100%}
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid2 { grid-template-columns: 1fr; }
+  .metric { padding: 13px; }
+  .metric strong { font-size: 15px; }
+  h1 { font-size: 21px; }
+  .search { width: 100%; }
 }
 </style>
 </head>
+
 <body>
-<div class="shell">
+
+<div id="accessScreen" class="access-screen">
+  <div class="access-card">
+    <div style="font-size:35px;margin-bottom:14px">🛡️</div>
+    <h2>Bigotic Admin</h2>
+    <p id="accessMessage">Verifying administrator access...</p>
+    <a class="btn soft" href="signin.html" id="accessSignIn" hidden>
+      Sign In
+    </a>
+    <a class="btn soft" href="dashboard.html" id="accessDashboard" hidden>
+      Customer Dashboard
+    </a>
+  </div>
+</div>
+
+<div class="shell" id="adminShell" hidden>
+
 <aside class="sidebar">
   <div class="brand">
-    <span class="logo"><i data-lucide="shield-check"></i></span>
+    <span class="logo">
+      <i data-lucide="shield-check"></i>
+    </span>
     BIGOTIC <b>ADMIN</b>
   </div>
+
   <nav class="side-nav" aria-label="Admin navigation">
     <button class="nav-btn active" data-tab="overview">
-      <i data-lucide="layout-dashboard"></i> Overview
+      <i data-lucide="layout-dashboard"></i>
+      Overview
     </button>
+
     <button class="nav-btn" data-tab="users">
-      <i data-lucide="users"></i> Users &amp; Wallets
+      <i data-lucide="users"></i>
+      Users &amp; Wallets
     </button>
+
     <button class="nav-btn" data-tab="profits">
-      <i data-lucide="trending-up"></i> Profit Ledger
+      <i data-lucide="trending-up"></i>
+      Profit Ledger
     </button>
+
     <button class="nav-btn" data-tab="pricing">
-      <i data-lucide="tags"></i> Data Plan Pricing
+      <i data-lucide="tags"></i>
+      Data Plan Pricing
     </button>
+
     <button class="nav-btn" data-tab="popup">
-      <i data-lucide="bell-ring"></i> Announcements
+      <i data-lucide="bell-ring"></i>
+      Announcements
     </button>
   </nav>
+
   <div class="side-footer">
-    <button class="btn soft" id="themeDesktop">Switch Theme</button>
-    <a class="btn soft" href="dashboard.html">Return to Dashboard</a>
+    <button class="btn soft" id="themeDesktop">
+      Switch Theme
+    </button>
+
+    <a class="btn soft" href="dashboard.html">
+      Return to Dashboard
+    </a>
   </div>
 </aside>
-<div id="content" class="content" hidden>
-  <header class="top">
-    <div>
-      <h1 id="pageTitle">System Overview</h1>
-      <p id="pageDescription">Operational metrics and platform activity</p>
-    </div>
-    <div class="toolbar">
-      <span class="tag" id="syncLabel">Awaiting sync</span>
-      <button class="icon-btn" id="themeMobile" aria-label="Switch theme">
-        <i data-lucide="sun-moon"></i>
-      </button>
-      <button class="icon-btn" id="refreshBtn" aria-label="Refresh records">
-        <i data-lucide="refresh-cw"></i>
-      </button>
-    </div>
-  </header>
-  <!-- OVERVIEW -->
-  <section class="tab active" id="overview">
-    <div class="metrics">
-      <div class="metric">
-        <small>Registered Users</small>
-        <strong id="metricUsers">—</strong>
-      </div>
-      <div class="metric">
-        <small>Wallet Liability</small>
-        <strong id="metricLiability">—</strong>
-      </div>
-      <div class="metric">
-        <small>Recorded Sales</small>
-        <strong id="metricSales">—</strong>
-      </div>
-      <div class="metric">
-        <small>Tracked Profit</small>
-        <strong id="metricProfit">—</strong>
-      </div>
-    </div>
-    <p class="notice">
-      <strong>Accounting:</strong> Figures are calculated from returned
-      transactions and are not a bank-reconciled statement.
-      Pending and failed entries are excluded.
+
+<div id="content" class="content">
+
+<header class="top">
+  <div>
+    <h1 id="pageTitle">System Overview</h1>
+    <p id="pageDescription">
+      Operational metrics and platform activity
     </p>
-    <div class="card">
-      <div class="card-head">
-        <strong>Recent Platform Activity</strong>
-        <button class="btn soft" id="exportTransactions">Export CSV</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Customer</th><th>Service</th><th>Amount</th>
-              <th>Status</th><th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="recentBody"></tbody>
-        </table>
+  </div>
+
+  <div class="toolbar">
+    <span class="tag" id="syncLabel">Awaiting sync</span>
+
+    <button class="icon-btn" id="themeMobile" aria-label="Switch theme">
+      <i data-lucide="sun-moon"></i>
+    </button>
+
+    <button class="icon-btn" id="refreshBtn" aria-label="Refresh records">
+      <i data-lucide="refresh-cw"></i>
+    </button>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+
+<section class="tab active" id="overview">
+
+  <div class="metrics">
+    <div class="metric">
+      <small>Registered Users</small>
+      <strong id="metricUsers">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Wallet Liability</small>
+      <strong id="metricLiability">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Recorded Sales</small>
+      <strong id="metricSales">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Tracked Profit</small>
+      <strong id="metricProfit">—</strong>
+    </div>
+  </div>
+
+  <p class="notice">
+    <strong>Accounting:</strong>
+    Figures are calculated from returned transactions and are not
+    a bank-reconciled statement. Pending and failed entries are excluded.
+  </p>
+
+  <div class="card">
+    <div class="card-head">
+      <strong>Recent Platform Activity</strong>
+      <button class="btn soft" id="exportTransactions">
+        Export CSV
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="recentBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- USERS -->
+
+<section class="tab" id="users">
+  <div class="card">
+    <div class="card-head">
+      <strong>Users &amp; Wallets</strong>
+      <input
+        class="search"
+        id="userSearch"
+        type="search"
+        placeholder="Search users"
+      >
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Wallet Balance</th>
+            <th>Dedicated Account</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- PROFITS -->
+
+<section class="tab" id="profits">
+
+  <div class="metrics" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <div class="metric">
+      <small>Tracked Profit</small>
+      <strong id="ledgerProfit">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Profit Records</small>
+      <strong id="profitCount">—</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <strong>Profit Audit Ledger</strong>
+
+      <div class="toolbar">
+        <input
+          class="search"
+          id="profitSearch"
+          type="search"
+          placeholder="Search profits"
+        >
+        <button class="btn soft" id="exportProfits">
+          Export CSV
+        </button>
       </div>
     </div>
-  </section>
-  <!-- USERS -->
-  <section class="tab" id="users">
-    <div class="card">
-      <div class="card-head">
-        <strong>Users &amp; Wallets</strong>
-        <input class="search" id="userSearch" type="search"
-               placeholder="Search users">
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Customer</th><th>Email</th><th>Wallet Balance</th>
-              <th>Dedicated Account</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="usersBody"></tbody>
-        </table>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Details</th>
+            <th>Sale</th>
+            <th>Profit</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="profitsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- DATA PRICING -->
+
+<section class="tab" id="pricing">
+
+  <div class="notice">
+    <strong>Fixed-profit pricing:</strong>
+    Selling price = verified MobileSub supplier cost + fixed profit.
+    Update supplier costs manually when necessary.
+    Review each imported plan before enabling customer purchases.
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <small>Total Plans</small>
+      <strong id="pricingTotal">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Enabled</small>
+      <strong id="pricingEnabled">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Disabled</small>
+      <strong id="pricingDisabled">—</strong>
+    </div>
+
+    <div class="metric">
+      <small>Need Review</small>
+      <strong id="pricingReview">—</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <strong>Data Plan Catalogue</strong>
+
+      <div class="toolbar">
+        <input
+          class="search"
+          id="pricingSearch"
+          type="search"
+          placeholder="Network, name or plan ID"
+        >
+        <button class="btn soft" id="reloadPricing">
+          Reload
+        </button>
       </div>
     </div>
-  </section>
-  <!-- PROFITS -->
-  <section class="tab" id="profits">
-    <div class="metrics" style="grid-template-columns:repeat(2,minmax(0,1fr))">
-      <div class="metric">
-        <small>Tracked Profit</small>
-        <strong id="ledgerProfit">—</strong>
-      </div>
-      <div class="metric">
-        <small>Profit Records</small>
-        <strong id="profitCount">—</strong>
-      </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Plan ID / Network</th>
+            <th>Bundle / Validity</th>
+            <th>Supplier Cost</th>
+            <th>Fixed Profit</th>
+            <th>Customer Price</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="pricingBody"></tbody>
+      </table>
     </div>
-    <div class="card">
-      <div class="card-head">
-        <strong>Profit Audit Ledger</strong>
-        <div class="toolbar">
-          <input class="search" id="profitSearch" type="search"
-                 placeholder="Search profits">
-          <button class="btn soft" id="exportProfits">Export CSV</button>
+  </div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+
+<section class="tab" id="popup">
+  <div class="grid2">
+
+    <div class="card pad">
+      <h2>Customer Announcement</h2>
+
+      <form id="popupForm">
+        <div class="field">
+          <label for="popupText">Message</label>
+          <textarea id="popupText" maxlength="3000"></textarea>
         </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Customer</th><th>Service</th><th>Details</th>
-              <th>Sale</th><th>Profit</th><th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="profitsBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-  <!-- PRICING -->
-  <section class="tab" id="pricing">
-    <div class="notice">
-      <strong>Fixed-profit pricing:</strong>
-      Selling price = verified MobileSub supplier cost + fixed profit.
-      Without a supplier pricing API, update costs manually.
-      All imported plans must be reviewed before enabling.
-      Disabled plans are blocked by Server V2.
-    </div>
-    <div class="metrics">
-      <div class="metric">
-        <small>Total Plans</small>
-        <strong id="pricingTotal">—</strong>
-      </div>
-      <div class="metric">
-        <small>Enabled</small>
-        <strong id="pricingEnabled">—</strong>
-      </div>
-      <div class="metric">
-        <small>Disabled</small>
-        <strong id="pricingDisabled">—</strong>
-      </div>
-      <div class="metric">
-        <small>Need Review</small>
-        <strong id="pricingReview">—</strong>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-head">
-        <strong>Data Plan Catalogue</strong>
-        <div class="toolbar">
-          <input class="search" id="pricingSearch" type="search"
-                 placeholder="Network, name or plan ID">
-          <button class="btn soft" id="reloadPricing">Reload</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Plan ID / Network</th>
-              <th>Bundle / Validity</th>
-              <th>Supplier Cost</th>
-              <th>Fixed Profit</th>
-              <th>Customer Price</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="pricingBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-  <!-- ANNOUNCEMENTS -->
-  <section class="tab" id="popup">
-    <div class="grid2">
-      <div class="card pad">
-        <h2>Customer Announcement</h2>
-        <form id="popupForm">
-          <div class="field">
-            <label for="popupText">Message</label>
-            <textarea id="popupText" maxlength="3000"></textarea>
-          </div>
-          <div class="field">
-            <label for="popupImageUrl">HTTPS Image URL (optional)</label>
-            <input id="popupImageUrl" type="url">
-          </div>
-          <div class="field">
-            <label for="popupLink">HTTPS Action Link (optional)</label>
-            <input id="popupLink" type="url">
-          </div>
-          <label class="check">
-            <input type="checkbox" id="popupActive">
-            Publish as active announcement
+
+        <div class="field">
+          <label for="popupImageUrl">
+            HTTPS Image URL (optional)
           </label>
-          <div class="actions">
-            <button class="btn soft" id="popupReset" type="button">Reload</button>
-            <button class="btn" id="popupSave" type="submit">Save Announcement</button>
-          </div>
-        </form>
-      </div>
-      <div class="card pad">
-        <h2>Customer Preview</h2>
-        <div class="preview">
-          <img id="previewImage" alt="Announcement preview" hidden>
-          <p id="previewText">Your message appears here.</p>
-          <a id="previewLink" target="_blank" rel="noopener noreferrer" hidden>
-            Learn more ↗
-          </a>
+          <input id="popupImageUrl" type="url">
         </div>
-        <p class="muted" style="font-size:11px">
-          Preview only. The customer dashboard displays the published announcement.
-        </p>
-      </div>
+
+        <div class="field">
+          <label for="popupLink">
+            HTTPS Action Link (optional)
+          </label>
+          <input id="popupLink" type="url">
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="popupActive">
+          Publish as active announcement
+        </label>
+
+        <div class="actions">
+          <button class="btn soft" id="popupReset" type="button">
+            Reload
+          </button>
+          <button class="btn" id="popupSave" type="submit">
+            Save Announcement
+          </button>
+        </div>
+      </form>
     </div>
-  </section>
+
+    <div class="card pad">
+      <h2>Customer Preview</h2>
+
+      <div class="preview">
+        <img id="previewImage" alt="Announcement preview" hidden>
+        <p id="previewText">Your message appears here.</p>
+        <a id="previewLink" target="_blank" rel="noopener noreferrer" hidden>
+          Learn more ↗
+        </a>
+      </div>
+
+      <p class="muted" style="font-size:11px">
+        Preview only. The customer dashboard displays the published announcement.
+      </p>
+    </div>
+  </div>
+</section>
+
 </div>
 </div>
 
 <!-- MOBILE NAVIGATION -->
+
 <nav class="mobile-nav" id="mobileNav" hidden>
   <button class="nav-btn active" data-tab="overview">
     <i data-lucide="layout-dashboard"></i>Home
   </button>
+
   <button class="nav-btn" data-tab="users">
     <i data-lucide="users"></i>Users
   </button>
+
   <button class="nav-btn" data-tab="profits">
     <i data-lucide="trending-up"></i>Profit
   </button>
+
   <button class="nav-btn" data-tab="pricing">
     <i data-lucide="tags"></i>Prices
   </button>
+
   <button class="nav-btn" data-tab="popup">
     <i data-lucide="bell"></i>Notice
   </button>
 </nav>
 
-<!-- WALLET ADJUSTMENT MODAL -->
-<div id="walletModal" class="modal-wrap" role="dialog"
-     aria-modal="true" aria-labelledby="walletTitle">
+<!-- WALLET MODAL -->
+
+<div id="walletModal" class="modal-wrap"
+     role="dialog" aria-modal="true"
+     aria-labelledby="walletTitle">
   <div class="modal">
     <div class="modal-head">
       <h2 id="walletTitle">Adjust Customer Wallet</h2>
-      <button class="icon-btn" data-close="walletModal" aria-label="Close">✕</button>
+      <button class="icon-btn" data-close="walletModal">✕</button>
     </div>
+
     <p id="walletTarget" class="notice"></p>
+
     <form id="walletForm">
       <div class="field">
         <label for="walletMode">Action</label>
@@ -686,11 +929,18 @@ select:focus-visible {
           <option value="debit">Debit wallet</option>
         </select>
       </div>
+
       <div class="field">
         <label for="walletAmount">Amount (₦)</label>
-        <input id="walletAmount" type="number" min="0.01"
-               step="0.01" required>
+        <input
+          id="walletAmount"
+          type="number"
+          min="0.01"
+          step="0.01"
+          required
+        >
       </div>
+
       <div class="field">
         <label for="walletReason">Reason</label>
         <select id="walletReason">
@@ -700,108 +950,154 @@ select:focus-visible {
           <option value="other">Other authorized adjustment</option>
         </select>
       </div>
+
       <div class="field">
         <label for="walletReference">Bank / transaction reference</label>
         <input id="walletReference" maxlength="100">
       </div>
+
       <div class="field">
         <label for="walletNote">Internal note</label>
-        <textarea id="walletNote" maxlength="350" rows="2"></textarea>
+        <textarea id="walletNote" maxlength="350"></textarea>
       </div>
+
       <label class="check">
         <input id="walletVerified" type="checkbox" required>
-        I independently verified the customer's identity, the relevant
-        financial records, and that this adjustment will not duplicate
-        a credit or debit.
+        I independently verified the customer's identity,
+        the financial records and that this adjustment
+        will not duplicate a credit or debit.
       </label>
+
       <p class="notice">
-        Never trust a payment screenshot alone. Check the actual bank
-        transaction or internal adjustment records.
+        Never trust a payment screenshot alone.
+        Check the actual bank or internal transaction records.
       </p>
+
       <div class="actions">
-        <button class="btn soft" data-close="walletModal" type="button">Cancel</button>
-        <button class="btn" type="submit">Review Adjustment</button>
+        <button class="btn soft" data-close="walletModal" type="button">
+          Cancel
+        </button>
+        <button class="btn" type="submit">
+          Review Adjustment
+        </button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- FINAL WALLET CONFIRMATION -->
-<div id="confirmModal" class="modal-wrap" role="dialog"
-     aria-modal="true" aria-labelledby="confirmTitle">
+<!-- WALLET CONFIRMATION -->
+
+<div id="confirmModal" class="modal-wrap"
+     role="dialog" aria-modal="true"
+     aria-labelledby="confirmTitle">
   <div class="modal">
     <div class="modal-head">
       <h2 id="confirmTitle">Confirm Wallet Adjustment</h2>
-      <button class="icon-btn" data-close="confirmModal" aria-label="Close">✕</button>
+      <button class="icon-btn" data-close="confirmModal">✕</button>
     </div>
-    <p class="notice" id="confirmSummary" style="white-space:pre-wrap"></p>
+
+    <p class="notice" id="confirmSummary"
+       style="white-space:pre-wrap"></p>
+
     <div class="actions">
-      <button class="btn soft" id="backToWallet">Back</button>
-      <button class="btn danger" id="executeWallet">Confirm &amp; Apply</button>
+      <button class="btn soft" id="backToWallet">
+        Back
+      </button>
+      <button class="btn danger" id="executeWallet">
+        Confirm &amp; Apply
+      </button>
     </div>
   </div>
 </div>
 
-<!-- PLAN PRICE EDITOR -->
-<div id="priceModal" class="modal-wrap" role="dialog"
-     aria-modal="true" aria-labelledby="priceTitle">
+<!-- PRICING EDITOR -->
+
+<div id="priceModal" class="modal-wrap"
+     role="dialog" aria-modal="true"
+     aria-labelledby="priceTitle">
   <div class="modal">
+
     <div class="modal-head">
       <h2 id="priceTitle">Edit Data Plan</h2>
-      <button class="icon-btn" data-close="priceModal" aria-label="Close">✕</button>
+      <button class="icon-btn" data-close="priceModal">✕</button>
     </div>
+
     <p class="notice" id="priceDescription"></p>
+
     <form id="priceForm">
+
       <div class="field">
         <label for="planName">Bundle Description</label>
         <input id="planName" maxlength="100" required>
       </div>
+
       <div class="grid2">
         <div class="field">
           <label for="planType">Plan Type</label>
           <input id="planType" maxlength="60" required>
         </div>
+
         <div class="field">
           <label for="planValidity">Validity</label>
           <input id="planValidity" maxlength="80" required>
         </div>
       </div>
+
       <div class="grid2">
         <div class="field">
           <label for="planCost">Verified Supplier Cost ₦</label>
-          <input id="planCost" inputmode="decimal" type="number"
-                 step="0.01" min="0.01" required>
+          <input id="planCost" type="number"
+                 inputmode="decimal" min="0.01"
+                 step="0.01" required>
         </div>
+
         <div class="field">
           <label for="planProfit">Fixed Profit ₦</label>
-          <input id="planProfit" inputmode="decimal" type="number"
-                 step="0.01" min="0" required>
+          <input id="planProfit" type="number"
+                 inputmode="decimal" min="0"
+                 step="0.01" required>
         </div>
       </div>
+
       <div class="card pad">
         <small>Calculated Customer Price</small>
         <div class="price-big" id="planSalePreview">—</div>
       </div>
+
       <label class="check">
         <input type="checkbox" id="planEnabled">
-        Enable this plan for customer purchases after verifying
-        provider ID, name, validity and cost.
+        Enable this plan for customer purchases only
+        after verifying the supplier plan ID, cost,
+        name and validity.
       </label>
+
       <div class="actions">
-        <button class="btn soft" data-close="priceModal" type="button">
+        <button class="btn soft"
+                data-close="priceModal"
+                type="button">
           Cancel
         </button>
-        <button class="btn" type="submit" id="savePlanBtn">
+        <button class="btn"
+                type="submit"
+                id="savePlanBtn">
           Save Pricing
         </button>
       </div>
+
     </form>
   </div>
 </div>
-<div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+<div id="toastRegion"
+     class="toast-region"
+     aria-live="polite"></div>
 
 <script>
 'use strict';
+
+/* ====================================
+   BIGOTIC DATA V2 — PRODUCTION CONFIG
+==================================== */
 
 const API = 'https://bigoticdata-backend.onrender.com';
 const $ = id => document.getElementById(id);
@@ -810,195 +1106,334 @@ let me = null;
 let users = [];
 let transactions = [];
 let plans = [];
+
 let selectedUser = null;
 let pendingWallet = null;
 let editingPlan = null;
+
 let busyWallet = false;
 let busyPrice = false;
 let pricingLoaded = false;
 let activeTab = 'overview';
 
-const naira = n => '₦' + Number(n || 0).toLocaleString(
-  'en-NG', {
+/* ====================================
+   FORMATTERS
+==================================== */
+
+const naira = value =>
+  '₦' + Number(value || 0).toLocaleString('en-NG', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
+  });
+
+const num = value =>
+  Number.isFinite(Number(value)) ? Number(value) : 0;
+
+const text = (value, fallback = '—') =>
+  value === null ||
+  value === undefined ||
+  String(value).trim() === ''
+    ? fallback
+    : String(value);
+
+function formatDate(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return '—';
   }
-);
 
-const num = n => Number.isFinite(Number(n)) ? Number(n) : 0;
-
-const text = (v, f = '—') =>
-  v === null || v === undefined || String(v).trim() === '' ? f : String(v);
-
-const formatDate = d => {
-  const t = new Date(d);
-  return Number.isNaN(t.getTime())
-    ? '—'
-    : t.toLocaleString('en-NG', {
-        timeZone: 'Africa/Lagos',
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      });
-};
+  return date.toLocaleString('en-NG', {
+    timeZone: 'Africa/Lagos',
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
+}
 
 function icons() {
-  if (window.lucide) lucide.createIcons();
+  if (window.lucide) {
+    lucide.createIcons();
+  }
 }
 
-function notify(message, ok = false) {
-  const el = document.createElement('div');
-  el.className = 'toast' + (ok ? ' ok' : '');
-  el.textContent = String(message);
-  $('toastRegion').append(el);
-  setTimeout(() => el.remove(), 6000);
+function notify(message, success = false) {
+  const element = document.createElement('div');
+
+  element.className = 'toast' + (success ? ' ok' : '');
+  element.textContent = String(message);
+
+  $('toastRegion').append(element);
+
+  setTimeout(() => {
+    element.remove();
+  }, 6000);
 }
 
-/* ADMIN SESSION */
+/* ====================================
+   AUTHENTICATION
+==================================== */
+
 function session() {
   try {
-    const u = JSON.parse(localStorage.getItem('user') || 'null');
-    return u &&
-      typeof u.email === 'string' &&
-      typeof u.token === 'string' &&
-      u.token.trim()
-      ? u
-      : null;
-  } catch {
+    const saved = JSON.parse(
+      localStorage.getItem('user') || 'null'
+    );
+
+    if (
+      !saved ||
+      typeof saved.email !== 'string' ||
+      typeof saved.token !== 'string' ||
+      !saved.token.trim()
+    ) {
+      return null;
+    }
+
+    return saved;
+
+  } catch (error) {
     return null;
   }
 }
 
-async function req(path, opts = {}) {
-  const c = new AbortController();
-  const timeout = setTimeout(() => c.abort(), 25000);
+function accessError(message, signIn = false) {
+  $('adminShell').hidden = true;
+  $('mobileNav').hidden = true;
+  $('accessScreen').hidden = false;
+
+  $('accessMessage').textContent = message;
+  $('accessSignIn').hidden = !signIn;
+  $('accessDashboard').hidden = false;
+}
+
+async function req(path, options = {}) {
+  if (!me || !me.token) {
+    throw new Error('No authenticated session');
+  }
+
+  const controller = new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 25000);
 
   try {
-    const h = new Headers(opts.headers || {});
-    h.set('Authorization', 'Bearer ' + me.token.trim());
-    h.set('Accept', 'application/json');
+    const headers = new Headers(options.headers || {});
 
-    const r = await fetch(API + path, {
-      ...opts,
-      headers: h,
-      signal: c.signal,
+    headers.set(
+      'Authorization',
+      'Bearer ' + me.token.trim()
+    );
+
+    headers.set('Accept', 'application/json');
+
+    const response = await fetch(API + path, {
+      ...options,
+      headers,
+      signal: controller.signal,
       cache: 'no-store'
     });
 
-    const d = await r.json().catch(() => ({}));
+    const data = await response.json().catch(() => ({}));
 
-    if (!r.ok) {
-      throw new Error(text(d.error || d.message, 'HTTP ' + r.status));
+    if (!response.ok) {
+      const message = text(
+        data.error || data.message,
+        'Request failed'
+      );
+
+      throw new Error(
+        'HTTP ' + response.status + ': ' + message
+      );
     }
 
-    return d;
+    return data;
+
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out');
+    }
+
+    throw error;
+
   } finally {
     clearTimeout(timeout);
   }
 }
 
-const jsonBody = x => ({
+const jsonBody = value => ({
   method: 'POST',
-  headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(x)
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(value)
 });
 
-/* THEME */
+/* ====================================
+   THEME
+==================================== */
+
 function theme() {
-  const next = document.documentElement.dataset.theme === 'light'
-    ? 'dark' : 'light';
+  const next =
+    document.documentElement.dataset.theme === 'light'
+      ? 'dark'
+      : 'light';
 
   document.documentElement.dataset.theme = next;
 
   try {
     localStorage.setItem('bigotic-theme', next);
-  } catch {}
+  } catch (error) {}
 }
 
 $('themeDesktop').onclick = theme;
 $('themeMobile').onclick = theme;
 
-/* NAVIGATION */
+/* ====================================
+   NAVIGATION
+==================================== */
+
 const pageTitles = {
-  overview: ['System Overview', 'Operational metrics and platform activity'],
-  users: ['Users & Wallets', 'Review customer wallets and authorized adjustments'],
-  profits: ['Profit Ledger', 'Completed transaction margins'],
-  pricing: ['Data Plan Pricing', 'Fixed-profit MobileSub catalogue and availability'],
-  popup: ['Announcements', 'Manage global customer dashboard notices']
+  overview: [
+    'System Overview',
+    'Operational metrics and platform activity'
+  ],
+  users: [
+    'Users & Wallets',
+    'Review customer wallets and authorized adjustments'
+  ],
+  profits: [
+    'Profit Ledger',
+    'Completed transaction margins'
+  ],
+  pricing: [
+    'Data Plan Pricing',
+    'Fixed-profit MobileSub catalogue and availability'
+  ],
+  popup: [
+    'Announcements',
+    'Manage global customer dashboard notices'
+  ]
 };
 
-function switchTab(t) {
-  if (!pageTitles[t]) return;
+function switchTab(tab) {
+  if (!pageTitles[tab]) {
+    return;
+  }
 
-  activeTab = t;
+  activeTab = tab;
 
-  document.querySelectorAll('.tab').forEach(x => {
-    x.classList.toggle('active', x.id === t);
+  document.querySelectorAll('.tab').forEach(element => {
+    element.classList.toggle(
+      'active',
+      element.id === tab
+    );
   });
 
-  document.querySelectorAll('[data-tab]').forEach(x => {
-    x.classList.toggle('active', x.dataset.tab === t);
+  document.querySelectorAll('[data-tab]').forEach(element => {
+    element.classList.toggle(
+      'active',
+      element.dataset.tab === tab
+    );
   });
 
-  $('pageTitle').textContent = pageTitles[t][0];
-  $('pageDescription').textContent = pageTitles[t][1];
+  $('pageTitle').textContent = pageTitles[tab][0];
+  $('pageDescription').textContent = pageTitles[tab][1];
 
-  if (t === 'pricing' && !pricingLoaded) loadPricing();
+  if (tab === 'pricing' && !pricingLoaded) {
+    loadPricing();
+  }
 }
 
-document.querySelectorAll('[data-tab]').forEach(b => {
-  b.onclick = () => switchTab(b.dataset.tab);
+document.querySelectorAll('[data-tab]').forEach(button => {
+  button.onclick = () => switchTab(button.dataset.tab);
 });
 
-/* TABLE HELPERS */
-function cell(tr, value) {
-  const el = document.createElement('td');
-  el.textContent = text(value);
-  tr.append(el);
-  return el;
+/* ====================================
+   TABLE HELPERS
+==================================== */
+
+function cell(row, value) {
+  const element = document.createElement('td');
+  element.textContent = text(value);
+
+  row.append(element);
+
+  return element;
 }
 
-function empty(id, cols, msg) {
+function empty(id, columns, message) {
   const body = $(id);
+
   body.replaceChildren();
 
-  const tr = document.createElement('tr');
-  const td = document.createElement('td');
+  const row = document.createElement('tr');
+  const column = document.createElement('td');
 
-  td.colSpan = cols;
-  td.className = 'empty';
-  td.textContent = msg;
+  column.colSpan = columns;
+  column.className = 'empty';
+  column.textContent = message;
 
-  tr.append(td);
-  body.append(tr);
+  row.append(column);
+  body.append(row);
 }
 
-const txStatus = t => String(t.status || 'Recorded').toLowerCase();
+const txStatus = transaction =>
+  String(transaction.status || 'Recorded').toLowerCase();
 
-const good = t => ![
-  'pending', 'processing', 'failed', 'reversed',
-  'cancelled', 'rejected', 'unconfirmed'
-].includes(txStatus(t));
+const good = transaction =>
+  ![
+    'pending',
+    'processing',
+    'failed',
+    'reversed',
+    'cancelled',
+    'rejected',
+    'unconfirmed'
+  ].includes(txStatus(transaction));
 
-const funding = t => [
-  'fund', 'funding', 'admin fund', 'deposit', 'credit',
-  'referral bonus', 'refund', 'wallet funding'
-].includes(String(t.type || '').toLowerCase());
-
-/* OVERVIEW */
-function renderOverview() {
-  const filtered = transactions.filter(good);
-
-  const sales = filtered.filter(t => !funding(t))
-    .reduce((s, t) => s + num(t.amount), 0);
-
-  const profit = filtered.reduce(
-    (s, t) => s + num(t.profit), 0
+const funding = transaction =>
+  [
+    'fund',
+    'funding',
+    'admin fund',
+    'deposit',
+    'credit',
+    'referral bonus',
+    'refund',
+    'wallet funding'
+  ].includes(
+    String(transaction.type || '').toLowerCase()
   );
 
-  $('metricUsers').textContent = users.length.toLocaleString();
+/* ====================================
+   OVERVIEW
+==================================== */
+
+function renderOverview() {
+  const completed = transactions.filter(good);
+
+  const sales = completed
+    .filter(transaction => !funding(transaction))
+    .reduce(
+      (sum, transaction) =>
+        sum + num(transaction.amount),
+      0
+    );
+
+  const profit = completed.reduce(
+    (sum, transaction) =>
+      sum + num(transaction.profit),
+    0
+  );
+
+  $('metricUsers').textContent =
+    users.length.toLocaleString();
 
   $('metricLiability').textContent = naira(
-    users.reduce((s, u) => s + num(u.balance), 0)
+    users.reduce(
+      (sum, user) => sum + num(user.balance),
+      0
+    )
   );
 
   $('metricSales').textContent = naira(sales);
@@ -1008,139 +1443,202 @@ function renderOverview() {
   const body = $('recentBody');
   body.replaceChildren();
 
-  transactions.slice(0, 10).forEach(t => {
-    const tr = document.createElement('tr');
+  transactions.slice(0, 10).forEach(transaction => {
+    const row = document.createElement('tr');
 
     [
-      t.email, t.type, naira(t.amount),
-      txStatus(t), formatDate(t.date || t.createdAt)
-    ].forEach(v => cell(tr, v));
+      transaction.email,
+      transaction.type,
+      naira(transaction.amount),
+      txStatus(transaction),
+      formatDate(
+        transaction.date || transaction.createdAt
+      )
+    ].forEach(value => cell(row, value));
 
-    body.append(tr);
+    body.append(row);
   });
 
   if (!transactions.length) {
-    empty('recentBody', 5, 'No transactions recorded');
+    empty(
+      'recentBody',
+      5,
+      'No transactions recorded'
+    );
   }
 }
 
-/* USERS */
-function renderUsers() {
-  const q = $('userSearch').value.trim().toLowerCase();
-  const body = $('usersBody');
+/* ====================================
+   USERS AND WALLETS
+==================================== */
 
+function renderUsers() {
+  const query = $('userSearch').value
+    .trim()
+    .toLowerCase();
+
+  const body = $('usersBody');
   body.replaceChildren();
 
-  const found = users.filter(u =>
-    [u.email, u.fullName, u.username, u.phone].some(
-      v => String(v || '').toLowerCase().includes(q)
+  const matches = users.filter(user =>
+    [
+      user.email,
+      user.fullName,
+      user.username,
+      user.phone
+    ].some(value =>
+      String(value || '')
+        .toLowerCase()
+        .includes(query)
     )
   ).slice(0, 200);
 
-  found.forEach(u => {
-    const tr = document.createElement('tr');
+  matches.forEach(user => {
+    const row = document.createElement('tr');
 
     [
-      u.fullName || u.username,
-      u.email,
-      naira(u.balance),
-      u.virtualAccountNumber || 'Not generated'
-    ].forEach(v => cell(tr, v));
+      user.fullName || user.username,
+      user.email,
+      naira(user.balance),
+      user.virtualAccountNumber || 'Not generated'
+    ].forEach(value => cell(row, value));
 
     const action = document.createElement('td');
-    const btn = document.createElement('button');
+    const button = document.createElement('button');
 
-    btn.className = 'btn soft';
-    btn.textContent = 'Adjust Wallet';
-    btn.onclick = () => openWallet(u);
+    button.className = 'btn soft';
+    button.textContent = 'Adjust Wallet';
+    button.onclick = () => openWallet(user);
 
-    action.append(btn);
-    tr.append(action);
-    body.append(tr);
+    action.append(button);
+    row.append(action);
+    body.append(row);
   });
 
-  if (!found.length) empty('usersBody', 5, 'No matching users');
+  if (!matches.length) {
+    empty(
+      'usersBody',
+      5,
+      'No matching users'
+    );
+  }
 }
 
-/* PROFIT LEDGER */
-function profitRows() {
-  const q = $('profitSearch').value.trim().toLowerCase();
+$('userSearch').oninput = renderUsers;
 
-  return transactions.filter(t =>
-    good(t) &&
-    num(t.profit) !== 0 &&
-    [t.email, t.type, t.details, t.reference].some(
-      v => String(v || '').toLowerCase().includes(q)
+/* ====================================
+   PROFIT LEDGER
+==================================== */
+
+function profitRows() {
+  const query = $('profitSearch').value
+    .trim()
+    .toLowerCase();
+
+  return transactions.filter(transaction =>
+    good(transaction) &&
+    num(transaction.profit) !== 0 &&
+    [
+      transaction.email,
+      transaction.type,
+      transaction.details,
+      transaction.reference
+    ].some(value =>
+      String(value || '')
+        .toLowerCase()
+        .includes(query)
     )
   );
 }
 
 function renderProfit() {
   const records = profitRows();
+
+  $('profitCount').textContent =
+    transactions.filter(transaction =>
+      good(transaction) &&
+      num(transaction.profit) !== 0
+    ).length.toLocaleString();
+
   const body = $('profitsBody');
-
-  $('profitCount').textContent = transactions.filter(
-    t => good(t) && num(t.profit) !== 0
-  ).length.toLocaleString();
-
   body.replaceChildren();
 
-  records.slice(0, 250).forEach(t => {
-    const tr = document.createElement('tr');
+  records.slice(0, 250).forEach(transaction => {
+    const row = document.createElement('tr');
 
     [
-      t.email,
-      t.type,
-      t.details || t.recipient,
-      naira(t.amount),
-      naira(t.profit),
-      formatDate(t.date || t.createdAt)
-    ].forEach(v => cell(tr, v));
+      transaction.email,
+      transaction.type,
+      transaction.details || transaction.recipient,
+      naira(transaction.amount),
+      naira(transaction.profit),
+      formatDate(
+        transaction.date || transaction.createdAt
+      )
+    ].forEach(value => cell(row, value));
 
-    body.append(tr);
+    body.append(row);
   });
 
   if (!records.length) {
-    empty('profitsBody', 6, 'No matching profit records');
+    empty(
+      'profitsBody',
+      6,
+      'No matching profit records'
+    );
   }
 }
 
-$('userSearch').oninput = renderUsers;
 $('profitSearch').oninput = renderProfit;
 
-/* RELOAD ADMIN DATA */
+/* ====================================
+   LOAD ADMIN DATA
+==================================== */
+
 async function refresh() {
   $('refreshBtn').disabled = true;
   $('syncLabel').textContent = 'Refreshing...';
 
   try {
-    const [u, t] = await Promise.all([
-      req('/admin/users'),
-      req('/admin/transactions')
-    ]);
+    const [userData, transactionData] =
+      await Promise.all([
+        req('/admin/users'),
+        req('/admin/transactions')
+      ]);
 
-    if (!Array.isArray(u) || !Array.isArray(t)) {
-      throw new Error('Unexpected backend response');
+    if (
+      !Array.isArray(userData) ||
+      !Array.isArray(transactionData)
+    ) {
+      throw new Error(
+        'Unexpected admin response from backend'
+      );
     }
 
-    users = u;
-    transactions = t.sort(
-      (a, b) => new Date(b.date || 0) - new Date(a.date || 0)
+    users = userData;
+
+    transactions = transactionData.sort(
+      (a, b) =>
+        new Date(b.date || b.createdAt || 0) -
+        new Date(a.date || a.createdAt || 0)
     );
 
     renderOverview();
     renderUsers();
     renderProfit();
 
-    $('syncLabel').textContent = 'Updated ' +
+    $('syncLabel').textContent =
+      'Updated ' +
       new Date().toLocaleTimeString('en-NG', {
         hour: '2-digit',
         minute: '2-digit'
       });
 
-  } catch (e) {
-    notify('Admin refresh failed: ' + e.message);
+  } catch (error) {
     $('syncLabel').textContent = 'Refresh failed';
+    notify(
+      'Admin refresh failed: ' + error.message
+    );
   } finally {
     $('refreshBtn').disabled = false;
   }
@@ -1148,16 +1646,25 @@ async function refresh() {
 
 $('refreshBtn').onclick = refresh;
 
-/* CSV EXPORTS */
-function exportCSV(filename, heads, rows) {
-  const quote = v => {
-    let s = String(v ?? '');
-    if (/^[\s]*[=+@\-\t\r]/.test(s)) s = "'" + s;
-    return '"' + s.replace(/"/g, '""') + '"';
+/* ====================================
+   CSV EXPORT
+==================================== */
+
+function exportCSV(filename, headings, rows) {
+  const quote = value => {
+    let result = String(value ?? '');
+
+    if (/^\s*[=+@\-\t\r]/.test(result)) {
+      result = "'" + result;
+    }
+
+    return '"' +
+      result.replace(/"/g, '""') +
+      '"';
   };
 
-  const content = [heads, ...rows]
-    .map(a => a.map(quote).join(','))
+  const content = [headings, ...rows]
+    .map(row => row.map(quote).join(','))
     .join('\r\n');
 
   const url = URL.createObjectURL(
@@ -1166,35 +1673,68 @@ function exportCSV(filename, heads, rows) {
     })
   );
 
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.append(a);
-  a.click();
-  a.remove();
+  const link = document.createElement('a');
 
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  link.href = url;
+  link.download = filename;
+
+  document.body.append(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
 }
 
 $('exportTransactions').onclick = () => exportCSV(
   'bigotic-transactions.csv',
-  ['Email', 'Service', 'Amount', 'Profit', 'Status', 'Reference', 'Date'],
-  transactions.map(t => [
-    t.email, t.type, t.amount, t.profit,
-    txStatus(t), t.reference, t.date
+  [
+    'Email',
+    'Service',
+    'Amount',
+    'Profit',
+    'Status',
+    'Reference',
+    'Date'
+  ],
+  transactions.map(transaction => [
+    transaction.email,
+    transaction.type,
+    transaction.amount,
+    transaction.profit,
+    txStatus(transaction),
+    transaction.reference,
+    transaction.date || transaction.createdAt
   ])
 );
 
 $('exportProfits').onclick = () => exportCSV(
   'bigotic-profits.csv',
-  ['Email', 'Service', 'Amount', 'Profit', 'Details', 'Reference', 'Date'],
-  profitRows().map(t => [
-    t.email, t.type, t.amount, t.profit,
-    t.details, t.reference, t.date
+  [
+    'Email',
+    'Service',
+    'Amount',
+    'Profit',
+    'Details',
+    'Reference',
+    'Date'
+  ],
+  profitRows().map(transaction => [
+    transaction.email,
+    transaction.type,
+    transaction.amount,
+    transaction.profit,
+    transaction.details,
+    transaction.reference,
+    transaction.date || transaction.createdAt
   ])
 );
 
-/* MODALS */
+/* ====================================
+   MODALS
+==================================== */
+
 function showModal(id) {
   $(id).classList.add('open');
 }
@@ -1203,47 +1743,86 @@ function hideModal(id) {
   $(id).classList.remove('open');
 }
 
-document.querySelectorAll('[data-close]').forEach(b => {
-  b.onclick = () => {
-    if (!busyWallet && !busyPrice) hideModal(b.dataset.close);
+document.querySelectorAll('[data-close]').forEach(button => {
+  button.onclick = () => {
+    if (!busyWallet && !busyPrice) {
+      hideModal(button.dataset.close);
+    }
   };
 });
 
-/* WALLET ADJUSTMENTS */
-function openWallet(u) {
-  if (busyWallet) return;
+window.addEventListener('keydown', event => {
+  if (
+    event.key === 'Escape' &&
+    !busyWallet &&
+    !busyPrice
+  ) {
+    document.querySelectorAll('.modal-wrap.open')
+      .forEach(element => {
+        element.classList.remove('open');
+      });
+  }
+});
 
-  selectedUser = u;
+/* ====================================
+   WALLET MANAGEMENT
+==================================== */
+
+function openWallet(user) {
+  if (busyWallet) {
+    return;
+  }
+
+  selectedUser = user;
+  pendingWallet = null;
+
   $('walletForm').reset();
 
   $('walletTarget').textContent =
-    `${u.fullName || u.username || 'Customer'} · ${u.email} · ` +
-    `Current balance ${naira(u.balance)}`;
+    `${user.fullName || user.username || 'Customer'} · ` +
+    `${user.email} · ` +
+    `Current balance ${naira(user.balance)}`;
 
   showModal('walletModal');
 }
 
-$('walletForm').onsubmit = e => {
-  e.preventDefault();
-  if (!selectedUser || busyWallet) return;
+$('walletForm').onsubmit = event => {
+  event.preventDefault();
+
+  if (!selectedUser || busyWallet) {
+    return;
+  }
 
   const value = Number($('walletAmount').value);
   const mode = $('walletMode').value;
   const reason = $('walletReason').value;
-  const reference = $('walletReference').value.trim();
-  const note = $('walletNote').value.trim();
+
+  const reference =
+    $('walletReference').value.trim();
+
+  const note =
+    $('walletNote').value.trim();
 
   if (
     !Number.isFinite(value) ||
     value <= 0 ||
-    Math.round(value * 100) !== value * 100
+    Math.abs(
+      Math.round(value * 100) - value * 100
+    ) > 0.000001
   ) {
-    notify('Enter a valid amount with up to two decimal places');
+    notify(
+      'Enter a valid amount with up to two decimal places'
+    );
     return;
   }
 
-  if (mode === 'debit' && value > num(selectedUser.balance)) {
-    notify('Debit exceeds the displayed wallet balance. Refresh first.');
+  if (
+    mode === 'debit' &&
+    value > num(selectedUser.balance)
+  ) {
+    notify(
+      'Debit exceeds the displayed wallet balance. Refresh first.'
+    );
     return;
   }
 
@@ -1252,7 +1831,9 @@ $('walletForm').onsubmit = e => {
     reason === 'manual' &&
     !/^[A-Za-z0-9_\/-]{6,100}$/.test(reference)
   ) {
-    notify('Enter the verified bank transfer reference (at least 6 characters).');
+    notify(
+      'Enter a verified bank transaction reference of at least six characters.'
+    );
     return;
   }
 
@@ -1282,28 +1863,38 @@ $('walletForm').onsubmit = e => {
 };
 
 $('backToWallet').onclick = () => {
-  if (busyWallet) return;
+  if (busyWallet) {
+    return;
+  }
+
   hideModal('confirmModal');
   showModal('walletModal');
 };
 
 $('executeWallet').onclick = async () => {
-  if (!pendingWallet || busyWallet) return;
+  if (!pendingWallet || busyWallet) {
+    return;
+  }
 
   busyWallet = true;
   $('executeWallet').disabled = true;
 
   try {
-    const data = await req(
+    const response = await req(
       '/admin/fund-wallet',
       jsonBody(pendingWallet)
     );
 
-    if (data.success !== true) {
-      throw new Error('Backend did not confirm adjustment');
+    if (response.success !== true) {
+      throw new Error(
+        'Backend did not confirm wallet adjustment'
+      );
     }
 
-    notify('Wallet adjustment recorded; reconcile financial records.', true);
+    notify(
+      'Wallet adjustment recorded. Reconcile financial records.',
+      true
+    );
 
     hideModal('confirmModal');
     hideModal('walletModal');
@@ -1313,49 +1904,65 @@ $('executeWallet').onclick = async () => {
 
     await refresh();
 
-  } catch (e) {
+  } catch (error) {
     notify(
       'Adjustment unconfirmed: ' +
-      e.message +
+      error.message +
       '. Verify records before retrying.'
     );
+
   } finally {
     busyWallet = false;
     $('executeWallet').disabled = false;
   }
 };
 
-/* ANNOUNCEMENTS */
-function https(s) {
-  if (!s) return '';
+/* ====================================
+   ANNOUNCEMENTS
+==================================== */
+
+function https(value) {
+  if (!value) {
+    return '';
+  }
 
   try {
-    const u = new URL(s);
-    return u.protocol === 'https:' ? u.href : '';
-  } catch {
+    const url = new URL(value);
+
+    return url.protocol === 'https:'
+      ? url.href
+      : '';
+
+  } catch (error) {
     return '';
   }
 }
 
 function previewPopup() {
-  const img = https($('popupImageUrl').value.trim());
-  const link = https($('popupLink').value.trim());
+  const imageUrl = https(
+    $('popupImageUrl').value.trim()
+  );
+
+  const actionUrl = https(
+    $('popupLink').value.trim()
+  );
 
   $('previewText').textContent =
-    $('popupText').value.trim() || 'Your message appears here.';
+    $('popupText').value.trim() ||
+    'Your message appears here.';
 
-  $('previewImage').hidden = !img;
+  $('previewImage').hidden = !imageUrl;
 
-  if (img) {
-    $('previewImage').src = img;
+  if (imageUrl) {
+    $('previewImage').src = imageUrl;
   } else {
     $('previewImage').removeAttribute('src');
   }
 
-  $('previewLink').hidden = !link;
+  $('previewLink').hidden = !actionUrl;
 
-  if (link) {
-    $('previewLink').href = link;
+  if (actionUrl) {
+    $('previewLink').href = actionUrl;
   } else {
     $('previewLink').removeAttribute('href');
   }
@@ -1368,6 +1975,7 @@ function previewPopup() {
   'popupActive'
 ].forEach(id => {
   $(id).oninput = previewPopup;
+  $(id).onchange = previewPopup;
 });
 
 $('previewImage').onerror = () => {
@@ -1376,139 +1984,205 @@ $('previewImage').onerror = () => {
 
 async function loadPopup() {
   try {
-    const p = await req('/admin/popup');
+    const popup = await req('/admin/popup');
 
-    $('popupText').value = p?.text || '';
-    $('popupImageUrl').value = p?.imageUrl || '';
-    $('popupLink').value = p?.link || '';
-    $('popupActive').checked = !!p?.active;
+    $('popupText').value = popup?.text || '';
+    $('popupImageUrl').value = popup?.imageUrl || '';
+    $('popupLink').value = popup?.link || '';
+
+    $('popupActive').checked =
+      Boolean(popup?.active);
 
     previewPopup();
 
-  } catch (e) {
-    notify('Announcement load failed: ' + e.message);
+  } catch (error) {
+    notify(
+      'Announcement load failed: ' + error.message
+    );
   }
 }
 
 $('popupReset').onclick = loadPopup;
 
-$('popupForm').onsubmit = async e => {
-  e.preventDefault();
+$('popupForm').onsubmit = async event => {
+  event.preventDefault();
 
-  const text = $('popupText').value.trim();
-  const imageUrl = $('popupImageUrl').value.trim();
-  const link = $('popupLink').value.trim();
-  const active = $('popupActive').checked;
+  const message = $('popupText').value.trim();
+
+  const imageUrl =
+    $('popupImageUrl').value.trim();
+
+  const link =
+    $('popupLink').value.trim();
+
+  const active =
+    $('popupActive').checked;
 
   if (
     (imageUrl && !https(imageUrl)) ||
     (link && !https(link))
   ) {
-    notify('Image and action links must be HTTPS URLs');
+    notify(
+      'Image and action links must use HTTPS'
+    );
     return;
   }
 
-  if (active && !text && !imageUrl) {
-    notify('Add text or image before publishing');
+  if (
+    active &&
+    !message &&
+    !imageUrl
+  ) {
+    notify(
+      'Add a message or image before publishing'
+    );
     return;
   }
 
   $('popupSave').disabled = true;
 
   try {
-    const d = await req(
+    const response = await req(
       '/admin/popup',
-      jsonBody({text, imageUrl, link, active})
+      jsonBody({
+        text: message,
+        imageUrl,
+        link,
+        active
+      })
     );
 
-    if (d.success !== true) {
-      throw new Error('Save not confirmed');
+    if (response.success !== true) {
+      throw new Error(
+        'Backend did not confirm announcement save'
+      );
     }
 
     notify('Announcement saved', true);
+
     await loadPopup();
 
-  } catch (e) {
-    notify('Announcement not saved: ' + e.message);
+  } catch (error) {
+    notify(
+      'Announcement not saved: ' + error.message
+    );
+
   } finally {
     $('popupSave').disabled = false;
   }
 };
 
-/* DATA PLAN PRICING */
-function validMoney(v, zero = false) {
-  const s = String(v).trim();
+/* ====================================
+   DATA PLAN PRICING
+==================================== */
 
-  if (!/^\d+(\.\d{1,2})?$/.test(s)) return null;
+function validMoney(value, allowZero = false) {
+  const stringValue = String(value).trim();
 
-  const n = Number(s);
+  if (!/^\d+(\.\d{1,2})?$/.test(stringValue)) {
+    return null;
+  }
 
-  return Number.isFinite(n) &&
-    n <= 10000000 &&
-    (zero ? n >= 0 : n > 0)
-    ? Math.round(n * 100) / 100
-    : null;
+  const amount = Number(stringValue);
+
+  if (
+    !Number.isFinite(amount) ||
+    amount > 10000000
+  ) {
+    return null;
+  }
+
+  if (allowZero ? amount < 0 : amount <= 0) {
+    return null;
+  }
+
+  return Math.round(amount * 100) / 100;
 }
 
 function renderPrices() {
-  const q = $('pricingSearch').value.trim().toLowerCase();
+  const query = $('pricingSearch').value
+    .trim()
+    .toLowerCase();
 
-  const shown = plans.filter(p =>
-    [p.id, p.networkName, p.name, p.type, p.validity].some(
-      v => String(v ?? '').toLowerCase().includes(q)
+  const visiblePlans = plans.filter(plan =>
+    [
+      plan.id,
+      plan.networkName,
+      plan.name,
+      plan.type,
+      plan.validity
+    ].some(value =>
+      String(value ?? '')
+        .toLowerCase()
+        .includes(query)
     )
   );
 
-  $('pricingTotal').textContent = plans.length;
-  $('pricingEnabled').textContent = plans.filter(p => p.enabled).length;
-  $('pricingDisabled').textContent = plans.filter(p => !p.enabled).length;
-  $('pricingReview').textContent = plans.filter(p => p.needsReview).length;
+  $('pricingTotal').textContent =
+    plans.length;
+
+  $('pricingEnabled').textContent =
+    plans.filter(plan => plan.enabled).length;
+
+  $('pricingDisabled').textContent =
+    plans.filter(plan => !plan.enabled).length;
+
+  $('pricingReview').textContent =
+    plans.filter(plan => plan.needsReview).length;
 
   const body = $('pricingBody');
+
   body.replaceChildren();
 
-  shown.forEach(p => {
-    const tr = document.createElement('tr');
+  visiblePlans.forEach(plan => {
+    const row = document.createElement('tr');
 
     [
-      `${p.id} · ${p.networkName}`,
-      `${p.name} · ${p.type} · ${p.validity}`,
-      naira(p.cost),
-      naira(p.fixedProfit),
-      naira(p.price)
-    ].forEach(v => cell(tr, v));
+      `${plan.id} · ${plan.networkName}`,
+      `${plan.name} · ${plan.type} · ${plan.validity}`,
+      naira(plan.cost),
+      naira(plan.fixedProfit),
+      naira(plan.price)
+    ].forEach(value => cell(row, value));
 
-    const stat = document.createElement('td');
+    const statusCell = document.createElement('td');
     const badge = document.createElement('span');
 
-    badge.className = 'pill ' + (p.enabled ? 'ok' : 'bad');
+    badge.className =
+      'pill ' + (plan.enabled ? 'ok' : 'bad');
 
-    badge.textContent = p.needsReview
+    badge.textContent = plan.needsReview
       ? 'Review needed'
-      : p.enabled ? 'Enabled' : 'Disabled';
+      : plan.enabled
+        ? 'Enabled'
+        : 'Disabled';
 
-    stat.append(badge);
-    tr.append(stat);
+    statusCell.append(badge);
+    row.append(statusCell);
 
-    const action = document.createElement('td');
-    const btn = document.createElement('button');
+    const actionCell = document.createElement('td');
+    const button = document.createElement('button');
 
-    btn.className = 'btn soft';
-    btn.textContent = 'Manage';
-    btn.onclick = () => editPlan(p.id);
+    button.className = 'btn soft';
+    button.textContent = 'Manage';
 
-    action.append(btn);
-    tr.append(action);
-    body.append(tr);
+    button.onclick = () => {
+      editPlan(plan.id);
+    };
+
+    actionCell.append(button);
+    row.append(actionCell);
+
+    body.append(row);
   });
 
-  if (!shown.length) {
+  if (!visiblePlans.length) {
     empty(
       'pricingBody',
       7,
       pricingLoaded
         ? 'No matching plans'
-        : 'Pricing unavailable until Server V2 is ready'
+        : 'Pricing catalogue unavailable'
     );
   }
 }
@@ -1516,23 +2190,38 @@ function renderPrices() {
 async function loadPricing() {
   pricingLoaded = false;
   $('reloadPricing').disabled = true;
-  empty('pricingBody', 7, 'Loading catalogue...');
+
+  empty(
+    'pricingBody',
+    7,
+    'Loading catalogue...'
+  );
 
   try {
-    const d = await req('/admin/data-plans');
+    const response = await req('/admin/data-plans');
 
-    if (d.success !== true || !Array.isArray(d.plans)) {
-      throw new Error('Unexpected catalogue response');
+    if (
+      response.success !== true ||
+      !Array.isArray(response.plans)
+    ) {
+      throw new Error(
+        'Unexpected pricing catalogue response'
+      );
     }
 
-    plans = d.plans;
+    plans = response.plans;
     pricingLoaded = true;
+
     renderPrices();
 
-  } catch (e) {
+  } catch (error) {
     plans = [];
     renderPrices();
-    notify('Pricing unavailable: ' + e.message);
+
+    notify(
+      'Pricing unavailable: ' + error.message
+    );
+
   } finally {
     $('reloadPricing').disabled = false;
   }
@@ -1542,19 +2231,28 @@ $('reloadPricing').onclick = loadPricing;
 $('pricingSearch').oninput = renderPrices;
 
 function previewPrice() {
-  const c = validMoney($('planCost').value);
-  const p = validMoney($('planProfit').value, true);
+  const cost = validMoney(
+    $('planCost').value
+  );
 
-  const price = c !== null && p !== null
-    ? Math.round((c + p) * 100) / 100
-    : null;
+  const profit = validMoney(
+    $('planProfit').value,
+    true
+  );
+
+  const price =
+    cost !== null && profit !== null
+      ? Math.round((cost + profit) * 100) / 100
+      : null;
 
   $('planSalePreview').textContent =
-    price === null ? 'Enter valid values' : naira(price);
+    price === null
+      ? 'Enter valid values'
+      : naira(price);
 
   return {
-    cost: c,
-    fixedProfit: p,
+    cost,
+    fixedProfit: profit,
     price
   };
 }
@@ -1564,38 +2262,66 @@ function previewPrice() {
 });
 
 function editPlan(id) {
-  const p = plans.find(x => x.id === id);
-  if (!p || busyPrice) return;
+  const plan = plans.find(item =>
+    String(item.id) === String(id)
+  );
 
-  editingPlan = {...p};
+  if (!plan || busyPrice) {
+    return;
+  }
+
+  editingPlan = {...plan};
 
   $('priceTitle').textContent =
-    'Edit ' + p.networkName + ' Plan #' + p.id;
+    `Edit ${plan.networkName} Plan #${plan.id}`;
 
   $('priceDescription').textContent =
-    `Verify this provider plan ID: ${p.id} · ${p.networkName} · ` +
-    `${p.name} · ${p.type} · ${p.validity}`;
+    `Verify provider plan ID: ${plan.id} · ` +
+    `${plan.networkName} · ${plan.name} · ` +
+    `${plan.type} · ${plan.validity}`;
 
-  $('planName').value = p.name;
-  $('planType').value = p.type;
-  $('planValidity').value = p.validity;
-  $('planCost').value = p.cost;
-  $('planProfit').value = p.fixedProfit;
-  $('planEnabled').checked = !!p.enabled;
+  $('planName').value =
+    plan.name || '';
+
+  $('planType').value =
+    plan.type || '';
+
+  $('planValidity').value =
+    plan.validity || '';
+
+  $('planCost').value =
+    plan.cost;
+
+  $('planProfit').value =
+    plan.fixedProfit;
+
+  $('planEnabled').checked =
+    Boolean(plan.enabled);
 
   previewPrice();
   showModal('priceModal');
 }
 
-$('priceForm').onsubmit = async e => {
-  e.preventDefault();
-  if (!editingPlan || busyPrice) return;
+$('priceForm').onsubmit = async event => {
+  event.preventDefault();
 
-  const v = previewPrice();
-  const name = $('planName').value.trim();
-  const type = $('planType').value.trim();
-  const validity = $('planValidity').value.trim();
-  const enabled = $('planEnabled').checked;
+  if (!editingPlan || busyPrice) {
+    return;
+  }
+
+  const values = previewPrice();
+
+  const name =
+    $('planName').value.trim();
+
+  const type =
+    $('planType').value.trim();
+
+  const validity =
+    $('planValidity').value.trim();
+
+  const enabled =
+    $('planEnabled').checked;
 
   if (
     !name ||
@@ -1604,33 +2330,37 @@ $('priceForm').onsubmit = async e => {
     name.length > 100 ||
     type.length > 60 ||
     validity.length > 80 ||
-    v.cost === null ||
-    v.fixedProfit === null ||
-    v.price === null ||
-    v.price > 10000000 ||
-    (enabled && v.fixedProfit <= 0)
+    values.cost === null ||
+    values.fixedProfit === null ||
+    values.price === null ||
+    values.price > 10000000 ||
+    (enabled && values.fixedProfit <= 0)
   ) {
     notify(
-      'Check cost, positive profit, name, type and validity before enabling'
+      'Check supplier cost, fixed profit, bundle name, type and validity.'
     );
     return;
   }
 
   const previous = editingPlan;
 
-  if (!confirm(
+  const approved = confirm(
     `Update ${previous.networkName} #${previous.id}?\n` +
-    `Cost: ${naira(v.cost)}\n` +
-    `Profit: ${naira(v.fixedProfit)}\n` +
-    `Customer price: ${naira(v.price)}\n` +
-    `${enabled ? 'ENABLE' : 'DISABLE'} plan`
-  )) return;
+    `Cost: ${naira(values.cost)}\n` +
+    `Profit: ${naira(values.fixedProfit)}\n` +
+    `Customer price: ${naira(values.price)}\n` +
+    `Status: ${enabled ? 'ENABLE' : 'DISABLE'}`
+  );
+
+  if (!approved) {
+    return;
+  }
 
   busyPrice = true;
   $('savePlanBtn').disabled = true;
 
   try {
-    const d = await req(
+    const response = await req(
       '/admin/data-plans/update',
       jsonBody({
         planId: previous.id,
@@ -1638,81 +2368,105 @@ $('priceForm').onsubmit = async e => {
         name,
         type,
         validity,
-        cost: v.cost,
-        fixedProfit: v.fixedProfit,
+        cost: values.cost,
+        fixedProfit: values.fixedProfit,
         enabled
       })
     );
 
-    if (d.success !== true || !d.plan) {
-      throw new Error('Backend did not confirm update');
+    if (
+      response.success !== true ||
+      !response.plan
+    ) {
+      throw new Error(
+        'Backend did not confirm pricing update'
+      );
     }
 
-    plans = plans.map(p =>
-      p.id === previous.id
-        ? {...p, ...d.plan}
-        : p
+    plans = plans.map(plan =>
+      String(plan.id) === String(previous.id)
+        ? {...plan, ...response.plan}
+        : plan
     );
 
     editingPlan = null;
     hideModal('priceModal');
-    renderPrices();
-    notify('Plan pricing saved', true);
 
-  } catch (err) {
-    notify('Pricing not saved: ' + err.message);
+    renderPrices();
+
+    notify(
+      'Plan pricing saved',
+      true
+    );
+
+  } catch (error) {
+    notify(
+      'Pricing not saved: ' + error.message
+    );
+
     await loadPricing();
+
   } finally {
     busyPrice = false;
     $('savePlanBtn').disabled = false;
   }
 };
 
-/* KEYBOARD */
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && !busyWallet && !busyPrice) {
-    document.querySelectorAll('.modal-wrap.open').forEach(
-      x => x.classList.remove('open')
-    );
-  }
-});
+/* ====================================
+   PRODUCTION ADMIN INITIALIZATION
 
-/* VERIFIED PRODUCTION ADMIN STARTUP */
+   Use protected admin API authorization.
+
+   Do NOT rely on /user-profile returning
+   a specific role/email object structure.
+==================================== */
+
 window.addEventListener('load', async () => {
   icons();
 
+  $('accessScreen').hidden = false;
+  $('adminShell').hidden = true;
+
+  $('accessMessage').textContent =
+    'Checking your administrator session...';
+
   me = session();
 
-  if (!me || !me.token || !me.email) {
-    window.location.replace('signin.html');
+  if (!me) {
+    accessError(
+      'Please sign in to your Bigotic Data account first.',
+      true
+    );
     return;
   }
 
   try {
-    const profile = await req(
-      '/user-profile?email=' +
-      encodeURIComponent(me.email)
-    );
+    /*
+      Verify admin access using the actual
+      protected Server V2 admin endpoint.
 
-    if (
-      !profile ||
-      profile.role !== 'admin' ||
-      String(profile.email).toLowerCase() !==
-      String(me.email).toLowerCase()
-    ) {
-      window.location.replace('dashboard.html');
-      return;
+      The BACKEND must enforce administrator
+      authorization on this endpoint.
+    */
+
+    const result = await req('/admin/users');
+
+    if (!Array.isArray(result)) {
+      throw new Error(
+        'Unexpected response from admin authorization endpoint'
+      );
     }
 
-    me = {
-      ...profile,
-      token: me.token
-    };
+    // Admin authorization successful.
+    users = result;
 
-    $('content').hidden = false;
+    $('accessScreen').hidden = true;
+    $('adminShell').hidden = false;
     $('mobileNav').hidden = false;
 
     switchTab('overview');
+
+    renderUsers();
 
     await Promise.all([
       refresh(),
@@ -1722,18 +2476,37 @@ window.addEventListener('load', async () => {
 
   } catch (error) {
     console.error(
-      'Admin verification failed:',
+      'Admin verification error:',
       error
     );
 
-    $('content').hidden = true;
-    $('mobileNav').hidden = true;
+    const message = String(error.message || '');
 
-    notify(
-      'Unable to verify admin access. Please sign in again.'
-    );
+    if (
+      message.includes('401') ||
+      /unauthorized|token expired|invalid token/i.test(message)
+    ) {
+      accessError(
+        'Your login session has expired. Please sign in again.',
+        true
+      );
+
+    } else if (
+      message.includes('403') ||
+      /forbidden|admin access denied|not an admin/i.test(message)
+    ) {
+      accessError(
+        'Your account is signed in but does not have administrator permission.'
+      );
+
+    } else {
+      accessError(
+        'Unable to verify administrator access: ' + message
+      );
+    }
   }
 });
 </script>
+
 </body>
 </html>
