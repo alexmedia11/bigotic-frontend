@@ -38,8 +38,8 @@ html[data-theme="dark"] {
     --card:#0f1638;
     --border:rgba(148,163,255,.14);
     --high:#eef1ff;
-    --mid:#aab0d6;
-    --dim:#737aa7;
+    --mid:#c8d3f8;
+    --dim:#a6b5e1;
     --hover:rgba(124,155,255,.08);
     --nav:rgba(6,9,21,.9);
     --shadow:0 20px 45px -14px rgba(0,0,0,.5);
@@ -51,8 +51,8 @@ html[data-theme="light"] {
     --card:#fff;
     --border:#e5e8f5;
     --high:#10152b;
-    --mid:#5b6178;
-    --dim:#9399bc;
+    --mid:#39435c;
+    --dim:#596781;
     --hover:rgba(59,107,255,.06);
     --nav:rgba(255,255,255,.93);
     --shadow:0 20px 45px -20px rgba(30,58,138,.16);
@@ -1074,6 +1074,62 @@ main {
         animation:none!important;
     }
 }
+
+/* BIGOTIC DATA — IMPROVED TEXT READABILITY */
+
+html[data-theme="dark"] {
+    --soft:#a7bdff;
+}
+
+html[data-theme="light"] {
+    --soft:#315bdc;
+}
+
+.section-title,
+.greeting small,
+.side-heading,
+.service span,
+.bottom-item {
+    font-size:11px;
+}
+
+.section-title,
+.side-heading,
+.greeting small {
+    letter-spacing:.08em;
+}
+
+.referral-box input {
+    font-size:11px;
+    color:var(--high);
+}
+
+.funding-heading small,
+.account-row small,
+.funding-note,
+.referral-card p,
+.broadcast p,
+.modal-copy {
+    font-size:12px;
+    line-height:1.65;
+}
+
+.side-link,
+.notification-item p {
+    font-size:12px;
+}
+
+.service span,
+.bottom-item,
+.side-heading,
+.section-title {
+    color:var(--mid);
+}
+
+html[data-theme="light"] .referral-box input {
+    color:#18243f;
+}
+
 </style>
 </head>
 
@@ -2178,7 +2234,7 @@ function updateProfileUI(profile) {
 
     $('refLink').value =
         profile.username
-            ? 'https://bigoticdata.com.ng/signup.html?ref=' +
+            ? 'https://bigoticdata.com.ng/signup?ref=' +
               encodeURIComponent(profile.username)
             : 'Username required for referral link';
 
