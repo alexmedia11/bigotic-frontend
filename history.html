@@ -38,8 +38,8 @@ html[data-theme="dark"] {
     --card: #0f1638;
     --border: rgba(148,163,255,.14);
     --high: #eef1ff;
-    --mid: #aab0d6;
-    --dim: #737aa7;
+    --mid: #c8d3f8;
+    --dim: #a6b5e1;
     --hover: rgba(124,155,255,.07);
     --nav: rgba(6,9,21,.9);
     --input: rgba(255,255,255,.04);
@@ -52,8 +52,8 @@ html[data-theme="light"] {
     --card: #fff;
     --border: #e6e9f6;
     --high: #0f1428;
-    --mid: #5b6178;
-    --dim: #8b94b0;
+    --mid: #39435c;
+    --dim: #596781;
     --hover: rgba(59,107,255,.05);
     --nav: rgba(255,255,255,.9);
     --input: #f5f7fd;
@@ -790,7 +790,7 @@ main {
 }
 
 .receipt-detail-label {
-    color: #8993ad;
+    color: #52617d;
     font-size: 10.5px;
     font-weight: 600;
     flex-shrink: 0;
@@ -848,7 +848,7 @@ main {
 }
 
 .receipt-message p {
-    color: #8993ad;
+    color: #52617d;
     margin: 0;
     font-size: 9.5px;
     line-height: 1.8;
@@ -2881,17 +2881,33 @@ function openReceipt(tx) {
 
     const original = tx.original;
 
-    const provider = text(
-        original.provider ??
-        original.network ??
-        original.cablename
-    );
+    // Public-facing brand; wholesale supplier remains internal.
+    addReceiptRow('Service Platform', 'Bigotic Data');
 
-    if (provider) {
-        addReceiptRow(
-            'Provider / Network',
-            provider
-        );
+    const mobileType = normalizeType(tx.type);
+    const isMobile = ['airtime', 'data', 'buy airtime', 'buy data']
+        .includes(mobileType);
+
+    if (isMobile) {
+        const raw = text(
+            original.network ??
+            (mobileType === 'airtime' ? tx.details : '')
+        ).trim().toLowerCase();
+
+        const networks = {
+            '1': 'MTN',
+            '2': 'Airtel',
+            '3': 'Glo',
+            '4': '9mobile',
+            'mtn': 'MTN',
+            'airtel': 'Airtel',
+            'glo': 'Glo',
+            '9mobile': '9mobile'
+        };
+
+        if (networks[raw]) {
+            addReceiptRow('Network', networks[raw]);
+        }
     }
 
     const quantity = text(
@@ -3073,6 +3089,7 @@ function receiptText(tx) {
         'bigoticdata.com.ng',
         '',
         'Status: ' + STATUS_LABELS[tx.status],
+        'Service Platform: Bigotic Data',
         'Type: ' + tx.label,
         'Direction: ' + (
             tx.direction === 'in'
