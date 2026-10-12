@@ -2,2227 +2,2285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#060915">
-    <title>Bigotic Data | Buy Exam Pins</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        (function () {
-            try {
-                const saved = localStorage.getItem("bigotic-theme");
-                document.documentElement.setAttribute(
-                    "data-theme",
-                    saved === "light" ? "light" : "dark"
-                );
-            } catch (e) {
-                document.documentElement.setAttribute("data-theme", "dark");
-            }
-        })();
-    </script>
-
-    <style>
-        :root {
-            --electric: #3b6bff;
-            --electric-soft: #7c9bff;
-            --cyan: #28e0d6;
-            --emerald: #34d399;
-            --rose: #f97066;
-            --gold: #f4b740;
-        }
-
-        html[data-theme="dark"] {
-            --bg: #060915;
-            --bg-elevated: #0d1330;
-            --card: #0f1638;
-            --card-2: linear-gradient(165deg, #121a42, #0d1330);
-            --border: rgba(148,163,255,0.14);
-            --text-hi: #eef1ff;
-            --text-mid: #aab0d6;
-            --text-dim: #6b71a0;
-            --nav-bg: rgba(6,9,21,0.78);
-            --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07);
-            --input-bg: rgba(255,255,255,.04);
-        }
-
-        html[data-theme="light"] {
-            --bg: #f2f4fb;
-            --bg-elevated: #ffffff;
-            --card: #ffffff;
-            --card-2: linear-gradient(165deg, #ffffff, #f6f8ff);
-            --border: #e6e9f6;
-            --text-hi: #0f1428;
-            --text-mid: #5b6178;
-            --text-dim: #98a0c2;
-            --nav-bg: rgba(255,255,255,.85);
-            --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05);
-            --input-bg: #f5f7fd;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: "Inter", sans-serif;
-            background: var(--bg);
-            color: var(--text-hi);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 65px;
-            transition: background .35s ease, color .35s ease;
-        }
-
-        .font-display {
-            font-family: "Space Grotesk", sans-serif;
-        }
-
-        .font-mono {
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        button {
-            font-family: inherit;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-
-        /* TOP BAR */
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 18px;
-            background: var(--nav-bg);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: var(--text-mid);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .back-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .topbar-title {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .theme-quick {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-mid);
-        }
-
-        /* MAIN CONTENT */
-
-        main {
-            max-width: 460px;
-            margin: 0 auto;
-            padding: 22px 18px 0;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            padding: 26px 22px;
-        }
-
-        .card h2 {
-            font-size: 18px;
-            font-weight: 700;
-            text-align: center;
-            margin: 0 0 6px;
-        }
-
-        .card-subtitle {
-            font-size: 11px;
-            color: var(--text-dim);
-            line-height: 1.6;
-            text-align: center;
-            margin: 0 0 24px;
-        }
-
-        /* STEPPER */
-
-        .stepper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-            padding: 0 4px;
-        }
-
-        .step-node {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .step-dot {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 800;
-            background: var(--row-hover);
-            color: var(--text-dim);
-            border: 1px solid var(--border);
-            transition: all .3s ease;
-        }
-
-        .step-dot.current {
-            background: linear-gradient(135deg, var(--electric), #1d3fbf);
-            color: #fff;
-            border-color: transparent;
-            box-shadow: 0 0 0 4px rgba(59,107,255,.18);
-        }
-
-        .step-dot.done {
-            background: linear-gradient(135deg, var(--emerald), #1fae7d);
-            color: #fff;
-            border-color: transparent;
-        }
-
-        .step-label {
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            color: var(--text-dim);
-        }
-
-        .step-label.current {
-            color: var(--electric-soft);
-        }
-
-        .step-label.done {
-            color: var(--emerald);
-        }
-
-        .step-line {
-            height: 2px;
-            flex-grow: 1;
-            margin: 0 6px 18px;
-            background: var(--border);
-            border-radius: 2px;
-            transition: background .3s ease;
-        }
-
-        .step-line.active {
-            background: linear-gradient(
-                90deg,
-                var(--emerald),
-                var(--electric)
-            );
-        }
-
-        /* PANES */
-
-        .pane {
-            display: none;
-        }
-
-        .pane.active {
-            display: block;
-        }
-
-        .field-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--electric-soft);
-            margin: 0 0 10px;
-            display: block;
-        }
-
-        /* EXAM CARDS */
-
-        .exam-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            width: 100%;
-            padding: 15px;
-            border-radius: 16px;
-            border: 1.5px solid var(--border);
-            background: var(--input-bg);
-            cursor: pointer;
-            margin-bottom: 11px;
-            transition: all .2s ease;
-            text-align: left;
-        }
-
-        .exam-card:hover {
-            border-color: var(--electric-soft);
-        }
-
-        .exam-card.active {
-            border-color: var(--electric);
-            background: rgba(59,107,255,.1);
-            box-shadow: 0 8px 20px -8px rgba(59,107,255,.4);
-        }
-
-        .exam-card:focus-visible,
-        button:focus-visible {
-            outline: 2px solid var(--electric-soft);
-            outline-offset: 3px;
-        }
-
-        .exam-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
-        }
-
-        .exam-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-
-        .exam-badge.waec {
-            background: rgba(59,107,255,.16);
-            color: var(--electric-soft);
-        }
-
-        .exam-badge.neco {
-            background: rgba(52,211,153,.16);
-            color: var(--emerald);
-        }
-
-        .exam-badge.nabteb {
-            background: rgba(244,183,64,.16);
-            color: var(--gold);
-        }
-
-        .exam-name {
-            font-size: 13px;
-            font-weight: 800;
-            margin: 0;
-            color: var(--text-hi);
-        }
-
-        .exam-sub {
-            font-size: 9.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-            color: var(--text-dim);
-            margin: 2px 0 0;
-        }
-
-        .exam-price {
-            font-size: 13px;
-            font-weight: 800;
-            font-family: "JetBrains Mono", monospace;
-            color: var(--text-hi);
-            white-space: nowrap;
-        }
-
-        /* BUTTONS */
-
-        .submit-btn,
-        .ghost-btn {
-            border: none;
-            cursor: pointer;
-            padding: 15px;
-            border-radius: 14px;
-            font-size: 11.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform .2s ease, opacity .2s ease;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, var(--electric), #1d3fbf);
-            color: #fff;
-            box-shadow: 0 14px 30px -10px rgba(59,107,255,.45);
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
-
-        .submit-btn:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-        }
-
-        .ghost-btn {
-            background: var(--row-hover);
-            color: var(--text-mid);
-            border: 1px solid var(--border);
-        }
-
-        .ghost-btn:disabled {
-            opacity: .6;
-            cursor: not-allowed;
-        }
-
-        .spinner {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,.35);
-            border-top-color: #fff;
-            animation: spin .7s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* QUANTITY */
-
-        .stepper-input {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .qty-btn {
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--input-bg);
-            color: var(--text-hi);
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background .2s ease;
-        }
-
-        .qty-btn:hover {
-            background: var(--row-hover);
-        }
-
-        .stepper-input input {
-            flex: 1;
-            width: 100%;
-            min-width: 0;
-            text-align: center;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 13px;
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text-hi);
-            outline: none;
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        .stepper-input input:focus {
-            border-color: var(--electric-soft);
-        }
-
-        .qty-note {
-            font-size: 10px;
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin: 12px 0 0;
-        }
-
-        /* PRICE */
-
-        .price-box {
-            background: linear-gradient(
-                135deg,
-                var(--electric),
-                #1d3fbf 70%,
-                var(--cyan)
-            );
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            margin-top: 18px;
-            color: #fff;
-        }
-
-        .price-box .lbl {
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            color: rgba(255,255,255,.75);
-            margin: 0;
-        }
-
-        .price-box .val {
-            font-size: 22px;
-            font-weight: 700;
-            font-family: "JetBrains Mono", monospace;
-            margin: 3px 0 0;
-        }
-
-        .price-box .rate {
-            font-size: 10px;
-            margin: 7px 0 0;
-            color: rgba(255,255,255,.8);
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-row .ghost-btn {
-            flex: .4;
-        }
-
-        .btn-row .submit-btn {
-            flex: .6;
-            margin-top: 0;
-        }
-
-        /* REVIEW SUMMARY */
-
-        .summary-box {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px 18px;
-            margin-bottom: 20px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 8px 0;
-            font-size: 12px;
-        }
-
-        .summary-row .k {
-            color: var(--text-dim);
-            font-weight: 600;
-        }
-
-        .summary-row .v {
-            font-weight: 700;
-            color: var(--text-hi);
-            text-align: right;
-        }
-
-        .summary-row.total {
-            border-top: 1px solid var(--border);
-            margin-top: 4px;
-            padding-top: 12px;
-        }
-
-        .summary-row.total .v {
-            color: var(--electric-soft);
-            font-size: 15px;
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        /* TRANSACTION PIN */
-
-        .pin-area {
-            position: relative;
-            text-align: center;
-            padding: 7px 0 3px;
-            cursor: text;
-        }
-
-        .pin-dots {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 6px 0 4px;
-        }
-
-        .pin-dots span {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--border);
-            transition: background .2s ease, transform .2s ease;
-        }
-
-        .pin-dots span.filled {
-            background: var(--electric);
-            transform: scale(1.15);
-        }
-
-        #transaction-pin {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .pin-note {
-            font-size: 10px;
-            color: var(--text-dim);
-            margin: 13px 0 0;
-        }
-
-        /* SUCCESS */
-
-        .success-pane {
-            text-align: center;
-            padding: 6px 0;
-        }
-
-        .success-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(52,211,153,.16);
-            color: var(--emerald);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            position: relative;
-        }
-
-        .success-icon::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            opacity: .5;
-            animation: pulse-ring 1.8s ease-out infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                opacity: .5;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(1.4);
-            }
-        }
-
-        .success-pane h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0 0 6px;
-        }
-
-        .success-pane p {
-            font-size: 11.5px;
-            line-height: 1.7;
-            color: var(--text-dim);
-            margin: 0 0 18px;
-        }
-
-        .pin-output {
-            background: var(--input-bg);
-            border: 1.5px dashed var(--emerald);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 14px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--emerald);
-            font-family: "JetBrains Mono", monospace;
-            overflow-wrap: anywhere;
-            white-space: pre-wrap;
-            text-align: left;
-            user-select: text;
-        }
-
-        .pin-output.empty {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        .copy-btn {
-            width: 100%;
-            background: var(--row-hover);
-            color: var(--text-mid);
-            border: 1px solid var(--border);
-            padding: 11px;
-            border-radius: 11px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            cursor: pointer;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-        }
-
-        .copy-btn:hover:not(:disabled) {
-            background: var(--border);
-        }
-
-        .copy-btn:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
-
-        /* TOAST */
-
-        #toastContainer {
-            position: fixed;
-            top: 18px;
-            right: 18px;
-            z-index: 99;
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-            max-width: 340px;
-            width: calc(100% - 36px);
-            pointer-events: none;
-        }
-
-        .toast {
-            pointer-events: auto;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: flex-start;
-            gap: 11px;
-            padding: 15px 16px 14px;
-            border-radius: 16px;
-            background: var(--card-2);
-            border: 1px solid var(--border);
-            box-shadow: 0 24px 55px -16px rgba(0,0,0,.35);
-            transform: translateY(-14px) scale(.96);
-            opacity: 0;
-            transition: transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease;
-        }
-
-        .toast.show {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        .toast::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg,var(--rose),#c8362a);
-        }
-
-        .toast .icon {
-            width: 31px;
-            height: 31px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(249,112,102,.16);
-            color: var(--rose);
-        }
-
-        .toast .title {
-            margin: 0 0 2px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
-
-        .toast p.msg {
-            margin: 0;
-            font-size: 11.5px;
-            font-weight: 500;
-            color: var(--text-mid);
-            line-height: 1.5;
-        }
-
-        .toast .dismiss {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            padding: 3px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 360px) {
-            main {
-                padding: 16px 12px 0;
-            }
-
-            .card {
-                padding: 20px 16px;
-            }
-
-            .exam-card {
-                padding: 12px 10px;
-            }
-
-            .exam-left {
-                gap: 8px;
-            }
-
-            .exam-price {
-                font-size: 11px;
-            }
-
-            .stepper {
-                padding: 0;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060915">
+
+<title>Buy Exam PINs | Bigotic Data</title>
+
+<meta
+    name="description"
+    content="Buy WAEC, NECO and NABTEB result checker vouchers securely on Bigotic Data."
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light'
+            : 'dark';
+} catch (_) {
+    document.documentElement.dataset.theme = 'dark';
+}
+</script>
+
+<style>
+:root {
+    --blue:#3b6bff;
+    --soft:#7c9bff;
+    --cyan:#28e0d6;
+    --green:#34d399;
+    --red:#f97066;
+    --gold:#f4b740;
+}
+
+html[data-theme="dark"] {
+    --bg:#060915;
+    --surface:#0d1330;
+    --card:#0f1638;
+    --border:rgba(148,163,255,.14);
+    --high:#eef1ff;
+    --mid:#aab0d6;
+    --dim:#737aa7;
+    --hover:rgba(124,155,255,.08);
+    --input:rgba(255,255,255,.04);
+    --nav:rgba(6,9,21,.9);
+    --shadow:0 20px 45px -14px rgba(0,0,0,.5);
+}
+
+html[data-theme="light"] {
+    --bg:#f2f4fb;
+    --surface:#fff;
+    --card:#fff;
+    --border:#e6e9f6;
+    --high:#0f1428;
+    --mid:#5b6178;
+    --dim:#929abb;
+    --hover:rgba(59,107,255,.06);
+    --input:#f5f7fd;
+    --nav:rgba(255,255,255,.93);
+    --shadow:0 20px 45px -20px rgba(30,58,138,.14);
+}
+
+* {
+    box-sizing:border-box;
+}
+
+[hidden] {
+    display:none!important;
+}
+
+html,body {
+    margin:0;
+    padding:0;
+}
+
+body {
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--high);
+    font-family:Inter,Arial,sans-serif;
+    padding-bottom:65px;
+    overflow-x:hidden;
+}
+
+a {
+    text-decoration:none;
+    color:inherit;
+}
+
+button,input {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
+
+button:disabled {
+    opacity:.6;
+    cursor:wait;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline:2px solid var(--soft);
+    outline-offset:3px;
+}
+
+svg {
+    flex-shrink:0;
+}
+
+.display {
+    font-family:"Space Grotesk",sans-serif;
+}
+
+.mono {
+    font-family:"JetBrains Mono",monospace;
+}
+
+/* HEADER */
+
+.topbar {
+    position:sticky;
+    top:0;
+    z-index:40;
+    height:62px;
+    padding:0 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom:1px solid var(--border);
+    background:var(--nav);
+    backdrop-filter:blur(15px);
+}
+
+.back {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--mid);
+    font-size:12px;
+    font-weight:800;
+}
+
+.back svg {
+    width:16px;
+    height:16px;
+}
+
+.top-title {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    font-weight:800;
+}
+
+.top-title svg {
+    width:17px;
+    height:17px;
+    color:var(--soft);
+}
+
+.icon-btn {
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--card);
+    color:var(--soft);
+}
+
+.icon-btn svg {
+    width:17px;
+    height:17px;
+}
+
+/* PAGE CONTENT */
+
+main {
+    max-width:480px;
+    margin:auto;
+    padding:23px 18px 0;
+}
+
+.card {
+    padding:25px 21px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:23px;
+    box-shadow:var(--shadow);
+}
+
+.page-title {
+    font-size:21px;
+    margin:0 0 8px;
+    text-align:center;
+}
+
+.page-sub {
+    font-size:11px;
+    line-height:1.7;
+    text-align:center;
+    color:var(--mid);
+    margin:0 0 23px;
+}
+
+/* PURCHASE STEPS */
+
+.stepper {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:4px;
+    margin-bottom:26px;
+}
+
+.step-node {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+}
+
+.step-dot {
+    width:30px;
+    height:30px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    background:var(--hover);
+    color:var(--dim);
+    display:grid;
+    place-items:center;
+    font-size:11px;
+    font-weight:800;
+}
+
+.step-label {
+    font-size:9px;
+    font-weight:800;
+    text-transform:uppercase;
+    color:var(--dim);
+}
+
+.step-dot.current {
+    background:var(--blue);
+    border-color:var(--blue);
+    color:#fff;
+}
+
+.step-dot.done {
+    background:var(--green);
+    border-color:var(--green);
+    color:#04130d;
+}
+
+.step-label.current {
+    color:var(--soft);
+}
+
+.step-label.done {
+    color:var(--green);
+}
+
+.step-line {
+    flex:1;
+    height:2px;
+    background:var(--border);
+    margin-bottom:17px;
+}
+
+.step-line.active {
+    background:var(--green);
+}
+
+/* PANES */
+
+.pane {
+    display:none;
+}
+
+.pane.active {
+    display:block;
+}
+
+.field-label {
+    display:block;
+    margin:0 0 11px;
+    color:var(--soft);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+/* EXAM CARDS */
+
+.exam-card {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:11px;
+    width:100%;
+    padding:14px 13px;
+    margin-bottom:10px;
+    border:1.5px solid var(--border);
+    border-radius:15px;
+    background:var(--input);
+    color:var(--high);
+    text-align:left;
+}
+
+.exam-card.active {
+    border-color:var(--blue);
+    background:rgba(59,107,255,.12);
+}
+
+.exam-left {
+    display:flex;
+    align-items:center;
+    gap:11px;
+    min-width:0;
+}
+
+.exam-badge {
+    display:grid;
+    place-items:center;
+    width:41px;
+    height:41px;
+    flex-shrink:0;
+    border-radius:12px;
+    font-weight:800;
+    background:rgba(59,107,255,.15);
+    color:var(--soft);
+}
+
+.exam-badge.neco {
+    background:rgba(52,211,153,.13);
+    color:var(--green);
+}
+
+.exam-badge.nabteb {
+    background:rgba(244,183,64,.13);
+    color:var(--gold);
+}
+
+.exam-name {
+    font-size:13px;
+    font-weight:800;
+    margin:0 0 4px;
+}
+
+.exam-sub {
+    font-size:9px;
+    color:var(--dim);
+    margin:0;
+}
+
+.exam-price {
+    white-space:nowrap;
+    font:800 12px "JetBrains Mono",monospace;
+}
+
+/* BUTTONS */
+
+.submit-btn,
+.ghost-btn {
+    min-height:49px;
+    border:0;
+    border-radius:13px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.submit-btn {
+    width:100%;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    box-shadow:0 13px 30px -11px rgba(59,107,255,.5);
+}
+
+.ghost-btn {
+    background:var(--hover);
+    color:var(--mid);
+    border:1px solid var(--border);
+}
+
+.submit-btn svg {
+    width:17px;
+    height:17px;
+}
+
+.btn-row {
+    display:flex;
+    gap:9px;
+    margin-top:18px;
+}
+
+.btn-row .ghost-btn {
+    flex:0 0 38%;
+}
+
+.btn-row .submit-btn {
+    flex:1;
+}
+
+/* QUANTITY */
+
+.qty-controls {
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.qty-btn {
+    width:45px;
+    height:47px;
+    flex-shrink:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--input);
+    color:var(--high);
+    font-size:20px;
+    font-weight:800;
+}
+
+.qty-controls input {
+    width:100%;
+    min-width:0;
+    height:47px;
+    text-align:center;
+    border:1px solid var(--border);
+    border-radius:12px;
+    outline:none;
+    background:var(--input);
+    color:var(--high);
+    font:800 17px "JetBrains Mono",monospace;
+}
+
+.qty-controls input:focus {
+    border-color:var(--soft);
+}
+
+.field-note {
+    margin:12px 0;
+    color:var(--dim);
+    font-size:10px;
+    line-height:1.7;
+}
+
+/* PRICE */
+
+.price-box {
+    margin-top:19px;
+    padding:19px;
+    border-radius:16px;
+    background:linear-gradient(
+        135deg,
+        var(--blue),
+        #1d3fbf 70%,
+        var(--cyan)
+    );
+    text-align:center;
+    color:#fff;
+}
+
+.price-box small {
+    font-size:10px;
+    color:rgba(255,255,255,.8);
+    text-transform:uppercase;
+    font-weight:800;
+}
+
+.price-box strong {
+    display:block;
+    margin:7px 0;
+    font:800 24px "JetBrains Mono",monospace;
+}
+
+.price-box p {
+    font-size:10px;
+    margin:0;
+    color:rgba(255,255,255,.85);
+}
+
+/* REVIEW SUMMARY */
+
+.summary-box {
+    padding:13px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--input);
+    margin-bottom:19px;
+}
+
+.summary-row {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:9px;
+    padding:10px 2px;
+    border-bottom:1px solid var(--border);
+    font-size:11px;
+}
+
+.summary-row:last-child {
+    border-bottom:0;
+}
+
+.summary-row span {
+    color:var(--dim);
+}
+
+.summary-row strong {
+    max-width:65%;
+    text-align:right;
+    overflow-wrap:anywhere;
+}
+
+.summary-row.total strong {
+    color:var(--soft);
+    font:800 13px "JetBrains Mono",monospace;
+}
+
+/* TRANSACTION PIN */
+
+.pin-input {
+    display:block;
+    width:100%;
+    height:50px;
+    outline:none;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--input);
+    color:var(--high);
+    text-align:center;
+    font:800 18px "JetBrains Mono",monospace;
+    letter-spacing:.45em;
+}
+
+.pin-input:focus {
+    border-color:var(--soft);
+}
+
+.pin-dots {
+    display:flex;
+    justify-content:center;
+    gap:11px;
+    margin:13px 0 12px;
+}
+
+.pin-dots span {
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:var(--border);
+}
+
+.pin-dots span.filled {
+    background:var(--blue);
+}
+
+/* RESULT AND VOUCHER DISPLAY */
+
+.result {
+    text-align:center;
+}
+
+.result-icon {
+    width:58px;
+    height:58px;
+    margin:4px auto 15px;
+    border-radius:50%;
+    background:rgba(52,211,153,.13);
+    color:var(--green);
+    display:grid;
+    place-items:center;
+}
+
+.result-icon svg {
+    width:27px;
+    height:27px;
+}
+
+.result-icon.warning {
+    background:rgba(244,183,64,.13);
+    color:var(--gold);
+}
+
+.result h3 {
+    font-size:18px;
+    margin:0 0 10px;
+}
+
+.result p {
+    font-size:11px;
+    line-height:1.75;
+    color:var(--mid);
+    margin:0 0 17px;
+}
+
+.voucher-box {
+    padding:15px;
+    margin:0 0 12px;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    text-align:left;
+    border:1.5px dashed var(--green);
+    border-radius:13px;
+    background:var(--input);
+    color:var(--green);
+    font:700 12px "JetBrains Mono",monospace;
+    user-select:text;
+}
+
+.voucher-box.empty {
+    border-color:var(--gold);
+    color:var(--gold);
+}
+
+.copy-btn {
+    width:100%;
+    padding:12px;
+    margin-bottom:9px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--hover);
+    color:var(--soft);
+    font-size:11px;
+    font-weight:800;
+}
+
+/* NOTE */
+
+.notice {
+    display:flex;
+    gap:9px;
+    align-items:flex-start;
+    margin:16px 0;
+    color:var(--mid);
+    font-size:10px;
+    line-height:1.7;
+}
+
+.notice svg {
+    width:16px;
+    height:16px;
+    color:var(--soft);
+}
+
+.notice a {
+    color:var(--soft);
+    font-weight:800;
+}
+
+/* NOTIFICATIONS */
+
+.toast-region {
+    position:fixed;
+    top:14px;
+    right:14px;
+    z-index:100;
+    width:min(340px,calc(100% - 28px));
+    pointer-events:none;
+}
+
+.toast {
+    margin-bottom:8px;
+    padding:13px;
+    border:1px solid var(--border);
+    border-left:3px solid var(--red);
+    border-radius:12px;
+    background:var(--surface);
+    box-shadow:var(--shadow);
+    font-size:11px;
+    line-height:1.7;
+}
+
+.toast.success {
+    border-left-color:var(--green);
+}
+
+/* MOBILE */
+
+@media(max-width:365px) {
+    main {
+        padding:18px 12px 0;
+    }
+
+    .card {
+        padding:20px 14px;
+    }
+
+    .exam-price {
+        font-size:11px;
+    }
+
+    .topbar {
+        padding:0 12px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation:none!important;
+        transition:none!important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
+<!-- TOP BAR -->
 
-    <nav class="topbar">
-        <a href="dashboard.html" class="back-btn">
-            <i data-lucide="arrow-left"></i>
-            Dashboard
-        </a>
+<nav class="topbar">
 
-        <div class="topbar-title">
-            <i
-                data-lucide="graduation-cap"
-                style="width:14px;height:14px;color:var(--electric-soft);"
-            ></i>
-            Exam Pins
+    <a class="back" href="dashboard.html">
+        <i data-lucide="arrow-left"></i>
+        Dashboard
+    </a>
+
+    <div class="top-title">
+        <i data-lucide="graduation-cap"></i>
+        Exam PINs
+    </div>
+
+    <button
+        type="button"
+        id="themeBtn"
+        class="icon-btn"
+        aria-label="Toggle theme"
+    >
+        <i data-lucide="sun-moon"></i>
+    </button>
+
+</nav>
+
+<!-- NOTIFICATIONS -->
+
+<div
+    id="toastRegion"
+    class="toast-region"
+    aria-live="polite"
+></div>
+
+<main>
+
+    <section class="card">
+
+        <h1 class="page-title display">
+            Purchase Result Checker
+        </h1>
+
+        <p class="page-sub">
+            Choose your exam, quantity and authorize
+            your wallet purchase using your
+            transaction PIN.
+        </p>
+
+        <!-- THREE-STEP PROGRESS -->
+
+        <div
+            class="stepper"
+            id="stepper"
+            aria-label="Purchase steps"
+        >
+
+            <div class="step-node">
+                <span
+                    id="dot1"
+                    class="step-dot current"
+                >
+                    1
+                </span>
+
+                <span
+                    id="label1"
+                    class="step-label current"
+                >
+                    Exam
+                </span>
+            </div>
+
+            <div
+                id="line1"
+                class="step-line"
+            ></div>
+
+            <div class="step-node">
+                <span
+                    id="dot2"
+                    class="step-dot"
+                >
+                    2
+                </span>
+
+                <span
+                    id="label2"
+                    class="step-label"
+                >
+                    Quantity
+                </span>
+            </div>
+
+            <div
+                id="line2"
+                class="step-line"
+            ></div>
+
+            <div class="step-node">
+                <span
+                    id="dot3"
+                    class="step-dot"
+                >
+                    3
+                </span>
+
+                <span
+                    id="label3"
+                    class="step-label"
+                >
+                    Review
+                </span>
+            </div>
+
         </div>
 
-        <button
-            type="button"
-            class="theme-quick"
-            id="themeToggle"
-            aria-label="Toggle theme"
+        <!-- STEP 1: EXAM -->
+
+        <section
+            id="pane1"
+            class="pane active"
         >
-            <i
-                data-lucide="sun-moon"
-                id="themeIconTop"
-                style="width:15px;height:15px;"
-            ></i>
-        </button>
-    </nav>
 
-    <div id="toastContainer" aria-live="polite"></div>
+            <span class="field-label">
+                Select Exam Type
+            </span>
 
-    <main>
-        <div class="card">
+            <button
+                type="button"
+                class="exam-card"
+                data-exam="waec"
+                aria-pressed="false"
+            >
 
-            <h2 class="font-display">
-                Purchase result checker
-            </h2>
+                <div class="exam-left">
 
-            <p class="card-subtitle">
-                Select your examination, choose a quantity,
-                and authorize your secure purchase.
+                    <span class="exam-badge">
+                        W
+                    </span>
+
+                    <div>
+                        <p class="exam-name">
+                            WAEC
+                        </p>
+
+                        <p class="exam-sub">
+                            Result Checker PIN
+                        </p>
+                    </div>
+
+                </div>
+
+                <span class="exam-price">
+                    ₦6,000
+                </span>
+
+            </button>
+
+            <button
+                type="button"
+                class="exam-card"
+                data-exam="neco"
+                aria-pressed="false"
+            >
+
+                <div class="exam-left">
+
+                    <span class="exam-badge neco">
+                        N
+                    </span>
+
+                    <div>
+                        <p class="exam-name">
+                            NECO
+                        </p>
+
+                        <p class="exam-sub">
+                            Result Token
+                        </p>
+                    </div>
+
+                </div>
+
+                <span class="exam-price">
+                    ₦3,500
+                </span>
+
+            </button>
+
+            <button
+                type="button"
+                class="exam-card"
+                data-exam="nabteb"
+                aria-pressed="false"
+            >
+
+                <div class="exam-left">
+
+                    <span class="exam-badge nabteb">
+                        N
+                    </span>
+
+                    <div>
+                        <p class="exam-name">
+                            NABTEB
+                        </p>
+
+                        <p class="exam-sub">
+                            Scratch Card PIN
+                        </p>
+                    </div>
+
+                </div>
+
+                <span class="exam-price">
+                    ₦2,700
+                </span>
+
+            </button>
+
+            <button
+                type="button"
+                id="nextBtn"
+                class="submit-btn"
+                style="margin-top:19px"
+                disabled
+            >
+                Select an Exam Option
+            </button>
+
+        </section>
+
+        <!-- STEP 2: QUANTITY -->
+
+        <section
+            id="pane2"
+            class="pane"
+        >
+
+            <label
+                class="field-label"
+                for="quantity"
+            >
+                Number of PINs (1–100)
+            </label>
+
+            <div class="qty-controls">
+
+                <button
+                    type="button"
+                    id="decreaseBtn"
+                    class="qty-btn"
+                    aria-label="Decrease quantity"
+                >
+                    −
+                </button>
+
+                <input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    max="100"
+                    step="1"
+                    value="1"
+                    inputmode="numeric"
+                    required
+                >
+
+                <button
+                    type="button"
+                    id="increaseBtn"
+                    class="qty-btn"
+                    aria-label="Increase quantity"
+                >
+                    +
+                </button>
+
+            </div>
+
+            <p class="field-note">
+                Each voucher has its own price.
+                The backend validates quantity,
+                wallet balance and the amount to debit.
             </p>
 
-            <!-- STEPPER -->
+            <div class="price-box">
 
-            <div class="stepper" id="purchaseStepper">
+                <small>
+                    Total Cost
+                </small>
 
-                <div class="step-node">
-                    <div class="step-dot current" id="step-dot-1">
-                        1
-                    </div>
-                    <span class="step-label current" id="step-label-1">
-                        Exam
-                    </span>
-                </div>
+                <strong id="totalCost">
+                    ₦0.00
+                </strong>
 
-                <div class="step-line" id="step-line-1"></div>
-
-                <div class="step-node">
-                    <div class="step-dot" id="step-dot-2">
-                        2
-                    </div>
-                    <span class="step-label" id="step-label-2">
-                        Quantity
-                    </span>
-                </div>
-
-                <div class="step-line" id="step-line-2"></div>
-
-                <div class="step-node">
-                    <div class="step-dot" id="step-dot-3">
-                        3
-                    </div>
-                    <span class="step-label" id="step-label-3">
-                        Review
-                    </span>
-                </div>
-
-            </div>
-
-            <!-- STEP 1: SELECT EXAM -->
-
-            <div id="pane-1" class="pane active">
-
-                <label class="field-label">
-                    Select exam type
-                </label>
-
-                <button
-                    type="button"
-                    class="exam-card"
-                    id="card-waec"
-                    data-exam="waec"
-                    aria-pressed="false"
-                >
-                    <div class="exam-left">
-                        <div class="exam-badge waec">
-                            W
-                        </div>
-
-                        <div>
-                            <p class="exam-name">WAEC</p>
-                            <p class="exam-sub">Result checker PIN</p>
-                        </div>
-                    </div>
-
-                    <span class="exam-price" id="price-tag-waec">
-                        ₦6,000
-                    </span>
-                </button>
-
-                <button
-                    type="button"
-                    class="exam-card"
-                    id="card-neco"
-                    data-exam="neco"
-                    aria-pressed="false"
-                >
-                    <div class="exam-left">
-                        <div class="exam-badge neco">
-                            N
-                        </div>
-
-                        <div>
-                            <p class="exam-name">NECO</p>
-                            <p class="exam-sub">Result token</p>
-                        </div>
-                    </div>
-
-                    <span class="exam-price" id="price-tag-neco">
-                        ₦3,500
-                    </span>
-                </button>
-
-                <button
-                    type="button"
-                    class="exam-card"
-                    id="card-nabteb"
-                    data-exam="nabteb"
-                    aria-pressed="false"
-                >
-                    <div class="exam-left">
-                        <div class="exam-badge nabteb">
-                            N
-                        </div>
-
-                        <div>
-                            <p class="exam-name">NABTEB</p>
-                            <p class="exam-sub">Scratch card PIN</p>
-                        </div>
-                    </div>
-
-                    <span class="exam-price" id="price-tag-nabteb">
-                        ₦2,700
-                    </span>
-                </button>
-
-                <button
-                    type="button"
-                    class="submit-btn"
-                    id="next-btn-1"
-                    disabled
-                >
-                    Select an exam option
-                </button>
-
-            </div>
-
-            <!-- STEP 2: QUANTITY -->
-
-            <div id="pane-2" class="pane">
-
-                <label class="field-label" for="pin-quantity">
-                    Enter quantity
-                </label>
-
-                <div class="stepper-input">
-                    <button
-                        type="button"
-                        class="qty-btn"
-                        id="decreaseQtyBtn"
-                        aria-label="Decrease quantity"
-                    >
-                        −
-                    </button>
-
-                    <input
-                        type="number"
-                        id="pin-quantity"
-                        value="1"
-                        min="1"
-                        step="1"
-                        inputmode="numeric"
-                        required
-                    >
-
-                    <button
-                        type="button"
-                        class="qty-btn"
-                        id="increaseQtyBtn"
-                        aria-label="Increase quantity"
-                    >
-                        +
-                    </button>
-                </div>
-
-                <p class="qty-note">
-                    Each result checker PIN is charged separately.
-                    Select how many you want to purchase.
+                <p id="unitNote">
+                    Price per voucher
                 </p>
 
-                <div class="price-box">
-                    <p class="lbl">Total cost amount</p>
-
-                    <h2 class="val">
-                        ₦<span id="cost-display">0.00</span>
-                    </h2>
-
-                    <p class="rate" id="unit-price-description">
-                        Price per examination PIN
-                    </p>
-                </div>
-
-                <div class="btn-row">
-                    <button
-                        type="button"
-                        class="ghost-btn"
-                        id="backToExamBtn"
-                    >
-                        Back
-                    </button>
-
-                    <button
-                        type="button"
-                        class="submit-btn"
-                        id="continueToReviewBtn"
-                    >
-                        Continue
-                    </button>
-                </div>
-
             </div>
 
-            <!-- STEP 3: REVIEW -->
-
-            <div id="pane-3" class="pane">
-
-                <div class="summary-box">
-
-                    <div class="summary-row">
-                        <span class="k">Service type</span>
-                        <span class="v" id="summary-name">—</span>
-                    </div>
-
-                    <div class="summary-row">
-                        <span class="k">Quantity ordered</span>
-                        <span class="v" id="summary-qty">1 unit</span>
-                    </div>
-
-                    <div class="summary-row">
-                        <span class="k">Unit price</span>
-                        <span class="v" id="summary-unit-price">₦0</span>
-                    </div>
-
-                    <div class="summary-row total">
-                        <span class="k">Total bill</span>
-                        <span class="v" id="summary-total">₦0.00</span>
-                    </div>
-
-                </div>
-
-                <label
-                    class="field-label"
-                    for="transaction-pin"
-                    style="text-align:center;"
-                >
-                    4-digit security authorization PIN
-                </label>
-
-                <div class="pin-area" id="pinArea">
-                    <div class="pin-dots" id="pinDots" aria-hidden="true">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                    <input
-                        type="password"
-                        id="transaction-pin"
-                        maxlength="4"
-                        pattern="[0-9]{4}"
-                        inputmode="numeric"
-                        autocomplete="off"
-                        aria-label="Four-digit transaction PIN"
-                    >
-
-                    <p class="pin-note">
-                        Tap the dots to enter your transaction PIN.
-                    </p>
-                </div>
+            <div class="btn-row">
 
                 <button
                     type="button"
-                    id="final-buy-btn"
+                    id="backExamBtn"
+                    class="ghost-btn"
+                >
+                    Back
+                </button>
+
+                <button
+                    type="button"
+                    id="reviewBtn"
                     class="submit-btn"
                 >
-                    Authorize purchase
-                </button>
-
-                <button
-                    type="button"
-                    class="ghost-btn"
-                    id="backToQuantityBtn"
-                    style="width:100%;margin-top:10px;"
-                >
-                    Go back &amp; adjust
+                    Continue
                 </button>
 
             </div>
 
-            <!-- SUCCESS -->
+        </section>
 
-            <div id="pane-success" class="pane success-pane">
+        <!-- STEP 3: PAYMENT REVIEW -->
 
-                <div class="success-icon">
-                    <i
-                        data-lucide="check-circle-2"
-                        style="width:26px;height:26px;"
-                    ></i>
+        <section
+            id="pane3"
+            class="pane"
+        >
+
+            <div class="summary-box">
+
+                <div class="summary-row">
+                    <span>Exam</span>
+                    <strong id="reviewExam">—</strong>
                 </div>
 
-                <h3 class="font-display">
-                    Purchase processed!
-                </h3>
+                <div class="summary-row">
+                    <span>Quantity</span>
+                    <strong id="reviewQty">—</strong>
+                </div>
 
-                <p id="fulfillmentMessage">
-                    Your examination PIN purchase has been processed.
-                </p>
+                <div class="summary-row">
+                    <span>Unit Price</span>
+                    <strong id="reviewUnit">—</strong>
+                </div>
 
-                <div
-                    class="pin-output"
-                    id="pin-output-block"
-                ></div>
-
-                <button
-                    type="button"
-                    class="copy-btn"
-                    id="copyPinBtn"
-                    disabled
-                >
-                    <i
-                        data-lucide="copy"
-                        style="width:13px;height:13px;"
-                    ></i>
-                    Copy voucher details
-                </button>
-
-                <button
-                    type="button"
-                    class="ghost-btn"
-                    id="dashboardBtn"
-                    style="width:100%;"
-                >
-                    Return to dashboard
-                </button>
+                <div class="summary-row total">
+                    <span>Total Payment</span>
+                    <strong id="reviewTotal">—</strong>
+                </div>
 
             </div>
 
+            <label
+                for="txPin"
+                class="field-label"
+            >
+                Four-digit Transaction PIN
+            </label>
+
+            <input
+                id="txPin"
+                class="pin-input"
+                type="password"
+                maxlength="4"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="••••"
+                aria-label="Transaction PIN"
+                required
+            >
+
+            <div
+                class="pin-dots"
+                id="pinDots"
+                aria-hidden="true"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <p
+                class="field-note"
+                style="text-align:center"
+            >
+                Never share your transaction PIN.
+            </p>
+
+            <button
+                type="button"
+                id="buyBtn"
+                class="submit-btn"
+                style="margin-top:17px"
+            >
+                Authorize Purchase
+            </button>
+
+            <button
+                type="button"
+                id="backQtyBtn"
+                class="ghost-btn"
+                style="width:100%;margin-top:9px"
+            >
+                Go Back &amp; Adjust
+            </button>
+
+        </section>
+
+        <!-- PURCHASE RESULT -->
+
+        <section
+            id="paneResult"
+            class="pane result"
+            aria-live="polite"
+        >
+
+            <div
+                id="resultIcon"
+                class="result-icon"
+            >
+                <i data-lucide="check-circle-2"></i>
+            </div>
+
+            <h3
+                id="resultTitle"
+                class="display"
+            >
+                Purchase Processed
+            </h3>
+
+            <p id="resultMessage">
+                Your purchase was processed.
+            </p>
+
+            <div
+                id="voucherBox"
+                class="voucher-box"
+                hidden
+            ></div>
+
+            <button
+                type="button"
+                id="copyBtn"
+                class="copy-btn"
+                hidden
+            >
+                Copy Voucher Details
+            </button>
+
+            <button
+                type="button"
+                id="historyBtn"
+                class="ghost-btn"
+                style="width:100%;margin-bottom:9px"
+            >
+                View Transaction History
+            </button>
+
+            <button
+                type="button"
+                id="dashboardBtn"
+                class="submit-btn"
+            >
+                Return to Dashboard
+            </button>
+
+        </section>
+
+    </section>
+
+    <div class="notice">
+
+        <i data-lucide="shield-check"></i>
+
+        <div>
+            If payment times out or vouchers are missing,
+            check
+            <a href="history.html">
+                Transaction History
+            </a>
+            or contact support before attempting
+            another purchase.
         </div>
-    </main>
 
-    <script>
-        if (window.lucide) {
-            lucide.createIcons();
+    </div>
+
+</main>
+
+<script>
+'use strict';
+
+/* ==========================================
+   CONFIGURATION
+========================================== */
+
+const API =
+    'https://bigoticdata-backend.onrender.com';
+
+const $ = id =>
+    document.getElementById(id);
+
+const PRICES = Object.freeze({
+    waec:6000,
+    neco:3500,
+    nabteb:2700
+});
+
+const NAMES = Object.freeze({
+    waec:'WAEC',
+    neco:'NECO',
+    nabteb:'NABTEB'
+});
+
+/* ==========================================
+   STATE
+========================================== */
+
+let user = null;
+
+let selectedExam = null;
+
+let currentStep = 1;
+
+let processing = false;
+
+let completed = false;
+
+let uncertain = false;
+
+let voucherOutput = '';
+
+/* ==========================================
+   ICONS
+========================================== */
+
+function icons() {
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+icons();
+
+/* ==========================================
+   USER SESSION
+========================================== */
+
+function getUser() {
+    try {
+        const item = JSON.parse(
+            localStorage.getItem('user') || 'null'
+        );
+
+        return (
+            item &&
+            typeof item.email === 'string' &&
+            item.email.trim()
+        ) ? item : null;
+
+    } catch (_) {
+        return null;
+    }
+}
+
+function logout() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
+
+    window.location.replace(
+        'login.html'
+    );
+}
+
+/* ==========================================
+   AUTHENTICATED API REQUEST
+========================================== */
+
+function apiFetch(path,options = {}) {
+    const headers = new Headers(
+        options.headers || {}
+    );
+
+    if (
+        typeof user?.token === 'string' &&
+        user.token.trim()
+    ) {
+        headers.set(
+            'Authorization',
+            'Bearer ' + user.token.trim()
+        );
+    }
+
+    headers.set(
+        'Accept',
+        'application/json'
+    );
+
+    return fetch(API + path,{
+        ...options,
+        headers,
+        cache:'no-store'
+    });
+}
+
+/* ==========================================
+   SAVE BALANCE WITHOUT LOSING TOKEN
+========================================== */
+
+function saveBalance(value) {
+    if (
+        value === undefined ||
+        value === null ||
+        value === ''
+    ) {
+        return;
+    }
+
+    const amount = Number(value);
+
+    if (
+        !Number.isFinite(amount) ||
+        !user
+    ) {
+        return;
+    }
+
+    user.balance = amount;
+
+    try {
+        const previous = JSON.parse(
+            localStorage.getItem('user') || '{}'
+        );
+
+        if (
+            previous.email &&
+            previous.email.toLowerCase() !==
+            user.email.toLowerCase()
+        ) {
+            return;
         }
 
-        // ======================================
-        // BACKEND
-        // ======================================
+        const safe = {
+            ...previous,
+            balance:amount
+        };
 
-        const BACKEND_URL =
-            "https://bigoticdata-backend.onrender.com";
+        delete safe.password;
+        delete safe.pin;
+        delete safe.bvn;
+        delete safe.nin;
 
-        /*
-         * UPDATED CUSTOMER SELLING PRICES
-         *
-         * WAEC   = ₦6,000
-         * NECO   = ₦3,500
-         * NABTEB = ₦2,700
-         *
-         * Provider costs are intentionally kept
-         * out of the customer-facing page.
-         *
-         * IMPORTANT:
-         * Update /buy-exampin in server.js to use
-         * the matching cost and selling prices.
-         */
+        localStorage.setItem(
+            'user',
+            JSON.stringify(safe)
+        );
 
-        const priceSheet = Object.freeze({
-            waec: 6000,
-            neco: 3500,
-            nabteb: 2700
-        });
+    } catch (_) {}
+}
 
-        const examNames = Object.freeze({
-            waec: "WAEC",
-            neco: "NECO",
-            nabteb: "NABTEB"
-        });
+/* ==========================================
+   FORMAT MONEY
+========================================== */
 
-        let selectedExam = null;
-        let currentStep = 1;
-        let isProcessing = false;
-        let purchaseCompleted = false;
-        let voucherOutput = "";
-
-        // ======================================
-        // ELEMENTS
-        // ======================================
-
-        const quantityInput =
-            document.getElementById("pin-quantity");
-
-        const pinInput =
-            document.getElementById("transaction-pin");
-
-        const finalBuyBtn =
-            document.getElementById("final-buy-btn");
-
-        const copyPinBtn =
-            document.getElementById("copyPinBtn");
-
-        const outputBlock =
-            document.getElementById("pin-output-block");
-
-        const nextBtn =
-            document.getElementById("next-btn-1");
-
-        // ======================================
-        // THEME
-        // ======================================
-
-        function applyThemeIcon() {
-            const isLight =
-                document.documentElement.getAttribute("data-theme") === "light";
-
-            const icon =
-                document.getElementById("themeIconTop");
-
-            if (icon) {
-                icon.setAttribute(
-                    "data-lucide",
-                    isLight ? "sun" : "moon"
-                );
+function money(value) {
+    return '₦' +
+        Number(value).toLocaleString(
+            'en-NG',{
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
             }
+        );
+}
 
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        }
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
 
-        function toggleTheme() {
-            const current =
-                document.documentElement.getAttribute("data-theme");
+function toast(message,type = 'error') {
+    const node =
+        document.createElement('div');
 
-            const next =
-                current === "light" ? "dark" : "light";
+    node.className =
+        'toast ' +
+        (
+            type === 'success'
+                ? 'success'
+                : ''
+        );
 
-            document.documentElement.setAttribute(
-                "data-theme",
+    node.textContent =
+        String(message);
+
+    $('toastRegion').append(node);
+
+    setTimeout(
+        () => node.remove(),
+        5500
+    );
+}
+
+/* ==========================================
+   APPEARANCE
+========================================== */
+
+$('themeBtn').addEventListener(
+    'click',
+    () => {
+        const next =
+            document.documentElement.dataset.theme === 'light'
+                ? 'dark'
+                : 'light';
+
+        document.documentElement.dataset.theme =
+            next;
+
+        try {
+            localStorage.setItem(
+                'bigotic-theme',
                 next
             );
+        } catch (_) {}
+    }
+);
 
-            try {
-                localStorage.setItem(
-                    "bigotic-theme",
-                    next
+/* ==========================================
+   QUANTITY VALIDATION
+========================================== */
+
+function quantity() {
+    const raw =
+        String(
+            $('quantity').value
+        ).trim();
+
+    if (!/^[1-9]\d*$/.test(raw)) {
+        return null;
+    }
+
+    const qty =
+        Number(raw);
+
+    return (
+        Number.isSafeInteger(qty) &&
+        qty >= 1 &&
+        qty <= 100
+    ) ? qty : null;
+}
+
+/* ==========================================
+   CALCULATE TOTAL
+========================================== */
+
+function total() {
+    const qty =
+        quantity();
+
+    return (
+        selectedExam &&
+        qty !== null
+    ) ? PRICES[selectedExam] * qty : null;
+}
+
+/* ==========================================
+   DISPLAY TOTAL
+========================================== */
+
+function renderTotals() {
+    const cost =
+        total();
+
+    $('totalCost').textContent =
+        cost !== null
+            ? money(cost)
+            : 'Invalid Quantity';
+
+    $('unitNote').textContent =
+        selectedExam
+            ? money(PRICES[selectedExam]) +
+              ' per PIN'
+            : 'Select exam type';
+
+    $('reviewExam').textContent =
+        NAMES[selectedExam] || '—';
+
+    $('reviewQty').textContent =
+        quantity() === null
+            ? 'Invalid'
+            : String(quantity());
+
+    $('reviewUnit').textContent =
+        selectedExam
+            ? money(PRICES[selectedExam])
+            : '—';
+
+    $('reviewTotal').textContent =
+        cost !== null
+            ? money(cost)
+            : '—';
+}
+
+/* ==========================================
+   SELECT EXAM
+========================================== */
+
+function selectExam(exam) {
+    if (
+        processing ||
+        completed ||
+        uncertain ||
+        !Object.prototype.hasOwnProperty.call(
+            PRICES,
+            exam
+        )
+    ) {
+        return;
+    }
+
+    selectedExam = exam;
+
+    document.querySelectorAll(
+        '[data-exam]'
+    ).forEach(button => {
+        const active =
+            button.dataset.exam === exam;
+
+        button.classList.toggle(
+            'active',
+            active
+        );
+
+        button.setAttribute(
+            'aria-pressed',
+            String(active)
+        );
+    });
+
+    $('nextBtn').disabled = false;
+
+    $('nextBtn').textContent =
+        'Continue with ' + NAMES[exam];
+
+    renderTotals();
+}
+
+document.querySelectorAll(
+    '[data-exam]'
+).forEach(button => {
+    button.addEventListener(
+        'click',
+        () => selectExam(
+            button.dataset.exam
+        )
+    );
+});
+
+/* ==========================================
+   STEP NAVIGATION
+========================================== */
+
+function goToStep(step) {
+    if (
+        processing ||
+        completed ||
+        uncertain
+    ) {
+        return;
+    }
+
+    if (
+        step > 1 &&
+        !selectedExam
+    ) {
+        toast(
+            'Select an exam first.'
+        );
+
+        return;
+    }
+
+    if (
+        step === 3 &&
+        total() === null
+    ) {
+        toast(
+            'Quantity must be a whole number from 1 to 100.'
+        );
+
+        return;
+    }
+
+    currentStep = step;
+
+    for (let i = 1; i <= 3; i++) {
+        const dot =
+            $('dot' + i);
+
+        const label =
+            $('label' + i);
+
+        dot.className =
+            'step-dot' +
+            (
+                i < step
+                    ? ' done'
+                    : i === step
+                        ? ' current'
+                        : ''
+            );
+
+        label.className =
+            'step-label' +
+            (
+                i < step
+                    ? ' done'
+                    : i === step
+                        ? ' current'
+                        : ''
+            );
+
+        dot.textContent =
+            i < step
+                ? '✓'
+                : String(i);
+    }
+
+    $('line1').classList.toggle(
+        'active',
+        step >= 2
+    );
+
+    $('line2').classList.toggle(
+        'active',
+        step >= 3
+    );
+
+    document.querySelectorAll(
+        '.pane'
+    ).forEach(pane => {
+        pane.classList.remove(
+            'active'
+        );
+    });
+
+    $('pane' + step).classList.add(
+        'active'
+    );
+
+    renderTotals();
+
+    if (step === 3) {
+        $('txPin').value = '';
+
+        updatePinDots();
+
+        $('txPin').focus();
+    }
+}
+
+$('nextBtn').onclick =
+    () => goToStep(2);
+
+$('backExamBtn').onclick =
+    () => goToStep(1);
+
+$('reviewBtn').onclick =
+    () => goToStep(3);
+
+$('backQtyBtn').onclick =
+    () => goToStep(2);
+
+/* ==========================================
+   QUANTITY BUTTONS
+========================================== */
+
+function adjustQuantity(change) {
+    if (
+        processing ||
+        completed ||
+        uncertain
+    ) {
+        return;
+    }
+
+    const now =
+        quantity() || 1;
+
+    $('quantity').value = Math.max(
+        1,
+        Math.min(
+            100,
+            now + change
+        )
+    );
+
+    renderTotals();
+}
+
+$('decreaseBtn').onclick =
+    () => adjustQuantity(-1);
+
+$('increaseBtn').onclick =
+    () => adjustQuantity(1);
+
+$('quantity').addEventListener(
+    'input',
+    renderTotals
+);
+
+/* ==========================================
+   PIN INPUT
+========================================== */
+
+function updatePinDots() {
+    const length =
+        $('txPin').value.length;
+
+    document.querySelectorAll(
+        '#pinDots span'
+    ).forEach((dot,i) => {
+        dot.classList.toggle(
+            'filled',
+            i < length
+        );
+    });
+}
+
+$('txPin').addEventListener(
+    'input',
+    event => {
+        event.target.value =
+            event.target.value
+                .replace(/\D/g,'')
+                .slice(0,4);
+
+        updatePinDots();
+    }
+);
+
+/* ==========================================
+   FORMAT RETURNED VOUCHERS
+========================================== */
+
+function formatVoucher(value) {
+    if (value == null) {
+        return '';
+    }
+
+    if (
+        typeof value === 'string' ||
+        typeof value === 'number'
+    ) {
+        const s =
+            String(value).trim();
+
+        return /^(|undefined|null|n\/?a|fulfillment complete|processed successfully)$/i.test(s)
+            ? ''
+            : s;
+    }
+
+    if (Array.isArray(value)) {
+        return value.map(
+            (entry,i) => {
+                const formatted =
+                    formatVoucher(entry);
+
+                return formatted
+                    ? (
+                        value.length > 1
+                            ? 'Voucher ' +
+                              (i + 1) +
+                              '\n'
+                            : ''
+                    ) + formatted
+                    : '';
+            }
+        ).filter(Boolean).join('\n\n');
+    }
+
+    if (typeof value === 'object') {
+        const parts = [];
+
+        for (
+            const [name,keys]
+            of [
+                [
+                    'PIN',
+                    [
+                        'pin',
+                        'PIN',
+                        'pincode',
+                        'pin_code'
+                    ]
+                ],
+                [
+                    'Serial',
+                    [
+                        'serial',
+                        'serial_number',
+                        'serialNumber',
+                        'serial_no'
+                    ]
+                ],
+                [
+                    'Voucher',
+                    [
+                        'voucher',
+                        'voucher_code'
+                    ]
+                ]
+            ]
+        ) {
+            const raw = keys
+                .map(key => value[key])
+                .find(
+                    item =>
+                        item !== undefined &&
+                        item !== null &&
+                        item !== ''
                 );
-            } catch (_) {}
 
-            applyThemeIcon();
-        }
+            if (raw !== undefined) {
+                const val =
+                    formatVoucher(raw);
 
-        document
-            .getElementById("themeToggle")
-            .addEventListener("click", toggleTheme);
-
-        applyThemeIcon();
-
-        // ======================================
-        // SESSION
-        // ======================================
-
-        function getCurrentUser() {
-            try {
-                const user = JSON.parse(
-                    localStorage.getItem("user") || "null"
-                );
-
-                if (
-                    user &&
-                    typeof user.email === "string" &&
-                    user.email.trim()
-                ) {
-                    return user;
+                if (val) {
+                    parts.push(
+                        name + ': ' + val
+                    );
                 }
-            } catch (_) {}
-
-            return null;
+            }
         }
 
-        // ======================================
-        // NOTIFICATIONS
-        // ======================================
+        if (parts.length) {
+            return parts.join('\n');
+        }
 
-        function showNotification(message, type = "error") {
-            const container =
-                document.getElementById("toastContainer");
+        for (
+            const key
+            of ['pins','data','cards']
+        ) {
+            if (value[key] !== undefined) {
+                return formatVoucher(
+                    value[key]
+                );
+            }
+        }
 
-            const toast = document.createElement("div");
-            toast.className = "toast";
+        return '';
+    }
 
-            const iconWrap = document.createElement("span");
-            iconWrap.className = "icon";
+    return '';
+}
 
-            const icon = document.createElement("i");
+/* ==========================================
+   DISPLAY RESULT
+========================================== */
 
-            icon.setAttribute(
-                "data-lucide",
-                type === "success"
-                    ? "check-circle-2"
-                    : "alert-circle"
+function showResult(
+    title,
+    message,
+    kind,
+    vouchers = ''
+) {
+    completed =
+        kind === 'success';
+
+    uncertain =
+        kind === 'uncertain';
+
+    $('stepper').hidden = true;
+
+    document.querySelectorAll(
+        '.pane'
+    ).forEach(pane => {
+        pane.classList.remove(
+            'active'
+        );
+    });
+
+    $('paneResult').classList.add(
+        'active'
+    );
+
+    $('resultTitle').textContent =
+        title;
+
+    $('resultMessage').textContent =
+        message;
+
+    $('resultIcon').className =
+        'result-icon' +
+        (
+            kind === 'success'
+                ? ''
+                : ' warning'
+        );
+
+    voucherOutput =
+        vouchers;
+
+    $('voucherBox').hidden =
+        !vouchers;
+
+    $('copyBtn').hidden =
+        !vouchers;
+
+    if (vouchers) {
+        $('voucherBox').textContent =
+            vouchers;
+    }
+
+    icons();
+}
+
+/* ==========================================
+   COPY VOUCHERS
+========================================== */
+
+async function copyVouchers() {
+    if (!voucherOutput) {
+        return;
+    }
+
+    try {
+        if (
+            navigator.clipboard &&
+            window.isSecureContext
+        ) {
+            await navigator.clipboard.writeText(
+                voucherOutput
             );
 
-            icon.style.width = "15px";
-            icon.style.height = "15px";
+        } else {
+            const el =
+                document.createElement(
+                    'textarea'
+                );
 
-            iconWrap.appendChild(icon);
+            el.value = voucherOutput;
 
-            const content = document.createElement("div");
-            content.style.flex = "1";
+            el.style.position =
+                'fixed';
 
-            const titleEl = document.createElement("p");
-            titleEl.className = "title";
+            el.style.opacity =
+                '0';
 
-            titleEl.textContent =
-                type === "success"
-                    ? "Success"
-                    : "Something needs attention";
+            document.body.append(el);
 
-            const messageEl = document.createElement("p");
-            messageEl.className = "msg";
-            messageEl.textContent = String(message);
+            el.select();
 
-            content.appendChild(titleEl);
-            content.appendChild(messageEl);
-
-            const dismiss = document.createElement("button");
-            dismiss.type = "button";
-            dismiss.className = "dismiss";
-
-            dismiss.setAttribute(
-                "aria-label",
-                "Dismiss notification"
-            );
-
-            const closeIcon = document.createElement("i");
-            closeIcon.setAttribute("data-lucide", "x");
-
-            closeIcon.style.width = "13px";
-            closeIcon.style.height = "13px";
-
-            dismiss.appendChild(closeIcon);
-
-            toast.appendChild(iconWrap);
-            toast.appendChild(content);
-            toast.appendChild(dismiss);
-
-            container.appendChild(toast);
-
-            if (window.lucide) {
-                lucide.createIcons();
+            if (!document.execCommand('copy')) {
+                throw new Error(
+                    'Copy failed'
+                );
             }
 
-            requestAnimationFrame(() => {
-                toast.classList.add("show");
-            });
-
-            let dismissed = false;
-            let timer;
-
-            const remove = () => {
-                if (dismissed) return;
-
-                dismissed = true;
-                clearTimeout(timer);
-
-                toast.classList.remove("show");
-
-                setTimeout(() => toast.remove(), 300);
-            };
-
-            dismiss.addEventListener("click", remove);
-
-            timer = setTimeout(remove, 4500);
-
-            toast.addEventListener(
-                "mouseenter",
-                () => clearTimeout(timer)
-            );
-
-            toast.addEventListener("mouseleave", () => {
-                if (!dismissed) {
-                    timer = setTimeout(remove, 1200);
-                }
-            });
+            el.remove();
         }
 
-        // ======================================
-        // MONEY FORMAT
-        // ======================================
+        toast(
+            'Voucher details copied.',
+            'success'
+        );
 
-        function formatMoney(value, decimals = 0) {
-            return Number(value).toLocaleString(
-                "en-NG",
-                {
-                    minimumFractionDigits: decimals,
-                    maximumFractionDigits: decimals
-                }
-            );
-        }
+    } catch (_) {
+        toast(
+            'Copy unavailable. Select the voucher text manually.'
+        );
+    }
+}
 
-        // ======================================
-        // EXAM PRICE DISPLAY
-        // ======================================
+$('copyBtn').onclick =
+    copyVouchers;
 
-        function renderExamCardPrices() {
-            for (const exam of Object.keys(priceSheet)) {
-                const priceTag =
-                    document.getElementById(`price-tag-${exam}`);
+$('historyBtn').onclick =
+    () => window.location.assign(
+        'history.html'
+    );
 
-                if (priceTag) {
-                    priceTag.textContent =
-                        `₦${formatMoney(priceSheet[exam])}`;
-                }
+$('dashboardBtn').onclick =
+    () => window.location.assign(
+        'dashboard.html'
+    );
+
+/* ==========================================
+   PURCHASE PROCESSING STATE
+========================================== */
+
+function disablePurchase(busy) {
+    processing = busy;
+
+    $('buyBtn').disabled = busy;
+
+    $('backQtyBtn').disabled =
+        busy;
+
+    $('quantity').disabled =
+        busy;
+
+    $('buyBtn').textContent =
+        busy
+            ? 'Processing Purchase...'
+            : 'Authorize Purchase';
+}
+
+/* ==========================================
+   PURCHASE EXAM PIN
+========================================== */
+
+async function purchase() {
+    if (
+        processing ||
+        completed ||
+        uncertain
+    ) {
+        return;
+    }
+
+    user = getUser();
+
+    if (!user) {
+        logout();
+        return;
+    }
+
+    const qty =
+        quantity();
+
+    const cost =
+        total();
+
+    const pin =
+        $('txPin').value.trim();
+
+    if (
+        !selectedExam ||
+        qty === null ||
+        cost === null
+    ) {
+        toast(
+            'Choose an exam and quantity from 1 to 100.'
+        );
+
+        return;
+    }
+
+    if (!/^\d{4}$/.test(pin)) {
+        toast(
+            'Enter your four-digit transaction PIN.'
+        );
+
+        $('txPin').focus();
+
+        return;
+    }
+
+    disablePurchase(true);
+
+    // Clear PIN immediately.
+    $('txPin').value = '';
+
+    updatePinDots();
+
+    const controller =
+        new AbortController();
+
+    const timeout = setTimeout(
+        () => controller.abort(),
+        60000
+    );
+
+    try {
+        const response = await apiFetch(
+            '/buy-exampin',
+            {
+                method:'POST',
+
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body:JSON.stringify({
+                    email:user.email,
+                    examType:selectedExam,
+                    quantity:qty,
+                    pin
+                }),
+
+                signal:controller.signal
             }
+        );
+
+        const data = await response.json()
+            .catch(() => ({}));
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            toast(
+                'Your session expired. Sign in again.'
+            );
+
+            logout();
+
+            return;
         }
 
-        // ======================================
-        // SELECT EXAM
-        // ======================================
+        const state =
+            String(
+                data.status || ''
+            ).toLowerCase();
 
-        function selectExamCard(exam) {
-            if (isProcessing || purchaseCompleted) return;
+        const code =
+            String(
+                data.code || ''
+            ).toUpperCase();
 
+        if (
+            response.ok &&
+            data.success === true
+        ) {
             if (
-                !Object.prototype.hasOwnProperty.call(
-                    priceSheet,
-                    exam
-                )
+                [
+                    'pending',
+                    'processing',
+                    'unknown',
+                    'unconfirmed'
+                ].includes(state)
             ) {
+                showResult(
+                    'Purchase Status Uncertain',
+                    'Your provider request is not confirmed. Check transaction history before purchasing again.',
+                    'uncertain'
+                );
+
                 return;
             }
 
-            selectedExam = exam;
+            saveBalance(
+                data.newBalance
+            );
 
-            document.querySelectorAll(".exam-card")
-                .forEach(card => {
-                    const active =
-                        card.dataset.exam === exam;
+            const vouchers =
+                formatVoucher(
+                    data.pins
+                );
 
-                    card.classList.toggle(
-                        "active",
-                        active
-                    );
+            if (vouchers) {
+                showResult(
+                    'Purchase Successful',
+                    qty +
+                    ' ' +
+                    NAMES[selectedExam] +
+                    ' voucher' +
+                    (
+                        qty === 1
+                            ? ''
+                            : 's'
+                    ) +
+                    ' purchased. Keep the voucher details safe.',
+                    'success',
+                    vouchers
+                );
 
-                    card.setAttribute(
-                        "aria-pressed",
-                        String(active)
-                    );
-                });
-
-            nextBtn.disabled = false;
-
-            nextBtn.textContent =
-                `Continue with ${exam.toUpperCase()}`;
-
-            calculateTotal();
-        }
-
-        document.querySelectorAll(".exam-card")
-            .forEach(card => {
-                card.addEventListener("click", () => {
-                    selectExamCard(card.dataset.exam);
-                });
-            });
-
-        nextBtn.addEventListener("click", () => {
-            goToStep(2);
-        });
-
-        // ======================================
-        // QUANTITY
-        // ======================================
-
-        function getValidQuantity() {
-            const raw = quantityInput.value.trim();
-
-            if (!/^[1-9]\d*$/.test(raw)) {
-                return null;
+            } else {
+                showResult(
+                    'Payment Processed — Vouchers Unavailable',
+                    'The server reported a successful purchase, but did not return usable voucher details. Check transaction history or contact support; do not purchase again.',
+                    'uncertain'
+                );
             }
 
-            const quantity = Number(raw);
-
-            if (
-                !Number.isSafeInteger(quantity) ||
-                quantity < 1
-            ) {
-                return null;
-            }
-
-            return quantity;
+            return;
         }
 
-        function adjustQty(delta) {
-            if (isProcessing || purchaseCompleted) return;
+        if (
+            response.status >= 500 ||
+            [
+                'PURCHASE_STATUS_UNCONFIRMED',
+                'PROVIDER_RESPONSE_UNCONFIRMED'
+            ].includes(code) ||
+            [
+                'pending',
+                'processing',
+                'unknown',
+                'unconfirmed'
+            ].includes(state)
+        ) {
+            showResult(
+                'Purchase Status Uncertain',
+                'The outcome could not be confirmed. Check transaction history or contact support; do not purchase again yet.',
+                'uncertain'
+            );
 
-            const current = getValidQuantity() || 1;
-            const next = Math.max(1, current + delta);
-
-            if (!Number.isSafeInteger(next)) {
-                showNotification("Invalid quantity.");
-                return;
-            }
-
-            quantityInput.value = next;
-
-            calculateTotal();
+            return;
         }
 
-        document
-            .getElementById("decreaseQtyBtn")
-            .addEventListener("click", () => {
-                adjustQty(-1);
-            });
-
-        document
-            .getElementById("increaseQtyBtn")
-            .addEventListener("click", () => {
-                adjustQty(1);
-            });
-
-        quantityInput.addEventListener(
-            "input",
-            calculateTotal
+        toast(
+            data.error ||
+            data.message ||
+            'Purchase could not be completed. Check transaction history before retrying.'
         );
 
-        // ======================================
-        // CALCULATE CUSTOMER TOTAL
-        // ======================================
-
-        function calculateTotal() {
-            if (!selectedExam) return;
-
-            const quantity = getValidQuantity();
-
-            const unitPrice =
-                priceSheet[selectedExam];
-
-            const rawTotal =
-                quantity === null
-                    ? 0
-                    : unitPrice * quantity;
-
-            const total =
-                Number.isSafeInteger(rawTotal)
-                    ? rawTotal
-                    : 0;
-
-            document.getElementById(
-                "cost-display"
-            ).textContent = formatMoney(total, 2);
-
-            document.getElementById(
-                "unit-price-description"
-            ).textContent =
-                `₦${formatMoney(unitPrice)} per PIN`;
-
-            document.getElementById(
-                "summary-name"
-            ).textContent = examNames[selectedExam];
-
-            document.getElementById(
-                "summary-qty"
-            ).textContent =
-                quantity === null
-                    ? "Invalid quantity"
-                    : `${quantity} unit${quantity === 1 ? "" : "s"}`;
-
-            document.getElementById(
-                "summary-unit-price"
-            ).textContent =
-                `₦${formatMoney(unitPrice)}`;
-
-            document.getElementById(
-                "summary-total"
-            ).textContent =
-                `₦${formatMoney(total, 2)}`;
-        }
-
-        // ======================================
-        // THREE-STEP NAVIGATION
-        // ======================================
-
-        function goToStep(step) {
-            if (isProcessing || purchaseCompleted) return;
-
-            if (![1, 2, 3].includes(step)) return;
-
-            if (step >= 2 && !selectedExam) {
-                showNotification(
-                    "Please select an examination first."
-                );
-                return;
-            }
-
-            if (step === 3) {
-                const quantity = getValidQuantity();
-
-                if (quantity === null) {
-                    showNotification(
-                        "Enter a valid whole-number quantity of at least 1."
-                    );
-
-                    quantityInput.focus();
-                    return;
-                }
-
-                const total =
-                    priceSheet[selectedExam] * quantity;
-
-                if (!Number.isSafeInteger(total)) {
-                    showNotification(
-                        "The selected quantity is too large."
-                    );
-                    return;
-                }
-
-                calculateTotal();
-            }
-
-            currentStep = step;
-
-            for (const i of [1, 2, 3]) {
-                const dot =
-                    document.getElementById(`step-dot-${i}`);
-
-                const label =
-                    document.getElementById(`step-label-${i}`);
-
-                dot.classList.remove("current", "done");
-                label.classList.remove("current", "done");
-
-                if (i < step) {
-                    dot.classList.add("done");
-                    label.classList.add("done");
-                    dot.textContent = "✓";
-                } else if (i === step) {
-                    dot.classList.add("current");
-                    label.classList.add("current");
-                    dot.textContent = String(i);
-                } else {
-                    dot.textContent = String(i);
-                }
-            }
-
-            document.getElementById(
-                "step-line-1"
-            ).classList.toggle("active", step >= 2);
-
-            document.getElementById(
-                "step-line-2"
-            ).classList.toggle("active", step >= 3);
-
-            document.querySelectorAll(".pane")
-                .forEach(pane => {
-                    pane.classList.remove("active");
-                });
-
-            document.getElementById(
-                `pane-${step}`
-            ).classList.add("active");
-
-            if (step === 3) {
-                pinInput.value = "";
-                updatePinDots();
-
-                setTimeout(() => {
-                    pinInput.focus();
-                }, 150);
-            }
-        }
-
-        document
-            .getElementById("backToExamBtn")
-            .addEventListener("click", () => {
-                goToStep(1);
-            });
-
-        document
-            .getElementById("continueToReviewBtn")
-            .addEventListener("click", () => {
-                goToStep(3);
-            });
-
-        document
-            .getElementById("backToQuantityBtn")
-            .addEventListener("click", () => {
-                goToStep(2);
-            });
-
-        // ======================================
-        // TRANSACTION PIN
-        // ======================================
-
-        function updatePinDots() {
-            const value = pinInput.value || "";
-
-            document.querySelectorAll("#pinDots span")
-                .forEach((dot, index) => {
-                    dot.classList.toggle(
-                        "filled",
-                        index < value.length
-                    );
-                });
-        }
-
-        pinInput.addEventListener("input", function () {
-            this.value = this.value
-                .replace(/\D/g, "")
-                .slice(0, 4);
-
-            updatePinDots();
-        });
-
-        document
-            .getElementById("pinArea")
-            .addEventListener("click", () => {
-                if (!isProcessing) {
-                    pinInput.focus();
-                }
-            });
-
-        // ======================================
-        // FORMAT PROVIDER VOUCHER RESPONSE
-        // ======================================
-
-        function formatPinResponse(value) {
-            if (value === null || value === undefined) {
-                return "";
-            }
-
-            if (typeof value === "string") {
-                const clean = value.trim();
-
-                if (
-                    !clean ||
-                    /^(undefined|null|n\/a|fulfillment complete|processed successfully)$/i.test(clean)
-                ) {
-                    return "";
-                }
-
-                return clean;
-            }
-
-            if (typeof value === "number") {
-                return String(value);
-            }
-
-            if (Array.isArray(value)) {
-                return value
-                    .map((item, index) => {
-                        const content = formatPinResponse(item);
-
-                        if (!content) return "";
-
-                        return value.length > 1
-                            ? `Voucher ${index + 1}\n${content}`
-                            : content;
-                    })
-                    .filter(Boolean)
-                    .join("\n\n");
-            }
-
-            if (typeof value === "object") {
-                const pin =
-                    value.pin ??
-                    value.PIN ??
-                    value.pincode ??
-                    value.pin_code ??
-                    null;
-
-                const serial =
-                    value.serial ??
-                    value.serial_number ??
-                    value.serialNumber ??
-                    value.serial_no ??
-                    null;
-
-                const voucher =
-                    value.voucher ??
-                    value.voucher_code ??
-                    null;
-
-                const parts = [];
-
-                if (pin !== null && pin !== undefined) {
-                    parts.push(`PIN: ${String(pin)}`);
-                }
-
-                if (serial !== null && serial !== undefined) {
-                    parts.push(`Serial: ${String(serial)}`);
-                }
-
-                if (voucher !== null && voucher !== undefined) {
-                    parts.push(`Voucher: ${String(voucher)}`);
-                }
-
-                if (parts.length > 0) {
-                    return parts.join("\n");
-                }
-
-                if (value.pins !== undefined) {
-                    return formatPinResponse(value.pins);
-                }
-
-                if (value.data !== undefined) {
-                    return formatPinResponse(value.data);
-                }
-
-                if (value.cards !== undefined) {
-                    return formatPinResponse(value.cards);
-                }
-
-                // Preserve unknown structured voucher responses
-                // without displaying [object Object].
-                try {
-                    return JSON.stringify(value, null, 2);
-                } catch (_) {
-                    return "";
-                }
-            }
-
-            return "";
-        }
-
-        // ======================================
-        // COPY PURCHASED PINS
-        // ======================================
-
-        async function copyPinOutput() {
-            if (!voucherOutput) {
-                showNotification(
-                    "No voucher details are available to copy."
-                );
-                return;
-            }
-
-            try {
-                await navigator.clipboard.writeText(
-                    voucherOutput
-                );
-
-                showNotification(
-                    "Voucher details copied successfully.",
-                    "success"
-                );
-            } catch (_) {
-                showNotification(
-                    "Automatic copying failed. Please select and copy the voucher details manually."
-                );
-            }
-        }
-
-        copyPinBtn.addEventListener(
-            "click",
-            copyPinOutput
+    } catch (_) {
+        showResult(
+            'Purchase Status Uncertain',
+            'A connection timeout or lost response is not proof of failure. Check transaction history or contact support before another purchase.',
+            'uncertain'
         );
 
-        // ======================================
-        // BUY EXAM PIN
-        // ======================================
+    } finally {
+        clearTimeout(timeout);
 
-        async function executePurchase() {
-            if (isProcessing || purchaseCompleted) {
-                return;
-            }
+        $('txPin').value = '';
 
-            const user = getCurrentUser();
+        updatePinDots();
 
-            if (!user) {
-                showNotification(
-                    "Session expired. Please log in again."
-                );
+        disablePurchase(false);
+    }
+}
 
-                setTimeout(() => {
-                    window.location.href = "login.html";
-                }, 1600);
+$('buyBtn').onclick =
+    purchase;
 
-                return;
-            }
+/* ==========================================
+   INITIALIZATION
+========================================== */
 
-            if (
-                !selectedExam ||
-                !Object.prototype.hasOwnProperty.call(
-                    priceSheet,
-                    selectedExam
-                )
-            ) {
-                showNotification(
-                    "Please select a valid examination."
-                );
-                return;
-            }
+window.addEventListener(
+    'load',
+    () => {
+        user = getUser();
 
-            const quantity = getValidQuantity();
-
-            if (quantity === null) {
-                showNotification(
-                    "Please enter a valid quantity."
-                );
-                return;
-            }
-
-            const totalPrice =
-                priceSheet[selectedExam] * quantity;
-
-            if (!Number.isSafeInteger(totalPrice)) {
-                showNotification(
-                    "The quantity entered is too large."
-                );
-                return;
-            }
-
-            const pin = pinInput.value;
-
-            if (!/^\d{4}$/.test(pin)) {
-                showNotification(
-                    "Please enter your valid 4-digit transaction PIN."
-                );
-
-                pinInput.focus();
-                return;
-            }
-
-            isProcessing = true;
-
-            finalBuyBtn.disabled = true;
-
-            document.getElementById(
-                "backToQuantityBtn"
-            ).disabled = true;
-
-            finalBuyBtn.innerHTML =
-                '<span class="spinner"></span> Processing...';
-
-            const controller = new AbortController();
-
-            const timeoutId = setTimeout(() => {
-                controller.abort();
-            }, 60000);
-
-            try {
-                const response = await fetch(
-                    `${BACKEND_URL}/buy-exampin`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                        body: JSON.stringify({
-                            email: user.email,
-                            examType: selectedExam,
-                            quantity,
-                            pin
-                        }),
-                        signal: controller.signal
-                    }
-                );
-
-                let data;
-
-                try {
-                    data = await response.json();
-                } catch (_) {
-                    data = {};
-                }
-
-                if (
-                    response.ok &&
-                    data.success === true
-                ) {
-                    purchaseCompleted = true;
-
-                    // Only the backend can confirm
-                    // the actual wallet balance.
-                    if (
-                        data.newBalance !== undefined &&
-                        data.newBalance !== null &&
-                        Number.isFinite(Number(data.newBalance))
-                    ) {
-                        user.balance =
-                            Number(data.newBalance);
-
-                        try {
-                            localStorage.setItem(
-                                "user",
-                                JSON.stringify(user)
-                            );
-                        } catch (_) {}
-                    }
-
-                    voucherOutput = formatPinResponse(
-                        data.pins
-                    );
-
-                    const fulfillmentMessage =
-                        document.getElementById(
-                            "fulfillmentMessage"
-                        );
-
-                    if (voucherOutput) {
-                        outputBlock.textContent =
-                            voucherOutput;
-
-                        outputBlock.classList.remove(
-                            "empty"
-                        );
-
-                        copyPinBtn.disabled = false;
-
-                        fulfillmentMessage.textContent =
-                            `${quantity} ${examNames[selectedExam]} ` +
-                            `voucher${quantity === 1 ? "" : "s"} ` +
-                            `purchased. Keep the returned PIN details safe.`;
-                    } else {
-                        outputBlock.textContent =
-                            "Your purchase was processed, " +
-                            "but voucher details were not returned " +
-                            "in the server response. Check your " +
-                            "transaction history or contact support. " +
-                            "Do not purchase again until the " +
-                            "fulfillment status has been confirmed.";
-
-                        outputBlock.classList.add(
-                            "empty"
-                        );
-
-                        copyPinBtn.disabled = true;
-
-                        fulfillmentMessage.textContent =
-                            "Purchase processed — voucher details unavailable.";
-                    }
-
-                    document.getElementById(
-                        "purchaseStepper"
-                    ).style.display = "none";
-
-                    document.querySelectorAll(".pane")
-                        .forEach(pane => {
-                            pane.classList.remove(
-                                "active"
-                            );
-                        });
-
-                    document.getElementById(
-                        "pane-success"
-                    ).classList.add("active");
-
-                    pinInput.value = "";
-                    updatePinDots();
-
-                    return;
-                }
-
-                if (
-                    response.status >= 500 ||
-                    data.code === "PURCHASE_STATUS_UNCONFIRMED"
-                ) {
-                    showNotification(
-                        "The purchase status could not be confirmed. " +
-                        "Check your transaction history before attempting another purchase."
-                    );
-                } else {
-                    showNotification(
-                        data.error ||
-                        data.message ||
-                        "The examination PIN purchase could not be completed."
-                    );
-                }
-
-            } catch (error) {
-                showNotification(
-                    "The transaction result could not be confirmed. " +
-                    "Check your transaction history before trying again " +
-                    "to avoid duplicate charges."
-                );
-            } finally {
-                clearTimeout(timeoutId);
-
-                isProcessing = false;
-
-                finalBuyBtn.disabled =
-                    purchaseCompleted;
-
-                document.getElementById(
-                    "backToQuantityBtn"
-                ).disabled = purchaseCompleted;
-
-                finalBuyBtn.textContent =
-                    purchaseCompleted
-                        ? "Purchase completed"
-                        : "Authorize purchase";
-
-                pinInput.value = "";
-                updatePinDots();
-            }
+        if (!user) {
+            logout();
+            return;
         }
 
-        finalBuyBtn.addEventListener(
-            "click",
-            executePurchase
-        );
+        renderTotals();
+        updatePinDots();
+    }
+);
 
-        document.getElementById(
-            "dashboardBtn"
-        ).addEventListener("click", () => {
-            window.location.href = "dashboard.html";
-        });
-
-        // ======================================
-        // PAGE INITIALIZATION
-        // ======================================
-
-        window.addEventListener(
-            "load",
-            function () {
-                const user = getCurrentUser();
-
-                if (!user) {
-                    window.location.href = "login.html";
-                    return;
-                }
-
-                // Prices are deliberately not overridden
-                // by a potentially outdated price endpoint.
-                renderExamCardPrices();
-
-                quantityInput.value = 1;
-
-                updatePinDots();
-            }
-        );
-
-    </script>
-
+</script>
 </body>
 </html>

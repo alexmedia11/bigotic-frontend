@@ -2,3336 +2,3256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#060915">
-    <title>Transaction History | Bigotic Data</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        (function () {
-            try {
-                const saved = localStorage.getItem('bigotic-theme');
-
-                document.documentElement.setAttribute(
-                    'data-theme',
-                    saved === 'light' ? 'light' : 'dark'
-                );
-            } catch (_) {
-                document.documentElement.setAttribute(
-                    'data-theme',
-                    'dark'
-                );
-            }
-        })();
-    </script>
-
-    <style>
-        :root {
-            --electric: #3b6bff;
-            --electric-soft: #7c9bff;
-            --cyan: #28e0d6;
-            --emerald: #34d399;
-            --rose: #f97066;
-            --gold: #f4b740;
-        }
-
-        html[data-theme="dark"] {
-            --bg: #060915;
-            --bg-elevated: #0d1330;
-            --card: #0f1638;
-            --card-2: linear-gradient(165deg, #121a42, #0d1330);
-            --border: rgba(148,163,255,.14);
-            --text-hi: #eef1ff;
-            --text-mid: #aab0d6;
-            --text-dim: #737aa7;
-            --nav-bg: rgba(6,9,21,.86);
-            --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07);
-            --input-bg: rgba(255,255,255,.04);
-            --divider: rgba(148,163,255,.1);
-        }
-
-        html[data-theme="light"] {
-            --bg: #f2f4fb;
-            --bg-elevated: #fff;
-            --card: #fff;
-            --card-2: linear-gradient(165deg, #fff, #f6f8ff);
-            --border: #e6e9f6;
-            --text-hi: #0f1428;
-            --text-mid: #5b6178;
-            --text-dim: #9399bc;
-            --nav-bg: rgba(255,255,255,.88);
-            --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05);
-            --input-bg: #f5f7fd;
-            --divider: #eef0fa;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        [hidden] {
-            display: none !important;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text-hi);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 110px;
-            transition: background .3s, color .3s;
-        }
-
-        body.modal-open {
-            overflow: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        button:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
-
-        button:focus-visible,
-        input:focus-visible,
-        a:focus-visible {
-            outline: 2px solid var(--electric-soft);
-            outline-offset: 3px;
-        }
-
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* ====================================
-           TOP BAR
-        ==================================== */
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            height: 62px;
-            padding: 0 18px;
-            background: var(--nav-bg);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: var(--text-mid);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .back-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .topbar-title {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-        }
-
-        .topbar-title i {
-            width: 15px;
-            height: 15px;
-            color: var(--electric-soft);
-        }
-
-        .theme-btn {
-            display: grid;
-            place-items: center;
-            width: 35px;
-            height: 35px;
-            border-radius: 11px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            color: var(--text-mid);
-        }
-
-        .theme-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* ====================================
-           MAIN CONTENT
-        ==================================== */
-
-        main {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 22px 18px 0;
-        }
-
-        .page-heading {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 21px;
-        }
-
-        .page-heading h1 {
-            font-size: 23px;
-            font-weight: 700;
-            margin: 0 0 6px;
-            letter-spacing: -.03em;
-        }
-
-        .page-heading p {
-            font-size: 11px;
-            line-height: 1.6;
-            color: var(--text-dim);
-            margin: 0;
-        }
-
-        .refresh-btn {
-            width: 38px;
-            height: 38px;
-            display: grid;
-            place-items: center;
-            flex-shrink: 0;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            color: var(--electric-soft);
-        }
-
-        .refresh-btn i {
-            width: 17px;
-            height: 17px;
-        }
-
-        /* ====================================
-           MONEY IN / MONEY OUT SUMMARY
-        ==================================== */
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 11px;
-        }
-
-        .summary-card {
-            min-width: 0;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 19px;
-            padding: 17px 15px;
-            box-shadow: var(--shadow);
-        }
-
-        .summary-top {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 13px;
-        }
-
-        .summary-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 10px;
-            display: grid;
-            place-items: center;
-        }
-
-        .summary-icon i {
-            width: 15px;
-            height: 15px;
-        }
-
-        .summary-card.in .summary-icon {
-            background: rgba(52,211,153,.12);
-            color: var(--emerald);
-        }
-
-        .summary-card.out .summary-icon {
-            background: rgba(249,112,102,.12);
-            color: var(--rose);
-        }
-
-        .summary-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: .06em;
-            color: var(--text-dim);
-        }
-
-        .summary-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: clamp(14px, 4vw, 19px);
-            font-weight: 700;
-            margin: 0;
-            overflow-wrap: anywhere;
-        }
-
-        .summary-card.in .summary-value {
-            color: var(--emerald);
-        }
-
-        .summary-card.out .summary-value {
-            color: var(--rose);
-        }
-
-        .summary-caption {
-            font-size: 9.5px;
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin: 6px 0 0;
-        }
-
-        .summary-disclaimer {
-            font-size: 10px;
-            line-height: 1.6;
-            color: var(--text-dim);
-            margin: 0 2px 22px;
-        }
-
-        /* ====================================
-           SEARCH
-        ==================================== */
-
-        .search-box {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .search-box > i {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            width: 17px;
-            height: 17px;
-            color: var(--text-dim);
-            pointer-events: none;
-        }
-
-        .search-box input {
-            width: 100%;
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            padding: 15px 42px;
-            color: var(--text-hi);
-            font-size: 12px;
-            font-weight: 500;
-            outline: none;
-        }
-
-        .search-box input:focus {
-            border-color: var(--electric-soft);
-        }
-
-        .search-box input::placeholder {
-            color: var(--text-dim);
-        }
-
-        .search-clear {
-            position: absolute;
-            top: 50%;
-            right: 11px;
-            transform: translateY(-50%);
-            width: 28px;
-            height: 28px;
-            border: 0;
-            border-radius: 8px;
-            background: var(--row-hover);
-            color: var(--text-mid);
-            display: grid;
-            place-items: center;
-        }
-
-        .search-clear i {
-            width: 14px;
-            height: 14px;
-        }
-
-        /* ====================================
-           FILTER BUTTONS
-        ==================================== */
-
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 17px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            scrollbar-width: none;
-        }
-
-        .filter-row::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-chip {
-            white-space: nowrap;
-            flex-shrink: 0;
-            padding: 10px 14px;
-            border-radius: 999px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            color: var(--text-mid);
-            font-size: 10.5px;
-            font-weight: 800;
-        }
-
-        .filter-chip.active {
-            color: #fff;
-            border-color: transparent;
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-        }
-
-        .results-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 12px;
-            padding: 0 3px;
-        }
-
-        .results-line h2 {
-            color: var(--text-dim);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        .results-line span {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--electric-soft);
-        }
-
-        /* ====================================
-           TRANSACTION LIST
-        ==================================== */
-
-        .date-label {
-            color: var(--text-dim);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            margin: 18px 3px 10px;
-        }
-
-        .transaction-group {
-            background: var(--card);
-            border-radius: 19px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: 18px;
-        }
-
-        .tx-row {
-            border: 0;
-            border-bottom: 1px solid var(--divider);
-            background: transparent;
-            color: var(--text-hi);
-            width: 100%;
-            display: flex;
-            align-items: center;
-            text-align: left;
-            gap: 11px;
-            padding: 15px 13px;
-            transition: background .2s;
-        }
-
-        .tx-row:last-child {
-            border-bottom: 0;
-        }
-
-        .tx-row:hover {
-            background: var(--row-hover);
-        }
-
-        .tx-icon {
-            width: 39px;
-            height: 39px;
-            flex-shrink: 0;
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
-            background: rgba(59,107,255,.12);
-            color: var(--electric-soft);
-        }
-
-        .tx-icon.in {
-            background: rgba(52,211,153,.12);
-            color: var(--emerald);
-        }
-
-        .tx-icon.out {
-            background: rgba(249,112,102,.12);
-            color: var(--rose);
-        }
-
-        .tx-icon i {
-            width: 17px;
-            height: 17px;
-        }
-
-        .tx-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .tx-type {
-            font-size: 9px;
-            font-weight: 800;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            margin: 0 0 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tx-title {
-            font-size: 12px;
-            font-weight: 800;
-            margin: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tx-time {
-            color: var(--text-dim);
-            font-size: 9.5px;
-            margin-top: 5px;
-        }
-
-        .tx-side {
-            flex-shrink: 0;
-            text-align: right;
-            max-width: 116px;
-        }
-
-        .tx-amount {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            font-weight: 800;
-            overflow-wrap: anywhere;
-        }
-
-        .tx-amount.in {
-            color: var(--emerald);
-        }
-
-        .tx-amount.out {
-            color: var(--rose);
-        }
-
-        .status-tag {
-            display: inline-block;
-            border-radius: 999px;
-            padding: 4px 8px;
-            font-size: 8.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-            margin-top: 6px;
-            background: rgba(124,155,255,.11);
-            color: var(--electric-soft);
-        }
-
-        .status-tag.successful {
-            background: rgba(52,211,153,.12);
-            color: var(--emerald);
-        }
-
-        .status-tag.pending {
-            background: rgba(244,183,64,.12);
-            color: var(--gold);
-        }
-
-        .status-tag.failed {
-            background: rgba(249,112,102,.12);
-            color: var(--rose);
-        }
-
-        .status-tag.recorded {
-            background: rgba(124,155,255,.11);
-            color: var(--electric-soft);
-        }
-
-        /* ====================================
-           EMPTY / LOADING STATES
-        ==================================== */
-
-        .state-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px 24px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .state-icon {
-            width: 49px;
-            height: 49px;
-            border-radius: 15px;
-            background: var(--row-hover);
-            color: var(--electric-soft);
-            display: grid;
-            place-items: center;
-            margin: 0 auto 13px;
-        }
-
-        .state-icon i {
-            width: 22px;
-            height: 22px;
-        }
-
-        .state-card h3 {
-            font-size: 13px;
-            font-weight: 800;
-            margin: 0 0 6px;
-        }
-
-        .state-card p {
-            font-size: 11px;
-            line-height: 1.7;
-            color: var(--text-dim);
-            margin: 0 0 15px;
-        }
-
-        .retry-btn {
-            border: 0;
-            border-radius: 11px;
-            background: var(--electric);
-            color: #fff;
-            padding: 11px 20px;
-            font-size: 10.5px;
-            font-weight: 800;
-        }
-
-        .spinner {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            border: 3px solid var(--border);
-            border-top-color: var(--electric);
-            animation: spin .8s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .load-more {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            background: var(--card);
-            color: var(--electric-soft);
-            padding: 13px;
-            font-size: 11px;
-            font-weight: 800;
-            margin: 4px 0 24px;
-        }
-
-        /* ====================================
-           RECEIPT MODAL
-        ==================================== */
-
-        .receipt-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 90;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            overflow-y: auto;
-            background: rgba(3,5,14,.73);
-            backdrop-filter: blur(8px);
-        }
-
-        .receipt-overlay.open {
-            display: flex;
-        }
-
-        .receipt-card {
-            width: 100%;
-            max-width: 390px;
-            max-height: calc(100vh - 30px);
-            overflow-y: auto;
-            border-radius: 23px;
-            background: #fff;
-            color: #17203b;
-            box-shadow: 0 30px 90px rgba(0,0,0,.35);
-            position: relative;
-        }
-
-        .receipt-close {
-            position: absolute;
-            z-index: 5;
-            top: 15px;
-            right: 15px;
-            width: 32px;
-            height: 32px;
-            border: 1px solid rgba(255,255,255,.25);
-            border-radius: 10px;
-            background: rgba(255,255,255,.12);
-            color: #fff;
-            display: grid;
-            place-items: center;
-        }
-
-        .receipt-close i {
-            width: 15px;
-            height: 15px;
-        }
-
-        .receipt-header {
-            padding: 25px 23px 23px;
-            background: linear-gradient(
-                135deg,
-                #071947,
-                #1744c0 72%,
-                #2869ff
-            );
-            color: #fff;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .receipt-header::after {
-            content: '';
-            width: 175px;
-            height: 175px;
-            border-radius: 50%;
-            border: 24px solid rgba(255,255,255,.06);
-            position: absolute;
-            right: -84px;
-            top: -85px;
-        }
-
-        .receipt-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .receipt-logo {
-            width: 41px;
-            height: 41px;
-            border-radius: 12px;
-            background: linear-gradient(135deg,#3b6bff,#28e0d6);
-            display: grid;
-            place-items: center;
-        }
-
-        .receipt-logo i {
-            width: 23px;
-            height: 23px;
-            color: #fff;
-        }
-
-        .receipt-brand-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: -.03em;
-        }
-
-        .receipt-brand-name span {
-            font-weight: 500;
-            color: #a9c7ff;
-        }
-
-        .receipt-brand p {
-            font-size: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .13em;
-            margin: 3px 0 0;
-            color: rgba(255,255,255,.67);
-        }
-
-        .receipt-center {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding-top: 26px;
-        }
-
-        .receipt-status-icon {
-            width: 53px;
-            height: 53px;
-            border-radius: 50%;
-            margin: 0 auto 12px;
-            background: rgba(255,255,255,.13);
-            display: grid;
-            place-items: center;
-            border: 1px solid rgba(255,255,255,.2);
-        }
-
-        .receipt-status-icon i {
-            width: 25px;
-            height: 25px;
-        }
-
-        .receipt-center .receipt-amount {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 30px;
-            font-weight: 700;
-            letter-spacing: -.05em;
-            margin: 0 0 9px;
-            overflow-wrap: anywhere;
-        }
-
-        .receipt-status-pill {
-            display: inline-block;
-            background: rgba(255,255,255,.14);
-            border: 1px solid rgba(255,255,255,.23);
-            border-radius: 999px;
-            padding: 7px 13px;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .04em;
-        }
-
-        .receipt-paper {
-            padding: 23px;
-        }
-
-        .receipt-section-label {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: .16em;
-            font-weight: 800;
-            color: #7e88a5;
-            margin-bottom: 8px;
-        }
-
-        .receipt-detail-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 13px;
-            padding: 12px 0;
-            border-bottom: 1px dashed #e2e7f2;
-        }
-
-        .receipt-detail-row:last-child {
-            border-bottom: 0;
-        }
-
-        .receipt-detail-label {
-            color: #8993ad;
-            font-size: 10.5px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .receipt-detail-value {
-            text-align: right;
-            color: #192447;
-            font-size: 11px;
-            font-weight: 800;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-            max-width: 61%;
-            white-space: pre-wrap;
-        }
-
-        .receipt-reference-box {
-            background: #f3f6ff;
-            border: 1px solid #e1e8ff;
-            border-radius: 13px;
-            padding: 14px;
-            margin-top: 18px;
-        }
-
-        .receipt-reference-box small {
-            color: #8390af;
-            display: block;
-            text-transform: uppercase;
-            font-size: 9px;
-            letter-spacing: .1em;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .receipt-reference-box strong {
-            color: #3158d8;
-            font: 700 11px 'JetBrains Mono', monospace;
-            overflow-wrap: anywhere;
-            display: block;
-            line-height: 1.65;
-        }
-
-        .receipt-message {
-            text-align: center;
-            border-top: 1px solid #e5eaf5;
-            padding-top: 18px;
-            margin-top: 20px;
-        }
-
-        .receipt-message strong {
-            display: block;
-            font-size: 11px;
-            color: #24355c;
-            margin-bottom: 5px;
-        }
-
-        .receipt-message p {
-            font-size: 9.5px;
-            line-height: 1.7;
-            color: #8993ad;
-            margin: 0;
-        }
-
-        .receipt-footer {
-            background: #f6f8fd;
-            border-top: 1px solid #e7ebf4;
-            padding: 17px 23px 22px;
-        }
-
-        .receipt-actions {
-            display: flex;
-            gap: 9px;
-            margin-bottom: 13px;
-        }
-
-        .receipt-action {
-            flex: 1;
-            border: none;
-            border-radius: 11px;
-            padding: 12px 9px;
-            font-size: 10px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .receipt-action i {
-            width: 14px;
-            height: 14px;
-        }
-
-        .receipt-action.primary {
-            color: #fff;
-            background: linear-gradient(135deg,#3b6bff,#1d3fbf);
-        }
-
-        .receipt-action.secondary {
-            color: #3158d8;
-            background: #e9efff;
-        }
-
-        .receipt-support {
-            color: #8490ad;
-            text-align: center;
-            font-size: 9.5px;
-        }
-
-        .receipt-support a {
-            color: #3158d8;
-            font-weight: 800;
-        }
-
-        /* ====================================
-           BOTTOM NAVIGATION
-        ==================================== */
-
-        .bottom-nav-wrap {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 45;
-            padding: 0 16px 16px;
-        }
-
-        .bottom-nav {
-            max-width: 480px;
-            margin: 0 auto;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 -14px 34px -14px rgba(0,0,0,.25);
-        }
-
-        .bnav-item {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            width: 56px;
-            color: var(--text-dim);
-            font-size: 8px;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-            font-weight: 800;
-        }
-
-        .bnav-item.active {
-            color: var(--electric-soft);
-        }
-
-        .bnav-item i {
-            width: 17px;
-            height: 17px;
-        }
-
-        .bnav-center {
-            position: relative;
-            top: -15px;
-        }
-
-        .bnav-center a {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-            box-shadow: 0 10px 24px rgba(59,107,255,.4);
-            display: grid;
-            place-items: center;
-            color: #fff;
-        }
-
-        .bnav-center i {
-            width: 21px;
-            height: 21px;
-        }
-
-        /* ====================================
-           TOAST NOTIFICATIONS
-        ==================================== */
-
-        #toastContainer {
-            position: fixed;
-            top: 14px;
-            right: 14px;
-            z-index: 150;
-            width: min(340px, calc(100% - 28px));
-            pointer-events: none;
-        }
-
-        .toast {
-            pointer-events: auto;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--electric);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            padding: 13px 14px;
-            font-size: 11px;
-            line-height: 1.6;
-            margin-bottom: 9px;
-        }
-
-        .toast.error {
-            border-left-color: var(--rose);
-        }
-
-        .toast.success {
-            border-left-color: var(--emerald);
-        }
-
-        /* ====================================
-           MOBILE TWEAKS
-        ==================================== */
-
-        @media (max-width: 365px) {
-            main {
-                padding: 17px 12px 0;
-            }
-
-            .summary-card {
-                padding: 14px 11px;
-            }
-
-            .summary-value {
-                font-size: 14px;
-            }
-
-            .tx-row {
-                padding: 13px 10px;
-                gap: 8px;
-            }
-
-            .tx-icon {
-                width: 34px;
-                height: 34px;
-            }
-
-            .tx-side {
-                max-width: 105px;
-            }
-
-            .tx-amount {
-                font-size: 11px;
-            }
-
-            .receipt-paper,
-            .receipt-header {
-                padding-left: 18px;
-                padding-right: 18px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-
-        /* ====================================
-           PROFESSIONAL PRINT RECEIPT
-        ==================================== */
-
-        @page {
-            size: A4;
-            margin: 14mm;
-        }
-
-        @media print {
-            html,
-            body {
-                background: #fff !important;
-                color: #17203b !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                overflow: visible !important;
-                height: auto !important;
-            }
-
-            body > :not(#receipt-modal) {
-                display: none !important;
-            }
-
-            #receipt-modal {
-                display: block !important;
-                position: static !important;
-                inset: auto !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                background: #fff !important;
-                backdrop-filter: none !important;
-                overflow: visible !important;
-            }
-
-            #receipt-card {
-                display: block !important;
-                max-width: 165mm !important;
-                width: 100% !important;
-                max-height: none !important;
-                margin: 0 auto !important;
-                overflow: visible !important;
-                border-radius: 0 !important;
-                border: 1px solid #e3e8f3 !important;
-                box-shadow: none !important;
-                break-inside: avoid;
-            }
-
-            .no-print {
-                display: none !important;
-            }
-
-            .receipt-header {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                background: #123a9f !important;
-                color: #fff !important;
-            }
-
-            .receipt-paper,
-            .receipt-footer,
-            .receipt-reference-box {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .receipt-detail-row {
-                break-inside: avoid;
-            }
-
-            .receipt-footer {
-                padding-bottom: 16px !important;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060915">
+<title>Transaction History | Bigotic Data</title>
+<meta name="description" content="View your Bigotic Data wallet transactions, purchases, refunds, and payment receipts.">
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light'
+            : 'dark';
+} catch (_) {
+    document.documentElement.dataset.theme = 'dark';
+}
+</script>
+
+<style>
+:root {
+    --blue: #3b6bff;
+    --soft: #7c9bff;
+    --cyan: #28e0d6;
+    --green: #34d399;
+    --red: #f97066;
+    --gold: #f4b740;
+}
+
+html[data-theme="dark"] {
+    --bg: #060915;
+    --surface: #0d1330;
+    --card: #0f1638;
+    --border: rgba(148,163,255,.14);
+    --high: #eef1ff;
+    --mid: #aab0d6;
+    --dim: #737aa7;
+    --hover: rgba(124,155,255,.07);
+    --nav: rgba(6,9,21,.9);
+    --input: rgba(255,255,255,.04);
+    --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
+}
+
+html[data-theme="light"] {
+    --bg: #f2f4fb;
+    --surface: #fff;
+    --card: #fff;
+    --border: #e6e9f6;
+    --high: #0f1428;
+    --mid: #5b6178;
+    --dim: #8b94b0;
+    --hover: rgba(59,107,255,.05);
+    --nav: rgba(255,255,255,.9);
+    --input: #f5f7fd;
+    --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    padding-bottom: 110px;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--high);
+    font-family: Inter, Arial, sans-serif;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--soft);
+    outline-offset: 3px;
+}
+
+.display {
+    font-family: "Space Grotesk", sans-serif;
+}
+
+.mono {
+    font-family: "JetBrains Mono", monospace;
+}
+
+svg {
+    flex-shrink: 0;
+}
+
+/* TOP NAVIGATION */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--nav);
+    backdrop-filter: blur(15px);
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--mid);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.back-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+.top-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+.top-title svg {
+    width: 16px;
+    height: 16px;
+    color: var(--soft);
+}
+
+.icon-button {
+    display: grid;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--soft);
+}
+
+.icon-button svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* MAIN */
+
+main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 23px 18px 0;
+}
+
+.page-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 21px;
+}
+
+.page-heading h1 {
+    margin: 0 0 7px;
+    font-size: 23px;
+    letter-spacing: -.03em;
+}
+
+.page-heading p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* SUMMARY */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 11px;
+    margin-bottom: 11px;
+}
+
+.summary-card {
+    min-width: 0;
+    padding: 17px 15px;
+    border: 1px solid var(--border);
+    border-radius: 19px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.summary-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 14px;
+}
+
+.summary-icon {
+    width: 31px;
+    height: 31px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+}
+
+.summary-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.summary-card.in .summary-icon {
+    background: rgba(52,211,153,.12);
+    color: var(--green);
+}
+
+.summary-card.out .summary-icon {
+    background: rgba(249,112,102,.12);
+    color: var(--red);
+}
+
+.summary-label {
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.summary-value {
+    margin: 0;
+    font: 700 clamp(13px,3.6vw,18px) "JetBrains Mono",monospace;
+    overflow-wrap: anywhere;
+}
+
+.summary-card.in .summary-value {
+    color: var(--green);
+}
+
+.summary-card.out .summary-value {
+    color: var(--red);
+}
+
+.summary-caption {
+    margin: 7px 0 0;
+    color: var(--dim);
+    font-size: 9px;
+    line-height: 1.6;
+}
+
+.summary-disclaimer {
+    margin: 0 2px 22px;
+    color: var(--dim);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+/* SEARCH */
+
+.search-wrap {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.search-wrap > svg {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    color: var(--dim);
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+}
+
+.search-wrap input {
+    display: block;
+    width: 100%;
+    height: 49px;
+    padding: 0 44px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    outline: none;
+    color: var(--high);
+    background: var(--card);
+    font-size: 12px;
+}
+
+.search-wrap input:focus {
+    border-color: var(--soft);
+}
+
+.search-wrap input::placeholder {
+    color: var(--dim);
+}
+
+.clear-search {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 8px;
+    background: var(--hover);
+    color: var(--mid);
+    width: 30px;
+    height: 30px;
+}
+
+/* FILTERS */
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+    scrollbar-width: none;
+}
+
+.filter-row::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-chip {
+    flex-shrink: 0;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    background: var(--card);
+    color: var(--mid);
+    padding: 10px 14px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.filter-chip.active {
+    border-color: transparent;
+    color: #fff;
+    background: linear-gradient(135deg,var(--blue),#1d3fbf);
+}
+
+.results-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 3px 13px;
+}
+
+.results-line h2 {
+    margin: 0;
+    color: var(--dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+
+.results-line span {
+    color: var(--soft);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* TRANSACTION LIST */
+
+.date-heading {
+    color: var(--dim);
+    margin: 18px 3px 10px;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .09em;
+}
+
+.tx-group {
+    overflow: hidden;
+    margin-bottom: 18px;
+    border-radius: 19px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    box-shadow: var(--shadow);
+}
+
+.tx-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 11px;
+    padding: 15px 13px;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    color: var(--high);
+    text-align: left;
+}
+
+.tx-row:last-child {
+    border-bottom: 0;
+}
+
+.tx-row:hover {
+    background: var(--hover);
+}
+
+.tx-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: rgba(124,155,255,.12);
+    color: var(--soft);
+    display: grid;
+    place-items: center;
+}
+
+.tx-icon.in {
+    color: var(--green);
+    background: rgba(52,211,153,.12);
+}
+
+.tx-icon.out {
+    color: var(--red);
+    background: rgba(249,112,102,.12);
+}
+
+.tx-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.tx-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.tx-type {
+    margin: 0 0 5px;
+    color: var(--dim);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tx-title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tx-time {
+    margin-top: 5px;
+    color: var(--dim);
+    font-size: 9px;
+}
+
+.tx-right {
+    max-width: 114px;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.tx-amount {
+    font: 700 11.5px "JetBrains Mono",monospace;
+    overflow-wrap: anywhere;
+}
+
+.tx-amount.in { color: var(--green); }
+.tx-amount.out { color: var(--red); }
+
+.status-pill {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 5px 8px;
+    border-radius: 99px;
+    background: rgba(124,155,255,.13);
+    color: var(--soft);
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.status-pill.successful {
+    background: rgba(52,211,153,.12);
+    color: var(--green);
+}
+
+.status-pill.pending {
+    background: rgba(244,183,64,.12);
+    color: var(--gold);
+}
+
+.status-pill.failed {
+    background: rgba(249,112,102,.12);
+    color: var(--red);
+}
+
+/* EMPTY STATES */
+
+.state-card {
+    padding: 39px 22px;
+    text-align: center;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.state-icon {
+    display: grid;
+    place-items: center;
+    margin: 0 auto 13px;
+    width: 51px;
+    height: 51px;
+    border-radius: 15px;
+    background: var(--hover);
+    color: var(--soft);
+}
+
+.state-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.state-card h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+}
+
+.state-card p {
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.8;
+    margin: 0 0 17px;
+}
+
+.retry-button, .load-more {
+    border: 1px solid var(--border);
+    color: var(--soft);
+    background: var(--card);
+    border-radius: 12px;
+    padding: 12px 19px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.load-more {
+    width: 100%;
+    margin: 5px 0 20px;
+}
+
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* RECEIPT */
+
+.receipt-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(3,5,14,.74);
+    backdrop-filter: blur(8px);
+    padding: 15px;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+.receipt-overlay.open {
+    display: flex;
+}
+
+.receipt-card {
+    width: 100%;
+    max-width: 390px;
+    max-height: calc(100vh - 30px);
+    overflow-y: auto;
+    position: relative;
+    border-radius: 23px;
+    background: #fff;
+    color: #17203b;
+    box-shadow: 0 30px 90px rgba(0,0,0,.35);
+}
+
+.receipt-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 2;
+    width: 33px;
+    height: 33px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 10px;
+    background: rgba(255,255,255,.13);
+    color: #fff;
+}
+
+.receipt-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.receipt-header {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg,#071947,#1744c0 72%,#2869ff);
+    color: #fff;
+    padding: 25px 23px;
+}
+
+.receipt-header::after {
+    content: "";
+    position: absolute;
+    top: -85px;
+    right: -85px;
+    width: 180px;
+    height: 180px;
+    border: 24px solid rgba(255,255,255,.06);
+    border-radius: 50%;
+}
+
+.receipt-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.receipt-logo {
+    width: 41px;
+    height: 41px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#3b6bff,#28e0d6);
+}
+
+.receipt-logo svg {
+    width: 23px;
+    height: 23px;
+}
+
+.receipt-brand strong {
+    display: block;
+    font: 700 16px "Space Grotesk",sans-serif;
+}
+
+.receipt-brand strong span {
+    color: #a9c7ff;
+}
+
+.receipt-brand small {
+    display: block;
+    margin-top: 4px;
+    font-size: 8px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.7);
+}
+
+.receipt-center {
+    position: relative;
+    z-index: 1;
+    padding-top: 27px;
+    text-align: center;
+}
+
+.receipt-status-icon {
+    display: grid;
+    place-items: center;
+    margin: 0 auto 13px;
+    width: 53px;
+    height: 53px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.13);
+}
+
+.receipt-status-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+.receipt-amount {
+    font: 700 29px "JetBrains Mono",monospace;
+    margin: 0 0 9px;
+    overflow-wrap: anywhere;
+}
+
+.receipt-status {
+    display: inline-block;
+    padding: 7px 13px;
+    border-radius: 99px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.23);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.receipt-paper {
+    padding: 23px;
+}
+
+.receipt-section {
+    color: #7e88a5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.receipt-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px dashed #e2e7f2;
+}
+
+.receipt-detail-row:last-child {
+    border-bottom: 0;
+}
+
+.receipt-detail-label {
+    color: #8993ad;
+    font-size: 10.5px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.receipt-detail-value {
+    max-width: 62%;
+    text-align: right;
+    color: #192447;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.receipt-reference {
+    padding: 14px;
+    margin-top: 18px;
+    border: 1px solid #e1e8ff;
+    background: #f3f6ff;
+    border-radius: 13px;
+}
+
+.receipt-reference small {
+    display: block;
+    color: #8390af;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.receipt-reference strong {
+    display: block;
+    color: #3158d8;
+    font: 700 11px "JetBrains Mono",monospace;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.receipt-message {
+    text-align: center;
+    border-top: 1px solid #e5eaf5;
+    margin-top: 20px;
+    padding-top: 18px;
+}
+
+.receipt-message strong {
+    color: #24355c;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+}
+
+.receipt-message p {
+    color: #8993ad;
+    margin: 0;
+    font-size: 9.5px;
+    line-height: 1.8;
+}
+
+.receipt-footer {
+    background: #f6f8fd;
+    border-top: 1px solid #e7ebf4;
+    padding: 17px 23px 22px;
+}
+
+.receipt-actions {
+    display: flex;
+    gap: 9px;
+    margin-bottom: 13px;
+}
+
+.receipt-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 13px 8px;
+    border: 0;
+    border-radius: 11px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.receipt-action svg {
+    width: 15px;
+    height: 15px;
+}
+
+.receipt-action.primary {
+    color: #fff;
+    background: linear-gradient(135deg,#3b6bff,#1d3fbf);
+}
+
+.receipt-action.secondary {
+    color: #3158d8;
+    background: #e9efff;
+}
+
+.receipt-support {
+    text-align: center;
+    color: #8490ad;
+    font-size: 9.5px;
+    line-height: 1.7;
+}
+
+.receipt-support a {
+    color: #3158d8;
+    font-weight: 800;
+}
+
+/* TOAST */
+
+.toast-region {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 130;
+    width: min(340px,calc(100% - 28px));
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    padding: 13px 14px;
+    margin-bottom: 9px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    color: var(--high);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.toast.error { border-left-color: var(--red); }
+.toast.success { border-left-color: var(--green); }
+
+/* BOTTOM NAV */
+
+.bottom-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    padding: 0 16px 16px;
+}
+
+.bottom-nav {
+    max-width: 480px;
+    height: 64px;
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--nav);
+    backdrop-filter: blur(16px);
+}
+
+.bottom-item {
+    display: flex;
+    width: 56px;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--dim);
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.bottom-item.active {
+    color: var(--soft);
+}
+
+.bottom-item svg {
+    width: 17px;
+    height: 17px;
+}
+
+.bottom-center {
+    position: relative;
+    top: -15px;
+}
+
+.bottom-center a {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    background: linear-gradient(135deg,var(--blue),#1d3fbf);
+    box-shadow: 0 10px 24px rgba(59,107,255,.4);
+    color: #fff;
+}
+
+.bottom-center svg {
+    width: 21px;
+    height: 21px;
+}
+
+@media(max-width:365px) {
+    main { padding: 17px 12px 0; }
+    .summary-card { padding: 14px 11px; }
+    .summary-value { font-size: 13px; }
+    .tx-row { gap: 8px; padding: 13px 10px; }
+    .tx-icon { width: 35px; height: 35px; }
+    .tx-right { max-width: 102px; }
+    .tx-amount { font-size: 10.5px; }
+    .receipt-paper,.receipt-header {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+
+/* PRINT PROFESSIONAL RECEIPT */
+
+@page {
+    size: A4;
+    margin: 14mm;
+}
+
+@media print {
+    html,body {
+        background: #fff !important;
+        color: #17203b !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        height: auto !important;
+    }
+
+    body > :not(#receiptModal) {
+        display: none !important;
+    }
+
+    #receiptModal {
+        display: block !important;
+        position: static !important;
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+    }
+
+    #receiptCard {
+        width: 100% !important;
+        max-width: 165mm !important;
+        max-height: none !important;
+        margin: 0 auto !important;
+        overflow: visible !important;
+        border: 1px solid #e3e8f3;
+        border-radius: 0;
+        box-shadow: none !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .receipt-header {
+        background: #123a9f !important;
+        color: #fff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .receipt-footer,
+    .receipt-reference {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .receipt-detail-row {
+        break-inside: avoid;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <!-- TOP NAVIGATION -->
+<!-- TOP BAR -->
 
-    <nav class="topbar no-print">
+<nav class="topbar no-print">
+    <a href="dashboard.html" class="back-link">
+        <i data-lucide="arrow-left"></i>
+        Dashboard
+    </a>
 
-        <a href="dashboard.html" class="back-btn">
-            <i data-lucide="arrow-left"></i>
-            Dashboard
-        </a>
+    <div class="top-title">
+        <i data-lucide="history"></i>
+        History
+    </div>
 
-        <div class="topbar-title">
-            <i data-lucide="history"></i>
-            Transaction History
+    <button
+        type="button"
+        id="themeBtn"
+        class="icon-button"
+        aria-label="Switch theme"
+    >
+        <i data-lucide="sun-moon"></i>
+    </button>
+</nav>
+
+<!-- TOAST -->
+
+<div
+    id="toastRegion"
+    class="toast-region no-print"
+    aria-live="polite"
+></div>
+
+<!-- PAGE -->
+
+<main class="no-print">
+
+    <div class="page-heading">
+        <div>
+            <h1 class="display">
+                Your Transactions
+            </h1>
+
+            <p>
+                Track wallet funding, purchases,
+                refunds, reversals, and receipts.
+            </p>
         </div>
 
         <button
             type="button"
-            class="theme-btn"
-            id="themeBtn"
-            aria-label="Toggle theme"
+            class="icon-button"
+            id="refreshBtn"
+            aria-label="Refresh history"
         >
-            <i data-lucide="sun-moon"></i>
+            <i data-lucide="refresh-cw"></i>
         </button>
+    </div>
 
-    </nav>
+    <!-- SUMMARIES -->
 
-    <div id="toastContainer" class="no-print" aria-live="polite"></div>
+    <section class="summary-grid">
 
-    <!-- MAIN PAGE -->
-
-    <main class="no-print">
-
-        <div class="page-heading">
-
-            <div>
-                <h1 class="font-display">
-                    Your Transactions
-                </h1>
-
-                <p>
-                    Track your wallet activities, purchases,
-                    deposits, and transaction receipts.
-                </p>
-            </div>
-
-            <button
-                class="refresh-btn"
-                id="refreshBtn"
-                type="button"
-                aria-label="Refresh transaction history"
-                title="Refresh history"
-            >
-                <i data-lucide="refresh-cw"></i>
-            </button>
-
-        </div>
-
-        <!-- SUMMARY CARDS -->
-
-        <div class="summary-grid">
-
-            <div class="summary-card in">
-
-                <div class="summary-top">
-                    <div class="summary-icon">
-                        <i data-lucide="arrow-down-left"></i>
-                    </div>
-
-                    <span class="summary-label">
-                        Money In
-                    </span>
+        <div class="summary-card in">
+            <div class="summary-head">
+                <div class="summary-icon">
+                    <i data-lucide="arrow-down-left"></i>
                 </div>
 
-                <p class="summary-value">
-                    ₦<span id="sumIn">0.00</span>
-                </p>
-
-                <p class="summary-caption">
-                    Recorded wallet credits
-                </p>
-
+                <span class="summary-label">
+                    Money In
+                </span>
             </div>
 
-            <div class="summary-card out">
+            <p class="summary-value">
+                ₦<span id="sumIn">0.00</span>
+            </p>
 
-                <div class="summary-top">
-                    <div class="summary-icon">
-                        <i data-lucide="arrow-up-right"></i>
-                    </div>
+            <p class="summary-caption">
+                Recorded completed wallet credits
+            </p>
+        </div>
 
-                    <span class="summary-label">
-                        Money Out
-                    </span>
+        <div class="summary-card out">
+            <div class="summary-head">
+                <div class="summary-icon">
+                    <i data-lucide="arrow-up-right"></i>
                 </div>
 
-                <p class="summary-value">
-                    ₦<span id="sumOut">0.00</span>
-                </p>
-
-                <p class="summary-caption">
-                    Recorded wallet debits
-                </p>
-
+                <span class="summary-label">
+                    Money Out
+                </span>
             </div>
 
+            <p class="summary-value">
+                ₦<span id="sumOut">0.00</span>
+            </p>
+
+            <p class="summary-caption">
+                Recorded completed wallet debits
+            </p>
         </div>
 
-        <p class="summary-disclaimer">
-            Totals cover the transaction records returned by
-            your account history, excluding entries explicitly
-            marked pending or failed. They are not your current
-            wallet balance.
-        </p>
+    </section>
 
-        <!-- SEARCH BAR -->
+    <p class="summary-disclaimer">
+        Totals cover only the transaction records returned
+        by the server. Pending and failed records are excluded.
+        This is not your current wallet balance.
+    </p>
 
-        <div class="search-box">
+    <!-- SEARCH -->
 
-            <i data-lucide="search"></i>
+    <div class="search-wrap">
+        <i data-lucide="search"></i>
 
-            <input
-                type="search"
-                id="searchInput"
-                placeholder="Search reference, service, recipient..."
-                autocomplete="off"
-                aria-label="Search transactions"
-            >
-
-            <button
-                type="button"
-                class="search-clear"
-                id="clearSearchBtn"
-                aria-label="Clear search"
-                hidden
-            >
-                <i data-lucide="x"></i>
-            </button>
-
-        </div>
-
-        <!-- FILTERS -->
-
-        <div class="filter-row" id="filterRow">
-
-            <button
-                type="button"
-                class="filter-chip active"
-                data-filter="all"
-                aria-pressed="true"
-            >
-                All
-            </button>
-
-            <button
-                type="button"
-                class="filter-chip"
-                data-filter="in"
-                aria-pressed="false"
-            >
-                Money In
-            </button>
-
-            <button
-                type="button"
-                class="filter-chip"
-                data-filter="out"
-                aria-pressed="false"
-            >
-                Money Out
-            </button>
-
-            <button
-                type="button"
-                class="filter-chip"
-                data-filter="pending"
-                aria-pressed="false"
-            >
-                Pending
-            </button>
-
-            <button
-                type="button"
-                class="filter-chip"
-                data-filter="failed"
-                aria-pressed="false"
-            >
-                Failed
-            </button>
-
-        </div>
-
-        <div class="results-line">
-            <h2>
-                Transaction Activity
-            </h2>
-
-            <span id="resultCount">
-                Loading...
-            </span>
-        </div>
-
-        <!-- TRANSACTION RESULTS -->
-
-        <div id="historyContainer" aria-live="polite">
-
-            <div class="state-card">
-                <div class="spinner"></div>
-
-                <h3>
-                    Loading transaction history
-                </h3>
-
-                <p>
-                    Connecting to Bigotic Data...
-                </p>
-            </div>
-
-        </div>
+        <input
+            id="searchInput"
+            type="search"
+            placeholder="Search service, reference, recipient..."
+            aria-label="Search transactions"
+        >
 
         <button
             type="button"
-            id="loadMoreBtn"
-            class="load-more"
+            class="clear-search"
+            id="clearSearchBtn"
+            aria-label="Clear search"
             hidden
         >
-            Load more transactions
+            ×
+        </button>
+    </div>
+
+    <!-- FILTERS -->
+
+    <div class="filter-row" id="filterRow">
+
+        <button
+            type="button"
+            class="filter-chip active"
+            data-filter="all"
+            aria-pressed="true"
+        >
+            All
         </button>
 
-    </main>
+        <button
+            type="button"
+            class="filter-chip"
+            data-filter="in"
+            aria-pressed="false"
+        >
+            Money In
+        </button>
 
-    <!-- ====================================
-         TRANSACTION RECEIPT MODAL
-    ==================================== -->
+        <button
+            type="button"
+            class="filter-chip"
+            data-filter="out"
+            aria-pressed="false"
+        >
+            Money Out
+        </button>
 
-    <div
-        id="receipt-modal"
-        class="receipt-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="receiptDialogTitle"
-        aria-hidden="true"
+        <button
+            type="button"
+            class="filter-chip"
+            data-filter="refund"
+            aria-pressed="false"
+        >
+            Refunds
+        </button>
+
+        <button
+            type="button"
+            class="filter-chip"
+            data-filter="pending"
+            aria-pressed="false"
+        >
+            Pending
+        </button>
+
+        <button
+            type="button"
+            class="filter-chip"
+            data-filter="failed"
+            aria-pressed="false"
+        >
+            Failed
+        </button>
+
+    </div>
+
+    <div class="results-line">
+        <h2>Transaction Activity</h2>
+        <span id="resultCount">Loading...</span>
+    </div>
+
+    <!-- HISTORY RESULTS -->
+
+    <div id="historyContainer" aria-live="polite">
+        <div class="state-card">
+            <div class="spinner"></div>
+            <h3>Loading history</h3>
+            <p>Connecting to Bigotic Data...</p>
+        </div>
+    </div>
+
+    <button
+        type="button"
+        class="load-more"
+        id="loadMoreBtn"
+        hidden
     >
+        Load More Transactions
+    </button>
 
-        <div id="receipt-card" class="receipt-card">
+</main>
 
-            <button
-                type="button"
-                class="receipt-close no-print"
-                id="closeReceiptTop"
-                aria-label="Close receipt"
-            >
-                <i data-lucide="x"></i>
-            </button>
+<!-- RECEIPT MODAL -->
 
-            <!-- RECEIPT HEADER -->
+<div
+    id="receiptModal"
+    class="receipt-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="receiptTitle"
+    aria-hidden="true"
+>
 
-            <div class="receipt-header">
+    <div class="receipt-card" id="receiptCard">
 
-                <div class="receipt-brand">
+        <button
+            type="button"
+            class="receipt-close no-print"
+            id="closeReceiptBtn"
+            aria-label="Close receipt"
+        >
+            <i data-lucide="x"></i>
+        </button>
 
-                    <div class="receipt-logo">
-                        <i data-lucide="zap"></i>
-                    </div>
+        <!-- BRAND HEADER -->
 
-                    <div>
-                        <div class="receipt-brand-name">
-                            BIGOTIC<span>DATA</span>
-                        </div>
+        <div class="receipt-header">
 
-                        <p>
-                            Digital Utility &amp; VTU Services
-                        </p>
-                    </div>
-
+            <div class="receipt-brand">
+                <div class="receipt-logo">
+                    <i data-lucide="zap"></i>
                 </div>
 
-                <div class="receipt-center">
-
-                    <div class="receipt-status-icon">
-                        <i
-                            data-lucide="receipt"
-                            id="receiptStatusIcon"
-                        ></i>
-                    </div>
-
-                    <h2
-                        class="receipt-amount"
-                        id="receiptAmount"
-                    >
-                        ₦0.00
-                    </h2>
-
-                    <span
-                        class="receipt-status-pill"
-                        id="receiptStatus"
-                    >
-                        Recorded
-                    </span>
-
-                </div>
-
-            </div>
-
-            <!-- RECEIPT DETAILS -->
-
-            <div class="receipt-paper">
-
-                <div class="receipt-section-label" id="receiptDialogTitle">
-                    Transaction Details
-                </div>
-
-                <div id="receiptDetails"></div>
-
-                <div class="receipt-reference-box">
+                <div>
+                    <strong>
+                        BIGOTIC<span>DATA</span>
+                    </strong>
 
                     <small>
-                        Transaction Reference
+                        Digital Utility &amp; VTU Services
                     </small>
+                </div>
+            </div>
 
-                    <strong id="receiptReference">
-                        —
-                    </strong>
-
+            <div class="receipt-center">
+                <div class="receipt-status-icon">
+                    <i
+                        data-lucide="receipt-text"
+                        id="receiptStatusIcon"
+                    ></i>
                 </div>
 
-                <div class="receipt-message">
+                <h2
+                    class="receipt-amount"
+                    id="receiptAmount"
+                >
+                    ₦0.00
+                </h2>
 
-                    <strong id="receiptMessageTitle">
-                        Bigotic Data Transaction Record
-                    </strong>
+                <span
+                    class="receipt-status"
+                    id="receiptStatus"
+                >
+                    Recorded
+                </span>
+            </div>
+        </div>
 
-                    <p id="receiptMessageBody">
-                        This receipt reflects the transaction information
-                        recorded in your account.
-                    </p>
+        <!-- PAPER -->
 
-                </div>
+        <div class="receipt-paper">
+            <div
+                class="receipt-section"
+                id="receiptTitle"
+            >
+                Transaction Details
+            </div>
+
+            <div id="receiptDetails"></div>
+
+            <div class="receipt-reference">
+                <small>Transaction Reference</small>
+
+                <strong id="receiptReference">
+                    —
+                </strong>
+            </div>
+
+            <div class="receipt-message">
+                <strong id="receiptMessageTitle">
+                    Transaction Record
+                </strong>
+
+                <p id="receiptMessageBody">
+                    This document displays the transaction
+                    information recorded in your history.
+                </p>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+
+        <div class="receipt-footer">
+
+            <div class="receipt-actions no-print">
+
+                <button
+                    type="button"
+                    id="printReceiptBtn"
+                    class="receipt-action primary"
+                >
+                    <i data-lucide="printer"></i>
+                    Print / Save PDF
+                </button>
+
+                <button
+                    type="button"
+                    id="copyReceiptBtn"
+                    class="receipt-action secondary"
+                >
+                    <i data-lucide="copy"></i>
+                    Copy Receipt
+                </button>
 
             </div>
 
-            <!-- RECEIPT ACTIONS -->
+            <div class="receipt-support">
+                Need help?
 
-            <div class="receipt-footer">
+                <a
+                    href="https://wa.me/2349159436827"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Contact Support
+                </a>
 
-                <div class="receipt-actions no-print">
-
-                    <button
-                        class="receipt-action primary"
-                        type="button"
-                        id="printReceiptBtn"
-                    >
-                        <i data-lucide="printer"></i>
-                        Print / Save PDF
-                    </button>
-
-                    <button
-                        class="receipt-action secondary"
-                        type="button"
-                        id="copyReceiptBtn"
-                    >
-                        <i data-lucide="copy"></i>
-                        Copy Receipt
-                    </button>
-
+                <div style="margin-top:6px">
+                    bigoticdata.com.ng
                 </div>
-
-                <div class="receipt-support">
-
-                    Need assistance?
-
-                    <a
-                        href="https://wa.me/2349159436827"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Contact Support
-                    </a>
-
-                    <div style="margin-top:6px">
-                        bigoticdata.com.ng
-                    </div>
-
-                </div>
-
             </div>
-
         </div>
 
     </div>
+</div>
 
-    <!-- BOTTOM NAVIGATION -->
+<!-- BOTTOM NAVIGATION -->
 
-    <div class="bottom-nav-wrap no-print">
+<div class="bottom-wrap no-print">
+    <nav class="bottom-nav">
 
-        <nav class="bottom-nav">
+        <a href="buy-airtime.html" class="bottom-item">
+            <i data-lucide="phone"></i>
+            Airtime
+        </a>
 
-            <a href="buy-airtime.html" class="bnav-item">
-                <i data-lucide="phone"></i>
-                <span>Airtime</span>
+        <a href="buy-data.html" class="bottom-item">
+            <i data-lucide="wifi"></i>
+            Data
+        </a>
+
+        <div class="bottom-center">
+            <a
+                href="dashboard.html"
+                aria-label="Dashboard"
+            >
+                <i data-lucide="home"></i>
             </a>
+        </div>
 
-            <a href="buy-data.html" class="bnav-item">
-                <i data-lucide="wifi"></i>
-                <span>Data</span>
-            </a>
+        <a
+            href="history.html"
+            class="bottom-item active"
+        >
+            <i data-lucide="clock"></i>
+            History
+        </a>
 
-            <div class="bnav-center">
-                <a
-                    href="dashboard.html"
-                    aria-label="Dashboard"
-                >
-                    <i data-lucide="home"></i>
-                </a>
-            </div>
+        <a href="settings.html" class="bottom-item">
+            <i data-lucide="settings"></i>
+            Settings
+        </a>
 
-            <a href="history.html" class="bnav-item active">
-                <i data-lucide="clock"></i>
-                <span>History</span>
-            </a>
+    </nav>
+</div>
 
-            <a href="settings.html" class="bnav-item">
-                <i data-lucide="settings"></i>
-                <span>Settings</span>
-            </a>
+<script>
+'use strict';
 
-        </nav>
+/* ==========================================
+   CONFIGURATION
+========================================== */
 
-    </div>
+const API =
+    'https://bigoticdata-backend.onrender.com';
 
-    <script>
-        'use strict';
+const PAGE_SIZE = 25;
 
-        // ====================================
-        // CONFIGURATION
-        // ====================================
+const $ = id =>
+    document.getElementById(id);
 
-        const BACKEND_URL =
-            'https://bigoticdata-backend.onrender.com';
+let user = null;
+let transactions = [];
+let selectedTransaction = null;
 
-        const PAGE_SIZE = 25;
+let currentFilter = 'all';
+let searchQuery = '';
+let visibleCount = PAGE_SIZE;
 
-        const $ = id => document.getElementById(id);
+let loading = false;
+let loaded = false;
+let loadError = false;
 
-        let allTransactions = [];
-        let currentFilter = 'all';
-        let searchQuery = '';
-        let visibleCount = PAGE_SIZE;
-        let selectedTransaction = null;
+let previousFocus = null;
+let lastRefresh = 0;
 
-        let loadingHistory = false;
-        let historyLoaded = false;
-        let historyError = false;
+function icons() {
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
 
-        let previousFocus = null;
+icons();
 
-        // ====================================
-        // ICONS
-        // ====================================
+/* ==========================================
+   LOGIN SESSION
+========================================== */
 
-        function refreshIcons() {
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        }
-
-        refreshIcons();
-
-        // ====================================
-        // USER SESSION
-        // ====================================
-
-        function getCurrentUser() {
-            try {
-                const stored = JSON.parse(
-                    localStorage.getItem('user') || 'null'
-                );
-
-                if (
-                    stored &&
-                    typeof stored.email === 'string' &&
-                    stored.email.trim()
-                ) {
-                    return stored;
-                }
-            } catch (_) {}
-
-            return null;
-        }
-
-        // ====================================
-        // THEME
-        // ====================================
-
-        function toggleTheme() {
-            const current =
-                document.documentElement.getAttribute('data-theme');
-
-            const next =
-                current === 'light' ? 'dark' : 'light';
-
-            document.documentElement.setAttribute(
-                'data-theme',
-                next
-            );
-
-            try {
-                localStorage.setItem(
-                    'bigotic-theme',
-                    next
-                );
-            } catch (_) {}
-        }
-
-        $('themeBtn').addEventListener(
-            'click',
-            toggleTheme
+function getUser() {
+    try {
+        const item = JSON.parse(
+            localStorage.getItem('user') || 'null'
         );
 
-        // ====================================
-        // TOAST
-        // ====================================
-
-        function showToast(message, type = 'info') {
-            const node = document.createElement('div');
-
-            node.className =
-                'toast ' +
-                (type === 'error' ? 'error'
-                : type === 'success' ? 'success'
-                : '');
-
-            node.textContent = String(message);
-
-            $('toastContainer').appendChild(node);
-
-            setTimeout(() => {
-                node.remove();
-            }, 4500);
+        if (
+            item &&
+            typeof item.email === 'string' &&
+            item.email.trim()
+        ) {
+            return item;
         }
-
-        // ====================================
-        // DISPLAY HELPERS
-        // ====================================
-
-        function toText(value, fallback = '') {
-            if (
-                value === null ||
-                value === undefined
-            ) {
-                return fallback;
-            }
-
-            if (
-                typeof value === 'string' ||
-                typeof value === 'number'
-            ) {
-                const text = String(value).trim();
-
-                return text || fallback;
-            }
-
-            return fallback;
-        }
-
-        function money(amount) {
-            const number = Number(amount);
-
-            if (!Number.isFinite(number)) {
-                return '—';
-            }
-
-            return '₦' + Math.abs(number).toLocaleString(
-                'en-NG',
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            );
-        }
-
-        function parseAmount(raw) {
-            if (
-                raw === null ||
-                raw === undefined ||
-                raw === ''
-            ) {
-                return null;
-            }
-
-            let cleaned = raw;
-
-            if (typeof raw === 'string') {
-                cleaned = raw.replace(
-                    /[₦,\s]/g,
-                    ''
-                );
-            }
-
-            const result = Number(cleaned);
-
-            return Number.isFinite(result)
-                ? result
-                : null;
-        }
-
-        // ====================================
-        // DATE HELPERS
-        // ====================================
-
-        function parseDate(value) {
-            if (
-                value === null ||
-                value === undefined ||
-                value === ''
-            ) {
-                return null;
-            }
-
-            let date;
-
-            if (typeof value === 'number') {
-                const timestamp =
-                    value < 100000000000
-                        ? value * 1000
-                        : value;
-
-                date = new Date(timestamp);
-            } else {
-                date = new Date(value);
-            }
-
-            return Number.isNaN(date.getTime())
-                ? null
-                : date;
-        }
-
-        function formatDateTime(date) {
-            if (!date) {
-                return 'Date unavailable';
-            }
-
-            return new Intl.DateTimeFormat(
-                'en-NG',
-                {
-                    timeZone: 'Africa/Lagos',
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                }
-            ).format(date) + ' WAT';
-        }
-
-        function formatTime(date) {
-            if (!date) {
-                return 'Time unavailable';
-            }
-
-            return new Intl.DateTimeFormat(
-                'en-NG',
-                {
-                    timeZone: 'Africa/Lagos',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                }
-            ).format(date);
-        }
-
-        function dayKey(date) {
-            if (!date) return 'unknown';
-
-            return new Intl.DateTimeFormat(
-                'en-CA',
-                {
-                    timeZone: 'Africa/Lagos',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }
-            ).format(date);
-        }
-
-        function dateGroupLabel(date) {
-            if (!date) return 'Date unavailable';
-
-            const dateKey = dayKey(date);
-            const now = new Date();
-
-            if (dateKey === dayKey(now)) {
-                return 'Today';
-            }
-
-            const yesterday = new Date(
-                now.getTime() - 86400000
-            );
-
-            if (dateKey === dayKey(yesterday)) {
-                return 'Yesterday';
-            }
-
-            return new Intl.DateTimeFormat(
-                'en-NG',
-                {
-                    timeZone: 'Africa/Lagos',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                }
-            ).format(date);
-        }
-
-        // ====================================
-        // TRANSACTION DIRECTION
-        // ====================================
-
-        const CREDIT_TYPES = new Set([
-            'fund',
-            'funding',
-            'wallet funding',
-            'wallet_funding',
-            'deposit',
-            'admin fund',
-            'admin funding',
-            'credit',
-            'wallet credit',
-            'wallet topup',
-            'wallet top up',
-            'topup',
-            'top up',
-            'referral bonus',
-            'referral reward',
-            'bonus credit',
-            'refund'
-        ]);
-
-        const DEBIT_TYPES = new Set([
-            'debit',
-            'wallet debit',
-            'withdrawal',
-            'transfer out',
-            'airtime',
-            'data',
-            'buy data',
-            'buy airtime',
-            'electricity',
-            'buy electricity',
-            'cable',
-            'cable subscription',
-            'tv subscription',
-            'betting',
-            'exam pin',
-            'exam pins',
-            'exampin',
-            'bulk sms',
-            'bulksms',
-            'purchase',
-            'bill payment'
-        ]);
-
-        function inferDirection(tx) {
-            const explicit = toText(
-                tx.direction ||
-                tx.transactionDirection ||
-                tx.flow
-            ).toLowerCase();
-
-            if ([
-                'credit',
-                'in',
-                'income',
-                'incoming'
-            ].includes(explicit)) {
-                return 'in';
-            }
-
-            if ([
-                'debit',
-                'out',
-                'expense',
-                'outgoing'
-            ].includes(explicit)) {
-                return 'out';
-            }
-
-            const type =
-                toText(tx.type || tx.transactionType)
-                    .toLowerCase()
-                    .replace(/[_-]/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-
-            if (CREDIT_TYPES.has(type)) {
-                return 'in';
-            }
-
-            if (DEBIT_TYPES.has(type)) {
-                return 'out';
-            }
-
-            if (
-                type.includes('funding') ||
-                type.includes('deposit') ||
-                type.includes('referral bonus')
-            ) {
-                return 'in';
-            }
-
-            if (
-                type.includes('purchase') ||
-                type.includes('subscription') ||
-                type.includes('airtime') ||
-                type.includes('electricity')
-            ) {
-                return 'out';
-            }
-
-            const amount = parseAmount(tx.amount);
-
-            if (amount !== null && amount < 0) {
-                return 'out';
-            }
-
-            // Unknown types remain uncategorized.
-            // Never automatically classify them as debits.
-            return 'other';
-        }
-
-        // ====================================
-        // TRANSACTION STATUS
-        // ====================================
-
-        function normalizeStatus(tx) {
-            const rawStatus =
-                tx.status ??
-                tx.transactionStatus ??
-                tx.paymentStatus ??
-                tx.state;
-
-            if (
-                rawStatus === null ||
-                rawStatus === undefined ||
-                String(rawStatus).trim() === ''
-            ) {
-                if (tx.success === true) {
-                    return 'successful';
-                }
-
-                if (tx.success === false) {
-                    return 'failed';
-                }
-
-                // The original backend data may contain
-                // no status field at all.
-                return 'recorded';
-            }
-
-            const status = String(rawStatus)
-                .toLowerCase()
-                .trim();
-
-            if ([
-                'success',
-                'successful',
-                'completed',
-                'complete',
-                'approved',
-                'delivered',
-                'paid',
-                'done'
-            ].includes(status)) {
-                return 'successful';
-            }
-
-            if ([
-                'pending',
-                'processing',
-                'initiated',
-                'awaiting',
-                'in progress',
-                'in_progress',
-                'queued',
-                'unconfirmed'
-            ].includes(status)) {
-                return 'pending';
-            }
-
-            if ([
-                'failed',
-                'failure',
-                'rejected',
-                'cancelled',
-                'canceled',
-                'declined',
-                'error',
-                'reversed'
-            ].includes(status)) {
-                return 'failed';
-            }
-
-            return 'recorded';
-        }
-
-        const STATUS_LABELS = {
-            successful: 'Successful',
-            pending: 'Pending',
-            failed: 'Failed',
-            recorded: 'Recorded'
-        };
-
-        // ====================================
-        // NORMALIZE API RESPONSE
-        // ====================================
-
-        function normalizeTransaction(tx, index) {
-            if (
-                !tx ||
-                typeof tx !== 'object' ||
-                Array.isArray(tx)
-            ) {
-                return null;
-            }
-
-            const date = parseDate(
-                tx.date ??
-                tx.createdAt ??
-                tx.timestamp ??
-                tx.transactionDate ??
-                tx.updatedAt
-            );
-
-            const type = toText(
-                tx.type ??
-                tx.transactionType ??
-                tx.service ??
-                tx.category,
-                'Transaction'
-            );
-
-            const recipient = toText(
-                tx.recipient ??
-                tx.beneficiary ??
-                tx.phone ??
-                tx.phoneNumber ??
-                tx.meterNumber ??
-                tx.smartCardNumber,
-                ''
-            );
-
-            const details = toText(
-                tx.details ??
-                tx.description ??
-                tx.narration ??
-                tx.message,
-                ''
-            );
-
-            const reference = toText(
-                tx.reference ??
-                tx.transactionReference ??
-                tx.transactionId ??
-                tx.ref,
-                ''
-            );
-
-            const amount = parseAmount(
-                tx.amount ??
-                tx.totalAmount ??
-                tx.price
-            );
-
-            return {
-                original: tx,
-                index,
-                date,
-                type,
-                recipient,
-                details,
-                reference,
-                amount,
-                direction: inferDirection(tx),
-                status: normalizeStatus(tx),
-                id: toText(tx._id ?? tx.id, String(index))
-            };
-        }
-
-        function getTransactionsFromResponse(payload) {
-            if (Array.isArray(payload)) {
-                return payload;
-            }
-
-            if (
-                payload &&
-                typeof payload === 'object'
-            ) {
-                if (
-                    Array.isArray(payload.transactions)
-                ) {
-                    return payload.transactions;
-                }
-
-                if (Array.isArray(payload.data)) {
-                    return payload.data;
-                }
-
-                if (
-                    payload.data &&
-                    Array.isArray(payload.data.transactions)
-                ) {
-                    return payload.data.transactions;
-                }
-
-                if (Array.isArray(payload.history)) {
-                    return payload.history;
-                }
-            }
-
-            throw new Error(
-                'Unexpected transaction response format'
-            );
-        }
-
-        // ====================================
-        // TRANSACTION TITLE
-        // ====================================
-
-        function transactionTitle(tx) {
-            if (tx.details) {
-                return tx.details;
-            }
-
-            if (tx.recipient) {
-                return tx.type + ' • ' + tx.recipient;
-            }
-
-            return tx.type;
-        }
-
-        function transactionIcon(tx) {
-            if (tx.direction === 'in') {
-                return 'arrow-down-left';
-            }
-
-            if (tx.direction === 'out') {
-                return 'arrow-up-right';
-            }
-
-            return 'receipt-text';
-        }
-
-        // ====================================
-        // SAFE DOM BUILDERS
-        // ====================================
-
-        function makeElement(tag, className, text) {
-            const el = document.createElement(tag);
-
-            if (className) {
-                el.className = className;
-            }
-
-            if (text !== undefined) {
-                el.textContent = String(text);
-            }
-
-            return el;
-        }
-
-        function makeIcon(name) {
-            const el = document.createElement('i');
-
-            el.setAttribute('data-lucide', name);
-
-            return el;
-        }
-
-        function makeState(title, message, icon, retry) {
-            const box =
-                makeElement('div', 'state-card');
-
-            if (icon === 'loading') {
-                box.appendChild(
-                    makeElement('div', 'spinner')
-                );
-            } else {
-                const iconBox =
-                    makeElement('div', 'state-icon');
-
-                iconBox.appendChild(
-                    makeIcon(icon || 'inbox')
-                );
-
-                box.appendChild(iconBox);
-            }
-
-            box.appendChild(
-                makeElement('h3', '', title)
-            );
-
-            box.appendChild(
-                makeElement('p', '', message)
-            );
-
-            if (retry) {
-                const btn =
-                    makeElement(
-                        'button',
-                        'retry-btn',
-                        'Try again'
-                    );
-
-                btn.type = 'button';
-
-                btn.addEventListener(
-                    'click',
-                    loadHistory
-                );
-
-                box.appendChild(btn);
-            }
-
-            return box;
-        }
-
-        // ====================================
-        // SUMMARY
-        // ====================================
-
-        function updateSummary() {
-            let moneyIn = 0;
-            let moneyOut = 0;
-
-            for (const tx of allTransactions) {
-                if (
-                    tx.amount === null ||
-                    !Number.isFinite(tx.amount)
-                ) {
-                    continue;
-                }
-
-                if (
-                    tx.status === 'failed' ||
-                    tx.status === 'pending'
-                ) {
-                    continue;
-                }
-
-                if (tx.direction === 'in') {
-                    moneyIn += Math.abs(tx.amount);
-                } else if (tx.direction === 'out') {
-                    moneyOut += Math.abs(tx.amount);
-                }
-            }
-
-            $('sumIn').textContent =
-                money(moneyIn).replace(/^₦/, '');
-
-            $('sumOut').textContent =
-                money(moneyOut).replace(/^₦/, '');
-        }
-
-        // ====================================
-        // FILTERS / SEARCH
-        // ====================================
-
-        function setFilter(value) {
-            currentFilter = value;
-            visibleCount = PAGE_SIZE;
-
-            document.querySelectorAll(
-                '.filter-chip'
-            ).forEach(button => {
-                const active =
-                    button.dataset.filter === value;
-
-                button.classList.toggle(
-                    'active',
-                    active
-                );
-
-                button.setAttribute(
-                    'aria-pressed',
-                    String(active)
-                );
-            });
-
-            renderTransactions();
-        }
-
-        function filteredTransactions() {
-            let list = allTransactions;
-
-            if (currentFilter === 'in') {
-                list = list.filter(
-                    tx => tx.direction === 'in'
-                );
-            } else if (currentFilter === 'out') {
-                list = list.filter(
-                    tx => tx.direction === 'out'
-                );
-            } else if (currentFilter === 'pending') {
-                list = list.filter(
-                    tx => tx.status === 'pending'
-                );
-            } else if (currentFilter === 'failed') {
-                list = list.filter(
-                    tx => tx.status === 'failed'
-                );
-            }
-
-            const query =
-                searchQuery.toLowerCase().trim();
-
-            if (!query) {
-                return list;
-            }
-
-            return list.filter(tx => {
-                const text = [
-                    tx.type,
-                    tx.details,
-                    tx.recipient,
-                    tx.reference,
-                    STATUS_LABELS[tx.status],
-                    tx.amount
-                ].join(' ').toLowerCase();
-
-                return text.includes(query);
-            });
-        }
-
-        $('filterRow').addEventListener(
-            'click',
-            event => {
-                const button = event.target.closest(
-                    '.filter-chip'
-                );
-
-                if (!button) return;
-
-                setFilter(button.dataset.filter);
-            }
+    } catch (_) {}
+
+    return null;
+}
+
+function logout() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
+
+    window.location.replace('login.html');
+}
+
+/* ==========================================
+   AUTHENTICATED REQUEST
+========================================== */
+
+async function apiFetch(path, options = {}) {
+    const headers = new Headers(
+        options.headers || {}
+    );
+
+    // The current live backend may still
+    // use email-only requests.
+    //
+    // When Server V2 is deployed, the login
+    // page stores a token and this function
+    // automatically sends it.
+
+    if (
+        typeof user?.token === 'string' &&
+        user.token.trim()
+    ) {
+        headers.set(
+            'Authorization',
+            'Bearer ' + user.token.trim()
         );
+    }
 
-        $('searchInput').addEventListener(
-            'input',
-            event => {
-                searchQuery =
-                    event.target.value.trim();
+    headers.set('Accept','application/json');
 
-                visibleCount = PAGE_SIZE;
+    return fetch(API + path,{
+        ...options,
+        headers,
+        cache:'no-store'
+    });
+}
 
-                $('clearSearchBtn').hidden =
-                    !searchQuery;
+/* ==========================================
+   THEME
+========================================== */
 
-                renderTransactions();
-            }
+function toggleTheme() {
+    const next =
+        document.documentElement.dataset.theme === 'light'
+            ? 'dark'
+            : 'light';
+
+    document.documentElement.dataset.theme = next;
+
+    try {
+        localStorage.setItem(
+            'bigotic-theme',
+            next
         );
+    } catch (_) {}
+}
 
-        $('clearSearchBtn').addEventListener(
-            'click',
-            () => {
-                $('searchInput').value = '';
-                searchQuery = '';
+$('themeBtn').onclick = toggleTheme;
 
-                $('clearSearchBtn').hidden = true;
+/* ==========================================
+   FEEDBACK
+========================================== */
 
-                visibleCount = PAGE_SIZE;
+function toast(message,type = 'info') {
+    const node = document.createElement('div');
 
-                renderTransactions();
+    node.className =
+        'toast ' +
+        (['success','error'].includes(type)
+            ? type
+            : '');
 
-                $('searchInput').focus();
-            }
-        );
+    node.textContent = String(message);
 
-        // ====================================
-        // RENDER TRANSACTION ROW
-        // ====================================
+    $('toastRegion').appendChild(node);
 
-        function makeTransactionRow(tx) {
-            const row =
-                makeElement('button', 'tx-row');
+    setTimeout(() => node.remove(),5000);
+}
 
-            row.type = 'button';
+/* ==========================================
+   VALUE HELPERS
+========================================== */
 
-            row.setAttribute(
-                'aria-label',
-                'View receipt for ' + transactionTitle(tx)
-            );
+function text(value,fallback = '') {
+    if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ''
+    ) {
+        return fallback;
+    }
 
-            const iconBox =
-                makeElement(
-                    'span',
-                    'tx-icon ' + tx.direction
-                );
+    if (
+        typeof value === 'string' ||
+        typeof value === 'number'
+    ) {
+        return String(value).trim();
+    }
 
-            iconBox.appendChild(
-                makeIcon(transactionIcon(tx))
-            );
+    return fallback;
+}
 
-            const content =
-                makeElement('div', 'tx-content');
+function number(value) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ''
+    ) {
+        return null;
+    }
 
-            content.appendChild(
-                makeElement(
-                    'p',
-                    'tx-type',
-                    tx.type
-                )
-            );
+    const parsed = Number(
+        typeof value === 'string'
+            ? value.replace(/[₦,\s]/g,'')
+            : value
+    );
 
-            content.appendChild(
-                makeElement(
-                    'p',
-                    'tx-title',
-                    transactionTitle(tx)
-                )
-            );
+    return Number.isFinite(parsed)
+        ? parsed
+        : null;
+}
 
-            content.appendChild(
-                makeElement(
-                    'p',
-                    'tx-time',
-                    formatTime(tx.date)
-                )
-            );
+function naira(value) {
+    const amount = number(value);
 
-            const side =
-                makeElement('div', 'tx-side');
+    if (amount === null) {
+        return '—';
+    }
 
-            const prefix =
+    return '₦' + Math.abs(amount).toLocaleString(
+        'en-NG',{
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    );
+}
+
+/* ==========================================
+   DATE HELPERS
+========================================== */
+
+function parseDate(value) {
+    if (!value) {
+        return null;
+    }
+
+    const date =
+        typeof value === 'number'
+            ? new Date(
+                value < 100000000000
+                    ? value * 1000
+                    : value
+              )
+            : new Date(value);
+
+    return Number.isNaN(date.getTime())
+        ? null
+        : date;
+}
+
+function dayKey(date) {
+    if (!date) return 'unknown';
+
+    const parts = new Intl.DateTimeFormat(
+        'en-GB',{
+            timeZone:'Africa/Lagos',
+            day:'2-digit',
+            month:'2-digit',
+            year:'numeric'
+        }
+    ).formatToParts(date);
+
+    const get = type =>
+        parts.find(part => part.type === type)?.value || '';
+
+    return [
+        get('year'),
+        get('month'),
+        get('day')
+    ].join('-');
+}
+
+function formatDateTime(date) {
+    if (!date) {
+        return 'Date unavailable';
+    }
+
+    return new Intl.DateTimeFormat(
+        'en-NG',{
+            timeZone:'Africa/Lagos',
+            day:'numeric',
+            month:'short',
+            year:'numeric',
+            hour:'2-digit',
+            minute:'2-digit',
+            hour12:true
+        }
+    ).format(date) + ' WAT';
+}
+
+function formatTime(date) {
+    if (!date) {
+        return 'Time unavailable';
+    }
+
+    return new Intl.DateTimeFormat(
+        'en-NG',{
+            timeZone:'Africa/Lagos',
+            hour:'2-digit',
+            minute:'2-digit',
+            hour12:true
+        }
+    ).format(date);
+}
+
+function groupDate(date) {
+    if (!date) {
+        return 'Date unavailable';
+    }
+
+    const today = new Date();
+
+    if (dayKey(date) === dayKey(today)) {
+        return 'Today';
+    }
+
+    const yesterday = new Date(
+        today.getTime() - 86400000
+    );
+
+    if (dayKey(date) === dayKey(yesterday)) {
+        return 'Yesterday';
+    }
+
+    return new Intl.DateTimeFormat(
+        'en-NG',{
+            timeZone:'Africa/Lagos',
+            day:'numeric',
+            month:'long',
+            year:'numeric'
+        }
+    ).format(date);
+}
+
+/* ==========================================
+   TRANSACTION TYPE HELPERS
+========================================== */
+
+function normalizeType(value) {
+    return text(value,'Transaction')
+        .toLowerCase()
+        .replace(/[_-]/g,' ')
+        .replace(/\s+/g,' ')
+        .trim();
+}
+
+const CREDIT_TYPES = new Set([
+    'fund',
+    'funding',
+    'wallet funding',
+    'admin fund',
+    'admin funding',
+    'credit',
+    'deposit',
+    'wallet credit',
+    'wallet topup',
+    'wallet top up',
+    'manual funding',
+    'admin wallet credit',
+    'referral bonus',
+    'referral reward',
+    'bonus credit',
+    'refund',
+    'transaction refund'
+]);
+
+const DEBIT_TYPES = new Set([
+    'debit',
+    'withdrawal',
+    'wallet debit',
+    'admin wallet debit',
+    'transfer out',
+    'airtime',
+    'data',
+    'buy data',
+    'buy airtime',
+    'power',
+    'electricity',
+    'tv',
+    'cable',
+    'cable subscription',
+    'tv subscription',
+    'betting',
+    'exam pin',
+    'exam pins',
+    'exampin',
+    'bulk sms',
+    'bulksms',
+    'purchase',
+    'bill payment'
+]);
+
+function directionOf(record) {
+    // Server V2 explicitly specifies direction.
+    // Always prefer its authoritative direction.
+
+    const explicit = text(
+        record.direction ??
+        record.transactionDirection ??
+        record.flow
+    ).toLowerCase();
+
+    if ([
+        'in',
+        'credit',
+        'incoming',
+        'income'
+    ].includes(explicit)) {
+        return 'in';
+    }
+
+    if ([
+        'out',
+        'debit',
+        'outgoing',
+        'expense'
+    ].includes(explicit)) {
+        return 'out';
+    }
+
+    const type = normalizeType(
+        record.type ??
+        record.transactionType
+    );
+
+    const amount = number(record.amount);
+
+    // Legacy Admin Fund records could have
+    // positive or negative signed amounts.
+    // The sign must take priority for these.
+
+    if ([
+        'admin fund',
+        'admin funding',
+        'admin adjustment'
+    ].includes(type)) {
+        if (amount !== null) {
+            return amount < 0 ? 'out' : 'in';
+        }
+    }
+
+    if (CREDIT_TYPES.has(type)) {
+        return 'in';
+    }
+
+    if (DEBIT_TYPES.has(type)) {
+        return 'out';
+    }
+
+    // Reversal is not automatically "money in".
+    // Its direction depends on what was reversed.
+
+    if (type === 'reversal') {
+        return amount !== null && amount < 0
+            ? 'out'
+            : 'other';
+    }
+
+    if (
+        type.includes('funding') ||
+        type.includes('deposit') ||
+        type.includes('refund') ||
+        type.includes('referral bonus')
+    ) {
+        return 'in';
+    }
+
+    if (
+        type.includes('purchase') ||
+        type.includes('subscription') ||
+        type.includes('airtime') ||
+        type.includes('electricity')
+    ) {
+        return 'out';
+    }
+
+    if (amount !== null && amount < 0) {
+        return 'out';
+    }
+
+    return 'other';
+}
+
+/* ==========================================
+   STATUS
+========================================== */
+
+function statusOf(record) {
+    const raw =
+        record.status ??
+        record.transactionStatus ??
+        record.paymentStatus ??
+        record.state;
+
+    if (
+        raw === null ||
+        raw === undefined ||
+        String(raw).trim() === ''
+    ) {
+        if (record.success === true) {
+            return 'successful';
+        }
+
+        if (record.success === false) {
+            return 'failed';
+        }
+
+        return 'recorded';
+    }
+
+    const value = String(raw)
+        .trim()
+        .toLowerCase();
+
+    if ([
+        'completed',
+        'complete',
+        'success',
+        'successful',
+        'approved',
+        'paid',
+        'delivered',
+        'done'
+    ].includes(value)) {
+        return 'successful';
+    }
+
+    if ([
+        'pending',
+        'processing',
+        'queued',
+        'initiated',
+        'awaiting',
+        'in progress',
+        'unconfirmed'
+    ].includes(value)) {
+        return 'pending';
+    }
+
+    if ([
+        'failed',
+        'failure',
+        'declined',
+        'rejected',
+        'cancelled',
+        'canceled',
+        'error',
+        'reversed'
+    ].includes(value)) {
+        return 'failed';
+    }
+
+    return 'recorded';
+}
+
+const STATUS_LABELS = {
+    successful:'Successful',
+    pending:'Pending',
+    failed:'Failed',
+    recorded:'Recorded'
+};
+
+/* ==========================================
+   DISPLAY LABELS
+========================================== */
+
+function typeLabel(type) {
+    const value = normalizeType(type);
+
+    const labels = {
+        'fund':'Wallet Funding',
+        'funding':'Wallet Funding',
+        'admin fund':'Admin Adjustment',
+        'admin funding':'Admin Adjustment',
+        'manual funding':'Manual Wallet Funding',
+        'admin wallet credit':'Admin Wallet Credit',
+        'admin wallet debit':'Admin Wallet Debit',
+        'refund':'Transaction Refund',
+        'transaction refund':'Transaction Refund',
+        'reversal':'Transaction Reversal',
+        'referral bonus':'Referral Bonus',
+        'power':'Electricity Payment',
+        'tv':'Cable TV Subscription',
+        'exampin':'Exam PIN Purchase',
+        'bulk sms':'Bulk SMS Purchase',
+        'bulksms':'Bulk SMS Purchase',
+        'data':'Data Purchase',
+        'airtime':'Airtime Purchase'
+    };
+
+    return labels[value] || text(type,'Transaction');
+}
+
+/* ==========================================
+   TRANSACTION NORMALIZATION
+========================================== */
+
+function normalizeRecord(record,index) {
+    if (
+        !record ||
+        typeof record !== 'object' ||
+        Array.isArray(record)
+    ) {
+        return null;
+    }
+
+    const type = text(
+        record.type ??
+        record.transactionType ??
+        record.service ??
+        record.category,
+        'Transaction'
+    );
+
+    return {
+        original:record,
+        index,
+        id:text(
+            record._id ??
+            record.id,
+            String(index)
+        ),
+        type,
+        label:typeLabel(type),
+
+        date:parseDate(
+            record.date ??
+            record.createdAt ??
+            record.timestamp ??
+            record.transactionDate
+        ),
+
+        amount:number(
+            record.amount ??
+            record.totalAmount ??
+            record.price
+        ),
+
+        recipient:text(
+            record.recipient ??
+            record.beneficiary ??
+            record.phone ??
+            record.phoneNumber ??
+            record.meterNumber ??
+            record.smartCardNumber
+        ),
+
+        details:text(
+            record.details ??
+            record.description ??
+            record.narration ??
+            record.message
+        ),
+
+        reference:text(
+            record.reference ??
+            record.transactionReference ??
+            record.transactionId ??
+            record.ref
+        ),
+
+        originalReference:text(
+            record.originalReference
+        ),
+
+        bankReference:text(
+            record.bankReference
+        ),
+
+        reason:text(
+            record.adjustmentReason
+        ),
+
+        note:text(
+            record.note
+        ),
+
+        direction:directionOf(record),
+        status:statusOf(record)
+    };
+}
+
+function extractTransactions(payload) {
+    if (Array.isArray(payload)) {
+        return payload;
+    }
+
+    if (Array.isArray(payload?.transactions)) {
+        return payload.transactions;
+    }
+
+    if (Array.isArray(payload?.data)) {
+        return payload.data;
+    }
+
+    if (Array.isArray(payload?.data?.transactions)) {
+        return payload.data.transactions;
+    }
+
+    if (Array.isArray(payload?.history)) {
+        return payload.history;
+    }
+
+    throw new Error(
+        'Unexpected transaction history format.'
+    );
+}
+
+/* ==========================================
+   SAFE DOM HELPERS
+========================================== */
+
+function el(tag,className,value) {
+    const node = document.createElement(tag);
+
+    if (className) {
+        node.className = className;
+    }
+
+    if (value !== undefined) {
+        node.textContent = String(value);
+    }
+
+    return node;
+}
+
+function icon(name) {
+    const node = document.createElement('i');
+
+    node.setAttribute(
+        'data-lucide',
+        name
+    );
+
+    return node;
+}
+
+/* ==========================================
+   MONEY SUMMARIES
+========================================== */
+
+function updateSummary() {
+    let moneyIn = 0;
+    let moneyOut = 0;
+
+    for (const tx of transactions) {
+        if (
+            tx.amount === null ||
+            ['pending','failed'].includes(tx.status)
+        ) {
+            continue;
+        }
+
+        if (tx.direction === 'in') {
+            moneyIn += Math.abs(tx.amount);
+        }
+
+        if (tx.direction === 'out') {
+            moneyOut += Math.abs(tx.amount);
+        }
+    }
+
+    $('sumIn').textContent =
+        naira(moneyIn).slice(1);
+
+    $('sumOut').textContent =
+        naira(moneyOut).slice(1);
+}
+
+/* ==========================================
+   FILTERING
+========================================== */
+
+function isRefund(tx) {
+    const type = normalizeType(tx.type);
+
+    return (
+        type === 'refund' ||
+        type === 'transaction refund' ||
+        type === 'reversal' ||
+        tx.reason === 'refund' ||
+        tx.reason === 'reversal'
+    );
+}
+
+function filteredTransactions() {
+    return transactions.filter(tx => {
+        const queryText = [
+            tx.type,
+            tx.label,
+            tx.details,
+            tx.recipient,
+            tx.reference,
+            tx.originalReference,
+            tx.bankReference,
+            tx.reason,
+            tx.note,
+            tx.status
+        ].join(' ').toLowerCase();
+
+        if (
+            searchQuery &&
+            !queryText.includes(searchQuery)
+        ) {
+            return false;
+        }
+
+        switch (currentFilter) {
+            case 'in':
+                return tx.direction === 'in';
+
+            case 'out':
+                return tx.direction === 'out';
+
+            case 'refund':
+                return isRefund(tx);
+
+            case 'pending':
+                return tx.status === 'pending';
+
+            case 'failed':
+                return tx.status === 'failed';
+
+            default:
+                return true;
+        }
+    });
+}
+
+/* ==========================================
+   TRANSACTION ROW
+========================================== */
+
+function transactionTitle(tx) {
+    if (isRefund(tx)) {
+        return tx.label;
+    }
+
+    return (
+        tx.details ||
+        tx.recipient ||
+        tx.label
+    );
+}
+
+function rowIcon(tx) {
+    if (isRefund(tx)) {
+        return 'undo-2';
+    }
+
+    if (tx.direction === 'in') {
+        return 'arrow-down-left';
+    }
+
+    if (tx.direction === 'out') {
+        return 'arrow-up-right';
+    }
+
+    return 'receipt-text';
+}
+
+function makeTransactionRow(tx) {
+    const row = el('button','tx-row');
+
+    row.type = 'button';
+
+    row.setAttribute(
+        'aria-label',
+        'View receipt for ' + tx.label
+    );
+
+    const iconWrap = el(
+        'div',
+        'tx-icon ' + tx.direction
+    );
+
+    iconWrap.appendChild(
+        icon(rowIcon(tx))
+    );
+
+    const content = el('div','tx-content');
+
+    content.append(
+        el('p','tx-type',tx.label),
+        el(
+            'p',
+            'tx-title',
+            transactionTitle(tx)
+        ),
+        el(
+            'div',
+            'tx-time',
+            formatTime(tx.date)
+        )
+    );
+
+    const right = el('div','tx-right');
+
+    const amountText =
+        tx.amount === null
+            ? '—'
+            : (
                 tx.direction === 'in'
                     ? '+'
                     : tx.direction === 'out'
                     ? '−'
-                    : '';
+                    : ''
+              ) + naira(tx.amount);
 
-            side.appendChild(
-                makeElement(
-                    'div',
-                    'tx-amount ' + tx.direction,
-                    tx.amount === null
-                        ? 'Amount unavailable'
-                        : prefix + money(tx.amount)
-                )
+    right.append(
+        el(
+            'div',
+            'tx-amount ' + tx.direction,
+            amountText
+        ),
+        el(
+            'span',
+            'status-pill ' + tx.status,
+            STATUS_LABELS[tx.status]
+        )
+    );
+
+    row.append(
+        iconWrap,
+        content,
+        right
+    );
+
+    row.onclick = () =>
+        openReceipt(tx);
+
+    return row;
+}
+
+/* ==========================================
+   EMPTY / ERROR UI
+========================================== */
+
+function showState(title,message,iconName,retry) {
+    const container = $('historyContainer');
+
+    container.replaceChildren();
+
+    const card = el('div','state-card');
+
+    const iconBox = el('div','state-icon');
+
+    iconBox.appendChild(
+        icon(iconName)
+    );
+
+    card.append(
+        iconBox,
+        el('h3','',title),
+        el('p','',message)
+    );
+
+    if (retry) {
+        const button = el(
+            'button',
+            'retry-button',
+            'Try Again'
+        );
+
+        button.type = 'button';
+        button.onclick = loadHistory;
+
+        card.appendChild(button);
+    }
+
+    container.appendChild(card);
+
+    icons();
+}
+
+/* ==========================================
+   RENDER HISTORY
+========================================== */
+
+function renderHistory() {
+    const container = $('historyContainer');
+
+    $('clearSearchBtn').hidden =
+        !searchQuery;
+
+    if (!loaded) {
+        if (loadError) {
+            showState(
+                'Could not load history',
+                'Check your internet connection and try again.',
+                'wifi-off',
+                true
             );
-
-            side.appendChild(
-                makeElement(
-                    'span',
-                    'status-tag ' + tx.status,
-                    STATUS_LABELS[tx.status]
-                )
-            );
-
-            row.append(
-                iconBox,
-                content,
-                side
-            );
-
-            row.addEventListener(
-                'click',
-                () => openReceipt(tx)
-            );
-
-            return row;
-        }
-
-        // ====================================
-        // RENDER HISTORY
-        // ====================================
-
-        function renderTransactions() {
-            const container =
-                $('historyContainer');
-
+        } else {
             container.replaceChildren();
 
-            if (!historyLoaded) {
-                if (historyError) {
-                    container.appendChild(
-                        makeState(
-                            'Unable to load history',
-                            'We could not retrieve your transactions. Check your connection and try again.',
-                            'wifi-off',
-                            true
-                        )
-                    );
-                } else {
-                    container.appendChild(
-                        makeState(
-                            'Loading transactions',
-                            'Retrieving your transaction records...',
-                            'loading'
-                        )
-                    );
-                }
+            const card = el('div','state-card');
 
-                $('resultCount').textContent =
-                    historyError ? 'Unavailable' : 'Loading...';
+            card.append(
+                el('div','spinner'),
+                el('h3','','Loading transactions'),
+                el('p','','Connecting to Bigotic Data...')
+            );
 
-                $('loadMoreBtn').hidden = true;
-
-                refreshIcons();
-                return;
-            }
-
-            const list =
-                filteredTransactions();
-
-            $('resultCount').textContent =
-                `${list.length} transaction${list.length === 1 ? '' : 's'}`;
-
-            if (!list.length) {
-                const hasRecords =
-                    allTransactions.length > 0;
-
-                container.appendChild(
-                    makeState(
-                        hasRecords
-                            ? 'No matching transactions'
-                            : 'No transactions yet',
-                        hasRecords
-                            ? 'Try another search or choose a different filter.'
-                            : 'Your wallet deposits and purchases will appear here when recorded by the platform.',
-                        'inbox'
-                    )
-                );
-
-                $('loadMoreBtn').hidden = true;
-
-                refreshIcons();
-                return;
-            }
-
-            const visible =
-                list.slice(0, visibleCount);
-
-            let previousGroupKey = '';
-            let groupElement = null;
-
-            for (const tx of visible) {
-                const key =
-                    tx.date
-                        ? dayKey(tx.date)
-                        : 'unknown';
-
-                if (key !== previousGroupKey) {
-                    container.appendChild(
-                        makeElement(
-                            'p',
-                            'date-label',
-                            dateGroupLabel(tx.date)
-                        )
-                    );
-
-                    groupElement =
-                        makeElement(
-                            'div',
-                            'transaction-group'
-                        );
-
-                    container.appendChild(
-                        groupElement
-                    );
-
-                    previousGroupKey = key;
-                }
-
-                groupElement.appendChild(
-                    makeTransactionRow(tx)
-                );
-            }
-
-            $('loadMoreBtn').hidden =
-                visibleCount >= list.length;
-
-            if (!$('loadMoreBtn').hidden) {
-                $('loadMoreBtn').textContent =
-                    `Load more (${list.length - visibleCount} remaining)`;
-            }
-
-            refreshIcons();
+            container.appendChild(card);
         }
 
-        $('loadMoreBtn').addEventListener(
-            'click',
-            () => {
-                visibleCount += PAGE_SIZE;
+        $('loadMoreBtn').hidden = true;
+        $('resultCount').textContent = '—';
+        return;
+    }
 
-                renderTransactions();
+    const list = filteredTransactions();
+
+    $('resultCount').textContent =
+        list.length + (
+            list.length === 1
+                ? ' transaction'
+                : ' transactions'
+        );
+
+    container.replaceChildren();
+
+    if (!list.length) {
+        showState(
+            transactions.length
+                ? 'No matching transactions'
+                : 'No transactions yet',
+            transactions.length
+                ? 'Try a different search or filter.'
+                : 'Your purchases, funding and refunds will appear here.',
+            'receipt-text',
+            false
+        );
+
+        $('loadMoreBtn').hidden = true;
+        return;
+    }
+
+    let lastKey = '';
+    let group = null;
+
+    for (const tx of list.slice(0,visibleCount)) {
+        const key = dayKey(tx.date);
+
+        if (key !== lastKey) {
+            const heading = el(
+                'h3',
+                'date-heading',
+                groupDate(tx.date)
+            );
+
+            container.appendChild(heading);
+
+            group = el('div','tx-group');
+
+            container.appendChild(group);
+
+            lastKey = key;
+        }
+
+        group.appendChild(
+            makeTransactionRow(tx)
+        );
+    }
+
+    $('loadMoreBtn').hidden =
+        visibleCount >= list.length;
+
+    if (!$('loadMoreBtn').hidden) {
+        $('loadMoreBtn').textContent =
+            'Load More (' +
+            (list.length - visibleCount) +
+            ' remaining)';
+    }
+
+    icons();
+}
+
+/* ==========================================
+   SEARCH AND FILTER EVENTS
+========================================== */
+
+$('searchInput').addEventListener(
+    'input',
+    event => {
+        searchQuery =
+            event.target.value
+                .toLowerCase()
+                .trim();
+
+        visibleCount = PAGE_SIZE;
+
+        renderHistory();
+    }
+);
+
+$('clearSearchBtn').onclick = () => {
+    $('searchInput').value = '';
+
+    searchQuery = '';
+    visibleCount = PAGE_SIZE;
+
+    renderHistory();
+    $('searchInput').focus();
+};
+
+document.querySelectorAll(
+    '[data-filter]'
+).forEach(button => {
+    button.onclick = () => {
+        currentFilter =
+            button.dataset.filter;
+
+        visibleCount = PAGE_SIZE;
+
+        document.querySelectorAll(
+            '[data-filter]'
+        ).forEach(item => {
+            const active =
+                item === button;
+
+            item.classList.toggle(
+                'active',
+                active
+            );
+
+            item.setAttribute(
+                'aria-pressed',
+                String(active)
+            );
+        });
+
+        renderHistory();
+    };
+});
+
+$('loadMoreBtn').onclick = () => {
+    visibleCount += PAGE_SIZE;
+    renderHistory();
+};
+
+/* ==========================================
+   LOAD HISTORY FROM BACKEND
+========================================== */
+
+async function loadHistory() {
+    if (loading) return;
+
+    user = getUser();
+
+    if (!user) {
+        window.location.replace(
+            'login.html'
+        );
+
+        return;
+    }
+
+    loading = true;
+
+    $('refreshBtn').disabled = true;
+
+    if (!loaded) {
+        loadError = false;
+        renderHistory();
+    }
+
+    const controller =
+        new AbortController();
+
+    const timer = setTimeout(
+        () => controller.abort(),
+        30000
+    );
+
+    try {
+        const email =
+            user.email.toLowerCase().trim();
+
+        const response = await apiFetch(
+            '/transactions/' +
+            encodeURIComponent(email),
+            {
+                method:'GET',
+                signal:controller.signal
             }
         );
 
-        // ====================================
-        // LOAD HISTORY FROM BACKEND
-        // ====================================
+        if (response.status === 401) {
+            // Existing session has expired
+            // or Server V2 now requires
+            // a freshly issued login token.
+            logout();
+            return;
+        }
 
-        async function loadHistory() {
-            if (loadingHistory) return;
+        if (!response.ok) {
+            throw new Error(
+                'HTTP ' + response.status
+            );
+        }
 
-            const user = getCurrentUser();
+        const payload =
+            await response.json();
 
-            if (!user) {
-                window.location.href =
-                    'login.html';
+        const records =
+            extractTransactions(payload);
 
+        transactions = records
+            .map(normalizeRecord)
+            .filter(Boolean);
+
+        transactions.sort(
+            (a,b) =>
+                (b.date?.getTime() || 0) -
+                (a.date?.getTime() || 0)
+        );
+
+        loaded = true;
+        loadError = false;
+        visibleCount = PAGE_SIZE;
+        lastRefresh = Date.now();
+
+        updateSummary();
+        renderHistory();
+
+    } catch (error) {
+        console.error(
+            'History request:',
+            error
+        );
+
+        loadError = true;
+
+        if (!loaded) {
+            renderHistory();
+        } else {
+            toast(
+                'Could not refresh history. Showing the previously loaded records.',
+                'error'
+            );
+        }
+
+    } finally {
+        clearTimeout(timer);
+        loading = false;
+        $('refreshBtn').disabled = false;
+    }
+}
+
+$('refreshBtn').onclick = loadHistory;
+
+/* ==========================================
+   RECEIPT DETAILS
+========================================== */
+
+function addReceiptRow(label,value) {
+    if (
+        value === '' ||
+        value === null ||
+        value === undefined
+    ) {
+        return;
+    }
+
+    const row = el(
+        'div',
+        'receipt-detail-row'
+    );
+
+    row.append(
+        el(
+            'span',
+            'receipt-detail-label',
+            label
+        ),
+        el(
+            'span',
+            'receipt-detail-value',
+            value
+        )
+    );
+
+    $('receiptDetails').appendChild(row);
+}
+
+function receiptMessage(tx) {
+    if (tx.status === 'successful') {
+        return {
+            title:'Transaction Successful',
+            message:
+                'This transaction is marked successful in Bigotic Data records. Thank you for using our services.'
+        };
+    }
+
+    if (tx.status === 'pending') {
+        return {
+            title:'Transaction Pending',
+            message:
+                'This transaction is awaiting confirmation. Do not treat this document as proof of completed payment or delivery.'
+        };
+    }
+
+    if (tx.status === 'failed') {
+        return {
+            title:'Transaction Failed',
+            message:
+                'This transaction is marked failed. This receipt is not proof of a successful service delivery or settlement.'
+        };
+    }
+
+    return {
+        title:'Transaction Recorded',
+        message:
+            'This transaction appears in your account history, but the server did not provide a confirmed final status.'
+    };
+}
+
+/* ==========================================
+   OPEN RECEIPT
+========================================== */
+
+function openReceipt(tx) {
+    if (!tx) return;
+
+    selectedTransaction = tx;
+    previousFocus = document.activeElement;
+
+    $('receiptAmount').textContent =
+        naira(tx.amount);
+
+    $('receiptStatus').textContent =
+        STATUS_LABELS[tx.status];
+
+    $('receiptStatusIcon').setAttribute(
+        'data-lucide',
+        tx.status === 'successful'
+            ? 'check-circle-2'
+            : tx.status === 'pending'
+            ? 'clock'
+            : tx.status === 'failed'
+            ? 'x-circle'
+            : 'receipt-text'
+    );
+
+    $('receiptDetails').replaceChildren();
+
+    addReceiptRow(
+        'Transaction Type',
+        tx.label
+    );
+
+    addReceiptRow(
+        'Direction',
+        tx.direction === 'in'
+            ? 'Money In'
+            : tx.direction === 'out'
+            ? 'Money Out'
+            : 'Not specified'
+    );
+
+    addReceiptRow(
+        'Date & Time',
+        formatDateTime(tx.date)
+    );
+
+    if (tx.recipient) {
+        addReceiptRow(
+            tx.direction === 'in'
+                ? 'Account / Beneficiary'
+                : 'Recipient',
+            tx.recipient
+        );
+    }
+
+    if (tx.details) {
+        addReceiptRow(
+            'Description',
+            tx.details
+        );
+    }
+
+    if (tx.originalReference) {
+        addReceiptRow(
+            'Original Transaction',
+            tx.originalReference
+        );
+    }
+
+    if (tx.bankReference) {
+        addReceiptRow(
+            'Bank Reference',
+            tx.bankReference
+        );
+    }
+
+    if (tx.reason) {
+        addReceiptRow(
+            'Adjustment Reason',
+            tx.reason
+        );
+    }
+
+    if (tx.note) {
+        addReceiptRow(
+            'Additional Information',
+            tx.note
+        );
+    }
+
+    const original = tx.original;
+
+    const provider = text(
+        original.provider ??
+        original.network ??
+        original.cablename
+    );
+
+    if (provider) {
+        addReceiptRow(
+            'Provider / Network',
+            provider
+        );
+    }
+
+    const quantity = text(
+        original.quantity
+    );
+
+    if (quantity) {
+        addReceiptRow(
+            'Quantity',
+            quantity
+        );
+    }
+
+    const gross = number(
+        original.grossAmount
+    );
+
+    if (gross !== null) {
+        addReceiptRow(
+            'Gross Deposit',
+            naira(gross)
+        );
+    }
+
+    const fee = number(
+        original.fee ??
+        original.processingFee ??
+        original.charge
+    );
+
+    if (fee !== null) {
+        addReceiptRow(
+            'Processing Fee',
+            naira(fee)
+        );
+    }
+
+    const balanceBefore = number(
+        original.balanceBefore
+    );
+
+    if (balanceBefore !== null) {
+        addReceiptRow(
+            'Balance Before',
+            naira(balanceBefore)
+        );
+    }
+
+    const balanceAfter = number(
+        original.balanceAfter ??
+        original.newBalance
+    );
+
+    if (balanceAfter !== null) {
+        addReceiptRow(
+            'Balance After',
+            naira(balanceAfter)
+        );
+    }
+
+    $('receiptReference').textContent =
+        tx.reference || 'Not provided';
+
+    const message =
+        receiptMessage(tx);
+
+    $('receiptMessageTitle').textContent =
+        message.title;
+
+    $('receiptMessageBody').textContent =
+        message.message;
+
+    $('receiptModal').classList.add('open');
+
+    $('receiptModal').setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'modal-open'
+    );
+
+    icons();
+
+    $('closeReceiptBtn').focus();
+}
+
+/* ==========================================
+   CLOSE RECEIPT
+========================================== */
+
+function closeReceipt() {
+    $('receiptModal').classList.remove('open');
+
+    $('receiptModal').setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+    document.body.classList.remove('modal-open');
+
+    if (
+        previousFocus &&
+        typeof previousFocus.focus === 'function'
+    ) {
+        previousFocus.focus();
+    }
+}
+
+$('closeReceiptBtn').onclick =
+    closeReceipt;
+
+$('receiptModal').addEventListener(
+    'click',
+    event => {
+        if (
+            event.target === $('receiptModal')
+        ) {
+            closeReceipt();
+        }
+    }
+);
+
+document.addEventListener(
+    'keydown',
+    event => {
+        if (
+            !$('receiptModal').classList.contains('open')
+        ) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            closeReceipt();
+            return;
+        }
+
+        if (event.key === 'Tab') {
+            const focusable = Array.from(
+                $('receiptModal').querySelectorAll(
+                    'button:not(:disabled),a[href]'
+                )
+            ).filter(node => !node.hidden);
+
+            if (!focusable.length) {
                 return;
             }
 
-            loadingHistory = true;
-
-            $('refreshBtn').disabled = true;
-
-            // Preserve currently displayed records
-            // while refreshing, if already loaded.
-            if (!historyLoaded) {
-                historyError = false;
-                renderTransactions();
-            }
-
-            const controller =
-                new AbortController();
-
-            const timeoutId = setTimeout(
-                () => controller.abort(),
-                30000
-            );
-
-            try {
-                const email =
-                    user.email.toLowerCase().trim();
-
-                const response = await fetch(
-                    `${BACKEND_URL}/transactions/${encodeURIComponent(email)}`,
-                    {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json'
-                        },
-                        cache: 'no-store',
-                        signal: controller.signal
-                    }
-                );
-
-                if (!response.ok) {
-                    throw new Error(
-                        `HTTP ${response.status}`
-                    );
-                }
-
-                const payload =
-                    await response.json();
-
-                const records =
-                    getTransactionsFromResponse(payload);
-
-                allTransactions = records
-                    .map(normalizeTransaction)
-                    .filter(Boolean);
-
-                allTransactions.sort((a, b) => {
-                    const dateA =
-                        a.date ? a.date.getTime() : -Infinity;
-
-                    const dateB =
-                        b.date ? b.date.getTime() : -Infinity;
-
-                    return dateB - dateA;
-                });
-
-                historyLoaded = true;
-                historyError = false;
-
-                visibleCount = PAGE_SIZE;
-
-                updateSummary();
-                renderTransactions();
-
-            } catch (error) {
-                console.error(
-                    'Transaction history error:',
-                    error
-                );
-
-                historyError = true;
-
-                if (!historyLoaded) {
-                    allTransactions = [];
-                    renderTransactions();
-                } else {
-                    showToast(
-                        'Could not refresh history. Existing records are still displayed.',
-                        'error'
-                    );
-                }
-
-            } finally {
-                clearTimeout(timeoutId);
-
-                loadingHistory = false;
-
-                $('refreshBtn').disabled = false;
-            }
-        }
-
-        $('refreshBtn').addEventListener(
-            'click',
-            loadHistory
-        );
-
-        // ====================================
-        // RECEIPT DETAILS
-        // ====================================
-
-        function appendReceiptRow(label, value) {
-            const row =
-                makeElement(
-                    'div',
-                    'receipt-detail-row'
-                );
-
-            const labelEl =
-                makeElement(
-                    'span',
-                    'receipt-detail-label',
-                    label
-                );
-
-            const valueEl =
-                makeElement(
-                    'span',
-                    'receipt-detail-value',
-                    value
-                );
-
-            row.append(labelEl, valueEl);
-
-            $('receiptDetails').appendChild(row);
-        }
-
-        function receiptStatusMessage(tx) {
-            if (tx.status === 'successful') {
-                return {
-                    title: 'Transaction Successful',
-                    message:
-                        'This transaction is marked successful in your Bigotic Data history. Thank you for choosing our services.'
-                };
-            }
-
-            if (tx.status === 'pending') {
-                return {
-                    title: 'Transaction Pending',
-                    message:
-                        'This transaction is still awaiting confirmation. Do not treat this receipt as proof of completed payment or delivery.'
-                };
-            }
-
-            if (tx.status === 'failed') {
-                return {
-                    title: 'Transaction Failed',
-                    message:
-                        'This transaction is marked failed. This document is not proof of successful payment or service delivery.'
-                };
-            }
-
-            return {
-                title: 'Transaction Recorded',
-                message:
-                    'This document confirms that a transaction record exists in your history. Its final payment or delivery status was not provided by the server.'
-            };
-        }
-
-        // ====================================
-        // OPEN RECEIPT
-        // ====================================
-
-        function openReceipt(tx) {
-            if (!tx) return;
-
-            selectedTransaction = tx;
-            previousFocus = document.activeElement;
-
-            $('receiptAmount').textContent =
-                money(tx.amount);
-
-            $('receiptStatus').textContent =
-                STATUS_LABELS[tx.status];
-
-            $('receiptStatusIcon').setAttribute(
-                'data-lucide',
-                tx.status === 'successful'
-                    ? 'check-circle-2'
-                    : tx.status === 'pending'
-                    ? 'clock-3'
-                    : tx.status === 'failed'
-                    ? 'x-circle'
-                    : 'receipt-text'
-            );
-
-            $('receiptDetails').replaceChildren();
-
-            appendReceiptRow(
-                'Transaction Type',
-                tx.type
-            );
-
-            appendReceiptRow(
-                'Direction',
-                tx.direction === 'in'
-                    ? 'Money In'
-                    : tx.direction === 'out'
-                    ? 'Money Out'
-                    : 'Not specified'
-            );
-
-            appendReceiptRow(
-                'Date & Time',
-                formatDateTime(tx.date)
-            );
-
-            if (tx.recipient) {
-                appendReceiptRow(
-                    tx.direction === 'in'
-                        ? 'Account / Sender'
-                        : 'Recipient',
-                    tx.recipient
-                );
-            }
-
-            if (tx.details) {
-                appendReceiptRow(
-                    'Description',
-                    tx.details
-                );
-            }
-
-            const original = tx.original;
-
-            const network = toText(
-                original.network ??
-                original.provider ??
-                original.cablename
-            );
-
-            if (network) {
-                appendReceiptRow(
-                    'Provider / Network',
-                    network
-                );
-            }
-
-            const quantity = toText(
-                original.quantity
-            );
-
-            if (quantity) {
-                appendReceiptRow(
-                    'Quantity',
-                    quantity
-                );
-            }
-
-            const fee = parseAmount(
-                original.fee ??
-                original.charge ??
-                original.processingFee
-            );
-
-            if (fee !== null) {
-                appendReceiptRow(
-                    'Processing Fee',
-                    money(fee)
-                );
-            }
-
-            const balanceAfter = parseAmount(
-                original.balanceAfter ??
-                original.newBalance
-            );
-
-            if (balanceAfter !== null) {
-                appendReceiptRow(
-                    'Balance After',
-                    money(balanceAfter)
-                );
-            }
-
-            $('receiptReference').textContent =
-                tx.reference || 'Not provided';
-
-            const statusMessage =
-                receiptStatusMessage(tx);
-
-            $('receiptMessageTitle').textContent =
-                statusMessage.title;
-
-            $('receiptMessageBody').textContent =
-                statusMessage.message;
-
-            $('receipt-modal').classList.add(
-                'open'
-            );
-
-            $('receipt-modal').setAttribute(
-                'aria-hidden',
-                'false'
-            );
-
-            document.body.classList.add(
-                'modal-open'
-            );
-
-            refreshIcons();
-
-            $('closeReceiptTop').focus();
-        }
-
-        // ====================================
-        // CLOSE RECEIPT
-        // ====================================
-
-        function closeReceipt() {
-            $('receipt-modal').classList.remove(
-                'open'
-            );
-
-            $('receipt-modal').setAttribute(
-                'aria-hidden',
-                'true'
-            );
-
-            document.body.classList.remove(
-                'modal-open'
-            );
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
 
             if (
-                previousFocus &&
-                typeof previousFocus.focus === 'function'
+                event.shiftKey &&
+                document.activeElement === first
             ) {
-                previousFocus.focus();
+                event.preventDefault();
+                last.focus();
+
+            } else if (
+                !event.shiftKey &&
+                document.activeElement === last
+            ) {
+                event.preventDefault();
+                first.focus();
             }
         }
+    }
+);
 
-        $('closeReceiptTop').addEventListener(
-            'click',
-            closeReceipt
+/* ==========================================
+   COPY RECEIPT
+========================================== */
+
+function receiptText(tx) {
+    const lines = [
+        'BIGOTIC DATA',
+        'DIGITAL TRANSACTION RECEIPT',
+        'bigoticdata.com.ng',
+        '',
+        'Status: ' + STATUS_LABELS[tx.status],
+        'Type: ' + tx.label,
+        'Direction: ' + (
+            tx.direction === 'in'
+                ? 'Money In'
+                : tx.direction === 'out'
+                ? 'Money Out'
+                : 'Not specified'
+        ),
+        'Amount: ' + naira(tx.amount),
+        'Date: ' + formatDateTime(tx.date)
+    ];
+
+    if (tx.recipient) {
+        lines.push(
+            'Recipient: ' + tx.recipient
         );
+    }
 
-        $('receipt-modal').addEventListener(
-            'click',
-            event => {
-                if (
-                    event.target === $('receipt-modal')
-                ) {
-                    closeReceipt();
-                }
-            }
+    if (tx.details) {
+        lines.push(
+            'Description: ' + tx.details
         );
+    }
 
-        document.addEventListener(
-            'keydown',
-            event => {
-                if (
-                    event.key === 'Escape' &&
-                    $('receipt-modal').classList.contains('open')
-                ) {
-                    closeReceipt();
-                }
-
-                // Keep keyboard focus within the receipt.
-                if (
-                    event.key === 'Tab' &&
-                    $('receipt-modal').classList.contains('open')
-                ) {
-                    const focusable = Array.from(
-                        $('receipt-modal').querySelectorAll(
-                            'button:not(:disabled), a[href]'
-                        )
-                    );
-
-                    if (!focusable.length) return;
-
-                    const first = focusable[0];
-                    const last =
-                        focusable[focusable.length - 1];
-
-                    if (
-                        event.shiftKey &&
-                        document.activeElement === first
-                    ) {
-                        event.preventDefault();
-                        last.focus();
-                    } else if (
-                        !event.shiftKey &&
-                        document.activeElement === last
-                    ) {
-                        event.preventDefault();
-                        first.focus();
-                    }
-                }
-            }
+    if (tx.originalReference) {
+        lines.push(
+            'Original Reference: ' +
+            tx.originalReference
         );
+    }
 
-        // ====================================
-        // RECEIPT TEXT FOR COPYING
-        // ====================================
+    if (tx.bankReference) {
+        lines.push(
+            'Bank Reference: ' +
+            tx.bankReference
+        );
+    }
 
-        function buildReceiptText(tx) {
-            const message =
-                receiptStatusMessage(tx);
+    if (tx.reason) {
+        lines.push(
+            'Reason: ' + tx.reason
+        );
+    }
 
-            const lines = [
-                'BIGOTIC DATA',
-                'DIGITAL TRANSACTION RECEIPT',
-                'bigoticdata.com.ng',
-                '',
-                'Status: ' + STATUS_LABELS[tx.status],
-                'Type: ' + tx.type,
-                'Direction: ' + (
-                    tx.direction === 'in'
-                        ? 'Money In'
-                        : tx.direction === 'out'
-                        ? 'Money Out'
-                        : 'Not specified'
-                ),
-                'Amount: ' + money(tx.amount),
-                'Date: ' + formatDateTime(tx.date)
-            ];
+    if (tx.note) {
+        lines.push(
+            'Note: ' + tx.note
+        );
+    }
 
-            if (tx.recipient) {
-                lines.push(
-                    'Recipient / Account: ' +
-                    tx.recipient
-                );
-            }
+    lines.push(
+        'Transaction Reference: ' +
+        (tx.reference || 'Not provided')
+    );
 
-            if (tx.details) {
-                lines.push(
-                    'Description: ' +
-                    tx.details
-                );
-            }
+    const message = receiptMessage(tx);
 
-            lines.push(
-                'Reference: ' +
-                (tx.reference || 'Not provided')
+    lines.push(
+        '',
+        message.title,
+        message.message,
+        '',
+        'Support: 09159436827'
+    );
+
+    return lines.join('\n');
+}
+
+async function copyReceipt() {
+    if (!selectedTransaction) {
+        toast(
+            'Select a transaction first.',
+            'error'
+        );
+        return;
+    }
+
+    const content =
+        receiptText(selectedTransaction);
+
+    try {
+        if (
+            navigator.clipboard &&
+            window.isSecureContext
+        ) {
+            await navigator.clipboard.writeText(
+                content
             );
+        } else {
+            const textarea =
+                document.createElement('textarea');
 
-            lines.push(
-                '',
-                message.title,
-                message.message,
-                '',
-                'Support: 09159436827'
+            textarea.value = content;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            const copied =
+                document.execCommand('copy');
+
+            textarea.remove();
+
+            if (!copied) {
+                throw new Error('Copy unavailable');
+            }
+        }
+
+        toast(
+            'Receipt copied successfully.',
+            'success'
+        );
+
+    } catch (_) {
+        toast(
+            'Unable to copy automatically on this browser.',
+            'error'
+        );
+    }
+}
+
+$('copyReceiptBtn').onclick =
+    copyReceipt;
+
+/* ==========================================
+   PRINT OR SAVE AS PDF
+========================================== */
+
+$('printReceiptBtn').onclick = () => {
+    if (!selectedTransaction) {
+        toast(
+            'Select a transaction first.',
+            'error'
+        );
+        return;
+    }
+
+    window.print();
+};
+
+/* ==========================================
+   INITIALIZATION
+========================================== */
+
+window.addEventListener(
+    'load',
+    async () => {
+        user = getUser();
+
+        if (!user) {
+            window.location.replace(
+                'login.html'
             );
-
-            return lines.join('\n');
+            return;
         }
 
-        // ====================================
-        // COPY RECEIPT
-        // ====================================
+        await loadHistory();
+    }
+);
 
-        async function copyReceipt() {
-            if (!selectedTransaction) {
-                showToast(
-                    'No transaction is selected.',
-                    'error'
-                );
+/* ==========================================
+   REFRESH ON RETURN
+========================================== */
 
-                return;
-            }
-
-            const text =
-                buildReceiptText(selectedTransaction);
-
-            try {
-                if (
-                    navigator.clipboard &&
-                    window.isSecureContext
-                ) {
-                    await navigator.clipboard.writeText(
-                        text
-                    );
-                } else {
-                    const textarea =
-                        document.createElement(
-                            'textarea'
-                        );
-
-                    textarea.value = text;
-
-                    textarea.style.position =
-                        'fixed';
-
-                    textarea.style.opacity =
-                        '0';
-
-                    document.body.appendChild(
-                        textarea
-                    );
-
-                    textarea.select();
-
-                    const copied =
-                        document.execCommand(
-                            'copy'
-                        );
-
-                    textarea.remove();
-
-                    if (!copied) {
-                        throw new Error(
-                            'Copy unsupported'
-                        );
-                    }
-                }
-
-                showToast(
-                    'Receipt details copied successfully.',
-                    'success'
-                );
-
-            } catch (_) {
-                showToast(
-                    'Automatic copying is unavailable on this browser.',
-                    'error'
-                );
-            }
+window.addEventListener(
+    'focus',
+    () => {
+        if (
+            loaded &&
+            !loading &&
+            !$('receiptModal').classList.contains('open') &&
+            Date.now() - lastRefresh > 60000
+        ) {
+            loadHistory();
         }
-
-        $('copyReceiptBtn').addEventListener(
-            'click',
-            copyReceipt
-        );
-
-        // ====================================
-        // PRINT OR SAVE RECEIPT AS PDF
-        // ====================================
-
-        function printReceipt() {
-            if (!selectedTransaction) {
-                showToast(
-                    'Select a transaction first.',
-                    'error'
-                );
-
-                return;
-            }
-
-            window.print();
-        }
-
-        $('printReceiptBtn').addEventListener(
-            'click',
-            printReceipt
-        );
-
-        // ====================================
-        // INITIALIZE
-        // ====================================
-
-        window.addEventListener(
-            'load',
-            async () => {
-                const user = getCurrentUser();
-
-                if (!user) {
-                    window.location.href =
-                        'login.html';
-
-                    return;
-                }
-
-                await loadHistory();
-            }
-        );
-
-        // Refresh history when returning to the tab,
-        // but do not interrupt an open receipt.
-
-        let lastAutoRefresh = Date.now();
-
-        window.addEventListener(
-            'focus',
-            () => {
-                if (
-                    historyLoaded &&
-                    !loadingHistory &&
-                    !$('receipt-modal').classList.contains('open') &&
-                    Date.now() - lastAutoRefresh > 60000
-                ) {
-                    lastAutoRefresh = Date.now();
-                    loadHistory();
-                }
-            }
-        );
-
-    </script>
+    }
+);
+</script>
 
 </body>
 </html>

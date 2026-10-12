@@ -3,853 +3,881 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#060915">
 <title>Account Settings | Bigotic Data</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <script>
-(function () {
-    try {
-        document.documentElement.dataset.theme =
-            localStorage.getItem('bigotic-theme') === 'light'
-                ? 'light' : 'dark';
-    } catch (_) {
-        document.documentElement.dataset.theme = 'dark';
-    }
-})();
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light' : 'dark';
+} catch (_) {
+    document.documentElement.dataset.theme = 'dark';
+}
 </script>
 
 <style>
 :root {
-    --blue: #3b6bff;
-    --soft: #7c9bff;
-    --cyan: #28e0d6;
-    --green: #34d399;
-    --red: #f97066;
-    --gold: #f4b740;
+    --blue:#3b6bff;
+    --soft:#7c9bff;
+    --cyan:#28e0d6;
+    --green:#34d399;
+    --red:#f97066;
+    --gold:#f4b740;
 }
 
 html[data-theme="dark"] {
-    --bg: #060915;
-    --surface: #0d1330;
-    --card: #0f1638;
-    --border: rgba(148,163,255,.14);
-    --high: #eef1ff;
-    --mid: #aab0d6;
-    --dim: #737aa7;
-    --nav: rgba(6,9,21,.88);
-    --hover: rgba(124,155,255,.08);
-    --input: rgba(255,255,255,.04);
-    --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
+    --bg:#060915;
+    --surface:#0d1330;
+    --card:#0f1638;
+    --border:rgba(148,163,255,.14);
+    --high:#eef1ff;
+    --mid:#aab0d6;
+    --dim:#737aa7;
+    --nav:rgba(6,9,21,.88);
+    --hover:rgba(124,155,255,.08);
+    --input:rgba(255,255,255,.04);
+    --shadow:0 20px 45px -14px rgba(0,0,0,.5);
 }
 
 html[data-theme="light"] {
-    --bg: #f2f4fb;
-    --surface: #fff;
-    --card: #fff;
-    --border: #e6e9f6;
-    --high: #0f1428;
-    --mid: #5b6178;
-    --dim: #9399bc;
-    --nav: rgba(255,255,255,.9);
-    --hover: rgba(59,107,255,.05);
-    --input: #f5f7fd;
-    --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
+    --bg:#f2f4fb;
+    --surface:#fff;
+    --card:#fff;
+    --border:#e6e9f6;
+    --high:#0f1428;
+    --mid:#5b6178;
+    --dim:#9399bc;
+    --nav:rgba(255,255,255,.9);
+    --hover:rgba(59,107,255,.05);
+    --input:#f5f7fd;
+    --shadow:0 20px 45px -20px rgba(30,58,138,.14);
 }
 
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-html, body { margin: 0; padding: 0; }
+* {
+    box-sizing:border-box;
+}
+
+[hidden] {
+    display:none!important;
+}
+
+html,body {
+    margin:0;
+    padding:0;
+}
 
 body {
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--high);
-    font-family: Inter, sans-serif;
-    padding-bottom: 112px;
-    overflow-x: hidden;
-    transition: background .3s, color .3s;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--high);
+    font-family:Inter,Arial,sans-serif;
+    padding-bottom:112px;
+    overflow-x:hidden;
 }
 
-a { color: inherit; text-decoration: none; }
-button, input { font: inherit; }
-button { cursor: pointer; }
+a {
+    color:inherit;
+    text-decoration:none;
+}
+
+button,input {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
 
 button:disabled {
-    opacity: .6;
-    cursor: wait;
+    opacity:.6;
+    cursor:wait;
 }
 
 button:focus-visible,
 input:focus-visible,
 a:focus-visible,
 summary:focus-visible {
-    outline: 2px solid var(--soft);
-    outline-offset: 3px;
+    outline:2px solid var(--soft);
+    outline-offset:3px;
 }
 
-.display { font-family: 'Space Grotesk', sans-serif; }
-.mono { font-family: 'JetBrains Mono', monospace; }
+.display {
+    font-family:"Space Grotesk",sans-serif;
+}
 
-svg { flex-shrink: 0; }
+.mono {
+    font-family:"JetBrains Mono",monospace;
+}
+
+svg {
+    flex-shrink:0;
+}
+
+/* TOP NAVIGATION */
 
 .topbar {
-    height: 62px;
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    padding: 0 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--nav);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
+    height:62px;
+    position:sticky;
+    top:0;
+    z-index:40;
+    padding:0 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:var(--nav);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
 }
 
-.back {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--mid);
+.back-link {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--mid);
 }
 
-.back i { width: 16px; height: 16px; }
+.back-link svg {
+    width:16px;
+    height:16px;
+}
 
 .top-title {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .09em;
-    text-transform: uppercase;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
 }
 
-.top-title i {
-    width: 15px;
-    height: 15px;
-    color: var(--soft);
+.top-title svg {
+    width:16px;
+    height:16px;
+    color:var(--soft);
 }
 
 .theme-button {
-    width: 35px;
-    height: 35px;
-    border-radius: 11px;
-    display: grid;
-    place-items: center;
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--mid);
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--card);
+    color:var(--mid);
 }
 
-.theme-button i {
-    width: 16px;
-    height: 16px;
+.theme-button svg {
+    width:17px;
+    height:17px;
 }
 
 main {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 22px 18px 0;
+    max-width:480px;
+    margin:0 auto;
+    padding:22px 18px 0;
 }
 
-/* PROFILE HERO */
+/* PROFILE HEADER */
 
 .hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 25px;
-    padding: 26px 20px;
-    background: linear-gradient(
-        135deg, #3b6bff, #1d3fbf 65%, #28e0d6
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+    border-radius:25px;
+    padding:26px 20px;
+    margin-bottom:25px;
+    color:#fff;
+    background:linear-gradient(
+        135deg,
+        #3b6bff,
+        #1d3fbf 65%,
+        #28e0d6
     );
-    color: #fff;
-    box-shadow: 0 25px 55px -18px rgba(59,107,255,.5);
-    text-align: center;
-    margin-bottom: 25px;
+    box-shadow:0 25px 55px -18px rgba(59,107,255,.5);
 }
 
 .hero::before {
-    content: '';
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    background: rgba(255,255,255,.12);
-    border-radius: 50%;
-    right: -100px;
-    top: -100px;
+    content:"";
+    position:absolute;
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    right:-100px;
+    top:-100px;
+    background:rgba(255,255,255,.12);
 }
 
 .hero::after {
-    content: '';
-    position: absolute;
-    width: 170px;
-    height: 170px;
-    background: rgba(40,224,214,.2);
-    border-radius: 50%;
-    bottom: -110px;
-    left: -70px;
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    border-radius:50%;
+    left:-70px;
+    bottom:-110px;
+    background:rgba(40,224,214,.2);
 }
 
 .hero-content {
-    position: relative;
-    z-index: 1;
+    position:relative;
+    z-index:1;
 }
 
 .avatar {
-    width: 73px;
-    height: 73px;
-    border: 2px solid rgba(255,255,255,.4);
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    margin: 0 auto 13px;
-    background: rgba(255,255,255,.16);
-    backdrop-filter: blur(6px);
-    font-size: 26px;
-    font-weight: 800;
+    width:73px;
+    height:73px;
+    border-radius:50%;
+    margin:0 auto 13px;
+    border:2px solid rgba(255,255,255,.4);
+    background:rgba(255,255,255,.16);
+    display:grid;
+    place-items:center;
+    font-size:26px;
+    font-weight:800;
 }
 
 .hero-name {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 5px;
-    overflow-wrap: anywhere;
+    margin:0 0 5px;
+    font-size:20px;
+    overflow-wrap:anywhere;
 }
 
 .hero-email {
-    font-size: 11px;
-    font-family: 'JetBrains Mono', monospace;
-    color: rgba(255,255,255,.85);
-    margin: 0 0 13px;
-    overflow-wrap: anywhere;
+    margin:0 0 13px;
+    font:11px "JetBrains Mono",monospace;
+    color:rgba(255,255,255,.85);
+    overflow-wrap:anywhere;
 }
 
 .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(255,255,255,.16);
-    border: 1px solid rgba(255,255,255,.28);
-    border-radius: 999px;
-    padding: 7px 12px;
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .07em;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid rgba(255,255,255,.28);
+    background:rgba(255,255,255,.16);
+    border-radius:99px;
+    padding:7px 12px;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase;
 }
 
-.hero-badge i { width: 12px; height: 12px; }
-
-.hero-footnote {
-    color: rgba(255,255,255,.78);
-    font-size: 10px;
-    margin: 13px 0 0;
+.hero-badge svg {
+    width:13px;
+    height:13px;
 }
 
-/* SECTION GROUPS */
+.hero-note {
+    margin:13px 0 0;
+    color:rgba(255,255,255,.78);
+    font-size:10px;
+}
+
+/* SETTINGS GROUPS */
 
 .section-label {
-    color: var(--dim);
-    text-transform: uppercase;
-    letter-spacing: .15em;
-    font-size: 10px;
-    font-weight: 800;
-    margin: 0 0 11px 4px;
+    color:var(--dim);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    margin:0 0 11px 4px;
 }
 
 .group {
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--card);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    margin-bottom: 23px;
+    overflow:hidden;
+    margin-bottom:23px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--card);
+    box-shadow:var(--shadow);
 }
 
 .setting-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 15px 16px;
-    min-height: 68px;
-    border-bottom: 1px solid var(--border);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px 16px;
+    min-height:68px;
+    border-bottom:1px solid var(--border);
 }
 
 .setting-row:last-child {
-    border-bottom: none;
-}
-
-.setting-row.action {
-    transition: background .2s;
+    border-bottom:0;
 }
 
 .setting-row.action:hover {
-    background: var(--hover);
+    background:var(--hover);
 }
 
 .row-icon {
-    flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    background: var(--hover);
-    color: var(--soft);
+    width:38px;
+    height:38px;
+    flex-shrink:0;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    background:var(--hover);
+    color:var(--soft);
 }
 
-.row-icon i {
-    width: 17px;
-    height: 17px;
+.row-icon svg {
+    width:18px;
+    height:18px;
 }
 
 .row-text {
-    flex: 1;
-    min-width: 0;
+    flex:1;
+    min-width:0;
 }
 
 .row-title {
-    font-size: 12px;
-    font-weight: 800;
-    margin: 0;
+    font-size:12px;
+    font-weight:800;
+    margin:0;
 }
 
 .row-sub {
-    font-size: 10px;
-    line-height: 1.5;
-    color: var(--dim);
-    margin: 4px 0 0;
+    color:var(--dim);
+    font-size:10px;
+    line-height:1.6;
+    margin:4px 0 0;
 }
 
 .row-value {
-    font-size: 11px;
-    font-weight: 700;
-    text-align: right;
-    color: var(--mid);
-    max-width: 50%;
-    overflow-wrap: anywhere;
+    max-width:50%;
+    overflow-wrap:anywhere;
+    color:var(--mid);
+    font-size:11px;
+    font-weight:700;
+    text-align:right;
 }
 
 .row-arrow {
-    width: 16px;
-    height: 16px;
-    color: var(--dim);
-    flex-shrink: 0;
+    width:16px;
+    height:16px;
+    color:var(--dim);
 }
 
 .row-link {
-    width: 100%;
-    color: inherit;
-}
-
-.row-button {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    text-align: left;
+    width:100%;
 }
 
 .status-pill {
-    padding: 5px 9px;
-    border-radius: 999px;
-    font-size: 9px;
-    font-weight: 800;
-    background: rgba(124,155,255,.13);
-    color: var(--soft);
-    white-space: nowrap;
+    flex-shrink:0;
+    padding:6px 9px;
+    border-radius:99px;
+    background:rgba(124,155,255,.13);
+    color:var(--soft);
+    font-size:9px;
+    font-weight:800;
 }
 
 .status-pill.success {
-    background: rgba(52,211,153,.12);
-    color: var(--green);
+    background:rgba(52,211,153,.12);
+    color:var(--green);
 }
 
 .status-pill.warning {
-    background: rgba(244,183,64,.12);
-    color: var(--gold);
+    background:rgba(244,183,64,.12);
+    color:var(--gold);
 }
 
-/* EXPANDABLE SECURITY FORMS */
+/* SECURITY FORMS */
 
 details.setting-details {
-    border-bottom: 1px solid var(--border);
+    border-bottom:1px solid var(--border);
 }
 
 details.setting-details:last-child {
-    border-bottom: none;
+    border-bottom:0;
 }
 
 .setting-details > summary {
-    list-style: none;
-    cursor: pointer;
+    list-style:none;
+    cursor:pointer;
 }
 
 .setting-details > summary::-webkit-details-marker {
-    display: none;
+    display:none;
 }
 
 .setting-details[open] > summary {
-    background: var(--hover);
-    border-bottom: 1px solid var(--border);
+    background:var(--hover);
+    border-bottom:1px solid var(--border);
 }
 
 .setting-details[open] .row-arrow {
-    transform: rotate(90deg);
+    transform:rotate(90deg);
 }
 
 .form-body {
-    padding: 20px 17px;
-    background: var(--surface);
+    padding:20px 17px;
+    background:var(--surface);
 }
 
 .form-intro {
-    color: var(--mid);
-    font-size: 11px;
-    line-height: 1.7;
-    margin: 0 0 17px;
+    margin:0 0 17px;
+    color:var(--mid);
+    font-size:11px;
+    line-height:1.7;
 }
 
 .form-field {
-    margin-bottom: 15px;
+    margin-bottom:15px;
 }
 
 .form-field label {
-    display: block;
-    color: var(--dim);
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    margin-bottom: 8px;
+    display:block;
+    color:var(--dim);
+    margin-bottom:8px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
 }
 
 .input-wrap {
-    position: relative;
+    position:relative;
 }
 
 .form-input {
-    width: 100%;
-    border: 1px solid var(--border);
-    background: var(--input);
-    border-radius: 12px;
-    outline: none;
-    color: var(--high);
-    padding: 13px;
-    font-size: 13px;
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--input);
+    color:var(--high);
+    outline:none;
+    padding:13px;
+    font-size:13px;
 }
 
 .input-wrap .form-input {
-    padding-right: 45px;
+    padding-right:45px;
 }
 
 .form-input:focus {
-    border-color: var(--soft);
+    border-color:var(--soft);
 }
 
 .form-input::placeholder {
-    color: var(--dim);
+    color:var(--dim);
 }
 
 .pin-input {
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: .33em;
-    font-weight: 800;
-    font-size: 17px;
+    font:800 17px "JetBrains Mono",monospace;
+    letter-spacing:.3em;
 }
 
 .show-pass {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: var(--dim);
-    border-radius: 8px;
-    width: 34px;
-    height: 34px;
-    display: grid;
-    place-items: center;
+    position:absolute;
+    top:50%;
+    right:8px;
+    transform:translateY(-50%);
+    display:grid;
+    place-items:center;
+    width:35px;
+    height:35px;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    color:var(--dim);
 }
 
-.show-pass i {
-    width: 16px;
-    height: 16px;
+.show-pass svg {
+    width:17px;
+    height:17px;
 }
 
 .field-hint {
-    color: var(--dim);
-    font-size: 10px;
-    line-height: 1.55;
-    margin: 7px 0 0;
+    margin:7px 0 0;
+    font-size:10px;
+    line-height:1.6;
+    color:var(--dim);
 }
 
 .submit-btn {
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #fff;
-    background: linear-gradient(135deg,var(--blue),#1d3fbf);
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .05em;
+    width:100%;
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
 }
 
-.submit-btn i {
-    width: 15px;
-    height: 15px;
+.submit-btn svg {
+    width:16px;
+    height:16px;
 }
 
 .form-feedback {
-    font-size: 11px;
-    line-height: 1.6;
-    border-radius: 11px;
-    padding: 12px;
-    margin: 0 0 14px;
-    background: rgba(59,107,255,.09);
-    color: var(--soft);
-    border: 1px solid rgba(59,107,255,.2);
+    padding:12px;
+    margin:0 0 14px;
+    border:1px solid rgba(59,107,255,.2);
+    border-radius:11px;
+    background:rgba(59,107,255,.09);
+    color:var(--soft);
+    font-size:11px;
+    line-height:1.6;
 }
 
 .form-feedback.error {
-    color: var(--red);
-    border-color: rgba(249,112,102,.25);
-    background: rgba(249,112,102,.09);
+    color:var(--red);
+    border-color:rgba(249,112,102,.25);
+    background:rgba(249,112,102,.09);
 }
 
 .form-feedback.success {
-    color: var(--green);
-    border-color: rgba(52,211,153,.25);
-    background: rgba(52,211,153,.09);
+    color:var(--green);
+    border-color:rgba(52,211,153,.25);
+    background:rgba(52,211,153,.09);
 }
 
 .pin-dots {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
+    display:flex;
+    gap:8px;
+    margin-top:9px;
 }
 
 .pin-dots span {
-    width: 9px;
-    height: 9px;
-    background: var(--border);
-    border-radius: 50%;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--border);
 }
 
 .pin-dots span.filled {
-    background: var(--blue);
+    background:var(--blue);
 }
-
-/* SECURITY NOTICE */
 
 .security-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 14px;
-    margin-bottom: 22px;
-    background: rgba(59,107,255,.07);
-    border: 1px solid rgba(59,107,255,.2);
-    border-radius: 14px;
-    color: var(--mid);
-    font-size: 10.5px;
-    line-height: 1.7;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:14px;
+    margin-bottom:22px;
+    border:1px solid rgba(59,107,255,.2);
+    border-radius:14px;
+    background:rgba(59,107,255,.07);
+    color:var(--mid);
+    font-size:10.5px;
+    line-height:1.7;
 }
 
-.security-notice i {
-    color: var(--soft);
-    width: 17px;
-    height: 17px;
-    margin-top: 2px;
+.security-notice svg {
+    width:18px;
+    height:18px;
+    color:var(--soft);
 }
 
 .security-notice strong {
-    color: var(--high);
+    color:var(--high);
 }
 
-/* THEME SWITCH */
+/* THEME */
 
 .theme-switch {
-    width: 45px;
-    height: 25px;
-    border: none;
-    padding: 0;
-    background: var(--border);
-    border-radius: 999px;
-    position: relative;
-    flex-shrink: 0;
+    width:45px;
+    height:25px;
+    flex-shrink:0;
+    position:relative;
+    border:0;
+    border-radius:99px;
+    padding:0;
+    background:var(--border);
 }
 
-.theme-switch .knob {
-    position: absolute;
-    width: 19px;
-    height: 19px;
-    left: 3px;
-    top: 3px;
-    border-radius: 50%;
-    background: linear-gradient(135deg,var(--blue),var(--cyan));
-    transition: transform .25s;
+.knob {
+    position:absolute;
+    left:3px;
+    top:3px;
+    width:19px;
+    height:19px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--blue),var(--cyan));
+    transition:transform .25s;
 }
 
 html[data-theme="light"] .knob {
-    transform: translateX(20px);
+    transform:translateX(20px);
 }
 
-/* SUPPORT / SESSION */
+/* SUPPORT AND LOGOUT */
 
 .support-banner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 17px;
-    border: 1px solid rgba(52,211,153,.24);
-    background: rgba(52,211,153,.07);
-    border-radius: 16px;
-    margin-bottom: 22px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:17px;
+    margin-bottom:22px;
+    border:1px solid rgba(52,211,153,.24);
+    border-radius:16px;
+    background:rgba(52,211,153,.07);
 }
 
 .support-icon {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 13px;
-    background: rgba(52,211,153,.14);
-    color: var(--green);
+    display:grid;
+    place-items:center;
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    background:rgba(52,211,153,.14);
+    color:var(--green);
 }
 
-.support-icon i {
-    width: 20px;
-    height: 20px;
+.support-icon svg {
+    width:21px;
+    height:21px;
 }
 
 .support-banner strong {
-    display: block;
-    font-size: 12px;
-    margin-bottom: 4px;
+    display:block;
+    font-size:12px;
+    margin-bottom:4px;
 }
 
 .support-banner p {
-    color: var(--mid);
-    font-size: 10px;
-    margin: 0;
+    font-size:10px;
+    color:var(--mid);
+    margin:0;
 }
 
-.support-banner .arrow {
-    margin-left: auto;
-    color: var(--green);
+.support-arrow {
+    width:18px;
+    height:18px;
+    color:var(--green);
+    margin-left:auto;
 }
 
 .logout-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    border: 1px solid rgba(249,112,102,.3);
-    border-radius: 14px;
-    padding: 15px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    background: rgba(249,112,102,.1);
-    color: var(--red);
-    margin-bottom: 12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:9px;
+    width:100%;
+    border:1px solid rgba(249,112,102,.3);
+    border-radius:14px;
+    padding:15px;
+    background:rgba(249,112,102,.1);
+    color:var(--red);
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
 }
 
-.logout-btn i {
-    width: 16px;
-    height: 16px;
+.logout-btn svg {
+    width:17px;
+    height:17px;
 }
 
 .footer-note {
-    color: var(--dim);
-    font-size: 10px;
-    text-align: center;
-    line-height: 1.7;
-    margin: 18px 0 10px;
+    text-align:center;
+    margin:19px 0 10px;
+    color:var(--dim);
+    font-size:10px;
+    line-height:1.9;
 }
 
 .footer-note strong {
-    color: var(--soft);
+    color:var(--soft);
 }
 
-/* BOTTOM NAV */
+/* BOTTOM NAVIGATION */
 
-.bottom-nav-wrap {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 45;
-    padding: 0 16px 16px;
+.bottom-wrap {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:45;
+    padding:0 16px 16px;
 }
 
 .bottom-nav {
-    max-width: 480px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    height: 64px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--nav);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 -14px 34px -14px rgba(0,0,0,.25);
+    max-width:480px;
+    height:64px;
+    margin:auto;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--nav);
+    backdrop-filter:blur(16px);
 }
 
-.bnav-item {
-    width: 56px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    font-size: 8px;
-    font-weight: 800;
-    color: var(--dim);
-    text-transform: uppercase;
+.bottom-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    width:56px;
+    color:var(--dim);
+    font-size:8px;
+    font-weight:800;
+    text-transform:uppercase;
 }
 
-.bnav-item.active {
-    color: var(--soft);
+.bottom-item.active {
+    color:var(--soft);
 }
 
-.bnav-item i {
-    width: 17px;
-    height: 17px;
+.bottom-item svg {
+    width:18px;
+    height:18px;
 }
 
-.bnav-center {
-    position: relative;
-    top: -15px;
+.bottom-center {
+    position:relative;
+    top:-15px;
 }
 
-.bnav-center a {
-    width: 50px;
-    height: 50px;
-    display: grid;
-    place-items: center;
-    border-radius: 15px;
-    background: linear-gradient(135deg,var(--blue),#1d3fbf);
-    color: #fff;
-    box-shadow: 0 10px 24px rgba(59,107,255,.4);
+.bottom-center a {
+    display:grid;
+    place-items:center;
+    width:50px;
+    height:50px;
+    border-radius:15px;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    box-shadow:0 10px 24px rgba(59,107,255,.4);
 }
 
-.bnav-center i {
-    width: 20px;
-    height: 20px;
+.bottom-center svg {
+    width:21px;
+    height:21px;
 }
 
-/* MODAL */
+/* LOGOUT CONFIRMATION */
 
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(3,5,14,.7);
-    backdrop-filter: blur(6px);
+.modal {
+    display:none;
+    align-items:center;
+    justify-content:center;
+    position:fixed;
+    inset:0;
+    z-index:100;
+    padding:20px;
+    background:rgba(3,5,14,.7);
+    backdrop-filter:blur(6px);
 }
 
-.modal-overlay.open {
-    display: flex;
+.modal.open {
+    display:flex;
 }
 
 .modal-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    box-shadow: 0 35px 90px rgba(0,0,0,.4);
-    width: 100%;
-    max-width: 360px;
-    padding: 27px 22px;
-    text-align: center;
+    max-width:360px;
+    width:100%;
+    padding:27px 22px;
+    border:1px solid var(--border);
+    border-radius:22px;
+    background:var(--surface);
+    text-align:center;
+    box-shadow:0 35px 90px rgba(0,0,0,.4);
 }
 
 .modal-icon {
-    width: 54px;
-    height: 54px;
-    margin: 0 auto 15px;
-    border-radius: 50%;
-    background: rgba(59,107,255,.13);
-    color: var(--soft);
-    display: grid;
-    place-items: center;
+    display:grid;
+    place-items:center;
+    width:54px;
+    height:54px;
+    margin:0 auto 15px;
+    border-radius:50%;
+    color:var(--soft);
+    background:rgba(59,107,255,.13);
 }
 
-.modal-icon i {
-    width: 26px;
-    height: 26px;
+.modal-icon svg {
+    width:26px;
+    height:26px;
 }
 
 .modal-card h3 {
-    font-size: 18px;
-    margin: 0 0 8px;
+    margin:0 0 8px;
+    font-size:18px;
 }
 
 .modal-card p {
-    font-size: 11.5px;
-    line-height: 1.7;
-    color: var(--mid);
-    margin: 0 0 21px;
+    margin:0 0 21px;
+    color:var(--mid);
+    font-size:11.5px;
+    line-height:1.7;
 }
 
 .modal-actions {
-    display: flex;
-    gap: 9px;
+    display:flex;
+    gap:9px;
 }
 
 .modal-actions button {
-    flex: 1;
-    border: none;
-    border-radius: 11px;
-    padding: 13px;
-    font-size: 11px;
-    font-weight: 800;
+    flex:1;
+    border:0;
+    border-radius:11px;
+    padding:13px;
+    font-size:11px;
+    font-weight:800;
 }
 
 .modal-cancel {
-    background: var(--hover);
-    color: var(--mid);
+    color:var(--mid);
+    background:var(--hover);
 }
 
 .modal-confirm {
-    background: var(--blue);
-    color: #fff;
+    color:#fff;
+    background:var(--blue);
 }
 
 /* RESPONSIVE */
 
-@media (max-width: 360px) {
-    main { padding: 17px 12px 0; }
-    .topbar { padding: 0 12px; }
-    .hero { padding: 23px 14px; }
-    .setting-row { padding: 13px 11px; }
-    .row-value { font-size: 10px; }
+@media(max-width:360px) {
+    main {
+        padding:17px 12px 0;
+    }
+
+    .topbar {
+        padding:0 12px;
+    }
+
+    .hero {
+        padding:23px 14px;
+    }
+
+    .setting-row {
+        padding:13px 11px;
+        gap:9px;
+    }
+
+    .row-value {
+        font-size:10px;
+    }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation:none!important;
+        transition:none!important;
     }
 }
 </style>
@@ -860,7 +888,7 @@ html[data-theme="light"] .knob {
 <!-- TOP BAR -->
 
 <nav class="topbar">
-    <a href="dashboard.html" class="back">
+    <a href="dashboard.html" class="back-link">
         <i data-lucide="arrow-left"></i>
         Dashboard
     </a>
@@ -872,8 +900,8 @@ html[data-theme="light"] .knob {
 
     <button
         type="button"
-        class="theme-button"
         id="topThemeBtn"
+        class="theme-button"
         aria-label="Toggle theme"
     >
         <i data-lucide="sun-moon"></i>
@@ -882,7 +910,7 @@ html[data-theme="light"] .knob {
 
 <main>
 
-    <!-- PROFILE HERO -->
+    <!-- PROFILE HEADER -->
 
     <section class="hero">
         <div class="hero-content">
@@ -891,10 +919,7 @@ html[data-theme="light"] .knob {
                 B
             </div>
 
-            <h1
-                class="hero-name display"
-                id="heroName"
-            >
+            <h1 class="hero-name display" id="heroName">
                 User
             </h1>
 
@@ -907,10 +932,9 @@ html[data-theme="light"] .knob {
                 Bigotic Data Member
             </span>
 
-            <p class="hero-footnote">
+            <p class="hero-note">
                 Manage your profile, security and preferences.
             </p>
-
         </div>
     </section>
 
@@ -923,76 +947,76 @@ html[data-theme="light"] .knob {
     <section class="group">
 
         <div class="setting-row">
-
             <div class="row-icon">
                 <i data-lucide="user-round"></i>
             </div>
 
             <div class="row-text">
                 <p class="row-title">Full Name</p>
-                <p class="row-sub">Registered account name</p>
+                <p class="row-sub">
+                    Registered account name
+                </p>
             </div>
 
             <span class="row-value" id="fullNameValue">
                 —
             </span>
-
         </div>
 
         <div class="setting-row">
-
             <div class="row-icon">
                 <i data-lucide="mail"></i>
             </div>
 
             <div class="row-text">
                 <p class="row-title">Email Address</p>
-                <p class="row-sub">Your registered email</p>
+                <p class="row-sub">
+                    Registered email
+                </p>
             </div>
 
             <span class="row-value" id="emailValue">
                 —
             </span>
-
         </div>
 
         <div class="setting-row">
-
             <div class="row-icon">
                 <i data-lucide="phone"></i>
             </div>
 
             <div class="row-text">
                 <p class="row-title">Phone Number</p>
-                <p class="row-sub">Registered mobile number</p>
+                <p class="row-sub">
+                    Registered mobile number
+                </p>
             </div>
 
             <span class="row-value" id="phoneValue">
                 —
             </span>
-
         </div>
 
         <div class="setting-row">
-
             <div class="row-icon">
                 <i data-lucide="at-sign"></i>
             </div>
 
             <div class="row-text">
                 <p class="row-title">Username</p>
-                <p class="row-sub">Referral identity</p>
+                <p class="row-sub">
+                    Your referral identity
+                </p>
             </div>
 
             <span class="row-value" id="usernameValue">
                 —
             </span>
-
         </div>
 
     </section>
 
-    <!-- SECURITY -->
+    <!-- ACCOUNT SECURITY -->
 
     <h2 class="section-label">
         Account Security
@@ -1003,19 +1027,18 @@ html[data-theme="light"] .knob {
 
         <div>
             <strong>Keep your account protected.</strong>
-            Never share your password, transaction PIN,
-            or verification codes with anyone, including support.
+            Never share your password, transaction PIN or
+            verification codes with anyone, including support.
         </div>
     </div>
 
     <section class="group">
 
-        <!-- PASSWORD -->
+        <!-- PASSWORD FORM -->
 
         <details class="setting-details" id="passwordDetails">
 
             <summary class="setting-row action">
-
                 <div class="row-icon">
                     <i data-lucide="lock-keyhole"></i>
                 </div>
@@ -1034,14 +1057,13 @@ html[data-theme="light"] .knob {
                     data-lucide="chevron-right"
                     class="row-arrow"
                 ></i>
-
             </summary>
 
             <div class="form-body">
 
                 <p class="form-intro">
-                    Use a strong password that you do not use
-                    for any other account.
+                    Use a strong password that you don't
+                    use for any other account.
                 </p>
 
                 <form id="passwordForm">
@@ -1054,18 +1076,18 @@ html[data-theme="light"] .knob {
                         <div class="input-wrap">
                             <input
                                 class="form-input"
-                                type="password"
                                 id="oldPassword"
-                                placeholder="Enter current password"
+                                type="password"
                                 autocomplete="current-password"
+                                placeholder="Enter current password"
                                 required
                             >
 
                             <button
                                 type="button"
                                 class="show-pass"
-                                data-toggle-password="oldPassword"
-                                aria-label="Show or hide password"
+                                data-show="oldPassword"
+                                aria-label="Show password"
                             >
                                 <i data-lucide="eye"></i>
                             </button>
@@ -1080,27 +1102,28 @@ html[data-theme="light"] .knob {
                         <div class="input-wrap">
                             <input
                                 class="form-input"
-                                type="password"
                                 id="newPassword"
-                                placeholder="Create a strong password"
+                                type="password"
                                 autocomplete="new-password"
+                                placeholder="Create a strong password"
                                 minlength="8"
+                                maxlength="128"
                                 required
                             >
 
                             <button
                                 type="button"
                                 class="show-pass"
-                                data-toggle-password="newPassword"
-                                aria-label="Show or hide password"
+                                data-show="newPassword"
+                                aria-label="Show password"
                             >
                                 <i data-lucide="eye"></i>
                             </button>
                         </div>
 
                         <p class="field-hint">
-                            Use at least 8 characters and a mix of
-                            letters, numbers, and symbols.
+                            Use at least 8 characters with a
+                            combination of letters and numbers.
                         </p>
                     </div>
 
@@ -1112,18 +1135,18 @@ html[data-theme="light"] .knob {
                         <div class="input-wrap">
                             <input
                                 class="form-input"
-                                type="password"
                                 id="confirmPassword"
-                                placeholder="Re-enter new password"
+                                type="password"
                                 autocomplete="new-password"
+                                placeholder="Re-enter new password"
                                 required
                             >
 
                             <button
                                 type="button"
                                 class="show-pass"
-                                data-toggle-password="confirmPassword"
-                                aria-label="Show or hide password"
+                                data-show="confirmPassword"
+                                aria-label="Show password"
                             >
                                 <i data-lucide="eye"></i>
                             </button>
@@ -1152,10 +1175,9 @@ html[data-theme="light"] .knob {
                 </form>
 
             </div>
-
         </details>
 
-        <!-- TRANSACTION PIN -->
+        <!-- TRANSACTION PIN FORM -->
 
         <details class="setting-details" id="pinDetails">
 
@@ -1171,7 +1193,7 @@ html[data-theme="light"] .knob {
                     </p>
 
                     <p class="row-sub">
-                        Authorize wallet purchases securely
+                        Securely authorize purchases
                     </p>
                 </div>
 
@@ -1192,9 +1214,8 @@ html[data-theme="light"] .knob {
             <div class="form-body">
 
                 <p class="form-intro">
-                    Your 4-digit PIN is used to authorize
-                    supported wallet transactions.
-                    Keep it private.
+                    Your private four-digit PIN is used
+                    to authorize supported wallet transactions.
                 </p>
 
                 <form id="pinForm">
@@ -1203,7 +1224,6 @@ html[data-theme="light"] .knob {
                         class="form-field"
                         id="oldPinGroup"
                     >
-
                         <label for="oldPin">
                             Current PIN
                             <span id="oldPinOptional">
@@ -1214,20 +1234,19 @@ html[data-theme="light"] .knob {
                         <div class="input-wrap">
                             <input
                                 class="form-input pin-input"
-                                id="oldPin"
                                 type="password"
+                                id="oldPin"
                                 inputmode="numeric"
                                 maxlength="4"
-                                pattern="[0-9]{4}"
-                                placeholder="••••"
                                 autocomplete="off"
+                                placeholder="••••"
                             >
 
                             <button
                                 type="button"
                                 class="show-pass"
-                                data-toggle-password="oldPin"
-                                aria-label="Show or hide PIN"
+                                data-show="oldPin"
+                                aria-label="Show PIN"
                             >
                                 <i data-lucide="eye"></i>
                             </button>
@@ -1235,30 +1254,28 @@ html[data-theme="light"] .knob {
                     </div>
 
                     <div class="form-field">
-
                         <label for="newPin">
-                            New 4-Digit PIN
+                            New Four-Digit PIN
                         </label>
 
                         <div class="input-wrap">
                             <input
                                 class="form-input pin-input"
-                                id="newPin"
                                 type="password"
+                                id="newPin"
                                 inputmode="numeric"
                                 maxlength="4"
                                 minlength="4"
-                                pattern="[0-9]{4}"
-                                placeholder="••••"
                                 autocomplete="off"
+                                placeholder="••••"
                                 required
                             >
 
                             <button
                                 type="button"
                                 class="show-pass"
-                                data-toggle-password="newPin"
-                                aria-label="Show or hide PIN"
+                                data-show="newPin"
+                                aria-label="Show PIN"
                             >
                                 <i data-lucide="eye"></i>
                             </button>
@@ -1270,11 +1287,9 @@ html[data-theme="light"] .knob {
                             <span></span>
                             <span></span>
                         </div>
-
                     </div>
 
                     <div class="form-field">
-
                         <label for="confirmPin">
                             Confirm New PIN
                         </label>
@@ -1282,30 +1297,28 @@ html[data-theme="light"] .knob {
                         <div class="input-wrap">
                             <input
                                 class="form-input pin-input"
-                                id="confirmPin"
                                 type="password"
+                                id="confirmPin"
                                 inputmode="numeric"
                                 maxlength="4"
                                 minlength="4"
-                                pattern="[0-9]{4}"
-                                placeholder="••••"
                                 autocomplete="off"
+                                placeholder="••••"
                                 required
                             >
 
                             <button
                                 type="button"
                                 class="show-pass"
-                                data-toggle-password="confirmPin"
-                                aria-label="Show or hide PIN"
+                                data-show="confirmPin"
+                                aria-label="Show PIN"
                             >
                                 <i data-lucide="eye"></i>
                             </button>
                         </div>
 
                         <p class="field-hint">
-                            Avoid obvious PINs such as 1234
-                            or 0000.
+                            Avoid predictable PINs such as 1234 or 0000.
                         </p>
                     </div>
 
@@ -1329,14 +1342,12 @@ html[data-theme="light"] .knob {
                     </button>
 
                 </form>
-
             </div>
-
         </details>
 
     </section>
 
-    <!-- FUNDING / ACCOUNT -->
+    <!-- WALLET AND BANKING -->
 
     <h2 class="section-label">
         Wallet &amp; Banking
@@ -1353,11 +1364,9 @@ html[data-theme="light"] .knob {
             </div>
 
             <div class="row-text">
-                <p class="row-title">
-                    Fund Wallet
-                </p>
+                <p class="row-title">Fund Wallet</p>
                 <p class="row-sub">
-                    Manual PalmPay or automated bank transfer
+                    Manual PalmPay or automated transfer
                 </p>
             </div>
 
@@ -1368,7 +1377,6 @@ html[data-theme="light"] .knob {
         </a>
 
         <div class="setting-row">
-
             <div class="row-icon">
                 <i data-lucide="landmark"></i>
             </div>
@@ -1377,7 +1385,11 @@ html[data-theme="light"] .knob {
                 <p class="row-title">
                     Dedicated Account
                 </p>
-                <p class="row-sub" id="dedicatedAccountSub">
+
+                <p
+                    class="row-sub"
+                    id="dedicatedAccountSub"
+                >
                     Checking account status...
                 </p>
             </div>
@@ -1388,7 +1400,6 @@ html[data-theme="light"] .knob {
             >
                 Checking
             </span>
-
         </div>
 
         <a
@@ -1404,7 +1415,7 @@ html[data-theme="light"] .knob {
                     Transaction History
                 </p>
                 <p class="row-sub">
-                    View payments and professional receipts
+                    View purchases and receipts
                 </p>
             </div>
 
@@ -1434,6 +1445,7 @@ html[data-theme="light"] .knob {
                 <p class="row-title">
                     Appearance
                 </p>
+
                 <p
                     class="row-sub"
                     id="themeDescription"
@@ -1444,15 +1456,14 @@ html[data-theme="light"] .knob {
 
             <button
                 type="button"
-                class="theme-switch"
                 id="themeSwitch"
+                class="theme-switch"
                 role="switch"
                 aria-label="Light mode"
                 aria-checked="false"
             >
                 <span class="knob"></span>
             </button>
-
         </div>
 
         <a
@@ -1461,7 +1472,6 @@ html[data-theme="light"] .knob {
             rel="noopener noreferrer"
             class="setting-row action row-link"
         >
-
             <div class="row-icon">
                 <i data-lucide="headset"></i>
             </div>
@@ -1470,6 +1480,7 @@ html[data-theme="light"] .knob {
                 <p class="row-title">
                     Help &amp; Support
                 </p>
+
                 <p class="row-sub">
                     Chat with our support team
                 </p>
@@ -1479,12 +1490,11 @@ html[data-theme="light"] .knob {
                 data-lucide="external-link"
                 class="row-arrow"
             ></i>
-
         </a>
 
     </section>
 
-    <!-- ADMIN ACCESS -->
+    <!-- ADMIN ONLY NAVIGATION -->
 
     <section id="adminSection" hidden>
 
@@ -1506,6 +1516,7 @@ html[data-theme="light"] .knob {
                     <p class="row-title">
                         Admin Dashboard
                     </p>
+
                     <p class="row-sub">
                         Restricted administrative tools
                     </p>
@@ -1518,10 +1529,9 @@ html[data-theme="light"] .knob {
             </a>
 
         </div>
-
     </section>
 
-    <!-- SUPPORT -->
+    <!-- SUPPORT BANNER -->
 
     <a
         class="support-banner"
@@ -1534,22 +1544,17 @@ html[data-theme="light"] .knob {
         </div>
 
         <div>
-            <strong>
-                Need assistance?
-            </strong>
-            <p>
-                WhatsApp Support: 09159436827
-            </p>
+            <strong>Need assistance?</strong>
+            <p>WhatsApp Support: 09159436827</p>
         </div>
 
         <i
             data-lucide="arrow-up-right"
-            class="arrow"
-            style="width:18px;height:18px"
+            class="support-arrow"
         ></i>
     </a>
 
-    <!-- LOGOUT -->
+    <!-- SIGN OUT -->
 
     <h2 class="section-label">
         Account Session
@@ -1576,60 +1581,58 @@ html[data-theme="light"] .knob {
 
 <!-- BOTTOM NAVIGATION -->
 
-<div class="bottom-nav-wrap">
-
+<div class="bottom-wrap">
     <nav class="bottom-nav">
 
         <a
             href="buy-airtime.html"
-            class="bnav-item"
+            class="bottom-item"
         >
             <i data-lucide="phone"></i>
-            <span>Airtime</span>
+            Airtime
         </a>
 
         <a
             href="buy-data.html"
-            class="bnav-item"
+            class="bottom-item"
         >
             <i data-lucide="wifi"></i>
-            <span>Data</span>
+            Data
         </a>
 
-        <div class="bnav-center">
+        <span class="bottom-center">
             <a
                 href="dashboard.html"
                 aria-label="Dashboard"
             >
                 <i data-lucide="home"></i>
             </a>
-        </div>
+        </span>
 
         <a
             href="history.html"
-            class="bnav-item"
+            class="bottom-item"
         >
             <i data-lucide="clock"></i>
-            <span>History</span>
+            History
         </a>
 
         <a
             href="settings.html"
-            class="bnav-item active"
+            class="bottom-item active"
         >
             <i data-lucide="settings"></i>
-            <span>Settings</span>
+            Settings
         </a>
 
     </nav>
-
 </div>
 
 <!-- LOGOUT CONFIRMATION -->
 
 <div
+    class="modal"
     id="logoutModal"
-    class="modal-overlay"
     role="dialog"
     aria-modal="true"
     aria-labelledby="logoutTitle"
@@ -1641,10 +1644,7 @@ html[data-theme="light"] .knob {
             <i data-lucide="log-out"></i>
         </div>
 
-        <h3
-            class="display"
-            id="logoutTitle"
-        >
+        <h3 class="display" id="logoutTitle">
             Sign out?
         </h3>
 
@@ -1672,143 +1672,150 @@ html[data-theme="light"] .knob {
             </button>
 
         </div>
-
     </div>
-
 </div>
 
 <script>
 'use strict';
 
-// ============================================
-// CONFIGURATION
-// ============================================
+/* ==========================================
+   BIGOTIC DATA SETTINGS V2
+   AUTHENTICATED API SUPPORT
+========================================== */
 
-const BACKEND_URL =
+const API =
     'https://bigoticdata-backend.onrender.com';
 
-// This email check only controls whether to show
-// the admin navigation link. It does not grant
-// permission to access admin APIs.
-const ADMIN_EMAIL = 'ichinonso650@gmail.com';
+const $ = id =>
+    document.getElementById(id);
 
-const $ = id => document.getElementById(id);
-
-let currentUser = null;
+let user = null;
 let pinConfigured = null;
 
+let profileBusy = false;
 let passwordBusy = false;
 let pinBusy = false;
-let profileLoading = false;
 
-function refreshIcons() {
+function icons() {
     if (window.lucide) {
         lucide.createIcons();
     }
 }
 
-refreshIcons();
+icons();
 
-// ============================================
-// SESSION / SAFE PROFILE STORAGE
-// ============================================
+/* ==========================================
+   USER SESSION
+========================================== */
 
-function cleanUserProfile(raw) {
-    if (
-        !raw ||
-        typeof raw !== 'object' ||
-        Array.isArray(raw)
-    ) {
-        return null;
-    }
-
-    const cleaned = { ...raw };
-
-    // Never keep credentials inside the
-    // browser's cached user profile.
-    delete cleaned.password;
-    delete cleaned.pin;
-    delete cleaned.oldPassword;
-    delete cleaned.oldPin;
-    delete cleaned.newPassword;
-    delete cleaned.confirmPassword;
-    delete cleaned.confirmPin;
-    delete cleaned.tokenPin;
-
-    return cleaned;
-}
-
-function detectPinConfigured(raw) {
-    if (!raw || typeof raw !== 'object') {
-        return null;
-    }
-
-    if (typeof raw.hasPin === 'boolean') {
-        return raw.hasPin;
-    }
-
-    if (typeof raw.pinConfigured === 'boolean') {
-        return raw.pinConfigured;
-    }
-
-    if (typeof raw.hasTransactionPin === 'boolean') {
-        return raw.hasTransactionPin;
-    }
-
-    // Legacy profile compatibility:
-    // only inspect whether the old pin field was
-    // populated, without preserving its value.
-    if (raw.pin !== undefined && raw.pin !== null) {
-        return String(raw.pin).trim() !== '';
-    }
-
-    return null;
-}
-
-function saveSafeUser(raw) {
-    const safe = cleanUserProfile(raw);
-
-    if (
-        !safe ||
-        typeof safe.email !== 'string' ||
-        !safe.email.trim()
-    ) {
-        return null;
-    }
-
+function getUser() {
     try {
-        localStorage.setItem(
-            'user',
-            JSON.stringify(safe)
-        );
-    } catch (_) {}
-
-    return safe;
-}
-
-function loadCurrentUser() {
-    try {
-        const raw = JSON.parse(
+        const value = JSON.parse(
             localStorage.getItem('user') || 'null'
         );
 
-        const detected = detectPinConfigured(raw);
-
-        if (detected !== null) {
-            pinConfigured = detected;
+        if (
+            !value ||
+            typeof value.email !== 'string' ||
+            !value.email.trim()
+        ) {
+            return null;
         }
 
-        const safe = saveSafeUser(raw);
+        return cleanUser(value);
 
-        return safe;
     } catch (_) {
         return null;
     }
 }
 
-// ============================================
-// THEME
-// ============================================
+function cleanUser(source) {
+    if (
+        !source ||
+        typeof source !== 'object' ||
+        Array.isArray(source)
+    ) {
+        return null;
+    }
+
+    const result = { ...source };
+
+    [
+        'password',
+        'pin',
+        'oldPassword',
+        'newPassword',
+        'oldPin',
+        'confirmPassword',
+        'confirmPin',
+        'bvn',
+        'nin',
+        'id_number',
+        'apiKey',
+        'api_key'
+    ].forEach(key => {
+        delete result[key];
+    });
+
+    return result;
+}
+
+function storeUser() {
+    if (!user) return;
+
+    try {
+        localStorage.setItem(
+            'user',
+            JSON.stringify(cleanUser(user))
+        );
+    } catch (_) {}
+}
+
+function sessionExpired() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
+
+    window.location.replace('login.html');
+}
+
+/* ==========================================
+   AUTHENTICATED BACKEND REQUESTS
+========================================== */
+
+async function apiFetch(path,options = {}) {
+    const headers = new Headers(
+        options.headers || {}
+    );
+
+    const token =
+        typeof user?.token === 'string'
+            ? user.token.trim()
+            : '';
+
+    // New Backend V2 requires a Bearer token.
+    // Current live backend can still work during
+    // migration before Server V2 is deployed.
+
+    if (token) {
+        headers.set(
+            'Authorization',
+            'Bearer ' + token
+        );
+    }
+
+    headers.set('Accept','application/json');
+
+    return fetch(API + path,{
+        ...options,
+        headers,
+        cache:'no-store'
+    });
+}
+
+/* ==========================================
+   THEME
+========================================== */
 
 function updateThemeUI() {
     const light =
@@ -1841,38 +1848,63 @@ function toggleTheme() {
     updateThemeUI();
 }
 
-$('topThemeBtn').addEventListener(
-    'click',
-    toggleTheme
-);
-
-$('themeSwitch').addEventListener(
-    'click',
-    toggleTheme
-);
+$('topThemeBtn').onclick = toggleTheme;
+$('themeSwitch').onclick = toggleTheme;
 
 updateThemeUI();
 
-// ============================================
-// PROFILE INFORMATION
-// ============================================
+/* ==========================================
+   PROFILE DISPLAY
+========================================== */
 
-function getDisplayName(user) {
+function nameOf(profile) {
     return String(
-        user.fullName ||
-        user.username ||
-        user.email.split('@')[0] ||
+        profile.fullName ||
+        profile.username ||
+        profile.email.split('@')[0] ||
         'User'
     ).trim();
 }
 
-function renderUserProfile(user) {
+function detectPin(source) {
+    if (!source || typeof source !== 'object') {
+        return null;
+    }
+
+    if (typeof source.hasPin === 'boolean') {
+        return source.hasPin;
+    }
+
+    if (typeof source.pinConfigured === 'boolean') {
+        return source.pinConfigured;
+    }
+
+    if (
+        typeof source.hasTransactionPin === 'boolean'
+    ) {
+        return source.hasTransactionPin;
+    }
+
+    // Compatibility with legacy responses.
+    // Check presence only; don't store the PIN.
+    if (
+        source.pin !== null &&
+        source.pin !== undefined
+    ) {
+        return Boolean(
+            String(source.pin).trim()
+        );
+    }
+
+    return null;
+}
+
+function renderProfile() {
     if (!user) return;
 
-    const name = getDisplayName(user);
+    const name = nameOf(user);
 
     $('heroName').textContent = name;
-
     $('heroInitial').textContent =
         name.charAt(0).toUpperCase() || 'B';
 
@@ -1893,14 +1925,9 @@ function renderUserProfile(user) {
     $('usernameValue').textContent =
         user.username || 'Not set';
 
-    // Admin link visibility only.
-    // The backend must authorize all admin actions.
-    $('adminSection').hidden =
-        user.email.toLowerCase().trim() !==
-        ADMIN_EMAIL.toLowerCase();
-
-    const account =
-        String(user.virtualAccountNumber || '').trim();
+    const account = String(
+        user.virtualAccountNumber || ''
+    ).trim();
 
     if (/^\d{10}$/.test(account)) {
         $('dedicatedAccountStatus').textContent =
@@ -1910,8 +1937,9 @@ function renderUserProfile(user) {
             'status-pill success';
 
         $('dedicatedAccountSub').textContent =
-            (user.virtualBankName || 'Dedicated account') +
-            ' • ' + account;
+            (user.virtualBankName || 'Dedicated Account') +
+            ' · ' + account;
+
     } else {
         $('dedicatedAccountStatus').textContent =
             'Not set';
@@ -1923,60 +1951,61 @@ function renderUserProfile(user) {
             'Generate an account from Fund Wallet';
     }
 
+    // Only the server determines admin rights.
+    // Hiding this link is not a security boundary.
+    $('adminSection').hidden =
+        user.role !== 'admin';
+
     updatePinUI();
 }
 
-// ============================================
-// REFRESH PROFILE
-// ============================================
+/* ==========================================
+   REFRESH ACCOUNT PROFILE
+========================================== */
 
 async function refreshProfile() {
-    if (!currentUser || profileLoading) return;
+    if (profileBusy || !user) return;
 
-    profileLoading = true;
+    profileBusy = true;
 
     try {
-        const response = await fetch(
-            BACKEND_URL +
+        const response = await apiFetch(
             '/user-profile?email=' +
-            encodeURIComponent(currentUser.email),
-            {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                },
-                cache: 'no-store'
-            }
+            encodeURIComponent(user.email)
         );
 
-        if (!response.ok) return;
+        if (response.status === 401) {
+            sessionExpired();
+            return;
+        }
 
-        const payload = await response.json();
+        if (!response.ok) {
+            return;
+        }
+
+        const data =
+            await response.json();
 
         const profile =
-            payload.user ||
-            payload.data ||
-            payload;
+            data.user || data.data || data;
 
         if (
             !profile ||
-            !profile.email ||
-            String(profile.email).toLowerCase() !==
-            currentUser.email.toLowerCase()
+            typeof profile.email !== 'string' ||
+            profile.email.toLowerCase() !==
+            user.email.toLowerCase()
         ) {
             return;
         }
 
-        const detected =
-            detectPinConfigured(profile);
+        const pinStatus =
+            detectPin(profile);
 
-        if (detected !== null) {
-            pinConfigured = detected;
+        if (pinStatus !== null) {
+            pinConfigured = pinStatus;
         }
 
-        // Only accept known profile fields from
-        // the refresh response.
-        const allowed = [
+        const fields = [
             'fullName',
             'username',
             'phone',
@@ -1987,138 +2016,153 @@ async function refreshProfile() {
             'virtualAccountName',
             'hasPin',
             'pinConfigured',
-            'hasTransactionPin'
+            'hasTransactionPin',
+            'role'
         ];
 
-        const merged = { ...currentUser };
-
-        for (const key of allowed) {
-            if (profile[key] !== undefined) {
-                merged[key] = profile[key];
+        for (const field of fields) {
+            if (profile[field] !== undefined) {
+                user[field] = profile[field];
             }
         }
 
-        currentUser =
-            saveSafeUser(merged) || currentUser;
-
-        renderUserProfile(currentUser);
+        storeUser();
+        renderProfile();
 
     } catch (error) {
         console.warn(
             'Profile refresh unavailable:',
             error
         );
+
     } finally {
-        profileLoading = false;
+        profileBusy = false;
     }
 }
 
-// ============================================
-// PIN CONFIGURATION STATUS
-// ============================================
+/* ==========================================
+   TRANSACTION PIN STATUS
+========================================== */
 
 function updatePinUI() {
-    const pill = $('pinStatus');
-    const oldGroup = $('oldPinGroup');
-    const oldField = $('oldPin');
-    const optional = $('oldPinOptional');
+    const group = $('oldPinGroup');
+    const current = $('oldPin');
 
     if (pinConfigured === true) {
         $('pinTitle').textContent =
             'Change Transaction PIN';
 
-        pill.textContent = 'Configured';
-        pill.className = 'status-pill success';
+        $('pinStatus').textContent =
+            'Configured';
 
-        oldGroup.hidden = false;
-        oldField.required = true;
-        optional.textContent = '';
+        $('pinStatus').className =
+            'status-pill success';
 
-        $('pinBtnText').textContent =
-            'Change Transaction PIN';
+        group.hidden = false;
+        current.required = true;
+
+        $('oldPinOptional').textContent = '';
+
+        if (!pinBusy) {
+            $('pinBtnText').textContent =
+                'Change Transaction PIN';
+        }
 
     } else if (pinConfigured === false) {
         $('pinTitle').textContent =
             'Create Transaction PIN';
 
-        pill.textContent = 'Not set';
-        pill.className = 'status-pill warning';
+        $('pinStatus').textContent =
+            'Not set';
 
-        oldGroup.hidden = true;
-        oldField.required = false;
-        oldField.value = '';
+        $('pinStatus').className =
+            'status-pill warning';
 
-        $('pinBtnText').textContent =
-            'Create Transaction PIN';
+        group.hidden = true;
+        current.required = false;
+        current.value = '';
+
+        if (!pinBusy) {
+            $('pinBtnText').textContent =
+                'Create Transaction PIN';
+        }
 
     } else {
         $('pinTitle').textContent =
             'Transaction PIN';
 
-        pill.textContent = 'Manage';
-        pill.className = 'status-pill';
+        $('pinStatus').textContent =
+            'Manage';
 
-        oldGroup.hidden = false;
-        oldField.required = false;
+        $('pinStatus').className =
+            'status-pill';
 
-        optional.textContent =
+        group.hidden = false;
+        current.required = false;
+
+        $('oldPinOptional').textContent =
             '(if already configured)';
 
-        $('pinBtnText').textContent =
-            'Save Transaction PIN';
+        if (!pinBusy) {
+            $('pinBtnText').textContent =
+                'Save Transaction PIN';
+        }
     }
 }
 
-// ============================================
-// SHOW / HIDE PASSWORD
-// ============================================
+/* ==========================================
+   SHOW / HIDE SECRET INPUTS
+========================================== */
 
 document.querySelectorAll(
-    '[data-toggle-password]'
+    '[data-show]'
 ).forEach(button => {
+
     button.addEventListener('click', () => {
         const input = $(
-            button.dataset.togglePassword
+            button.dataset.show
         );
 
         if (!input) return;
 
+        const visible =
+            input.type === 'password';
+
         input.type =
-            input.type === 'password'
-                ? 'text'
-                : 'password';
+            visible ? 'text' : 'password';
 
         button.setAttribute(
             'aria-label',
-            input.type === 'password'
-                ? 'Show value'
-                : 'Hide value'
+            visible
+                ? 'Hide value'
+                : 'Show value'
         );
 
-        const icon =
+        const symbol =
             button.querySelector('i');
 
-        if (icon) {
-            icon.setAttribute(
+        if (symbol) {
+            symbol.setAttribute(
                 'data-lucide',
-                input.type === 'password'
-                    ? 'eye'
-                    : 'eye-off'
+                visible
+                    ? 'eye-off'
+                    : 'eye'
             );
         }
 
-        refreshIcons();
+        icons();
     });
 });
 
-// ============================================
-// FORM FEEDBACK
-// ============================================
+/* ==========================================
+   FORM MESSAGES
+========================================== */
 
-function showFeedback(id, message, type = 'info') {
+function showFeedback(id,message,type = 'error') {
     const box = $(id);
 
-    box.textContent = message;
+    box.textContent = String(message);
+
     box.className =
         'form-feedback ' + type;
 
@@ -2126,40 +2170,32 @@ function showFeedback(id, message, type = 'info') {
 }
 
 function clearFeedback(id) {
-    const box = $(id);
-
-    box.textContent = '';
-    box.hidden = true;
+    $(id).textContent = '';
+    $(id).hidden = true;
 }
 
-function setBusy(buttonId, labelId, busy, label) {
-    $(buttonId).disabled = busy;
-    $(labelId).textContent = label;
+function readResult(response) {
+    return response.json().catch(
+        () => ({})
+    );
 }
 
-// ============================================
-// RESPONSE READER
-// ============================================
-
-async function readJsonResponse(response) {
-    try {
-        return await response.json();
-    } catch (_) {
-        return {};
-    }
+function setBusy(button,label,busy,text) {
+    $(button).disabled = busy;
+    $(label).textContent = text;
 }
 
-// ============================================
-// PASSWORD VALIDATION
-// ============================================
+/* ==========================================
+   PASSWORD VALIDATION
+========================================== */
 
 function validatePassword(value) {
     if (value.length < 8) {
-        return 'Password must contain at least 8 characters.';
+        return 'Password must have at least 8 characters.';
     }
 
     if (value.length > 128) {
-        return 'Password is too long.';
+        return 'Password must not exceed 128 characters.';
     }
 
     if (!/[a-zA-Z]/.test(value)) {
@@ -2173,9 +2209,9 @@ function validatePassword(value) {
     return null;
 }
 
-// ============================================
-// UPDATE PASSWORD
-// ============================================
+/* ==========================================
+   UPDATE PASSWORD
+========================================== */
 
 $('passwordForm').addEventListener(
     'submit',
@@ -2184,14 +2220,16 @@ $('passwordForm').addEventListener(
 
         if (passwordBusy) return;
 
-        if (!currentUser) {
-            window.location.href = 'login.html';
+        if (!user) {
+            sessionExpired();
             return;
         }
 
-        clearFeedback('passwordFeedback');
+        clearFeedback(
+            'passwordFeedback'
+        );
 
-        const currentPassword =
+        const oldPassword =
             $('oldPassword').value;
 
         const newPassword =
@@ -2200,42 +2238,42 @@ $('passwordForm').addEventListener(
         const confirmPassword =
             $('confirmPassword').value;
 
-        if (!currentPassword) {
+        if (!oldPassword) {
             showFeedback(
                 'passwordFeedback',
-                'Enter your current password.',
-                'error'
+                'Enter your current password.'
             );
+
             return;
         }
 
-        const validation =
+        const error =
             validatePassword(newPassword);
 
-        if (validation) {
+        if (error) {
             showFeedback(
                 'passwordFeedback',
-                validation,
-                'error'
+                error
             );
+
             return;
         }
 
         if (newPassword !== confirmPassword) {
             showFeedback(
                 'passwordFeedback',
-                'New password and confirmation do not match.',
-                'error'
+                'The new passwords do not match.'
             );
+
             return;
         }
 
-        if (newPassword === currentPassword) {
+        if (oldPassword === newPassword) {
             showFeedback(
                 'passwordFeedback',
-                'Your new password must be different from the current one.',
-                'error'
+                'Choose a new password different from your current password.'
             );
+
             return;
         }
 
@@ -2248,33 +2286,40 @@ $('passwordForm').addEventListener(
             'Updating Password...'
         );
 
-        const controller = new AbortController();
+        const controller =
+            new AbortController();
 
-        const timeout = setTimeout(
+        const timer = setTimeout(
             () => controller.abort(),
             30000
         );
 
         try {
-            const response = await fetch(
-                BACKEND_URL + '/update-password',
+            const response = await apiFetch(
+                '/update-password',
                 {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
                     },
-                    body: JSON.stringify({
-                        email: currentUser.email,
-                        oldPassword: currentPassword,
-                        password: newPassword
+
+                    body:JSON.stringify({
+                        email:user.email,
+                        oldPassword:oldPassword,
+                        password:newPassword
                     }),
-                    signal: controller.signal
+
+                    signal:controller.signal
                 }
             );
 
+            if (response.status === 401) {
+                sessionExpired();
+                return;
+            }
+
             const result =
-                await readJsonResponse(response);
+                await readResult(response);
 
             if (
                 response.ok &&
@@ -2284,33 +2329,27 @@ $('passwordForm').addEventListener(
 
                 showFeedback(
                     'passwordFeedback',
-                    'Your password has been updated successfully. Use the new password next time you sign in.',
+                    'Your password has been updated successfully.',
                     'success'
                 );
-
-                // Do not store any passwords
-                // in localStorage or sessionStorage.
 
             } else {
                 showFeedback(
                     'passwordFeedback',
-                    String(
-                        result.error ||
-                        result.message ||
-                        'Password update failed. Please verify your current password.'
-                    ),
-                    'error'
+                    result.error ||
+                    result.message ||
+                    'Password update failed. Check your current password.'
                 );
             }
 
-        } catch (_) {
+        } catch (error) {
             showFeedback(
                 'passwordFeedback',
-                'Unable to confirm the update. Check your connection and try signing in with the appropriate password before resubmitting.',
-                'error'
+                'Could not confirm the update. Check your connection and account before retrying.'
             );
+
         } finally {
-            clearTimeout(timeout);
+            clearTimeout(timer);
 
             passwordBusy = false;
 
@@ -2324,16 +2363,20 @@ $('passwordForm').addEventListener(
     }
 );
 
-// ============================================
-// PIN INPUTS
-// ============================================
+/* ==========================================
+   PIN INPUT VALIDATION
+========================================== */
 
-['oldPin', 'newPin', 'confirmPin'].forEach(id => {
-    $(id).addEventListener('input', event => {
+[
+    'oldPin',
+    'newPin',
+    'confirmPin'
+].forEach(id => {
+    $(id).addEventListener('input',event => {
         event.target.value =
             event.target.value
-                .replace(/\D/g, '')
-                .slice(0, 4);
+                .replace(/\D/g,'')
+                .slice(0,4);
 
         if (id === 'newPin') {
             updatePinDots();
@@ -2342,11 +2385,12 @@ $('passwordForm').addEventListener(
 });
 
 function updatePinDots() {
-    const length = $('newPin').value.length;
+    const length =
+        $('newPin').value.length;
 
     document.querySelectorAll(
         '#pinDots span'
-    ).forEach((dot, index) => {
+    ).forEach((dot,index) => {
         dot.classList.toggle(
             'filled',
             index < length
@@ -2354,9 +2398,9 @@ function updatePinDots() {
     });
 }
 
-// ============================================
-// UPDATE TRANSACTION PIN
-// ============================================
+/* ==========================================
+   CREATE / CHANGE TRANSACTION PIN
+========================================== */
 
 $('pinForm').addEventListener(
     'submit',
@@ -2365,26 +2409,34 @@ $('pinForm').addEventListener(
 
         if (pinBusy) return;
 
-        if (!currentUser) {
-            window.location.href = 'login.html';
+        if (!user) {
+            sessionExpired();
             return;
         }
 
-        clearFeedback('pinFeedback');
+        clearFeedback(
+            'pinFeedback'
+        );
 
-        const oldPin = $('oldPin').value.trim();
-        const newPin = $('newPin').value.trim();
-        const confirmPin = $('confirmPin').value.trim();
+        const oldPin =
+            $('oldPin').value.trim();
 
-        if (pinConfigured === true) {
-            if (!/^\d{4}$/.test(oldPin)) {
-                showFeedback(
-                    'pinFeedback',
-                    'Enter your current 4-digit PIN.',
-                    'error'
-                );
-                return;
-            }
+        const newPin =
+            $('newPin').value.trim();
+
+        const confirmPin =
+            $('confirmPin').value.trim();
+
+        if (
+            pinConfigured === true &&
+            !/^\d{4}$/.test(oldPin)
+        ) {
+            showFeedback(
+                'pinFeedback',
+                'Enter your current four-digit PIN.'
+            );
+
+            return;
         }
 
         if (
@@ -2393,27 +2445,27 @@ $('pinForm').addEventListener(
         ) {
             showFeedback(
                 'pinFeedback',
-                'Current PIN must contain exactly 4 digits.',
-                'error'
+                'Current PIN must contain four digits.'
             );
+
             return;
         }
 
         if (!/^\d{4}$/.test(newPin)) {
             showFeedback(
                 'pinFeedback',
-                'New transaction PIN must contain exactly 4 digits.',
-                'error'
+                'New PIN must contain exactly four digits.'
             );
+
             return;
         }
 
         if (newPin !== confirmPin) {
             showFeedback(
                 'pinFeedback',
-                'New PIN and confirmation do not match.',
-                'error'
+                'The PIN confirmation does not match.'
             );
+
             return;
         }
 
@@ -2422,18 +2474,18 @@ $('pinForm').addEventListener(
         ) {
             showFeedback(
                 'pinFeedback',
-                'Choose a less predictable 4-digit PIN.',
-                'error'
+                'Choose a less predictable PIN.'
             );
+
             return;
         }
 
         if (oldPin && oldPin === newPin) {
             showFeedback(
                 'pinFeedback',
-                'Your new PIN must be different from your current PIN.',
-                'error'
+                'Your new PIN must differ from your current PIN.'
             );
+
             return;
         }
 
@@ -2446,33 +2498,40 @@ $('pinForm').addEventListener(
             'Saving PIN...'
         );
 
-        const controller = new AbortController();
+        const controller =
+            new AbortController();
 
-        const timeout = setTimeout(
+        const timer = setTimeout(
             () => controller.abort(),
             30000
         );
 
         try {
-            const response = await fetch(
-                BACKEND_URL + '/update-pin',
+            const response = await apiFetch(
+                '/update-pin',
                 {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
                     },
-                    body: JSON.stringify({
-                        email: currentUser.email,
-                        pin: newPin,
-                        oldPin: oldPin
+
+                    body:JSON.stringify({
+                        email:user.email,
+                        oldPin:oldPin,
+                        pin:newPin
                     }),
-                    signal: controller.signal
+
+                    signal:controller.signal
                 }
             );
 
+            if (response.status === 401) {
+                sessionExpired();
+                return;
+            }
+
             const result =
-                await readJsonResponse(response);
+                await readResult(response);
 
             if (
                 response.ok &&
@@ -2480,18 +2539,11 @@ $('pinForm').addEventListener(
             ) {
                 $('pinForm').reset();
 
-                updatePinDots();
-
                 pinConfigured = true;
+                user.hasPin = true;
 
-                if (currentUser) {
-                    currentUser.hasPin = true;
-
-                    currentUser =
-                        saveSafeUser(currentUser) ||
-                        currentUser;
-                }
-
+                storeUser();
+                updatePinDots();
                 updatePinUI();
 
                 showFeedback(
@@ -2500,28 +2552,23 @@ $('pinForm').addEventListener(
                     'success'
                 );
 
-                // Never store the PIN itself in the browser.
-
             } else {
                 showFeedback(
                     'pinFeedback',
-                    String(
-                        result.error ||
-                        result.message ||
-                        'Unable to save PIN. Verify your existing PIN if one is already configured.'
-                    ),
-                    'error'
+                    result.error ||
+                    result.message ||
+                    'Unable to save PIN. Check your current PIN.'
                 );
             }
 
-        } catch (_) {
+        } catch (error) {
             showFeedback(
                 'pinFeedback',
-                'Unable to confirm the PIN update. Check your connection and account status before attempting again.',
-                'error'
+                'Could not confirm the PIN update. Check your account before retrying.'
             );
+
         } finally {
-            clearTimeout(timeout);
+            clearTimeout(timer);
 
             pinBusy = false;
 
@@ -2529,7 +2576,7 @@ $('pinForm').addEventListener(
                 'pinBtn',
                 'pinBtnText',
                 false,
-                pinConfigured === true
+                pinConfigured
                     ? 'Change Transaction PIN'
                     : 'Save Transaction PIN'
             );
@@ -2537,18 +2584,22 @@ $('pinForm').addEventListener(
     }
 );
 
-// ============================================
-// LOGOUT CONFIRMATION
-// ============================================
+/* ==========================================
+   LOGOUT
+========================================== */
 
-function openLogoutModal() {
-    $('logoutModal').classList.add('open');
+function openLogout() {
+    $('logoutModal').classList.add(
+        'open'
+    );
 
     $('cancelLogoutBtn').focus();
 }
 
-function closeLogoutModal() {
-    $('logoutModal').classList.remove('open');
+function closeLogout() {
+    $('logoutModal').classList.remove(
+        'open'
+    );
 }
 
 function confirmLogout() {
@@ -2556,31 +2607,29 @@ function confirmLogout() {
         localStorage.removeItem('user');
     } catch (_) {}
 
-    currentUser = null;
+    user = null;
 
-    window.location.replace('login.html');
+    window.location.replace(
+        'login.html'
+    );
 }
 
-$('logoutBtn').addEventListener(
-    'click',
-    openLogoutModal
-);
+$('logoutBtn').onclick =
+    openLogout;
 
-$('cancelLogoutBtn').addEventListener(
-    'click',
-    closeLogoutModal
-);
+$('cancelLogoutBtn').onclick =
+    closeLogout;
 
-$('confirmLogoutBtn').addEventListener(
-    'click',
-    confirmLogout
-);
+$('confirmLogoutBtn').onclick =
+    confirmLogout;
 
 $('logoutModal').addEventListener(
     'click',
     event => {
-        if (event.target === $('logoutModal')) {
-            closeLogoutModal();
+        if (
+            event.target === $('logoutModal')
+        ) {
+            closeLogout();
         }
     }
 );
@@ -2592,32 +2641,39 @@ document.addEventListener(
             event.key === 'Escape' &&
             $('logoutModal').classList.contains('open')
         ) {
-            closeLogoutModal();
+            closeLogout();
         }
     }
 );
 
-// ============================================
-// PAGE INITIALIZATION
-// ============================================
+/* ==========================================
+   INITIALIZATION
+========================================== */
 
 window.addEventListener(
     'load',
     async () => {
-        currentUser = loadCurrentUser();
+        user = getUser();
 
-        if (!currentUser) {
-            window.location.replace('login.html');
+        if (!user) {
+            sessionExpired();
             return;
         }
 
-        renderUserProfile(currentUser);
+        const configured =
+            detectPin(user);
+
+        if (configured !== null) {
+            pinConfigured = configured;
+        }
+
+        storeUser();
+        renderProfile();
 
         await refreshProfile();
     }
 );
 
 </script>
-
 </body>
 </html>

@@ -5,3156 +5,1735 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#060915">
-<title>Admin Command Center | Bigotic Data</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Bigotic Data | Admin Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
-
 <script>
 try {
-    document.documentElement.dataset.theme =
-        localStorage.getItem('bigotic-theme') === 'light'
-            ? 'light' : 'dark';
-} catch (e) {
-    document.documentElement.dataset.theme = 'dark';
-}
+  document.documentElement.dataset.theme =
+    localStorage.getItem('bigotic-theme') === 'light' ? 'light' : 'dark';
+} catch (e) {}
 </script>
-
 <style>
 :root {
-    --blue: #3b6bff;
-    --soft: #7c9bff;
-    --cyan: #28e0d6;
-    --green: #34d399;
-    --red: #f97066;
-    --amber: #f4b740;
+  --blue:#3b6bff;
+  --soft:#7c9bff;
+  --green:#34d399;
+  --red:#f97066;
+  --gold:#f4b740
 }
-
-html[data-theme="dark"] {
-    --bg: #060915;
-    --surface: #0d1330;
-    --card: #0f1638;
-    --border: rgba(148,163,255,.14);
-    --high: #eef1ff;
-    --mid: #aab0d6;
-    --dim: #737aa7;
-    --hover: rgba(124,155,255,.07);
-    --input: rgba(255,255,255,.04);
-    --nav: rgba(6,9,21,.9);
-    --shadow: 0 20px 45px -14px rgba(0,0,0,.45);
+html[data-theme=dark] {
+  --bg:#060915;
+  --card:#0f1638;
+  --surface:#0d1330;
+  --text:#eef1ff;
+  --mid:#aab0d6;
+  --dim:#737aa7;
+  --line:rgba(148,163,255,.15);
+  --input:#101936;
+  --hover:#18234b
 }
-
-html[data-theme="light"] {
-    --bg: #f2f4fb;
-    --surface: #fff;
-    --card: #fff;
-    --border: #e6e9f6;
-    --high: #0f1428;
-    --mid: #5b6178;
-    --dim: #8a94b5;
-    --hover: rgba(59,107,255,.06);
-    --input: #f5f7fd;
-    --nav: rgba(255,255,255,.92);
-    --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
+html[data-theme=light] {
+  --bg:#f2f4fb;
+  --card:#fff;
+  --surface:#fff;
+  --text:#0f1428;
+  --mid:#5b6178;
+  --dim:#8a94b5;
+  --line:#e6e9f6;
+  --input:#f5f7fd;
+  --hover:#edf1fc
 }
-
-* { box-sizing: border-box; }
-
-[hidden] { display: none !important; }
-
+* {box-sizing:border-box}
+[hidden] {display:none!important}
 body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--high);
-    font-family: Inter, sans-serif;
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,Arial,sans-serif
 }
-
-button,
-input,
-select,
-textarea {
-    font: inherit;
+button,input,textarea,select {font:inherit}
+button {cursor:pointer}
+button:disabled {opacity:.6;cursor:wait}
+a {color:inherit;text-decoration:none}
+h1,h2,h3 {font-family:'Space Grotesk',sans-serif}
+h1 {font-size:24px;margin:0 0 7px}
+h2 {font-size:16px;margin:0 0 12px}
+p {line-height:1.65}
+small,.muted {color:var(--dim)}
+.shell {display:flex;min-height:100vh}
+.sidebar {
+  width:245px;
+  flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--line);
+  padding:23px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:22px
 }
-
-button { cursor: pointer; }
-
-button:disabled {
-    opacity: .55;
-    cursor: wait;
+.brand {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:0 9px;
+  font-weight:800
 }
-
-a {
-    color: inherit;
-    text-decoration: none;
+.brand b {color:var(--soft)}
+.brand .logo {
+  display:grid;
+  place-items:center;
+  width:35px;
+  height:35px;
+  background:var(--blue);
+  color:#fff;
+  border-radius:11px
 }
-
+.side-nav {display:grid;gap:7px;flex:1}
+.nav-btn {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-align:left;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:var(--mid);
+  padding:13px;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase
+}
+.nav-btn.active,.nav-btn:hover {
+  background:var(--hover);
+  color:var(--soft)
+}
+.nav-btn svg {width:17px}
+.side-footer {display:grid;gap:10px}
+.content {
+  width:100%;
+  min-width:0;
+  max-width:1300px;
+  margin:0 auto;
+  padding:29px 27px 100px
+}
+.top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:22px
+}
+.top p {margin:0;font-size:11px;color:var(--dim)}
+.toolbar {
+  display:flex;
+  gap:9px;
+  align-items:center;
+  flex-wrap:wrap
+}
+.tag {
+  font-size:10px;
+  color:var(--soft);
+  padding:8px 12px;
+  background:var(--hover);
+  border:1px solid var(--line);
+  border-radius:20px
+}
+.btn,.icon-btn {
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:11px 14px;
+  background:var(--blue);
+  color:white;
+  font-size:11px;
+  font-weight:800
+}
+.btn.soft,.icon-btn {
+  background:var(--hover);
+  color:var(--soft)
+}
+.btn.danger {background:#722f3d;color:#fff}
+.icon-btn {
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  padding:0
+}
+.icon-btn svg,.btn svg {width:16px;height:16px}
+.tab {display:none}
+.tab.active {display:block}
+.metrics {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;
+  margin-bottom:19px
+}
+.metric {
+  padding:19px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--card)
+}
+.metric small {
+  display:block;
+  text-transform:uppercase;
+  font-size:9px;
+  font-weight:800;
+  margin-bottom:11px
+}
+.metric strong {
+  font-size:clamp(15px,2vw,23px);
+  overflow-wrap:anywhere
+}
+.card {
+  border:1px solid var(--line);
+  border-radius:19px;
+  background:var(--card);
+  margin-bottom:20px;
+  overflow:hidden
+}
+.pad {padding:19px}
+.card-head {
+  padding:16px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap
+}
+.card-head strong {font-size:12px}
+.table-wrap {overflow:auto}
+table {
+  width:100%;
+  min-width:650px;
+  border-collapse:collapse
+}
+th {
+  background:var(--hover);
+  color:var(--dim);
+  text-align:left;
+  text-transform:uppercase;
+  font-size:9px;
+  padding:13px 12px
+}
+td {
+  border-top:1px solid var(--line);
+  padding:12px;
+  color:var(--mid);
+  font-size:11px;
+  vertical-align:middle
+}
+td button {white-space:nowrap}
+.empty {text-align:center;padding:28px}
+.search,.field input,.field select,.field textarea {
+  background:var(--input);
+  border:1px solid var(--line);
+  border-radius:11px;
+  color:var(--text);
+  padding:12px;
+  font-size:12px;
+  min-width:0;
+  max-width:100%
+}
+.search {width:250px}
+.field {display:grid;gap:7px;margin-bottom:13px}
+.field label {
+  color:var(--dim);
+  font-size:10px;
+  text-transform:uppercase;
+  font-weight:800
+}
+.field textarea {
+  width:100%;
+  min-height:100px;
+  resize:vertical
+}
+.field input,.field select {width:100%}
+.field option {background:var(--surface)}
+.grid2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px
+}
+.notice {
+  border:1px solid rgba(244,183,64,.28);
+  background:rgba(244,183,64,.07);
+  border-radius:12px;
+  color:var(--mid);
+  font-size:11px;
+  padding:14px;
+  line-height:1.7;
+  margin-bottom:19px
+}
+.notice strong {color:var(--gold)}
+.pill {
+  display:inline-block;
+  border-radius:30px;
+  padding:5px 9px;
+  font-size:9px;
+  font-weight:800;
+  background:var(--hover);
+  color:var(--soft)
+}
+.pill.ok {color:var(--green)}
+.pill.bad {color:var(--red)}
+.pill.wait {color:var(--gold)}
+.modal-wrap {
+  position:fixed;
+  inset:0;
+  z-index:90;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(3,5,14,.77);
+  padding:17px
+}
+.modal-wrap.open {display:flex}
+.modal {
+  width:min(480px,100%);
+  max-height:91vh;
+  overflow:auto;
+  background:var(--surface);
+  border:1px solid var(--line);
+  padding:22px;
+  border-radius:21px
+}
+.modal-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px
+}
+.modal-head h2 {margin:0}
+.actions {
+  display:flex;
+  gap:9px;
+  justify-content:flex-end;
+  flex-wrap:wrap
+}
+.check {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:11px;
+  color:var(--mid);
+  line-height:1.6;
+  margin:10px 0 16px
+}
+.check input {accent-color:var(--blue)}
+.price-big {
+  font-size:25px;
+  font-weight:800;
+  color:var(--soft)
+}
+.preview {
+  padding:15px;
+  border:1px dashed var(--line);
+  border-radius:12px
+}
+.preview img {
+  max-width:100%;
+  max-height:170px;
+  display:block;
+  margin:auto
+}
+.preview p {
+  white-space:pre-wrap;
+  overflow-wrap:anywhere
+}
+.toast-region {
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:120;
+  width:min(350px,calc(100% - 24px));
+  pointer-events:none
+}
+.toast {
+  padding:14px;
+  margin-bottom:8px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-left:3px solid var(--red);
+  border-radius:12px;
+  box-shadow:0 14px 28px #0003;
+  font-size:11px
+}
+.toast.ok {border-left-color:var(--green)}
+.mobile-nav {display:none}
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-a:focus-visible,
 select:focus-visible {
-    outline: 2px solid var(--soft);
-    outline-offset: 3px;
-}
-
-.display {
-    font-family: 'Space Grotesk', sans-serif;
-}
-
-.mono {
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/* MAIN LAYOUT */
-
-.shell {
-    display: flex;
-    min-height: 100vh;
-}
-
-.sidebar {
-    width: 250px;
-    flex-shrink: 0;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-}
-
-.brand {
-    padding: 25px 20px;
-    border-bottom: 1px solid var(--border);
-}
-
-.brand-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.mark {
-    width: 35px;
-    height: 35px;
-    display: grid;
-    place-items: center;
-    border-radius: 11px;
-    background: linear-gradient(135deg,var(--blue),var(--cyan));
-    color: #fff;
-}
-
-.mark svg { width: 18px; }
-
-.brand em {
-    color: var(--soft);
-    font-style: normal;
-}
-
-.eyebrow {
-    color: var(--dim);
-    font-size: 9px;
-    letter-spacing: .14em;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin: 9px 0 0;
-}
-
-.side-links {
-    padding: 17px 10px;
-    flex: 1;
-    overflow: auto;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    border: 0;
-    width: 100%;
-    background: none;
-    color: var(--mid);
-    padding: 13px 12px;
-    border-radius: 12px;
-    text-align: left;
-    font-weight: 800;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .02em;
-    margin-bottom: 5px;
-}
-
-.nav-link:hover,
-.nav-link.active {
-    color: var(--soft);
-    background: var(--hover);
-}
-
-.nav-link svg {
-    width: 17px;
-    height: 17px;
-}
-
-.side-foot {
-    padding: 15px;
-    border-top: 1px solid var(--border);
-    display: grid;
-    gap: 9px;
-}
-
-.side-foot a,
-.side-foot button {
-    background: var(--hover);
-    border: 1px solid var(--border);
-    padding: 12px;
-    border-radius: 12px;
-    color: var(--mid);
-    font-size: 11px;
-    font-weight: 800;
-    text-align: center;
-}
-
-.content {
-    min-width: 0;
-    flex: 1;
-    max-width: 1300px;
-    padding: 28px 28px 75px;
-    margin: 0 auto;
-}
-
-.mobile-header {
-    display: none;
-}
-
-.page-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-
-.page-head h1 {
-    margin: 0 0 6px;
-    font-size: 24px;
-    letter-spacing: -.025em;
-}
-
-.page-head p {
-    margin: 0;
-    color: var(--dim);
-    font-size: 11px;
-    line-height: 1.6;
-}
-
-.toolbar {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    flex-wrap: wrap;
-}
-
-.icon-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 11px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--soft);
-    display: grid;
-    place-items: center;
-}
-
-.icon-btn svg {
-    width: 17px;
-    height: 17px;
-}
-
-.badge {
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--soft);
-    border: 1px solid rgba(59,107,255,.25);
-    background: var(--hover);
-    padding: 7px 10px;
-    border-radius: 99px;
-}
-
-.section { display: none; }
-.section.active { display: block; }
-
-/* METRICS */
-
-.metrics {
-    display: grid;
-    grid-template-columns: repeat(4,minmax(0,1fr));
-    gap: 13px;
-    margin-bottom: 23px;
-}
-
-.metric {
-    min-width: 0;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 19px;
-    box-shadow: var(--shadow);
-    padding: 18px;
-}
-
-.metric small {
-    display: block;
-    font-size: 10px;
-    color: var(--dim);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    margin-bottom: 11px;
-}
-
-.metric strong {
-    font: 700 clamp(16px,2vw,23px) 'JetBrains Mono',monospace;
-    overflow-wrap: anywhere;
-}
-
-.metric p {
-    font-size: 9px;
-    color: var(--dim);
-    line-height: 1.6;
-    margin: 8px 0 0;
-}
-
-.metric.primary {
-    background: linear-gradient(135deg,var(--blue),#1d3fbf);
-    color: #fff;
-}
-
-.metric.primary small,
-.metric.primary p {
-    color: rgba(255,255,255,.77);
-}
-
-/* TABLES */
-
-.card {
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--card);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    margin-bottom: 22px;
-}
-
-.card-header {
-    padding: 17px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-}
-
-.card-header strong {
-    font-size: 12px;
-}
-
-.card-header small {
-    display: block;
-    font-size: 10px;
-    color: var(--dim);
-    margin-top: 4px;
-}
-
-.table-scroll { overflow: auto; }
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 650px;
-}
-
-th {
-    color: var(--dim);
-    background: var(--hover);
-    font-size: 9px;
-    text-transform: uppercase;
-    text-align: left;
-    letter-spacing: .06em;
-    padding: 13px 15px;
-}
-
-td {
-    border-top: 1px solid var(--border);
-    padding: 14px 15px;
-    font-size: 11px;
-    color: var(--mid);
-    vertical-align: middle;
-}
-
-td strong {
-    color: var(--high);
-    font-size: 11px;
-}
-
-td .mono {
-    font-size: 10px;
-    word-break: break-word;
-}
-
-tbody tr:hover { background: var(--hover); }
-
-.empty {
-    text-align: center;
-    padding: 38px;
-    color: var(--dim);
-}
-
-.pill {
-    display: inline-block;
-    border-radius: 99px;
-    background: var(--hover);
-    color: var(--soft);
-    border: 1px solid var(--border);
-    font-size: 9px;
-    font-weight: 800;
-    padding: 5px 9px;
-}
-
-.pill.success {
-    color: var(--green);
-    background: rgba(52,211,153,.1);
-}
-
-.pill.failed {
-    color: var(--red);
-    background: rgba(249,112,102,.1);
-}
-
-.pill.pending {
-    color: var(--amber);
-    background: rgba(244,183,64,.1);
-}
-
-/* INPUTS & BUTTONS */
-
-.search {
-    border: 1px solid var(--border);
-    background: var(--input);
-    border-radius: 11px;
-    padding: 11px 13px;
-    outline: none;
-    color: var(--high);
-    font-size: 12px;
-    max-width: 270px;
-    width: 100%;
-}
-
-.btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    gap: 7px;
-    background: var(--blue);
-    color: #fff;
-    border: 0;
-    border-radius: 11px;
-    padding: 12px 16px;
-    font-size: 11px;
-    font-weight: 800;
-}
-
-.btn.soft {
-    background: var(--hover);
-    color: var(--soft);
-    border: 1px solid var(--border);
-}
-
-.btn.danger {
-    background: rgba(249,112,102,.13);
-    color: var(--red);
-    border: 1px solid rgba(249,112,102,.3);
-}
-
-.btn svg {
-    width: 15px;
-    height: 15px;
-}
-
-.hint {
-    font-size: 10px;
-    color: var(--dim);
-    line-height: 1.65;
-}
-
-.notice {
-    border: 1px solid rgba(244,183,64,.25);
-    background: rgba(244,183,64,.08);
-    color: var(--mid);
-    padding: 14px 16px;
-    border-radius: 14px;
-    font-size: 11px;
-    line-height: 1.75;
-    margin-bottom: 18px;
-}
-
-.notice strong { color: var(--amber); }
-
-.grid2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 17px;
-}
-
-.form-card { padding: 20px; }
-
-.field { margin: 0 0 15px; }
-
-.field label {
-    display: block;
-    color: var(--dim);
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    margin-bottom: 7px;
-}
-
-.field input,
-.field textarea,
-.field select {
-    background: var(--input);
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 12px 13px;
-    color: var(--high);
-    width: 100%;
-    outline: none;
-    font-size: 12px;
-}
-
-.field textarea {
-    resize: vertical;
-    min-height: 110px;
-}
-
-.field select option {
-    background: var(--surface);
-}
-
-.field input:focus,
-.field textarea:focus,
-.field select:focus {
-    border-color: var(--soft);
-}
-
-/* MODE BUTTONS */
-
-.toggle {
-    display: flex;
-    gap: 9px;
-    margin: 0 0 16px;
-}
-
-.toggle button {
-    flex: 1;
-    border: 1px solid var(--border);
-    background: var(--hover);
-    color: var(--mid);
-    padding: 11px;
-    border-radius: 11px;
-    font-size: 11px;
-    font-weight: 800;
-}
-
-.toggle button.active {
-    border-color: var(--blue);
-    color: var(--soft);
-    background: rgba(59,107,255,.13);
-}
-
-.toggle button.deduct.active {
-    border-color: var(--red);
-    color: var(--red);
-    background: rgba(249,112,102,.12);
-}
-
-/* ANNOUNCEMENT PREVIEW */
-
-.preview {
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-    background: var(--hover);
-    padding: 17px;
-    min-height: 160px;
-}
-
-.preview img {
-    max-width: 100%;
-    max-height: 160px;
-    object-fit: contain;
-    border-radius: 10px;
-    display: block;
-    margin: 0 auto 12px;
-}
-
-.preview p {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    font-size: 12px;
-    color: var(--mid);
-    line-height: 1.7;
-}
-
-.preview a {
-    font-size: 11px;
-    color: var(--soft);
-    font-weight: 800;
-}
-
-.switch-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--mid);
-    margin-bottom: 17px;
-}
-
-.switch-row input {
-    accent-color: var(--blue);
-    width: 17px;
-    height: 17px;
-}
-
-/* MODALS */
-
-.modal-wrap {
-    position: fixed;
-    inset: 0;
-    z-index: 70;
-    background: rgba(3,5,14,.75);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 18px;
-}
-
-.modal-wrap.open {
-    display: flex;
-}
-
-.modal {
-    width: 100%;
-    max-width: 440px;
-    max-height: 90vh;
-    overflow: auto;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 24px;
-    box-shadow: 0 30px 80px rgba(0,0,0,.45);
-}
-
-.modal-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 17px;
-}
-
-.modal-head h3 {
-    font-size: 18px;
-    margin: 0;
-}
-
-.user-target {
-    background: var(--hover);
-    border: 1px solid var(--border);
-    padding: 13px;
-    border-radius: 12px;
-    margin: 0 0 17px;
-}
-
-.user-target strong {
-    display: block;
-    font-size: 12px;
-}
-
-.user-target small {
-    display: block;
-    word-break: break-word;
-    color: var(--dim);
-    margin-top: 5px;
-}
-
-.checkline {
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    color: var(--mid);
-    font-size: 11px;
-    line-height: 1.6;
-    margin: 5px 0 16px;
-}
-
-.checkline input {
-    accent-color: var(--blue);
-    margin-top: 3px;
-}
-
-.modal-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.modal-buttons button {
-    flex: 1;
-}
-
-.modal-warning {
-    border: 1px solid rgba(249,112,102,.26);
-    color: var(--mid);
-    background: rgba(249,112,102,.08);
-    padding: 11px 13px;
-    border-radius: 10px;
-    font-size: 10px;
-    line-height: 1.7;
-    margin-bottom: 15px;
-}
-
-/* TOASTS */
-
-.toast-region {
-    position: fixed;
-    top: 14px;
-    right: 14px;
-    z-index: 100;
-    width: min(350px,calc(100% - 28px));
-    pointer-events: none;
-}
-
-.toast {
-    pointer-events: auto;
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--blue);
-    background: var(--surface);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 14px;
-    margin-bottom: 9px;
-    font-size: 11px;
-    line-height: 1.65;
-}
-
-.toast.error { border-left-color: var(--red); }
-.toast.success { border-left-color: var(--green); }
-
-.mobile-nav { display: none; }
-
-.danger-text { color: var(--red); }
-
-/* RESPONSIVE */
-
-@media (max-width:1050px) {
-    .sidebar { width: 215px; }
-    .content { padding: 24px 18px 80px; }
-}
-
-@media (max-width:899px) {
-    .sidebar { display: none; }
-
-    .mobile-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 22px;
-    }
-
-    .content {
-        padding: 20px 16px 115px;
-    }
-
-    .mobile-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        z-index: 40;
-        margin: 0 auto;
-        padding: 9px 6px max(12px,env(safe-area-inset-bottom));
-        background: var(--nav);
-        border-top: 1px solid var(--border);
-        backdrop-filter: blur(15px);
-    }
-
-    .mobile-nav button,
-    .mobile-nav a {
-        border: 0;
-        background: none;
-        color: var(--dim);
-        font-size: 9px;
-        font-weight: 800;
-        display: grid;
-        justify-items: center;
-        gap: 4px;
-        padding: 8px 6px;
-    }
-
-    .mobile-nav .active {
-        color: var(--soft);
-    }
-
-    .mobile-nav svg {
-        width: 17px;
-        height: 17px;
-    }
-}
-
-@media (max-width:640px) {
-    .metrics {
-        grid-template-columns: repeat(2,minmax(0,1fr));
-    }
-
-    .grid2 {
-        grid-template-columns: 1fr;
-    }
-
-    .page-head h1 {
-        font-size: 21px;
-    }
-
-    .metric {
-        padding: 14px;
-    }
-
-    .metric strong {
-        font-size: 16px;
-    }
-}
-
-@media (prefers-reduced-motion:reduce) {
-    *,
-    *:before,
-    *:after {
-        animation: none !important;
-        transition: none !important;
-    }
+  outline:2px solid var(--soft);
+  outline-offset:2px
+}
+@media(max-width:940px) {
+  .sidebar {display:none}
+  .content {padding:20px 14px 110px}
+  .mobile-nav {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:space-around;
+    background:var(--surface);
+    border-top:1px solid var(--line);
+    padding:10px 0 max(10px,env(safe-area-inset-bottom));
+    z-index:50
+  }
+  .mobile-nav .nav-btn {
+    display:grid;
+    justify-items:center;
+    font-size:8px;
+    gap:3px;
+    padding:7px 3px
+  }
+  .mobile-nav .nav-btn svg {width:18px}
+}
+@media(max-width:650px) {
+  .metrics {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2 {grid-template-columns:1fr}
+  .metric {padding:13px}
+  .metric strong {font-size:15px}
+  h1 {font-size:21px}
+  .search {width:100%}
 }
 </style>
 </head>
-
 <body>
-
 <div class="shell">
-
-<!-- DESKTOP SIDEBAR -->
-
 <aside class="sidebar">
-
-    <div class="brand">
-        <div class="brand-row display">
-            <span class="mark">
-                <i data-lucide="shield-check"></i>
-            </span>
-            BIGOTIC<em>ADMIN</em>
-        </div>
-
-        <p class="eyebrow">
-            Management Command Center
-        </p>
-    </div>
-
-    <nav class="side-links" aria-label="Admin sections">
-
-        <button
-            type="button"
-            class="nav-link active"
-            data-tab="overview"
-        >
-            <i data-lucide="layout-dashboard"></i>
-            Overview
-        </button>
-
-        <button
-            type="button"
-            class="nav-link"
-            data-tab="users"
-        >
-            <i data-lucide="users"></i>
-            Users &amp; Wallets
-        </button>
-
-        <button
-            type="button"
-            class="nav-link"
-            data-tab="profits"
-        >
-            <i data-lucide="trending-up"></i>
-            Profit Ledger
-        </button>
-
-        <button
-            type="button"
-            class="nav-link"
-            data-tab="popup"
-        >
-            <i data-lucide="bell-ring"></i>
-            Announcements
-        </button>
-
-    </nav>
-
-    <div class="side-foot">
-
-        <button type="button" id="desktopTheme">
-            <i
-                data-lucide="sun-moon"
-                style="width:14px;height:14px;vertical-align:middle"
-            ></i>
-            Switch Theme
-        </button>
-
-        <a href="dashboard.html">
-            Return to Dashboard
-        </a>
-
-    </div>
-
+  <div class="brand">
+    <span class="logo"><i data-lucide="shield-check"></i></span>
+    BIGOTIC <b>ADMIN</b>
+  </div>
+  <nav class="side-nav" aria-label="Admin navigation">
+    <button class="nav-btn active" data-tab="overview">
+      <i data-lucide="layout-dashboard"></i> Overview
+    </button>
+    <button class="nav-btn" data-tab="users">
+      <i data-lucide="users"></i> Users &amp; Wallets
+    </button>
+    <button class="nav-btn" data-tab="profits">
+      <i data-lucide="trending-up"></i> Profit Ledger
+    </button>
+    <button class="nav-btn" data-tab="pricing">
+      <i data-lucide="tags"></i> Data Plan Pricing
+    </button>
+    <button class="nav-btn" data-tab="popup">
+      <i data-lucide="bell-ring"></i> Announcements
+    </button>
+  </nav>
+  <div class="side-footer">
+    <button class="btn soft" id="themeDesktop">Switch Theme</button>
+    <a class="btn soft" href="dashboard.html">Return to Dashboard</a>
+  </div>
 </aside>
-
-<!-- MAIN CONTENT -->
-
-<div class="content" id="content" hidden>
-
-    <!-- MOBILE HEADER -->
-
-    <header class="mobile-header">
-
-        <div class="brand-row display">
-
-            <span class="mark">
-                <i data-lucide="shield-check"></i>
-            </span>
-
-            BIGOTIC<em style="font-style:normal;color:var(--soft)">
-                ADMIN
-            </em>
-
-        </div>
-
-        <button
-            type="button"
-            id="mobileTheme"
-            class="icon-btn"
-            aria-label="Switch theme"
-        >
-            <i data-lucide="sun-moon"></i>
-        </button>
-
-    </header>
-
-    <!-- PAGE HEADER -->
-
-    <div class="page-head">
-
-        <div>
-            <h1 class="display" id="pageTitle">
-                System Overview
-            </h1>
-
-            <p id="pageDescription">
-                Operational metrics and platform activity
-            </p>
-        </div>
-
-        <div class="toolbar">
-
-            <span class="badge" id="syncLabel">
-                Awaiting sync
-            </span>
-
-            <button
-                type="button"
-                id="refreshBtn"
-                class="icon-btn"
-                title="Refresh platform data"
-                aria-label="Refresh platform data"
-            >
-                <i data-lucide="refresh-cw"></i>
-            </button>
-
-        </div>
-
+<div id="content" class="content" hidden>
+  <header class="top">
+    <div>
+      <h1 id="pageTitle">System Overview</h1>
+      <p id="pageDescription">Operational metrics and platform activity</p>
     </div>
-
-    <!-- ===================================
-         OVERVIEW TAB
-    ==================================== -->
-
-    <section id="overview" class="section active">
-
-        <div class="metrics">
-
-            <div class="metric">
-                <small>Registered Users</small>
-                <strong id="metricUsers">—</strong>
-                <p>Returned account records</p>
-            </div>
-
-            <div class="metric">
-                <small>Wallet Liability</small>
-                <strong id="metricLiability">—</strong>
-                <p>Sum of user balances</p>
-            </div>
-
-            <div class="metric">
-                <small>Recorded Sales</small>
-                <strong id="metricSales">—</strong>
-                <p>Excludes known wallet funding</p>
-            </div>
-
-            <div class="metric primary">
-                <small>Tracked Profit</small>
-                <strong id="metricProfit">—</strong>
-                <p>Sum of reported profit fields</p>
-            </div>
-
+    <div class="toolbar">
+      <span class="tag" id="syncLabel">Awaiting sync</span>
+      <button class="icon-btn" id="themeMobile" aria-label="Switch theme">
+        <i data-lucide="sun-moon"></i>
+      </button>
+      <button class="icon-btn" id="refreshBtn" aria-label="Refresh records">
+        <i data-lucide="refresh-cw"></i>
+      </button>
+    </div>
+  </header>
+  <!-- OVERVIEW -->
+  <section class="tab active" id="overview">
+    <div class="metrics">
+      <div class="metric">
+        <small>Registered Users</small>
+        <strong id="metricUsers">—</strong>
+      </div>
+      <div class="metric">
+        <small>Wallet Liability</small>
+        <strong id="metricLiability">—</strong>
+      </div>
+      <div class="metric">
+        <small>Recorded Sales</small>
+        <strong id="metricSales">—</strong>
+      </div>
+      <div class="metric">
+        <small>Tracked Profit</small>
+        <strong id="metricProfit">—</strong>
+      </div>
+    </div>
+    <p class="notice">
+      <strong>Accounting:</strong> Figures are calculated from returned
+      transactions and are not a bank-reconciled statement.
+      Pending and failed entries are excluded.
+    </p>
+    <div class="card">
+      <div class="card-head">
+        <strong>Recent Platform Activity</strong>
+        <button class="btn soft" id="exportTransactions">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th><th>Service</th><th>Amount</th>
+              <th>Status</th><th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recentBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <!-- USERS -->
+  <section class="tab" id="users">
+    <div class="card">
+      <div class="card-head">
+        <strong>Users &amp; Wallets</strong>
+        <input class="search" id="userSearch" type="search"
+               placeholder="Search users">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th><th>Email</th><th>Wallet Balance</th>
+              <th>Dedicated Account</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <!-- PROFITS -->
+  <section class="tab" id="profits">
+    <div class="metrics" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="metric">
+        <small>Tracked Profit</small>
+        <strong id="ledgerProfit">—</strong>
+      </div>
+      <div class="metric">
+        <small>Profit Records</small>
+        <strong id="profitCount">—</strong>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <strong>Profit Audit Ledger</strong>
+        <div class="toolbar">
+          <input class="search" id="profitSearch" type="search"
+                 placeholder="Search profits">
+          <button class="btn soft" id="exportProfits">Export CSV</button>
         </div>
-
-        <div class="notice">
-            <strong>Operational accounting:</strong>
-            These figures are derived from the records returned by
-            the API, not a reconciled bank or accounting statement.
-            Pending and failed transactions are excluded where
-            their status is supplied.
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th><th>Service</th><th>Details</th>
+              <th>Sale</th><th>Profit</th><th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="profitsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <!-- PRICING -->
+  <section class="tab" id="pricing">
+    <div class="notice">
+      <strong>Fixed-profit pricing:</strong>
+      Selling price = verified MobileSub supplier cost + fixed profit.
+      Without a supplier pricing API, update costs manually.
+      All imported plans must be reviewed before enabling.
+      Disabled plans are blocked by Server V2.
+    </div>
+    <div class="metrics">
+      <div class="metric">
+        <small>Total Plans</small>
+        <strong id="pricingTotal">—</strong>
+      </div>
+      <div class="metric">
+        <small>Enabled</small>
+        <strong id="pricingEnabled">—</strong>
+      </div>
+      <div class="metric">
+        <small>Disabled</small>
+        <strong id="pricingDisabled">—</strong>
+      </div>
+      <div class="metric">
+        <small>Need Review</small>
+        <strong id="pricingReview">—</strong>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <strong>Data Plan Catalogue</strong>
+        <div class="toolbar">
+          <input class="search" id="pricingSearch" type="search"
+                 placeholder="Network, name or plan ID">
+          <button class="btn soft" id="reloadPricing">Reload</button>
         </div>
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div>
-                    <strong>Recent Platform Activity</strong>
-                    <small>
-                        Latest 10 returned transactions
-                    </small>
-                </div>
-
-                <button
-                    type="button"
-                    class="btn soft"
-                    id="exportTransactions"
-                >
-                    <i data-lucide="download"></i>
-                    Export CSV
-                </button>
-
-            </div>
-
-            <div class="table-scroll">
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>Service</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="recentBody">
-                        <tr>
-                            <td colspan="5" class="empty">
-                                Loading platform activity...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Plan ID / Network</th>
+              <th>Bundle / Validity</th>
+              <th>Supplier Cost</th>
+              <th>Fixed Profit</th>
+              <th>Customer Price</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="pricingBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <!-- ANNOUNCEMENTS -->
+  <section class="tab" id="popup">
+    <div class="grid2">
+      <div class="card pad">
+        <h2>Customer Announcement</h2>
+        <form id="popupForm">
+          <div class="field">
+            <label for="popupText">Message</label>
+            <textarea id="popupText" maxlength="3000"></textarea>
+          </div>
+          <div class="field">
+            <label for="popupImageUrl">HTTPS Image URL (optional)</label>
+            <input id="popupImageUrl" type="url">
+          </div>
+          <div class="field">
+            <label for="popupLink">HTTPS Action Link (optional)</label>
+            <input id="popupLink" type="url">
+          </div>
+          <label class="check">
+            <input type="checkbox" id="popupActive">
+            Publish as active announcement
+          </label>
+          <div class="actions">
+            <button class="btn soft" id="popupReset" type="button">Reload</button>
+            <button class="btn" id="popupSave" type="submit">Save Announcement</button>
+          </div>
+        </form>
+      </div>
+      <div class="card pad">
+        <h2>Customer Preview</h2>
+        <div class="preview">
+          <img id="previewImage" alt="Announcement preview" hidden>
+          <p id="previewText">Your message appears here.</p>
+          <a id="previewLink" target="_blank" rel="noopener noreferrer" hidden>
+            Learn more ↗
+          </a>
         </div>
-
-    </section>
-
-    <!-- ===================================
-         USERS TAB
-    ==================================== -->
-
-    <section id="users" class="section">
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div>
-                    <strong>Registered Accounts</strong>
-                    <small>
-                        Wallet adjustments require independent verification
-                    </small>
-                </div>
-
-                <input
-                    class="search"
-                    id="userSearch"
-                    type="search"
-                    placeholder="Search name, email or phone"
-                    aria-label="Search users"
-                >
-
-            </div>
-
-            <div class="table-scroll">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>Email</th>
-                            <th>Wallet Balance</th>
-                            <th>Dedicated Account</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="usersBody">
-                        <tr>
-                            <td colspan="5" class="empty">
-                                Loading customers...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ===================================
-         PROFITS TAB
-    ==================================== -->
-
-    <section id="profits" class="section">
-
-        <div
-            class="metrics"
-            style="grid-template-columns:repeat(2,minmax(0,1fr))"
-        >
-
-            <div class="metric primary">
-                <small>Tracked Profit</small>
-                <strong id="ledgerProfit">—</strong>
-                <p>Based on reported profit, not estimated</p>
-            </div>
-
-            <div class="metric">
-                <small>Profit Records</small>
-                <strong id="profitCount">—</strong>
-                <p>Transactions with nonzero profit fields</p>
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div>
-                    <strong>Profit Audit Ledger</strong>
-                    <small>
-                        Read-only transaction margins
-                    </small>
-                </div>
-
-                <div class="toolbar">
-
-                    <input
-                        type="search"
-                        id="profitSearch"
-                        class="search"
-                        placeholder="Search customer or service"
-                        aria-label="Search profits"
-                    >
-
-                    <button
-                        type="button"
-                        class="btn soft"
-                        id="exportProfits"
-                    >
-                        <i data-lucide="download"></i>
-                        CSV
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="table-scroll">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>Service</th>
-                            <th>Details</th>
-                            <th>Sale Amount</th>
-                            <th>Recorded Profit</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="profitsBody">
-                        <tr>
-                            <td colspan="6" class="empty">
-                                Loading profit records...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ===================================
-         ANNOUNCEMENTS TAB
-    ==================================== -->
-
-    <section id="popup" class="section">
-
-        <div class="grid2">
-
-            <div>
-
-                <div class="notice">
-                    <strong>Customer notifications:</strong>
-                    Your Dashboard V2 uses
-                    <span class="mono">/popup/active</span>
-                    to detect announcements. Publish a different
-                    message or image to create a new notification.
-                </div>
-
-                <div class="card form-card">
-
-                    <form id="popupForm">
-
-                        <div class="field">
-                            <label for="popupText">
-                                Announcement Message
-                            </label>
-
-                            <textarea
-                                id="popupText"
-                                placeholder="Write your announcement..."
-                                maxlength="3000"
-                            ></textarea>
-                        </div>
-
-                        <div class="field">
-                            <label for="popupImageUrl">
-                                Image URL (optional, HTTPS)
-                            </label>
-
-                            <input
-                                id="popupImageUrl"
-                                type="url"
-                                placeholder="https://example.com/banner.png"
-                            >
-                        </div>
-
-                        <div class="field">
-                            <label for="popupLink">
-                                Action Link (optional, HTTPS)
-                            </label>
-
-                            <input
-                                id="popupLink"
-                                type="url"
-                                placeholder="https://bigoticdata.com.ng/fund.html"
-                            >
-                        </div>
-
-                        <label class="switch-row">
-                            <input
-                                id="popupActive"
-                                type="checkbox"
-                            >
-                            Publish as active announcement
-                        </label>
-
-                        <div class="toolbar">
-
-                            <button
-                                type="submit"
-                                class="btn"
-                                id="popupSaveBtn"
-                            >
-                                Save Announcement
-                            </button>
-
-                            <button
-                                type="button"
-                                class="btn soft"
-                                id="popupResetBtn"
-                            >
-                                Reload
-                            </button>
-
-                        </div>
-
-                        <p class="hint">
-                            Announcements are global. Only publish
-                            accurate messages intended for every customer.
-                        </p>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-            <div>
-
-                <div class="card form-card">
-
-                    <div
-                        class="card-header"
-                        style="padding:0 0 14px;margin-bottom:17px"
-                    >
-
-                        <strong>
-                            Customer Preview
-                        </strong>
-
-                        <span class="pill" id="popupBadge">
-                            Inactive
-                        </span>
-
-                    </div>
-
-                    <div class="preview">
-
-                        <img
-                            id="previewImage"
-                            alt="Announcement preview"
-                            hidden
-                        >
-
-                        <strong style="font-size:12px">
-                            Bigotic Data Update
-                        </strong>
-
-                        <p id="previewText">
-                            Your announcement will appear here.
-                        </p>
-
-                        <a
-                            id="previewLink"
-                            href="#"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            hidden
-                        >
-                            Learn more ↗
-                        </a>
-
-                    </div>
-
-                    <p class="hint" style="margin-top:13px">
-                        Preview only. The customer dashboard
-                        decides when to display the actual popup
-                        and unread bell.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
+        <p class="muted" style="font-size:11px">
+          Preview only. The customer dashboard displays the published announcement.
+        </p>
+      </div>
+    </div>
+  </section>
 </div>
 </div>
 
-<!-- ===================================
-     MOBILE NAVIGATION
-==================================== -->
-
-<nav
-    class="mobile-nav"
-    aria-label="Admin navigation"
-    id="mobileNav"
-    hidden
->
-
-    <button
-        type="button"
-        class="active"
-        data-tab="overview"
-    >
-        <i data-lucide="layout-dashboard"></i>
-        Overview
-    </button>
-
-    <button
-        type="button"
-        data-tab="users"
-    >
-        <i data-lucide="users"></i>
-        Users
-    </button>
-
-    <button
-        type="button"
-        data-tab="profits"
-    >
-        <i data-lucide="trending-up"></i>
-        Profits
-    </button>
-
-    <button
-        type="button"
-        data-tab="popup"
-    >
-        <i data-lucide="bell"></i>
-        Notice
-    </button>
-
-    <a href="dashboard.html">
-        <i data-lucide="arrow-left"></i>
-        Exit
-    </a>
-
+<!-- MOBILE NAVIGATION -->
+<nav class="mobile-nav" id="mobileNav" hidden>
+  <button class="nav-btn active" data-tab="overview">
+    <i data-lucide="layout-dashboard"></i>Home
+  </button>
+  <button class="nav-btn" data-tab="users">
+    <i data-lucide="users"></i>Users
+  </button>
+  <button class="nav-btn" data-tab="profits">
+    <i data-lucide="trending-up"></i>Profit
+  </button>
+  <button class="nav-btn" data-tab="pricing">
+    <i data-lucide="tags"></i>Prices
+  </button>
+  <button class="nav-btn" data-tab="popup">
+    <i data-lucide="bell"></i>Notice
+  </button>
 </nav>
 
-<!-- ===================================
-     WALLET ADJUSTMENT MODAL
-==================================== -->
-
-<div
-    id="fundModal"
-    class="modal-wrap"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="fundModalTitle"
->
-
-    <div class="modal">
-
-        <div class="modal-head">
-
-            <h3 class="display" id="fundModalTitle">
-                Adjust Customer Wallet
-            </h3>
-
-            <button
-                type="button"
-                class="icon-btn"
-                id="closeFund"
-                aria-label="Close"
-            >
-                <i data-lucide="x"></i>
-            </button>
-
-        </div>
-
-        <div class="user-target">
-
-            <strong id="fundTargetName">
-                —
-            </strong>
-
-            <small id="fundTargetEmail">
-                —
-            </small>
-
-            <small id="fundCurrentBalance">
-                —
-            </small>
-
-        </div>
-
-        <form id="fundForm">
-
-            <div class="toggle">
-
-                <button
-                    type="button"
-                    id="addMode"
-                    class="active"
-                >
-                    Credit Wallet
-                </button>
-
-                <button
-                    type="button"
-                    id="deductMode"
-                    class="deduct"
-                >
-                    Debit Wallet
-                </button>
-
-            </div>
-
-            <div class="field">
-
-                <label for="fundAmount">
-                    Amount (₦)
-                </label>
-
-                <input
-                    id="fundAmount"
-                    type="number"
-                    inputmode="decimal"
-                    step="0.01"
-                    min="0.01"
-                    required
-                    placeholder="e.g. 5000"
-                >
-
-            </div>
-
-            <div class="field">
-
-                <label for="fundReason">
-                    Reason
-                </label>
-
-                <select id="fundReason" required>
-
-                    <option value="manual">
-                        Verified manual PalmPay deposit
-                    </option>
-
-                    <option value="correction">
-                        Balance correction
-                    </option>
-
-                    <option value="refund">
-                        Refund / reversal
-                    </option>
-
-                    <option value="other">
-                        Other authorized adjustment
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="field">
-
-                <label for="fundReference">
-                    Bank / transaction reference
-                </label>
-
-                <input
-                    id="fundReference"
-                    maxlength="100"
-                    placeholder="Required for manual bank deposits"
-                >
-
-            </div>
-
-            <div class="field">
-
-                <label for="fundNote">
-                    Internal note
-                </label>
-
-                <textarea
-                    id="fundNote"
-                    rows="2"
-                    maxlength="350"
-                    placeholder="Why this adjustment is being made"
-                ></textarea>
-
-            </div>
-
-            <label class="checkline">
-
-                <input
-                    id="verifyPayment"
-                    type="checkbox"
-                    required
-                >
-
-                <span id="verificationText">
-                    I independently verified this transfer
-                    in the actual receiving bank account,
-                    checked for duplicate credit, and confirmed
-                    the amount and recipient.
-                </span>
-
-            </label>
-
-            <div class="modal-warning">
-                This screen is not a payment verification service.
-                A screenshot or WhatsApp receipt alone is not proof
-                of funds. The current backend may not store
-                reason/reference metadata or block duplicates
-                unless you implement that logic there.
-            </div>
-
-            <div class="modal-buttons">
-
-                <button
-                    type="button"
-                    class="btn soft"
-                    id="cancelFund"
-                >
-                    Cancel
-                </button>
-
-                <button
-                    type="submit"
-                    class="btn"
-                    id="submitFund"
-                >
-                    Review Adjustment
-                </button>
-
-            </div>
-
-        </form>
-
+<!-- WALLET ADJUSTMENT MODAL -->
+<div id="walletModal" class="modal-wrap" role="dialog"
+     aria-modal="true" aria-labelledby="walletTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="walletTitle">Adjust Customer Wallet</h2>
+      <button class="icon-btn" data-close="walletModal" aria-label="Close">✕</button>
     </div>
-
+    <p id="walletTarget" class="notice"></p>
+    <form id="walletForm">
+      <div class="field">
+        <label for="walletMode">Action</label>
+        <select id="walletMode">
+          <option value="credit">Credit wallet</option>
+          <option value="debit">Debit wallet</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="walletAmount">Amount (₦)</label>
+        <input id="walletAmount" type="number" min="0.01"
+               step="0.01" required>
+      </div>
+      <div class="field">
+        <label for="walletReason">Reason</label>
+        <select id="walletReason">
+          <option value="manual">Verified manual PalmPay deposit</option>
+          <option value="correction">Balance correction</option>
+          <option value="refund">Refund</option>
+          <option value="other">Other authorized adjustment</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="walletReference">Bank / transaction reference</label>
+        <input id="walletReference" maxlength="100">
+      </div>
+      <div class="field">
+        <label for="walletNote">Internal note</label>
+        <textarea id="walletNote" maxlength="350" rows="2"></textarea>
+      </div>
+      <label class="check">
+        <input id="walletVerified" type="checkbox" required>
+        I independently verified the customer's identity, the relevant
+        financial records, and that this adjustment will not duplicate
+        a credit or debit.
+      </label>
+      <p class="notice">
+        Never trust a payment screenshot alone. Check the actual bank
+        transaction or internal adjustment records.
+      </p>
+      <div class="actions">
+        <button class="btn soft" data-close="walletModal" type="button">Cancel</button>
+        <button class="btn" type="submit">Review Adjustment</button>
+      </div>
+    </form>
+  </div>
 </div>
 
-<!-- ===================================
-     FINAL ADJUSTMENT CONFIRMATION
-==================================== -->
-
-<div
-    id="confirmModal"
-    class="modal-wrap"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="confirmTitle"
->
-
-    <div class="modal">
-
-        <div class="modal-head">
-
-            <h3 class="display" id="confirmTitle">
-                Confirm Wallet Adjustment
-            </h3>
-
-            <button
-                type="button"
-                class="icon-btn"
-                id="closeConfirm"
-                aria-label="Close"
-            >
-                <i data-lucide="x"></i>
-            </button>
-
-        </div>
-
-        <p
-            id="confirmSummary"
-            class="notice"
-            style="white-space:pre-wrap"
-        ></p>
-
-        <div class="modal-warning">
-            Double-check the recipient and transfer reference.
-            This action sends a financial adjustment request
-            to your existing backend.
-        </div>
-
-        <div class="modal-buttons">
-
-            <button
-                type="button"
-                class="btn soft"
-                id="backConfirm"
-            >
-                Back
-            </button>
-
-            <button
-                type="button"
-                class="btn danger"
-                id="executeFund"
-            >
-                Confirm &amp; Apply
-            </button>
-
-        </div>
-
+<!-- FINAL WALLET CONFIRMATION -->
+<div id="confirmModal" class="modal-wrap" role="dialog"
+     aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="confirmTitle">Confirm Wallet Adjustment</h2>
+      <button class="icon-btn" data-close="confirmModal" aria-label="Close">✕</button>
     </div>
-
+    <p class="notice" id="confirmSummary" style="white-space:pre-wrap"></p>
+    <div class="actions">
+      <button class="btn soft" id="backToWallet">Back</button>
+      <button class="btn danger" id="executeWallet">Confirm &amp; Apply</button>
+    </div>
+  </div>
 </div>
 
-<div
-    class="toast-region"
-    id="toastRegion"
-    aria-live="polite"
-></div>
+<!-- PLAN PRICE EDITOR -->
+<div id="priceModal" class="modal-wrap" role="dialog"
+     aria-modal="true" aria-labelledby="priceTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="priceTitle">Edit Data Plan</h2>
+      <button class="icon-btn" data-close="priceModal" aria-label="Close">✕</button>
+    </div>
+    <p class="notice" id="priceDescription"></p>
+    <form id="priceForm">
+      <div class="field">
+        <label for="planName">Bundle Description</label>
+        <input id="planName" maxlength="100" required>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="planType">Plan Type</label>
+          <input id="planType" maxlength="60" required>
+        </div>
+        <div class="field">
+          <label for="planValidity">Validity</label>
+          <input id="planValidity" maxlength="80" required>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="planCost">Verified Supplier Cost ₦</label>
+          <input id="planCost" inputmode="decimal" type="number"
+                 step="0.01" min="0.01" required>
+        </div>
+        <div class="field">
+          <label for="planProfit">Fixed Profit ₦</label>
+          <input id="planProfit" inputmode="decimal" type="number"
+                 step="0.01" min="0" required>
+        </div>
+      </div>
+      <div class="card pad">
+        <small>Calculated Customer Price</small>
+        <div class="price-big" id="planSalePreview">—</div>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="planEnabled">
+        Enable this plan for customer purchases after verifying
+        provider ID, name, validity and cost.
+      </label>
+      <div class="actions">
+        <button class="btn soft" data-close="priceModal" type="button">
+          Cancel
+        </button>
+        <button class="btn" type="submit" id="savePlanBtn">
+          Save Pricing
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="toastRegion" class="toast-region" aria-live="polite"></div>
 
 <script>
 'use strict';
 
-// ============================================
-// CONFIGURATION
-// ============================================
-
 const API = 'https://bigoticdata-backend.onrender.com';
-
-const ADMIN_EMAIL = 'ichinonso650@gmail.com';
-
 const $ = id => document.getElementById(id);
 
-const icon = () => {
-    if (window.lucide) {
-        lucide.createIcons();
-    }
-};
-
-const asText = (value, fallback = '—') => {
-    if (
-        value === undefined ||
-        value === null ||
-        String(value).trim() === ''
-    ) {
-        return fallback;
-    }
-
-    return String(value);
-};
-
-const numeric = value => {
-    const n = Number(
-        String(value ?? '').replace(/[₦,\s]/g, '')
-    );
-
-    return Number.isFinite(n) ? n : 0;
-};
-
-const naira = value =>
-    '₦' + numeric(value).toLocaleString(
-        'en-NG',
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    );
-
-const dt = value => {
-    const date = new Date(value);
-
-    return Number.isNaN(date.getTime())
-        ? 'Date unavailable'
-        : date.toLocaleString(
-            'en-NG',
-            {
-                timeZone: 'Africa/Lagos',
-                dateStyle: 'medium',
-                timeStyle: 'short'
-            }
-        );
-};
-
 let me = null;
-
 let users = [];
 let transactions = [];
+let plans = [];
+let selectedUser = null;
+let pendingWallet = null;
+let editingPlan = null;
+let busyWallet = false;
+let busyPrice = false;
+let pricingLoaded = false;
+let activeTab = 'overview';
 
-let tab = 'overview';
-let fundUser = null;
-let mode = 'ADD';
+const naira = n => '₦' + Number(n || 0).toLocaleString(
+  'en-NG', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }
+);
 
-let pendingAdjustment = null;
+const num = n => Number.isFinite(Number(n)) ? Number(n) : 0;
 
-let working = false;
-let loaded = false;
+const text = (v, f = '—') =>
+  v === null || v === undefined || String(v).trim() === '' ? f : String(v);
 
-let selectedProfit = [];
-
-// ============================================
-// USER / ADMIN SESSION
-// ============================================
-
-function currentUser() {
-    try {
-        const user = JSON.parse(
-            localStorage.getItem('user') || 'null'
-        );
-
-        return (
-            user &&
-            typeof user.email === 'string'
-        ) ? user : null;
-
-    } catch (error) {
-        return null;
-    }
-}
-
-/*
- * Compatibility with existing admin endpoints.
- *
- * IMPORTANT:
- * This header is NOT secure authentication.
- * The backend must verify real authenticated
- * admin identity and permissions.
- */
-function headers(json = false) {
-    return {
-        'admin-email': me.email,
-        ...(json ? {
-            'Content-Type': 'application/json'
-        } : {})
-    };
-}
-
-// ============================================
-// BACKEND REQUEST HELPER
-// ============================================
-
-async function request(path, options = {}) {
-    const controller = new AbortController();
-
-    const timer = setTimeout(
-        () => controller.abort(),
-        25000
-    );
-
-    try {
-        const response = await fetch(
-            API + path,
-            {
-                cache: 'no-store',
-                ...options,
-                signal: controller.signal
-            }
-        );
-
-        let data;
-
-        try {
-            data = await response.json();
-        } catch (error) {
-            data = {};
-        }
-
-        if (!response.ok) {
-            throw new Error(
-                asText(
-                    data.message || data.error,
-                    'Server returned HTTP ' + response.status
-                )
-            );
-        }
-
-        return data;
-
-    } finally {
-        clearTimeout(timer);
-    }
-}
-
-// ============================================
-// TOAST
-// ============================================
-
-function toast(message, type = 'info') {
-    const node = document.createElement('div');
-
-    node.className = 'toast ' + type;
-
-    node.textContent = String(message);
-
-    $('toastRegion').appendChild(node);
-
-    setTimeout(
-        () => node.remove(),
-        5500
-    );
-}
-
-// ============================================
-// THEME
-// ============================================
-
-function toggleTheme() {
-    const next =
-        document.documentElement.dataset.theme === 'light'
-            ? 'dark'
-            : 'light';
-
-    document.documentElement.dataset.theme = next;
-
-    try {
-        localStorage.setItem(
-            'bigotic-theme',
-            next
-        );
-    } catch (error) {}
-}
-
-$('desktopTheme').onclick = toggleTheme;
-$('mobileTheme').onclick = toggleTheme;
-
-// ============================================
-// TAB NAVIGATION
-// ============================================
-
-const titles = {
-    overview: [
-        'System Overview',
-        'Operational metrics and platform activity'
-    ],
-
-    users: [
-        'Users & Wallets',
-        'Search accounts and review wallet adjustments'
-    ],
-
-    profits: [
-        'Profit Ledger',
-        'Recorded commercial margin and transactions'
-    ],
-
-    popup: [
-        'Customer Announcements',
-        'Manage the dashboard popup and notification bell'
-    ]
+const formatDate = d => {
+  const t = new Date(d);
+  return Number.isNaN(t.getTime())
+    ? '—'
+    : t.toLocaleString('en-NG', {
+        timeZone: 'Africa/Lagos',
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
 };
 
-function switchTab(selected) {
-    if (!titles[selected]) return;
-
-    tab = selected;
-
-    document.querySelectorAll(
-        '.section'
-    ).forEach(section => {
-        section.classList.toggle(
-            'active',
-            section.id === selected
-        );
-    });
-
-    document.querySelectorAll(
-        '[data-tab]'
-    ).forEach(button => {
-        button.classList.toggle(
-            'active',
-            button.dataset.tab === selected
-        );
-    });
-
-    $('pageTitle').textContent =
-        titles[selected][0];
-
-    $('pageDescription').textContent =
-        titles[selected][1];
+function icons() {
+  if (window.lucide) lucide.createIcons();
 }
 
-document.querySelectorAll(
-    '[data-tab]'
-).forEach(button => {
-    button.onclick = () => {
-        switchTab(button.dataset.tab);
-    };
+function notify(message, ok = false) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (ok ? ' ok' : '');
+  el.textContent = String(message);
+  $('toastRegion').append(el);
+  setTimeout(() => el.remove(), 6000);
+}
+
+/* ADMIN SESSION */
+function session() {
+  try {
+    const u = JSON.parse(localStorage.getItem('user') || 'null');
+    return u &&
+      typeof u.email === 'string' &&
+      typeof u.token === 'string' &&
+      u.token.trim()
+      ? u
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+async function req(path, opts = {}) {
+  const c = new AbortController();
+  const timeout = setTimeout(() => c.abort(), 25000);
+
+  try {
+    const h = new Headers(opts.headers || {});
+    h.set('Authorization', 'Bearer ' + me.token.trim());
+    h.set('Accept', 'application/json');
+
+    const r = await fetch(API + path, {
+      ...opts,
+      headers: h,
+      signal: c.signal,
+      cache: 'no-store'
+    });
+
+    const d = await r.json().catch(() => ({}));
+
+    if (!r.ok) {
+      throw new Error(text(d.error || d.message, 'HTTP ' + r.status));
+    }
+
+    return d;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+const jsonBody = x => ({
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(x)
 });
 
-// ============================================
-// SAFE TABLE HELPERS
-// ============================================
+/* THEME */
+function theme() {
+  const next = document.documentElement.dataset.theme === 'light'
+    ? 'dark' : 'light';
 
-function td(row, value, className = '') {
-    const cell = document.createElement('td');
+  document.documentElement.dataset.theme = next;
 
-    if (className) {
-        cell.className = className;
-    }
-
-    cell.textContent = String(value);
-
-    row.appendChild(cell);
-
-    return cell;
+  try {
+    localStorage.setItem('bigotic-theme', next);
+  } catch {}
 }
 
-function clearTable(id, columns, message) {
-    const body = $(id);
+$('themeDesktop').onclick = theme;
+$('themeMobile').onclick = theme;
 
-    body.replaceChildren();
+/* NAVIGATION */
+const pageTitles = {
+  overview: ['System Overview', 'Operational metrics and platform activity'],
+  users: ['Users & Wallets', 'Review customer wallets and authorized adjustments'],
+  profits: ['Profit Ledger', 'Completed transaction margins'],
+  pricing: ['Data Plan Pricing', 'Fixed-profit MobileSub catalogue and availability'],
+  popup: ['Announcements', 'Manage global customer dashboard notices']
+};
 
-    const row = document.createElement('tr');
+function switchTab(t) {
+  if (!pageTitles[t]) return;
 
-    const cell = td(row, message, 'empty');
+  activeTab = t;
 
-    cell.colSpan = columns;
+  document.querySelectorAll('.tab').forEach(x => {
+    x.classList.toggle('active', x.id === t);
+  });
 
-    body.appendChild(row);
+  document.querySelectorAll('[data-tab]').forEach(x => {
+    x.classList.toggle('active', x.dataset.tab === t);
+  });
+
+  $('pageTitle').textContent = pageTitles[t][0];
+  $('pageDescription').textContent = pageTitles[t][1];
+
+  if (t === 'pricing' && !pricingLoaded) loadPricing();
 }
 
-// ============================================
-// TRANSACTION STATUS
-// ============================================
+document.querySelectorAll('[data-tab]').forEach(b => {
+  b.onclick = () => switchTab(b.dataset.tab);
+});
 
-function status(transaction) {
-    const value = asText(
-        transaction.status ??
-        transaction.transactionStatus ??
-        transaction.paymentStatus,
-        'recorded'
-    ).toLowerCase().trim();
-
-    if ([
-        'successful',
-        'success',
-        'completed',
-        'approved',
-        'paid',
-        'delivered',
-        'done'
-    ].includes(value)) {
-        return 'successful';
-    }
-
-    if ([
-        'pending',
-        'processing',
-        'queued',
-        'initiated',
-        'unconfirmed'
-    ].includes(value)) {
-        return 'pending';
-    }
-
-    if ([
-        'failed',
-        'cancelled',
-        'canceled',
-        'declined',
-        'rejected',
-        'reversed',
-        'error'
-    ].includes(value)) {
-        return 'failed';
-    }
-
-    return 'recorded';
+/* TABLE HELPERS */
+function cell(tr, value) {
+  const el = document.createElement('td');
+  el.textContent = text(value);
+  tr.append(el);
+  return el;
 }
 
-// ============================================
-// FUNDING TYPE DETECTION
-// ============================================
+function empty(id, cols, msg) {
+  const body = $(id);
+  body.replaceChildren();
 
-function isFunding(transaction) {
-    const value = asText(
-        transaction.type,
-        ''
-    ).toLowerCase().replace(/[_-]/g, ' ');
+  const tr = document.createElement('tr');
+  const td = document.createElement('td');
 
-    return [
-        'fund',
-        'funding',
-        'wallet funding',
-        'admin fund',
-        'admin funding',
-        'deposit',
-        'credit',
-        'wallet topup',
-        'wallet top up',
-        'referral bonus',
-        'refund'
-    ].some(type => value === type);
+  td.colSpan = cols;
+  td.className = 'empty';
+  td.textContent = msg;
+
+  tr.append(td);
+  body.append(tr);
 }
 
-function acceptable(transaction) {
-    return ![
-        'failed',
-        'pending'
-    ].includes(status(transaction));
+const txStatus = t => String(t.status || 'Recorded').toLowerCase();
+
+const good = t => ![
+  'pending', 'processing', 'failed', 'reversed',
+  'cancelled', 'rejected', 'unconfirmed'
+].includes(txStatus(t));
+
+const funding = t => [
+  'fund', 'funding', 'admin fund', 'deposit', 'credit',
+  'referral bonus', 'refund', 'wallet funding'
+].includes(String(t.type || '').toLowerCase());
+
+/* OVERVIEW */
+function renderOverview() {
+  const filtered = transactions.filter(good);
+
+  const sales = filtered.filter(t => !funding(t))
+    .reduce((s, t) => s + num(t.amount), 0);
+
+  const profit = filtered.reduce(
+    (s, t) => s + num(t.profit), 0
+  );
+
+  $('metricUsers').textContent = users.length.toLocaleString();
+
+  $('metricLiability').textContent = naira(
+    users.reduce((s, u) => s + num(u.balance), 0)
+  );
+
+  $('metricSales').textContent = naira(sales);
+  $('metricProfit').textContent = naira(profit);
+  $('ledgerProfit').textContent = naira(profit);
+
+  const body = $('recentBody');
+  body.replaceChildren();
+
+  transactions.slice(0, 10).forEach(t => {
+    const tr = document.createElement('tr');
+
+    [
+      t.email, t.type, naira(t.amount),
+      txStatus(t), formatDate(t.date || t.createdAt)
+    ].forEach(v => cell(tr, v));
+
+    body.append(tr);
+  });
+
+  if (!transactions.length) {
+    empty('recentBody', 5, 'No transactions recorded');
+  }
 }
 
-// ============================================
-// RESPONSE COMPATIBILITY
-// ============================================
-
-function valuesArray(data, keys) {
-    if (Array.isArray(data)) {
-        return data;
-    }
-
-    for (const key of keys) {
-        if (Array.isArray(data?.[key])) {
-            return data[key];
-        }
-
-        if (
-            Array.isArray(data?.data?.[key])
-        ) {
-            return data.data[key];
-        }
-    }
-
-    if (Array.isArray(data?.data)) {
-        return data.data;
-    }
-
-    throw new Error(
-        'Unexpected API response format'
-    );
-}
-
-// ============================================
-// LOAD ADMIN DATA
-// ============================================
-
-async function loadData() {
-    if (working) return;
-
-    working = true;
-
-    $('refreshBtn').disabled = true;
-
-    $('syncLabel').textContent = 'Refreshing...';
-
-    try {
-        const [userResult, transactionResult] =
-            await Promise.all([
-                request(
-                    '/admin/users',
-                    {
-                        headers: headers()
-                    }
-                ),
-
-                request(
-                    '/admin/transactions',
-                    {
-                        headers: headers()
-                    }
-                )
-            ]);
-
-        users = valuesArray(
-            userResult,
-            ['users', 'accounts']
-        );
-
-        transactions = valuesArray(
-            transactionResult,
-            ['transactions', 'history']
-        );
-
-        transactions.sort(
-            (a, b) =>
-                new Date(b.date || b.createdAt || 0) -
-                new Date(a.date || a.createdAt || 0)
-        );
-
-        loaded = true;
-
-        renderStats();
-        renderUsers();
-        renderRecent();
-        renderProfits();
-
-        $('syncLabel').textContent =
-            'Updated ' +
-            new Date().toLocaleTimeString(
-                'en-NG',
-                {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }
-            );
-
-        toast(
-            'Admin data refreshed',
-            'success'
-        );
-
-    } catch (error) {
-        $('syncLabel').textContent =
-            loaded
-                ? 'Refresh failed'
-                : 'Connection error';
-
-        toast(
-            error.message || 'Unable to load data',
-            'error'
-        );
-
-        if (!loaded) {
-            clearTable(
-                'recentBody',
-                5,
-                'Could not load activity'
-            );
-
-            clearTable(
-                'usersBody',
-                5,
-                'Could not load accounts'
-            );
-
-            clearTable(
-                'profitsBody',
-                6,
-                'Could not load profits'
-            );
-        }
-
-    } finally {
-        working = false;
-
-        $('refreshBtn').disabled = false;
-    }
-}
-
-// ============================================
-// RENDER OVERVIEW METRICS
-// ============================================
-
-function renderStats() {
-    const liability = users.reduce(
-        (sum, user) =>
-            sum + numeric(user.balance),
-        0
-    );
-
-    const valid = transactions.filter(
-        acceptable
-    );
-
-    const sales = valid
-        .filter(transaction => !isFunding(transaction))
-        .reduce(
-            (sum, transaction) =>
-                sum + Math.max(
-                    0,
-                    numeric(transaction.amount)
-                ),
-            0
-        );
-
-    const profit = valid.reduce(
-        (sum, transaction) =>
-            sum + numeric(transaction.profit),
-        0
-    );
-
-    $('metricUsers').textContent =
-        users.length.toLocaleString();
-
-    $('metricLiability').textContent =
-        naira(liability);
-
-    $('metricSales').textContent =
-        naira(sales);
-
-    $('metricProfit').textContent =
-        naira(profit);
-
-    $('ledgerProfit').textContent =
-        naira(profit);
-}
-
-// ============================================
-// RECENT TRANSACTIONS
-// ============================================
-
-function renderRecent() {
-    const body = $('recentBody');
-
-    body.replaceChildren();
-
-    if (!transactions.length) {
-        clearTable(
-            'recentBody',
-            5,
-            'No transactions found'
-        );
-
-        return;
-    }
-
-    for (const transaction of transactions.slice(0, 10)) {
-        const row = document.createElement('tr');
-
-        td(
-            row,
-            asText(transaction.email),
-            'mono'
-        );
-
-        td(
-            row,
-            asText(transaction.type, 'Transaction')
-        );
-
-        td(
-            row,
-            naira(transaction.amount)
-        );
-
-        const statusCell = td(
-            row,
-            status(transaction)
-        );
-
-        statusCell.className =
-            'pill ' + status(transaction);
-
-        td(
-            row,
-            dt(transaction.date || transaction.createdAt)
-        );
-
-        body.appendChild(row);
-    }
-}
-
-// ============================================
-// USER MANAGEMENT
-// ============================================
-
+/* USERS */
 function renderUsers() {
-    const query =
-        $('userSearch').value.trim().toLowerCase();
+  const q = $('userSearch').value.trim().toLowerCase();
+  const body = $('usersBody');
 
-    const list = users.filter(user => {
-        return [
-            user.fullName,
-            user.username,
-            user.email,
-            user.phone
-        ].some(value => {
-            return String(value || '')
-                .toLowerCase()
-                .includes(query);
-        });
-    }).slice(0, 200);
+  body.replaceChildren();
 
-    const body = $('usersBody');
+  const found = users.filter(u =>
+    [u.email, u.fullName, u.username, u.phone].some(
+      v => String(v || '').toLowerCase().includes(q)
+    )
+  ).slice(0, 200);
 
-    body.replaceChildren();
+  found.forEach(u => {
+    const tr = document.createElement('tr');
 
-    if (!list.length) {
-        clearTable(
-            'usersBody',
-            5,
-            'No matching accounts'
-        );
+    [
+      u.fullName || u.username,
+      u.email,
+      naira(u.balance),
+      u.virtualAccountNumber || 'Not generated'
+    ].forEach(v => cell(tr, v));
 
-        return;
-    }
+    const action = document.createElement('td');
+    const btn = document.createElement('button');
 
-    for (const user of list) {
-        const row = document.createElement('tr');
+    btn.className = 'btn soft';
+    btn.textContent = 'Adjust Wallet';
+    btn.onclick = () => openWallet(u);
 
-        td(
-            row,
-            asText(
-                user.fullName || user.username,
-                'Unnamed customer'
-            )
-        );
+    action.append(btn);
+    tr.append(action);
+    body.append(tr);
+  });
 
-        td(
-            row,
-            asText(user.email),
-            'mono'
-        );
-
-        td(
-            row,
-            naira(user.balance)
-        );
-
-        td(
-            row,
-            user.virtualAccountNumber
-                ? 'Generated'
-                : 'Not generated'
-        );
-
-        const action = document.createElement('td');
-
-        const button = document.createElement('button');
-
-        button.className = 'btn soft';
-
-        button.textContent = 'Adjust Wallet';
-
-        button.onclick = () => {
-            openFundModal(user);
-        };
-
-        action.appendChild(button);
-
-        row.appendChild(action);
-
-        body.appendChild(row);
-    }
+  if (!found.length) empty('usersBody', 5, 'No matching users');
 }
 
-// ============================================
-// PROFIT LEDGER
-// ============================================
+/* PROFIT LEDGER */
+function profitRows() {
+  const q = $('profitSearch').value.trim().toLowerCase();
 
-function profitRecords() {
-    return transactions.filter(
-        transaction =>
-            acceptable(transaction) &&
-            numeric(transaction.profit) !== 0
-    );
+  return transactions.filter(t =>
+    good(t) &&
+    num(t.profit) !== 0 &&
+    [t.email, t.type, t.details, t.reference].some(
+      v => String(v || '').toLowerCase().includes(q)
+    )
+  );
 }
 
-function renderProfits() {
-    const query =
-        $('profitSearch').value.toLowerCase().trim();
+function renderProfit() {
+  const records = profitRows();
+  const body = $('profitsBody');
 
-    selectedProfit = profitRecords().filter(
-        transaction => [
-            transaction.email,
-            transaction.type,
-            transaction.details,
-            transaction.recipient,
-            transaction.reference
-        ].some(
-            value => String(value || '')
-                .toLowerCase()
-                .includes(query)
-        )
+  $('profitCount').textContent = transactions.filter(
+    t => good(t) && num(t.profit) !== 0
+  ).length.toLocaleString();
+
+  body.replaceChildren();
+
+  records.slice(0, 250).forEach(t => {
+    const tr = document.createElement('tr');
+
+    [
+      t.email,
+      t.type,
+      t.details || t.recipient,
+      naira(t.amount),
+      naira(t.profit),
+      formatDate(t.date || t.createdAt)
+    ].forEach(v => cell(tr, v));
+
+    body.append(tr);
+  });
+
+  if (!records.length) {
+    empty('profitsBody', 6, 'No matching profit records');
+  }
+}
+
+$('userSearch').oninput = renderUsers;
+$('profitSearch').oninput = renderProfit;
+
+/* RELOAD ADMIN DATA */
+async function refresh() {
+  $('refreshBtn').disabled = true;
+  $('syncLabel').textContent = 'Refreshing...';
+
+  try {
+    const [u, t] = await Promise.all([
+      req('/admin/users'),
+      req('/admin/transactions')
+    ]);
+
+    if (!Array.isArray(u) || !Array.isArray(t)) {
+      throw new Error('Unexpected backend response');
+    }
+
+    users = u;
+    transactions = t.sort(
+      (a, b) => new Date(b.date || 0) - new Date(a.date || 0)
     );
 
-    $('profitCount').textContent =
-        profitRecords().length.toLocaleString();
+    renderOverview();
+    renderUsers();
+    renderProfit();
 
-    const body = $('profitsBody');
+    $('syncLabel').textContent = 'Updated ' +
+      new Date().toLocaleTimeString('en-NG', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
 
-    body.replaceChildren();
-
-    if (!selectedProfit.length) {
-        clearTable(
-            'profitsBody',
-            6,
-            'No matching profit records'
-        );
-
-        return;
-    }
-
-    for (const transaction of selectedProfit.slice(0, 250)) {
-        const row = document.createElement('tr');
-
-        td(
-            row,
-            asText(transaction.email),
-            'mono'
-        );
-
-        td(
-            row,
-            asText(transaction.type, 'Order')
-        );
-
-        td(
-            row,
-            asText(
-                transaction.details || transaction.recipient
-            )
-        );
-
-        td(
-            row,
-            naira(transaction.amount)
-        );
-
-        td(
-            row,
-            naira(transaction.profit)
-        );
-
-        td(
-            row,
-            dt(transaction.date || transaction.createdAt)
-        );
-
-        body.appendChild(row);
-    }
+  } catch (e) {
+    notify('Admin refresh failed: ' + e.message);
+    $('syncLabel').textContent = 'Refresh failed';
+  } finally {
+    $('refreshBtn').disabled = false;
+  }
 }
 
-$('userSearch').addEventListener(
-    'input',
-    renderUsers
+$('refreshBtn').onclick = refresh;
+
+/* CSV EXPORTS */
+function exportCSV(filename, heads, rows) {
+  const quote = v => {
+    let s = String(v ?? '');
+    if (/^[\s]*[=+@\-\t\r]/.test(s)) s = "'" + s;
+    return '"' + s.replace(/"/g, '""') + '"';
+  };
+
+  const content = [heads, ...rows]
+    .map(a => a.map(quote).join(','))
+    .join('\r\n');
+
+  const url = URL.createObjectURL(
+    new Blob(['\ufeff', content], {
+      type: 'text/csv;charset=utf-8'
+    })
+  );
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.append(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+$('exportTransactions').onclick = () => exportCSV(
+  'bigotic-transactions.csv',
+  ['Email', 'Service', 'Amount', 'Profit', 'Status', 'Reference', 'Date'],
+  transactions.map(t => [
+    t.email, t.type, t.amount, t.profit,
+    txStatus(t), t.reference, t.date
+  ])
 );
 
-$('profitSearch').addEventListener(
-    'input',
-    renderProfits
+$('exportProfits').onclick = () => exportCSV(
+  'bigotic-profits.csv',
+  ['Email', 'Service', 'Amount', 'Profit', 'Details', 'Reference', 'Date'],
+  profitRows().map(t => [
+    t.email, t.type, t.amount, t.profit,
+    t.details, t.reference, t.date
+  ])
 );
 
-$('refreshBtn').onclick = loadData;
-
-// ============================================
-// CSV EXPORT
-// ============================================
-
-function csvSafe(value) {
-    let text = String(value ?? '');
-
-    // Prevent spreadsheet formula execution
-    // when opening exported customer data.
-    if (/^[\s]*[=+@\-\t\r]/.test(text)) {
-        text = "'" + text;
-    }
-
-    return '"' +
-        text.replace(/"/g, '""') +
-        '"';
+/* MODALS */
+function showModal(id) {
+  $(id).classList.add('open');
 }
 
-function exportCSV(filename, headers, rows) {
-    const csv = [
-        headers,
-        ...rows
-    ].map(
-        row => row.map(csvSafe).join(',')
-    ).join('\r\n');
-
-    const url = URL.createObjectURL(
-        new Blob(
-            ['\ufeff', csv],
-            {
-                type: 'text/csv;charset=utf-8'
-            }
-        )
-    );
-
-    const link = document.createElement('a');
-
-    link.href = url;
-    link.download = filename;
-
-    document.body.appendChild(link);
-
-    link.click();
-    link.remove();
-
-    setTimeout(
-        () => URL.revokeObjectURL(url),
-        1000
-    );
+function hideModal(id) {
+  $(id).classList.remove('open');
 }
 
-$('exportTransactions').onclick = () => {
-    exportCSV(
-        'bigotic-transactions.csv',
-        [
-            'Email',
-            'Type',
-            'Amount',
-            'Profit',
-            'Status',
-            'Reference',
-            'Date'
-        ],
-        transactions.map(transaction => [
-            transaction.email,
-            transaction.type,
-            transaction.amount,
-            transaction.profit,
-            status(transaction),
-            transaction.reference,
-            transaction.date || transaction.createdAt
-        ])
-    );
+document.querySelectorAll('[data-close]').forEach(b => {
+  b.onclick = () => {
+    if (!busyWallet && !busyPrice) hideModal(b.dataset.close);
+  };
+});
+
+/* WALLET ADJUSTMENTS */
+function openWallet(u) {
+  if (busyWallet) return;
+
+  selectedUser = u;
+  $('walletForm').reset();
+
+  $('walletTarget').textContent =
+    `${u.fullName || u.username || 'Customer'} · ${u.email} · ` +
+    `Current balance ${naira(u.balance)}`;
+
+  showModal('walletModal');
+}
+
+$('walletForm').onsubmit = e => {
+  e.preventDefault();
+  if (!selectedUser || busyWallet) return;
+
+  const value = Number($('walletAmount').value);
+  const mode = $('walletMode').value;
+  const reason = $('walletReason').value;
+  const reference = $('walletReference').value.trim();
+  const note = $('walletNote').value.trim();
+
+  if (
+    !Number.isFinite(value) ||
+    value <= 0 ||
+    Math.round(value * 100) !== value * 100
+  ) {
+    notify('Enter a valid amount with up to two decimal places');
+    return;
+  }
+
+  if (mode === 'debit' && value > num(selectedUser.balance)) {
+    notify('Debit exceeds the displayed wallet balance. Refresh first.');
+    return;
+  }
+
+  if (
+    mode === 'credit' &&
+    reason === 'manual' &&
+    !/^[A-Za-z0-9_\/-]{6,100}$/.test(reference)
+  ) {
+    notify('Enter the verified bank transfer reference (at least 6 characters).');
+    return;
+  }
+
+  if (!$('walletVerified').checked) {
+    notify('Independent verification is required');
+    return;
+  }
+
+  pendingWallet = {
+    email: selectedUser.email,
+    amount: mode === 'credit' ? value : -value,
+    reason,
+    reference,
+    note
+  };
+
+  $('confirmSummary').textContent =
+    `Customer: ${selectedUser.email}\n` +
+    `Action: ${mode.toUpperCase()}\n` +
+    `Amount: ${naira(value)}\n` +
+    `Reason: ${reason}\n` +
+    `Bank reference: ${reference || 'Not provided'}\n` +
+    `Note: ${note || '—'}`;
+
+  hideModal('walletModal');
+  showModal('confirmModal');
 };
 
-$('exportProfits').onclick = () => {
-    exportCSV(
-        'bigotic-profit-ledger.csv',
-        [
-            'Email',
-            'Type',
-            'Amount',
-            'Profit',
-            'Details',
-            'Reference',
-            'Date'
-        ],
-        selectedProfit.map(transaction => [
-            transaction.email,
-            transaction.type,
-            transaction.amount,
-            transaction.profit,
-            transaction.details,
-            transaction.reference,
-            transaction.date || transaction.createdAt
-        ])
-    );
+$('backToWallet').onclick = () => {
+  if (busyWallet) return;
+  hideModal('confirmModal');
+  showModal('walletModal');
 };
 
-// ============================================
-// WALLET ADJUSTMENT
-// ============================================
+$('executeWallet').onclick = async () => {
+  if (!pendingWallet || busyWallet) return;
 
-function setMode(value) {
-    mode = value;
+  busyWallet = true;
+  $('executeWallet').disabled = true;
 
-    $('addMode').classList.toggle(
-        'active',
-        value === 'ADD'
+  try {
+    const data = await req(
+      '/admin/fund-wallet',
+      jsonBody(pendingWallet)
     );
 
-    $('deductMode').classList.toggle(
-        'active',
-        value === 'DEDUCT'
+    if (data.success !== true) {
+      throw new Error('Backend did not confirm adjustment');
+    }
+
+    notify('Wallet adjustment recorded; reconcile financial records.', true);
+
+    hideModal('confirmModal');
+    hideModal('walletModal');
+
+    pendingWallet = null;
+    selectedUser = null;
+
+    await refresh();
+
+  } catch (e) {
+    notify(
+      'Adjustment unconfirmed: ' +
+      e.message +
+      '. Verify records before retrying.'
     );
-
-    $('verificationText').textContent =
-        value === 'ADD'
-            ? 'I verified this credit against trustworthy records, checked for duplicate credits, and confirmed the correct customer.'
-            : 'I verified that this debit is authorized, correct, and supported by appropriate records.';
-}
-
-$('addMode').onclick = () => {
-    setMode('ADD');
-    $('fundReason').value = 'manual';
+  } finally {
+    busyWallet = false;
+    $('executeWallet').disabled = false;
+  }
 };
 
-$('deductMode').onclick = () => {
-    setMode('DEDUCT');
-    $('fundReason').value = 'correction';
-};
+/* ANNOUNCEMENTS */
+function https(s) {
+  if (!s) return '';
 
-// ============================================
-// OPEN FUNDING MODAL
-// ============================================
-
-function openFundModal(user) {
-    fundUser = user;
-
-    setMode('ADD');
-
-    $('fundForm').reset();
-
-    $('fundTargetName').textContent =
-        asText(user.fullName || user.username);
-
-    $('fundTargetEmail').textContent =
-        asText(user.email);
-
-    $('fundCurrentBalance').textContent =
-        'Current balance: ' + naira(user.balance);
-
-    $('fundModal').classList.add('open');
-
-    $('fundAmount').focus();
+  try {
+    const u = new URL(s);
+    return u.protocol === 'https:' ? u.href : '';
+  } catch {
+    return '';
+  }
 }
 
-function closeFundModal() {
-    if (working) return;
+function previewPopup() {
+  const img = https($('popupImageUrl').value.trim());
+  const link = https($('popupLink').value.trim());
 
-    $('fundModal').classList.remove('open');
+  $('previewText').textContent =
+    $('popupText').value.trim() || 'Your message appears here.';
 
-    fundUser = null;
-}
+  $('previewImage').hidden = !img;
 
-$('closeFund').onclick = closeFundModal;
-$('cancelFund').onclick = closeFundModal;
+  if (img) {
+    $('previewImage').src = img;
+  } else {
+    $('previewImage').removeAttribute('src');
+  }
 
-// ============================================
-// REVIEW ADJUSTMENT
-// ============================================
+  $('previewLink').hidden = !link;
 
-$('fundForm').addEventListener(
-    'submit',
-    event => {
-        event.preventDefault();
-
-        if (!fundUser || working) {
-            return;
-        }
-
-        const amount =
-            Number($('fundAmount').value);
-
-        const reason =
-            $('fundReason').value;
-
-        const reference =
-            $('fundReference').value.trim();
-
-        const note =
-            $('fundNote').value.trim();
-
-        if (
-            !Number.isFinite(amount) ||
-            amount <= 0 ||
-            Math.round(amount * 100) !== amount * 100
-        ) {
-            toast(
-                'Enter a valid amount with up to two decimals.',
-                'error'
-            );
-
-            return;
-        }
-
-        if (
-            mode === 'DEDUCT' &&
-            amount > numeric(fundUser.balance)
-        ) {
-            toast(
-                'Debit exceeds the displayed wallet balance. Refresh first.',
-                'error'
-            );
-
-            return;
-        }
-
-        if (
-            reason === 'manual' &&
-            mode === 'ADD' &&
-            !reference
-        ) {
-            toast(
-                'Enter the verified bank reference for a manual deposit.',
-                'error'
-            );
-
-            return;
-        }
-
-        if (!$('verifyPayment').checked) {
-            toast(
-                'Complete the independent verification checkbox.',
-                'error'
-            );
-
-            return;
-        }
-
-        pendingAdjustment = {
-            email: fundUser.email,
-            amount:
-                mode === 'ADD'
-                    ? amount
-                    : -amount,
-            reason,
-            reference,
-            note
-        };
-
-        $('confirmSummary').textContent = [
-            'Customer: ' + fundUser.email,
-            'Action: ' + (
-                mode === 'ADD' ? 'CREDIT' : 'DEBIT'
-            ),
-            'Amount: ' + naira(amount),
-            'Reason: ' + reason,
-            'Reference: ' + (
-                reference || 'Not supplied'
-            ),
-            'Note: ' + (
-                note || '—'
-            )
-        ].join('\n');
-
-        $('fundModal').classList.remove('open');
-
-        $('confirmModal').classList.add('open');
-    }
-);
-
-// ============================================
-// CONFIRMATION NAVIGATION
-// ============================================
-
-function backConfirm() {
-    if (working) return;
-
-    $('confirmModal').classList.remove('open');
-
-    $('fundModal').classList.add('open');
-}
-
-$('closeConfirm').onclick = backConfirm;
-$('backConfirm').onclick = backConfirm;
-
-// ============================================
-// EXECUTE WALLET ADJUSTMENT
-// ============================================
-
-$('executeFund').onclick = async () => {
-    if (!pendingAdjustment || working) {
-        return;
-    }
-
-    working = true;
-
-    $('executeFund').disabled = true;
-
-    const adjustment = pendingAdjustment;
-
-    try {
-        const result = await request(
-            '/admin/fund-wallet',
-            {
-                method: 'POST',
-
-                headers: headers(true),
-
-                body: JSON.stringify(adjustment)
-            }
-        );
-
-        if (result.success !== true) {
-            throw new Error(
-                asText(
-                    result.message || result.error,
-                    'Backend did not confirm the adjustment'
-                )
-            );
-        }
-
-        $('confirmModal').classList.remove('open');
-
-        $('fundModal').classList.remove('open');
-
-        fundUser = null;
-        pendingAdjustment = null;
-
-        toast(
-            'Wallet adjustment accepted by backend. Reconcile the bank ledger and customer balance.',
-            'success'
-        );
-
-    } catch (error) {
-        toast(
-            'Adjustment not confirmed: ' +
-            error.message +
-            '. Review records before retrying.',
-            'error'
-        );
-
-    } finally {
-        working = false;
-
-        $('executeFund').disabled = false;
-
-        await loadData();
-    }
-};
-
-// ============================================
-// POPUP URL VALIDATION
-// ============================================
-
-function safeURL(value) {
-    const text = String(value || '').trim();
-
-    if (!text) {
-        return '';
-    }
-
-    try {
-        const url = new URL(text);
-
-        return url.protocol === 'https:'
-            ? url.href
-            : '';
-
-    } catch (error) {
-        return '';
-    }
-}
-
-// ============================================
-// CUSTOMER ANNOUNCEMENT PREVIEW
-// ============================================
-
-function renderPreview() {
-    const text =
-        $('popupText').value.trim();
-
-    const imageUrl =
-        $('popupImageUrl').value.trim();
-
-    const link =
-        $('popupLink').value.trim();
-
-    $('previewText').textContent =
-        text || 'Your announcement will appear here.';
-
-    $('popupBadge').textContent =
-        $('popupActive').checked
-            ? 'Selected: Active'
-            : 'Selected: Inactive';
-
-    const validImage =
-        safeURL(imageUrl);
-
-    $('previewImage').hidden = !validImage;
-
-    if (validImage) {
-        $('previewImage').src = validImage;
-    } else {
-        $('previewImage').removeAttribute('src');
-    }
-
-    const validLink =
-        safeURL(link);
-
-    $('previewLink').hidden = !validLink;
-
-    if (validLink) {
-        $('previewLink').href = validLink;
-    } else {
-        $('previewLink').removeAttribute('href');
-    }
+  if (link) {
+    $('previewLink').href = link;
+  } else {
+    $('previewLink').removeAttribute('href');
+  }
 }
 
 [
-    'popupText',
-    'popupImageUrl',
-    'popupLink',
-    'popupActive'
+  'popupText',
+  'popupImageUrl',
+  'popupLink',
+  'popupActive'
 ].forEach(id => {
-    $(id).addEventListener(
-        'input',
-        renderPreview
-    );
+  $(id).oninput = previewPopup;
 });
 
 $('previewImage').onerror = () => {
-    $('previewImage').hidden = true;
+  $('previewImage').hidden = true;
 };
 
-// ============================================
-// LOAD EXISTING ANNOUNCEMENT
-// ============================================
+async function loadPopup() {
+  try {
+    const p = await req('/admin/popup');
 
-async function loadPopupAdmin() {
-    try {
-        const popup = await request(
-            '/admin/popup',
-            {
-                headers: headers()
-            }
-        );
+    $('popupText').value = p?.text || '';
+    $('popupImageUrl').value = p?.imageUrl || '';
+    $('popupLink').value = p?.link || '';
+    $('popupActive').checked = !!p?.active;
 
-        $('popupText').value =
-            asText(popup.text, '');
+    previewPopup();
 
-        $('popupImageUrl').value =
-            asText(popup.imageUrl, '');
-
-        $('popupLink').value =
-            asText(popup.link, '');
-
-        $('popupActive').checked =
-            !!popup.active;
-
-        renderPreview();
-
-    } catch (error) {
-        toast(
-            'Unable to load announcement: ' +
-            error.message,
-            'error'
-        );
-    }
+  } catch (e) {
+    notify('Announcement load failed: ' + e.message);
+  }
 }
 
-$('popupResetBtn').onclick =
-    loadPopupAdmin;
+$('popupReset').onclick = loadPopup;
 
-// ============================================
-// SAVE ANNOUNCEMENT
-// ============================================
+$('popupForm').onsubmit = async e => {
+  e.preventDefault();
 
-$('popupForm').addEventListener(
-    'submit',
-    async event => {
-        event.preventDefault();
+  const text = $('popupText').value.trim();
+  const imageUrl = $('popupImageUrl').value.trim();
+  const link = $('popupLink').value.trim();
+  const active = $('popupActive').checked;
 
-        const text =
-            $('popupText').value.trim();
+  if (
+    (imageUrl && !https(imageUrl)) ||
+    (link && !https(link))
+  ) {
+    notify('Image and action links must be HTTPS URLs');
+    return;
+  }
 
-        const imageUrl =
-            $('popupImageUrl').value.trim();
+  if (active && !text && !imageUrl) {
+    notify('Add text or image before publishing');
+    return;
+  }
 
-        const link =
-            $('popupLink').value.trim();
+  $('popupSave').disabled = true;
 
-        const active =
-            $('popupActive').checked;
+  try {
+    const d = await req(
+      '/admin/popup',
+      jsonBody({text, imageUrl, link, active})
+    );
 
-        if (
-            active &&
-            !text &&
-            !imageUrl
-        ) {
-            toast(
-                'Enter a message or image before publishing.',
-                'error'
-            );
-
-            return;
-        }
-
-        if (
-            imageUrl &&
-            !safeURL(imageUrl)
-        ) {
-            toast(
-                'Image URL must start with https://',
-                'error'
-            );
-
-            return;
-        }
-
-        if (
-            link &&
-            !safeURL(link)
-        ) {
-            toast(
-                'Action URL must start with https://',
-                'error'
-            );
-
-            return;
-        }
-
-        const button =
-            $('popupSaveBtn');
-
-        button.disabled = true;
-
-        try {
-            const result = await request(
-                '/admin/popup',
-                {
-                    method: 'POST',
-
-                    headers: headers(true),
-
-                    body: JSON.stringify({
-                        text,
-                        imageUrl,
-                        link,
-                        active
-                    })
-                }
-            );
-
-            if (result.success !== true) {
-                throw new Error(
-                    asText(
-                        result.error || result.message,
-                        'Backend did not confirm saving'
-                    )
-                );
-            }
-
-            toast(
-                active
-                    ? 'Announcement published successfully.'
-                    : 'Announcement saved as inactive.',
-                'success'
-            );
-
-            await loadPopupAdmin();
-
-        } catch (error) {
-            toast(
-                'Announcement not saved: ' +
-                error.message,
-                'error'
-            );
-
-        } finally {
-            button.disabled = false;
-        }
+    if (d.success !== true) {
+      throw new Error('Save not confirmed');
     }
-);
 
-// ============================================
-// INITIALIZE ADMIN DASHBOARD
-// ============================================
+    notify('Announcement saved', true);
+    await loadPopup();
 
-window.addEventListener(
-    'load',
-    async () => {
-        me = currentUser();
+  } catch (e) {
+    notify('Announcement not saved: ' + e.message);
+  } finally {
+    $('popupSave').disabled = false;
+  }
+};
 
-        if (
-            !me ||
-            me.email.toLowerCase().trim() !== ADMIN_EMAIL
-        ) {
-            location.replace('dashboard.html');
-            return;
-        }
+/* DATA PLAN PRICING */
+function validMoney(v, zero = false) {
+  const s = String(v).trim();
 
-        $('content').hidden = false;
-        $('mobileNav').hidden = false;
+  if (!/^\d+(\.\d{1,2})?$/.test(s)) return null;
 
-        renderPreview();
+  const n = Number(s);
 
-        icon();
+  return Number.isFinite(n) &&
+    n <= 10000000 &&
+    (zero ? n >= 0 : n > 0)
+    ? Math.round(n * 100) / 100
+    : null;
+}
 
-        await Promise.all([
-            loadData(),
-            loadPopupAdmin()
-        ]);
+function renderPrices() {
+  const q = $('pricingSearch').value.trim().toLowerCase();
+
+  const shown = plans.filter(p =>
+    [p.id, p.networkName, p.name, p.type, p.validity].some(
+      v => String(v ?? '').toLowerCase().includes(q)
+    )
+  );
+
+  $('pricingTotal').textContent = plans.length;
+  $('pricingEnabled').textContent = plans.filter(p => p.enabled).length;
+  $('pricingDisabled').textContent = plans.filter(p => !p.enabled).length;
+  $('pricingReview').textContent = plans.filter(p => p.needsReview).length;
+
+  const body = $('pricingBody');
+  body.replaceChildren();
+
+  shown.forEach(p => {
+    const tr = document.createElement('tr');
+
+    [
+      `${p.id} · ${p.networkName}`,
+      `${p.name} · ${p.type} · ${p.validity}`,
+      naira(p.cost),
+      naira(p.fixedProfit),
+      naira(p.price)
+    ].forEach(v => cell(tr, v));
+
+    const stat = document.createElement('td');
+    const badge = document.createElement('span');
+
+    badge.className = 'pill ' + (p.enabled ? 'ok' : 'bad');
+
+    badge.textContent = p.needsReview
+      ? 'Review needed'
+      : p.enabled ? 'Enabled' : 'Disabled';
+
+    stat.append(badge);
+    tr.append(stat);
+
+    const action = document.createElement('td');
+    const btn = document.createElement('button');
+
+    btn.className = 'btn soft';
+    btn.textContent = 'Manage';
+    btn.onclick = () => editPlan(p.id);
+
+    action.append(btn);
+    tr.append(action);
+    body.append(tr);
+  });
+
+  if (!shown.length) {
+    empty(
+      'pricingBody',
+      7,
+      pricingLoaded
+        ? 'No matching plans'
+        : 'Pricing unavailable until Server V2 is ready'
+    );
+  }
+}
+
+async function loadPricing() {
+  pricingLoaded = false;
+  $('reloadPricing').disabled = true;
+  empty('pricingBody', 7, 'Loading catalogue...');
+
+  try {
+    const d = await req('/admin/data-plans');
+
+    if (d.success !== true || !Array.isArray(d.plans)) {
+      throw new Error('Unexpected catalogue response');
     }
-);
 
-// ============================================
-// ESCAPE KEY
-// ============================================
+    plans = d.plans;
+    pricingLoaded = true;
+    renderPrices();
 
-window.addEventListener(
-    'keydown',
-    event => {
-        if (
-            event.key === 'Escape' &&
-            !working
-        ) {
-            $('fundModal').classList.remove('open');
+  } catch (e) {
+    plans = [];
+    renderPrices();
+    notify('Pricing unavailable: ' + e.message);
+  } finally {
+    $('reloadPricing').disabled = false;
+  }
+}
 
-            $('confirmModal').classList.remove('open');
-        }
+$('reloadPricing').onclick = loadPricing;
+$('pricingSearch').oninput = renderPrices;
+
+function previewPrice() {
+  const c = validMoney($('planCost').value);
+  const p = validMoney($('planProfit').value, true);
+
+  const price = c !== null && p !== null
+    ? Math.round((c + p) * 100) / 100
+    : null;
+
+  $('planSalePreview').textContent =
+    price === null ? 'Enter valid values' : naira(price);
+
+  return {
+    cost: c,
+    fixedProfit: p,
+    price
+  };
+}
+
+['planCost', 'planProfit'].forEach(id => {
+  $(id).oninput = previewPrice;
+});
+
+function editPlan(id) {
+  const p = plans.find(x => x.id === id);
+  if (!p || busyPrice) return;
+
+  editingPlan = {...p};
+
+  $('priceTitle').textContent =
+    'Edit ' + p.networkName + ' Plan #' + p.id;
+
+  $('priceDescription').textContent =
+    `Verify this provider plan ID: ${p.id} · ${p.networkName} · ` +
+    `${p.name} · ${p.type} · ${p.validity}`;
+
+  $('planName').value = p.name;
+  $('planType').value = p.type;
+  $('planValidity').value = p.validity;
+  $('planCost').value = p.cost;
+  $('planProfit').value = p.fixedProfit;
+  $('planEnabled').checked = !!p.enabled;
+
+  previewPrice();
+  showModal('priceModal');
+}
+
+$('priceForm').onsubmit = async e => {
+  e.preventDefault();
+  if (!editingPlan || busyPrice) return;
+
+  const v = previewPrice();
+  const name = $('planName').value.trim();
+  const type = $('planType').value.trim();
+  const validity = $('planValidity').value.trim();
+  const enabled = $('planEnabled').checked;
+
+  if (
+    !name ||
+    !type ||
+    !validity ||
+    name.length > 100 ||
+    type.length > 60 ||
+    validity.length > 80 ||
+    v.cost === null ||
+    v.fixedProfit === null ||
+    v.price === null ||
+    v.price > 10000000 ||
+    (enabled && v.fixedProfit <= 0)
+  ) {
+    notify(
+      'Check cost, positive profit, name, type and validity before enabling'
+    );
+    return;
+  }
+
+  const previous = editingPlan;
+
+  if (!confirm(
+    `Update ${previous.networkName} #${previous.id}?\n` +
+    `Cost: ${naira(v.cost)}\n` +
+    `Profit: ${naira(v.fixedProfit)}\n` +
+    `Customer price: ${naira(v.price)}\n` +
+    `${enabled ? 'ENABLE' : 'DISABLE'} plan`
+  )) return;
+
+  busyPrice = true;
+  $('savePlanBtn').disabled = true;
+
+  try {
+    const d = await req(
+      '/admin/data-plans/update',
+      jsonBody({
+        planId: previous.id,
+        version: previous.version,
+        name,
+        type,
+        validity,
+        cost: v.cost,
+        fixedProfit: v.fixedProfit,
+        enabled
+      })
+    );
+
+    if (d.success !== true || !d.plan) {
+      throw new Error('Backend did not confirm update');
     }
-);
+
+    plans = plans.map(p =>
+      p.id === previous.id
+        ? {...p, ...d.plan}
+        : p
+    );
+
+    editingPlan = null;
+    hideModal('priceModal');
+    renderPrices();
+    notify('Plan pricing saved', true);
+
+  } catch (err) {
+    notify('Pricing not saved: ' + err.message);
+    await loadPricing();
+  } finally {
+    busyPrice = false;
+    $('savePlanBtn').disabled = false;
+  }
+};
+
+/* KEYBOARD */
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !busyWallet && !busyPrice) {
+    document.querySelectorAll('.modal-wrap.open').forEach(
+      x => x.classList.remove('open')
+    );
+  }
+});
+
+/* VERIFIED PRODUCTION ADMIN STARTUP */
+window.addEventListener('load', async () => {
+  icons();
+
+  me = session();
+
+  if (!me || !me.token || !me.email) {
+    window.location.replace('signin.html');
+    return;
+  }
+
+  try {
+    const profile = await req(
+      '/user-profile?email=' +
+      encodeURIComponent(me.email)
+    );
+
+    if (
+      !profile ||
+      profile.role !== 'admin' ||
+      String(profile.email).toLowerCase() !==
+      String(me.email).toLowerCase()
+    ) {
+      window.location.replace('dashboard.html');
+      return;
+    }
+
+    me = {
+      ...profile,
+      token: me.token
+    };
+
+    $('content').hidden = false;
+    $('mobileNav').hidden = false;
+
+    switchTab('overview');
+
+    await Promise.all([
+      refresh(),
+      loadPricing(),
+      loadPopup()
+    ]);
+
+  } catch (error) {
+    console.error(
+      'Admin verification failed:',
+      error
+    );
+
+    $('content').hidden = true;
+    $('mobileNav').hidden = true;
+
+    notify(
+      'Unable to verify admin access. Please sign in again.'
+    );
+  }
+});
 </script>
-
 </body>
 </html>

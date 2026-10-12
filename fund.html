@@ -2,1867 +2,2039 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#060915">
-    <title>Fund Wallet | Bigotic Data</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        (function () {
-            try {
-                const saved = localStorage.getItem("bigotic-theme");
-                document.documentElement.setAttribute(
-                    "data-theme",
-                    saved === "light" ? "light" : "dark"
-                );
-            } catch (error) {
-                document.documentElement.setAttribute("data-theme", "dark");
-            }
-        })();
-    </script>
-
-    <style>
-        :root {
-            --electric: #3b6bff;
-            --electric-soft: #7c9bff;
-            --cyan: #28e0d6;
-            --emerald: #34d399;
-            --rose: #f97066;
-            --gold: #f4b740;
-        }
-
-        html[data-theme="dark"] {
-            --bg: #060915;
-            --bg-elevated: #0d1330;
-            --card: #0f1638;
-            --card-2: linear-gradient(165deg, #121a42, #0d1330);
-            --border: rgba(148,163,255,.14);
-            --text-hi: #eef1ff;
-            --text-mid: #aab0d6;
-            --text-dim: #6b71a0;
-            --nav-bg: rgba(6,9,21,.78);
-            --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07);
-            --input-bg: rgba(255,255,255,.04);
-            --divider: rgba(148,163,255,.1);
-        }
-
-        html[data-theme="light"] {
-            --bg: #f2f4fb;
-            --bg-elevated: #ffffff;
-            --card: #ffffff;
-            --card-2: linear-gradient(165deg, #ffffff, #f6f8ff);
-            --border: #e6e9f6;
-            --text-hi: #0f1428;
-            --text-mid: #5b6178;
-            --text-dim: #98a0c2;
-            --nav-bg: rgba(255,255,255,.85);
-            --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05);
-            --input-bg: #f5f7fd;
-            --divider: #eef0fa;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: "Inter", sans-serif;
-            background: var(--bg);
-            color: var(--text-hi);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 115px;
-            transition: background .35s ease, color .35s ease;
-        }
-
-        .font-display {
-            font-family: "Space Grotesk", sans-serif;
-        }
-
-        .font-mono {
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        button, input, select {
-            font-family: inherit;
-        }
-
-        button:focus-visible,
-        a:focus-visible,
-        input:focus-visible,
-        select:focus-visible {
-            outline: 2px solid var(--electric-soft);
-            outline-offset: 3px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-
-        /* ============================
-           HEADER
-        ============================ */
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 18px;
-            background: var(--nav-bg);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: var(--text-mid);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .back-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .topbar-title {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .theme-quick {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-mid);
-        }
-
-        main {
-            max-width: 460px;
-            margin: 0 auto;
-            padding: 22px 18px 0;
-        }
-
-        /* ============================
-           BALANCE
-        ============================ */
-
-        .balance-strip {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px;
-            border-radius: 18px;
-            background: var(--card-2);
-            border: 1px solid var(--border);
-            margin-bottom: 24px;
-        }
-
-        .balance-strip .label {
-            font-size: 9.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            color: var(--text-dim);
-            margin: 0 0 6px;
-        }
-
-        .balance-strip .amount {
-            font-size: 21px;
-            font-weight: 700;
-            font-family: "JetBrains Mono", monospace;
-            margin: 0;
-        }
-
-        .balance-strip .ic {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: rgba(52,211,153,.14);
-            color: var(--emerald);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ============================
-           TITLES / SECTION CARDS
-        ============================ */
-
-        .section-intro {
-            margin-bottom: 22px;
-        }
-
-        .section-intro h2 {
-            font-size: 19px;
-            font-weight: 700;
-            margin: 0 0 7px;
-        }
-
-        .section-intro p {
-            font-size: 11.5px;
-            line-height: 1.7;
-            color: var(--text-mid);
-            margin: 0;
-        }
-
-        .group-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .13em;
-            color: var(--text-dim);
-            margin: 0 0 11px 4px;
-        }
-
-        .funding-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 21px;
-            padding: 20px;
-            margin-bottom: 22px;
-            box-shadow: var(--shadow);
-        }
-
-        .card-head {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-        .head-icon {
-            width: 43px;
-            height: 43px;
-            flex-shrink: 0;
-            border-radius: 13px;
-            background: rgba(59,107,255,.13);
-            color: var(--electric-soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .head-icon i {
-            width: 20px;
-            height: 20px;
-        }
-
-        .head-text {
-            min-width: 0;
-            flex: 1;
-        }
-
-        .head-text h3 {
-            font-size: 13px;
-            font-weight: 800;
-            margin: 0 0 4px;
-        }
-
-        .head-text p {
-            color: var(--text-dim);
-            font-size: 10px;
-            line-height: 1.5;
-            margin: 0;
-        }
-
-        .method-tag {
-            display: inline-flex;
-            align-items: center;
-            border: 1px solid rgba(52,211,153,.24);
-            border-radius: 999px;
-            padding: 5px 9px;
-            color: var(--emerald);
-            background: rgba(52,211,153,.08);
-            font-size: 9px;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
-        /* ============================
-           MANUAL BANK ACCOUNT
-        ============================ */
-
-        .manual-card {
-            border-color: rgba(124,155,255,.4);
-        }
-
-        .account-panel {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 16px;
-            margin-bottom: 15px;
-        }
-
-        .bank-item {
-            margin-bottom: 15px;
-        }
-
-        .bank-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .bank-item .title {
-            font-size: 9.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            color: var(--text-dim);
-            margin-bottom: 5px;
-        }
-
-        .bank-item .val {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text-hi);
-            overflow-wrap: anywhere;
-        }
-
-        .bank-item .val.bank {
-            color: var(--electric-soft);
-            font-size: 16px;
-        }
-
-        .account-no-box {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 11px 12px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-top: 7px;
-        }
-
-        .account-no-box span {
-            font-size: 19px;
-            font-weight: 800;
-            font-family: "JetBrains Mono", monospace;
-            color: var(--electric-soft);
-            letter-spacing: -.04em;
-            min-width: 0;
-            overflow-wrap: anywhere;
-        }
-
-        .copy-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            background: var(--electric);
-            color: #fff;
-            border: none;
-            padding: 9px 11px;
-            border-radius: 9px;
-            font-size: 10px;
-            font-weight: 800;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .copy-btn i {
-            width: 13px;
-            height: 13px;
-        }
-
-        /* ============================
-           NOTICE / STEPS
-        ============================ */
-
-        .notice-box {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 14px;
-            border-radius: 13px;
-            font-size: 11px;
-            line-height: 1.7;
-            margin-bottom: 17px;
-            border: 1px solid rgba(244,183,64,.3);
-            background: rgba(244,183,64,.09);
-            color: var(--gold);
-        }
-
-        .notice-box i {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        .notice-box strong {
-            font-weight: 800;
-        }
-
-        .info-box {
-            background: rgba(59,107,255,.07);
-            border: 1px solid rgba(59,107,255,.2);
-            color: var(--text-mid);
-        }
-
-        .info-box i {
-            color: var(--electric-soft);
-        }
-
-        .steps-title {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .07em;
-            color: var(--electric-soft);
-            margin-bottom: 12px;
-        }
-
-        .funding-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 13px;
-            margin-bottom: 20px;
-        }
-
-        .funding-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 11px;
-        }
-
-        .step-number {
-            width: 25px;
-            height: 25px;
-            border-radius: 9px;
-            background: rgba(59,107,255,.12);
-            color: var(--electric-soft);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 10px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .step-body strong {
-            display: block;
-            font-size: 11px;
-            font-weight: 800;
-            margin: 0 0 3px;
-        }
-
-        .step-body p {
-            font-size: 10.5px;
-            color: var(--text-mid);
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        /* ============================
-           WHATSAPP SUPPORT
-        ============================ */
-
-        .support-card {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 15px;
-        }
-
-        .support-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            font-weight: 800;
-            margin-bottom: 9px;
-        }
-
-        .support-title i {
-            color: var(--emerald);
-            width: 16px;
-            height: 16px;
-        }
-
-        .support-desc {
-            color: var(--text-mid);
-            font-size: 10.5px;
-            line-height: 1.6;
-            margin-bottom: 14px;
-        }
-
-        .input-group {
-            margin-bottom: 13px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 10.5px;
-            font-weight: 700;
-            color: var(--text-mid);
-            margin-bottom: 7px;
-        }
-
-        .input-group input,
-        .input-group select {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 11px;
-            color: var(--text-hi);
-            outline: none;
-            font-size: 13px;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            border-color: var(--electric-soft);
-        }
-
-        .input-group input::placeholder {
-            color: var(--text-dim);
-        }
-
-        .input-group select option {
-            background: var(--bg-elevated);
-            color: var(--text-hi);
-        }
-
-        .whatsapp-btn {
-            display: flex;
-            width: 100%;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            cursor: pointer;
-            color: #fff;
-            background: linear-gradient(135deg, #16a66b, #087d53);
-            font-size: 11px;
-            font-weight: 800;
-            text-align: center;
-        }
-
-        .whatsapp-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .support-number {
-            text-align: center;
-            color: var(--text-dim);
-            font-size: 10px;
-            margin: 11px 0 0;
-            font-weight: 700;
-        }
-
-        .support-number a {
-            color: var(--electric-soft);
-        }
-
-        /* ============================
-           AUTOMATED ACCOUNT
-        ============================ */
-
-        .automated-card {
-            border-color: var(--border);
-        }
-
-        .automated-card .head-icon {
-            background: rgba(52,211,153,.12);
-            color: var(--emerald);
-        }
-
-        .gen-btn {
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-            color: #fff;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-        }
-
-        .gen-btn:disabled {
-            opacity: .6;
-            cursor: wait;
-        }
-
-        /* ============================
-           FEEDBACK
-        ============================ */
-
-        .feedback {
-            display: none;
-            margin: 14px 0 0;
-            padding: 11px 12px;
-            border-radius: 11px;
-            font-size: 11px;
-            line-height: 1.6;
-        }
-
-        .feedback.error {
-            display: block;
-            color: var(--rose);
-            background: rgba(249,112,102,.1);
-            border: 1px solid rgba(249,112,102,.25);
-        }
-
-        .feedback.success {
-            display: block;
-            color: var(--emerald);
-            background: rgba(52,211,153,.1);
-            border: 1px solid rgba(52,211,153,.25);
-        }
-
-        .feedback.info {
-            display: block;
-            color: var(--electric-soft);
-            background: rgba(59,107,255,.1);
-            border: 1px solid rgba(59,107,255,.25);
-        }
-
-        /* ============================
-           BOTTOM NAVIGATION
-        ============================ */
-
-        .bottom-nav-wrap {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 45;
-            padding: 0 16px 16px;
-        }
-
-        .bottom-nav {
-            max-width: 460px;
-            margin: 0 auto;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 -14px 34px -14px rgba(0,0,0,.25);
-        }
-
-        .bnav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            color: var(--text-dim);
-            gap: 3px;
-        }
-
-        .bnav-item i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .bnav-item span {
-            font-size: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .bnav-center {
-            position: relative;
-            top: -16px;
-        }
-
-        .bnav-center .glow {
-            position: absolute;
-            inset: 0;
-            background: var(--electric);
-            border-radius: 14px;
-            filter: blur(10px);
-            opacity: .45;
-        }
-
-        .bnav-center a {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 10px 24px rgba(59,107,255,.4);
-        }
-
-        @media (max-width: 360px) {
-            main {
-                padding: 16px 12px 0;
-            }
-
-            .funding-card {
-                padding: 16px;
-            }
-
-            .account-no-box span {
-                font-size: 16px;
-            }
-
-            .topbar-title {
-                font-size: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#060915">
+<title>Fund Wallet | Bigotic Data</title>
+<meta name="description" content="Fund your Bigotic Data wallet through manual bank transfer or a dedicated automatic funding account.">
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light'
+            : 'dark';
+} catch (_) {
+    document.documentElement.dataset.theme = 'dark';
+}
+</script>
+
+<style>
+:root {
+    --blue:#3b6bff;
+    --soft:#7c9bff;
+    --cyan:#28e0d6;
+    --green:#34d399;
+    --red:#f97066;
+    --gold:#f4b740;
+}
+
+html[data-theme="dark"] {
+    --bg:#060915;
+    --surface:#0d1330;
+    --card:#0f1638;
+    --border:rgba(148,163,255,.14);
+    --high:#eef1ff;
+    --mid:#aab0d6;
+    --dim:#737aa7;
+    --hover:rgba(124,155,255,.07);
+    --input:rgba(255,255,255,.04);
+    --nav:rgba(6,9,21,.89);
+    --shadow:0 20px 45px -14px rgba(0,0,0,.5);
+}
+
+html[data-theme="light"] {
+    --bg:#f2f4fb;
+    --surface:#fff;
+    --card:#fff;
+    --border:#e6e9f6;
+    --high:#0f1428;
+    --mid:#5b6178;
+    --dim:#9399bc;
+    --hover:rgba(59,107,255,.05);
+    --input:#f5f7fd;
+    --nav:rgba(255,255,255,.9);
+    --shadow:0 20px 45px -20px rgba(30,58,138,.14);
+}
+
+* { box-sizing:border-box; }
+[hidden] { display:none!important; }
+html,body { margin:0;padding:0; }
+
+body {
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--high);
+    font-family:Inter,Arial,sans-serif;
+    padding-bottom:110px;
+    overflow-x:hidden;
+}
+
+a {
+    color:inherit;
+    text-decoration:none;
+}
+
+button,input,select {
+    font:inherit;
+}
+
+button { cursor:pointer; }
+
+button:disabled {
+    opacity:.65;
+    cursor:wait;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline:2px solid var(--soft);
+    outline-offset:3px;
+}
+
+.display {
+    font-family:"Space Grotesk",sans-serif;
+}
+
+.mono {
+    font-family:"JetBrains Mono",monospace;
+}
+
+svg { flex-shrink:0; }
+
+/* TOP BAR */
+
+.topbar {
+    position:sticky;
+    top:0;
+    z-index:40;
+    height:62px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:0 18px;
+    border-bottom:1px solid var(--border);
+    background:var(--nav);
+    backdrop-filter:blur(15px);
+}
+
+.back {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12px;
+    color:var(--mid);
+    font-weight:800;
+}
+
+.back svg {
+    width:16px;
+    height:16px;
+}
+
+.top-title {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+}
+
+.top-title svg {
+    width:16px;
+    height:16px;
+    color:var(--soft);
+}
+
+.icon-btn {
+    display:grid;
+    place-items:center;
+    width:36px;
+    height:36px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--card);
+    color:var(--soft);
+}
+
+.icon-btn svg {
+    width:17px;
+    height:17px;
+}
+
+main {
+    max-width:480px;
+    margin:auto;
+    padding:23px 18px 0;
+}
+
+/* WALLET BALANCE */
+
+.balance-strip {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:19px;
+    box-shadow:var(--shadow);
+    padding:19px;
+    margin-bottom:24px;
+}
+
+.balance-strip small {
+    display:block;
+    color:var(--dim);
+    font-size:10px;
+    letter-spacing:.08em;
+    font-weight:800;
+    text-transform:uppercase;
+    margin-bottom:8px;
+}
+
+.balance-strip strong {
+    display:block;
+    font:700 23px "JetBrains Mono",monospace;
+    overflow-wrap:anywhere;
+}
+
+.balance-actions {
+    display:flex;
+    gap:7px;
+    align-items:center;
+}
+
+.balance-icon {
+    display:grid;
+    place-items:center;
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    background:rgba(52,211,153,.11);
+    color:var(--green);
+}
+
+.balance-icon svg {
+    width:21px;
+    height:21px;
+}
+
+/* PAGE HEADING */
+
+.page-intro {
+    margin-bottom:24px;
+}
+
+.page-intro h1 {
+    margin:0 0 8px;
+    font-size:22px;
+    letter-spacing:-.5px;
+}
+
+.page-intro p {
+    color:var(--mid);
+    font-size:11.5px;
+    line-height:1.8;
+    margin:0;
+}
+
+.section-label {
+    margin:0 0 12px 4px;
+    color:var(--dim);
+    font-size:10px;
+    letter-spacing:.12em;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+/* FUNDING CARDS */
+
+.funding-card {
+    margin-bottom:23px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:21px;
+    padding:21px;
+    box-shadow:var(--shadow);
+}
+
+.manual-card {
+    border-color:rgba(124,155,255,.35);
+}
+
+.card-head {
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-bottom:18px;
+}
+
+.head-icon {
+    display:grid;
+    place-items:center;
+    width:43px;
+    height:43px;
+    flex-shrink:0;
+    border-radius:13px;
+    background:rgba(59,107,255,.12);
+    color:var(--soft);
+}
+
+.head-icon svg {
+    width:21px;
+    height:21px;
+}
+
+.card-head h2 {
+    margin:0 0 5px;
+    font-size:13px;
+}
+
+.card-head p {
+    margin:0;
+    color:var(--dim);
+    font-size:10px;
+    line-height:1.6;
+}
+
+/* BANK ACCOUNT DETAILS */
+
+.account-panel {
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:var(--input);
+    padding:16px;
+    margin-bottom:16px;
+}
+
+.bank-item {
+    margin-bottom:16px;
+}
+
+.bank-item:last-child {
+    margin-bottom:0;
+}
+
+.bank-item small {
+    display:block;
+    color:var(--dim);
+    font-size:9px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:6px;
+}
+
+.bank-item strong {
+    display:block;
+    font-size:13px;
+    overflow-wrap:anywhere;
+}
+
+.bank-name {
+    color:var(--soft);
+    font-size:16px!important;
+}
+
+.account-no-box {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:9px;
+    padding:11px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+}
+
+.account-no-box strong {
+    color:var(--soft);
+    font:700 clamp(15px,4vw,19px) "JetBrains Mono",monospace;
+    overflow-wrap:anywhere;
+}
+
+.copy-btn {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+    border:0;
+    border-radius:9px;
+    padding:10px;
+    background:var(--blue);
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+}
+
+.copy-btn svg {
+    width:14px;
+    height:14px;
+}
+
+/* NOTICES */
+
+.notice {
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:14px;
+    border-radius:13px;
+    border:1px solid rgba(244,183,64,.28);
+    background:rgba(244,183,64,.08);
+    color:var(--gold);
+    font-size:10.5px;
+    line-height:1.75;
+    margin-bottom:18px;
+}
+
+.notice svg {
+    width:18px;
+    height:18px;
+    margin-top:2px;
+}
+
+.notice strong {
+    display:block;
+    margin-bottom:5px;
+}
+
+.notice.info {
+    border-color:rgba(59,107,255,.23);
+    background:rgba(59,107,255,.07);
+    color:var(--mid);
+}
+
+.notice.info svg {
+    color:var(--soft);
+}
+
+/* FUNDING STEPS */
+
+.mini-heading {
+    color:var(--soft);
+    font-size:10px;
+    letter-spacing:.09em;
+    font-weight:800;
+    text-transform:uppercase;
+    margin:0 0 13px;
+}
+
+.steps {
+    display:grid;
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.step {
+    display:flex;
+    gap:11px;
+    align-items:flex-start;
+}
+
+.step-number {
+    width:27px;
+    height:27px;
+    flex-shrink:0;
+    display:grid;
+    place-items:center;
+    background:rgba(59,107,255,.12);
+    color:var(--soft);
+    border-radius:9px;
+    font:800 10px "JetBrains Mono",monospace;
+}
+
+.step strong {
+    display:block;
+    font-size:11px;
+    margin-bottom:5px;
+}
+
+.step p {
+    color:var(--mid);
+    font-size:10.5px;
+    line-height:1.7;
+    margin:0;
+}
+
+/* SUPPORT FORM */
+
+.support-box {
+    border:1px solid var(--border);
+    background:var(--input);
+    border-radius:15px;
+    padding:16px;
+}
+
+.support-box h3 {
+    margin:0 0 9px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+}
+
+.support-box h3 svg {
+    width:17px;
+    height:17px;
+    color:var(--green);
+}
+
+.support-box p {
+    color:var(--mid);
+    font-size:10.5px;
+    line-height:1.75;
+    margin:0 0 15px;
+}
+
+.field {
+    margin-bottom:14px;
+}
+
+.field label {
+    display:block;
+    margin-bottom:7px;
+    color:var(--mid);
+    font-size:10.5px;
+    font-weight:800;
+}
+
+.field input,
+.field select {
+    display:block;
+    width:100%;
+    min-width:0;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--input);
+    color:var(--high);
+    outline:0;
+    font-size:13px;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color:var(--soft);
+}
+
+.field input::placeholder {
+    color:var(--dim);
+}
+
+.field select option {
+    background:var(--surface);
+    color:var(--high);
+}
+
+.primary-btn {
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+}
+
+.primary-btn.green {
+    background:linear-gradient(135deg,#16a66b,#087d53);
+}
+
+.primary-btn svg {
+    width:17px;
+    height:17px;
+}
+
+.support-foot {
+    margin:11px 0 0;
+    text-align:center;
+    color:var(--dim);
+    font-size:10px;
+    line-height:1.6;
+}
+
+.support-foot a {
+    color:var(--soft);
+    font-weight:800;
+}
+
+.feedback {
+    padding:12px;
+    margin:13px 0 0;
+    border-radius:11px;
+    font-size:11px;
+    line-height:1.7;
+    border:1px solid rgba(59,107,255,.25);
+    background:rgba(59,107,255,.08);
+    color:var(--soft);
+}
+
+.feedback.error {
+    border-color:rgba(249,112,102,.25);
+    background:rgba(249,112,102,.08);
+    color:var(--red);
+}
+
+.feedback.success {
+    border-color:rgba(52,211,153,.25);
+    background:rgba(52,211,153,.08);
+    color:var(--green);
+}
+
+.help-note {
+    font-size:10px;
+    color:var(--dim);
+    line-height:1.8;
+    margin:13px 0 0;
+}
+
+.help-box {
+    margin-bottom:22px;
+}
+
+.help-box a {
+    color:var(--soft);
+    font-weight:800;
+}
+
+/* BOTTOM NAV */
+
+.bottom-wrap {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:45;
+    padding:0 16px 16px;
+}
+
+.bottom-nav {
+    max-width:480px;
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    margin:auto;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--nav);
+    backdrop-filter:blur(16px);
+}
+
+.bottom-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    width:56px;
+    color:var(--dim);
+    font-size:8px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.bottom-item svg {
+    width:17px;
+    height:17px;
+}
+
+.bottom-center {
+    position:relative;
+    top:-15px;
+}
+
+.bottom-center a {
+    display:grid;
+    place-items:center;
+    width:50px;
+    height:50px;
+    border-radius:15px;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    box-shadow:0 10px 24px rgba(59,107,255,.4);
+}
+
+.bottom-center svg {
+    width:21px;
+    height:21px;
+}
+
+/* TOAST */
+
+.toast-region {
+    position:fixed;
+    top:14px;
+    right:14px;
+    width:min(340px,calc(100% - 28px));
+    z-index:100;
+    pointer-events:none;
+}
+
+.toast {
+    padding:13px 14px;
+    margin-bottom:9px;
+    border:1px solid var(--border);
+    border-left:3px solid var(--blue);
+    border-radius:12px;
+    background:var(--surface);
+    color:var(--high);
+    box-shadow:var(--shadow);
+    font-size:11px;
+    line-height:1.6;
+}
+
+.toast.error {
+    border-left-color:var(--red);
+}
+
+.toast.success {
+    border-left-color:var(--green);
+}
+
+@media(max-width:360px) {
+    main {
+        padding:18px 12px 0;
+    }
+
+    .funding-card {
+        padding:16px;
+    }
+
+    .topbar {
+        padding:0 12px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation:none!important;
+        transition:none!important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
+<!-- HEADER -->
 
-    <nav class="topbar">
-        <a href="dashboard.html" class="back-btn">
-            <i data-lucide="arrow-left"></i>
-            Dashboard
-        </a>
+<nav class="topbar">
 
-        <div class="topbar-title">
-            <i
-                data-lucide="wallet"
-                style="width:14px;height:14px;color:var(--electric-soft);"
-            ></i>
-            Fund Wallet
+    <a href="dashboard.html" class="back">
+        <i data-lucide="arrow-left"></i>
+        Dashboard
+    </a>
+
+    <div class="top-title">
+        <i data-lucide="wallet"></i>
+        Fund Wallet
+    </div>
+
+    <button
+        type="button"
+        class="icon-btn"
+        id="themeToggle"
+        aria-label="Switch theme"
+    >
+        <i data-lucide="sun-moon"></i>
+    </button>
+</nav>
+
+<div
+    id="toastRegion"
+    class="toast-region"
+    aria-live="polite"
+></div>
+
+<main>
+
+    <!-- BALANCE -->
+
+    <section class="balance-strip">
+
+        <div>
+            <small>Wallet balance</small>
+
+            <strong>
+                ₦<span id="currentBalance">—</span>
+            </strong>
         </div>
 
-        <button
-            type="button"
-            class="theme-quick"
-            id="themeToggle"
-            aria-label="Toggle theme"
-        >
-            <i
-                data-lucide="sun-moon"
-                style="width:15px;height:15px;"
-            ></i>
-        </button>
-    </nav>
+        <div class="balance-actions">
 
-    <main>
+            <button
+                type="button"
+                class="icon-btn"
+                id="refreshBalanceBtn"
+                aria-label="Refresh balance"
+            >
+                <i data-lucide="refresh-cw"></i>
+            </button>
 
-        <!-- CURRENT BALANCE -->
+            <span class="balance-icon">
+                <i data-lucide="wallet"></i>
+            </span>
 
-        <div class="balance-strip">
-            <div>
-                <p class="label">
-                    Current wallet balance
-                </p>
-
-                <p class="amount">
-                    ₦<span id="currentBalance">0.00</span>
-                </p>
-            </div>
-
-            <div class="ic">
-                <i
-                    data-lucide="wallet"
-                    style="width:20px;height:20px;"
-                ></i>
-            </div>
         </div>
+    </section>
 
-        <!-- INTRODUCTION -->
+    <!-- INTRO -->
 
-        <div class="section-intro">
-            <h2 class="font-display">
-                Add money to your wallet
-            </h2>
+    <header class="page-intro">
+        <h1 class="display">
+            Add money to your wallet
+        </h1>
 
-            <p>
-                Choose your preferred funding method.
-                You can fund manually through bank transfer
-                or use your personal dedicated account
-                for automatic wallet funding.
-            </p>
-        </div>
-
-        <!-- ====================================
-             OPTION ONE: MANUAL TRANSFER
-        ==================================== -->
-
-        <p class="group-label">
-            Option 01 — Manual Bank Transfer
+        <p>
+            Choose manual PalmPay transfer or your
+            personal dedicated account for automated
+            wallet funding.
         </p>
+    </header>
 
-        <section class="funding-card manual-card">
+    <!-- MANUAL FUNDING -->
 
-            <div class="card-head">
-                <div class="head-icon">
-                    <i data-lucide="landmark"></i>
+    <h2 class="section-label">
+        Option 01 — Manual Bank Transfer
+    </h2>
+
+    <section class="funding-card manual-card">
+
+        <div class="card-head">
+
+            <span class="head-icon">
+                <i data-lucide="landmark"></i>
+            </span>
+
+            <div>
+                <h2>Manual Wallet Funding</h2>
+
+                <p>
+                    No BVN or NIN required for this option
+                </p>
+            </div>
+        </div>
+
+        <div class="account-panel">
+
+            <div class="bank-item">
+                <small>Bank Name</small>
+                <strong class="bank-name">
+                    PalmPay
+                </strong>
+            </div>
+
+            <div class="bank-item">
+
+                <small>Account Number</small>
+
+                <div class="account-no-box">
+
+                    <strong id="manualAccountNumber">
+                        6609586137
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="copy-btn"
+                        id="copyManualBtn"
+                    >
+                        <i data-lucide="copy"></i>
+                        Copy
+                    </button>
+
                 </div>
+            </div>
 
-                <div class="head-text">
-                    <h3>
-                        Manual Wallet Funding
-                    </h3>
+            <div class="bank-item">
+                <small>Account Name</small>
+                <strong>
+                    Bigoticdata (xixapay)
+                </strong>
+            </div>
+        </div>
+
+        <div class="notice">
+
+            <i data-lucide="clock-3"></i>
+
+            <div>
+                <strong>
+                    Manual Funding Processing Time
+                </strong>
+
+                Manual transfers do not credit your wallet
+                automatically. Contact support with proof
+                of payment. After verification, allow
+                approximately 1–5 hours for the wallet credit.
+            </div>
+        </div>
+
+        <h3 class="mini-heading">
+            How to fund manually
+        </h3>
+
+        <div class="steps">
+
+            <div class="step">
+
+                <span class="step-number">01</span>
+
+                <div>
+                    <strong>
+                        Transfer to PalmPay
+                    </strong>
 
                     <p>
-                        Transfer directly without providing BVN or NIN
-                        for a dedicated account.
+                        Send money to 6609586137, and
+                        verify the beneficiary's name
+                        inside your bank app before confirming.
                     </p>
                 </div>
             </div>
+
+            <div class="step">
+
+                <span class="step-number">02</span>
+
+                <div>
+                    <strong>
+                        Contact Bigotic Data support
+                    </strong>
+
+                    <p>
+                        Enter the details below to prepare a
+                        WhatsApp message. Attach your actual
+                        transfer receipt in WhatsApp.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+
+                <span class="step-number">03</span>
+
+                <div>
+                    <strong>
+                        Wait for payment verification
+                    </strong>
+
+                    <p>
+                        Support must independently verify
+                        the payment before an authorized
+                        wallet credit is made.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="support-box">
+
+            <h3>
+                <i data-lucide="message-circle"></i>
+                Confirm your manual payment
+            </h3>
+
+            <p>
+                This form opens WhatsApp with a prepared
+                message; it does not submit a wallet-credit
+                request or verify payment.
+            </p>
+
+            <form id="manualPaymentForm">
+
+                <div class="field">
+
+                    <label for="manualAmount">
+                        Amount transferred (₦)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="manualAmount"
+                        inputmode="decimal"
+                        min="1"
+                        step="0.01"
+                        placeholder="e.g. 5000"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+
+                    <label for="senderName">
+                        Sender's account name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="senderName"
+                        maxlength="100"
+                        placeholder="Name used for the transfer"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+
+                    <label for="paymentReference">
+                        Bank transaction reference (optional)
+                    </label>
+
+                    <input
+                        type="text"
+                        id="paymentReference"
+                        maxlength="100"
+                        placeholder="Your bank transaction reference"
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="primary-btn green"
+                >
+                    <i data-lucide="message-circle"></i>
+                    Open WhatsApp Support
+                </button>
+
+            </form>
+
+            <div class="support-foot">
+                Support:
+                <a href="tel:+2349159436827">
+                    09159436827
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- AUTOMATED FUNDING -->
+
+    <h2 class="section-label">
+        Option 02 — Automated Bank Transfer
+    </h2>
+
+    <section class="funding-card">
+
+        <div class="card-head">
+
+            <span
+                class="head-icon"
+                style="color:var(--green);background:rgba(52,211,153,.11)"
+            >
+                <i data-lucide="zap"></i>
+            </span>
+
+            <div>
+                <h2>
+                    Automatic Wallet Funding
+                </h2>
+
+                <p>
+                    Personal dedicated account ·
+                    2% funding fee
+                </p>
+            </div>
+
+        </div>
+
+        <!-- EXISTING ACCOUNT -->
+
+        <div id="virtualAccountArea" hidden>
 
             <div class="account-panel">
 
                 <div class="bank-item">
-                    <div class="title">
-                        Bank Name
-                    </div>
+                    <small>Bank Name</small>
 
-                    <div class="val bank">
-                        PalmPay
-                    </div>
+                    <strong
+                        class="bank-name"
+                        id="displayBankName"
+                    >
+                        —
+                    </strong>
                 </div>
 
                 <div class="bank-item">
-                    <div class="title">
-                        Account Number
-                    </div>
+
+                    <small>Dedicated Account Number</small>
 
                     <div class="account-no-box">
-                        <span id="manualAccountNumber">
-                            6609586137
-                        </span>
+
+                        <strong id="displayAccountNo">
+                            —
+                        </strong>
 
                         <button
                             type="button"
                             class="copy-btn"
-                            id="copyManualBtn"
+                            id="copyVirtualBtn"
                         >
                             <i data-lucide="copy"></i>
                             Copy
                         </button>
+
                     </div>
                 </div>
 
                 <div class="bank-item">
-                    <div class="title">
-                        Account Name
-                    </div>
 
-                    <div class="val">
-                        Bigoticdata (xixapay)
-                    </div>
+                    <small>Account Name</small>
+
+                    <strong id="displayAccountName">
+                        —
+                    </strong>
                 </div>
 
             </div>
 
-            <!-- PROCESSING TIME NOTICE -->
+            <div class="notice info">
 
-            <div class="notice-box">
-                <i data-lucide="clock-3"></i>
+                <i data-lucide="info"></i>
+
+                <div>
+                    Confirmed deposits to your dedicated
+                    account are automatically processed
+                    by the payment provider.
+
+                    <strong>
+                        2% processing fee
+                    </strong>
+
+                    Example: ₦5,000 deposited results in
+                    ₦4,900 credited, subject to provider
+                    confirmation.
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- GENERATE ACCOUNT -->
+
+        <div id="kycArea" hidden>
+
+            <div class="notice info">
+
+                <i data-lucide="shield-check"></i>
 
                 <div>
                     <strong>
-                        Important — Manual Funding Processing Time
+                        Identity verification for a
+                        dedicated account
                     </strong>
 
-                    <div style="margin-top:5px;">
-                        Manual bank transfers are not credited
-                        to your wallet automatically.
+                    Our funding provider requires an
+                    11-digit BVN or NIN to generate
+                    a personal account.
 
-                        After making a transfer, contact support
-                        with your payment receipt.
-
-                        Once support confirms your payment,
-                        please allow
-                        <strong>1–5 hours</strong>
-                        for your wallet balance to reflect.
-                    </div>
-                </div>
-            </div>
-
-            <!-- MANUAL STEPS -->
-
-            <div class="steps-title">
-                How to fund manually
-            </div>
-
-            <div class="funding-steps">
-
-                <div class="funding-step">
-                    <div class="step-number">01</div>
-
-                    <div class="step-body">
-                        <strong>
-                            Transfer to PalmPay
-                        </strong>
-
-                        <p>
-                            Use your bank app to transfer
-                            your preferred amount to
-                            account number 6609586137.
-                            Confirm that the beneficiary
-                            name matches before sending.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="funding-step">
-                    <div class="step-number">02</div>
-
-                    <div class="step-body">
-                        <strong>
-                            Contact Bigotic Data support
-                        </strong>
-
-                        <p>
-                            Enter your payment details below
-                            and open WhatsApp. Send your
-                            transfer receipt to our support team
-                            for confirmation.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="funding-step">
-                    <div class="step-number">03</div>
-
-                    <div class="step-body">
-                        <strong>
-                            Receive wallet credit
-                        </strong>
-
-                        <p>
-                            After support confirms your payment,
-                            your balance will be updated
-                            within 1–5 hours.
-                        </p>
-                    </div>
+                    This is optional if you prefer
+                    manual transfer. Enter it only
+                    when you are ready to submit to
+                    the account provider.
                 </div>
 
             </div>
 
-            <!-- SUPPORT CONTACT FORM -->
+            <form id="genAccountForm">
 
-            <div class="support-card">
+                <div class="field">
 
-                <div class="support-title">
-                    <i data-lucide="message-circle"></i>
-                    Confirm your manual payment
+                    <label for="id_type">
+                        Verification Method
+                    </label>
+
+                    <select id="id_type" required>
+
+                        <option value="nin">
+                            NIN (National Identification Number)
+                        </option>
+
+                        <option value="bvn">
+                            BVN (Bank Verification Number)
+                        </option>
+
+                    </select>
                 </div>
 
-                <div class="support-desc">
-                    Already made a transfer? Enter the details
-                    below to prepare your message to support.
-                    You will need to attach your payment receipt
-                    in WhatsApp before sending.
-                </div>
+                <div class="field">
 
-                <form id="manualPaymentForm">
+                    <label for="id_number">
+                        11-digit BVN or NIN
+                    </label>
 
-                    <div class="input-group">
-                        <label for="manualAmount">
-                            Amount transferred (₦)
-                        </label>
-
-                        <input
-                            type="number"
-                            id="manualAmount"
-                            min="1"
-                            step="0.01"
-                            inputmode="decimal"
-                            placeholder="e.g. 5000"
-                            required
-                        >
-                    </div>
-
-                    <div class="input-group">
-                        <label for="senderName">
-                            Sender's account name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="senderName"
-                            maxlength="100"
-                            placeholder="Name used for bank transfer"
-                            required
-                        >
-                    </div>
-
-                    <div class="input-group">
-                        <label for="paymentReference">
-                            Transaction reference (optional)
-                        </label>
-
-                        <input
-                            type="text"
-                            id="paymentReference"
-                            maxlength="100"
-                            placeholder="Bank transfer reference"
-                        >
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="whatsapp-btn"
+                    <input
+                        type="password"
+                        id="id_number"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        maxlength="11"
+                        minlength="11"
+                        pattern="[0-9]{11}"
+                        placeholder="Enter 11-digit number"
+                        required
                     >
-                        <i data-lucide="message-circle"></i>
-                        Contact support on WhatsApp
-                        <i
-                            data-lucide="arrow-up-right"
-                            style="width:14px;height:14px;"
-                        ></i>
-                    </button>
-
-                </form>
-
-                <p class="support-number">
-                    Support:
-                    <a href="tel:+2349159436827">
-                        09159436827
-                    </a>
-                </p>
-
-            </div>
-
-        </section>
-
-        <!-- ====================================
-             OPTION TWO: AUTOMATIC FUNDING
-        ==================================== -->
-
-        <p class="group-label">
-            Option 02 — Automated Bank Transfer
-        </p>
-
-        <section class="funding-card automated-card">
-
-            <div class="card-head">
-                <div class="head-icon">
-                    <i data-lucide="zap"></i>
                 </div>
 
-                <div class="head-text">
-                    <h3>
-                        Automatic Wallet Funding
-                    </h3>
+                <button
+                    type="submit"
+                    class="primary-btn"
+                    id="genBtn"
+                >
+                    <i data-lucide="landmark"></i>
 
-                    <p>
-                        Fund your wallet through your
-                        own dedicated virtual account.
-                    </p>
-                </div>
-            </div>
-
-            <!-- EXISTING GENERATED ACCOUNT -->
-
-            <div id="virtualAccountArea" style="display:none;">
-
-                <div class="account-panel">
-
-                    <div class="bank-item">
-                        <div class="title">
-                            Bank Name
-                        </div>
-
-                        <div class="val bank" id="displayBankName">
-                            Loading...
-                        </div>
-                    </div>
-
-                    <div class="bank-item">
-                        <div class="title">
-                            Dedicated Account Number
-                        </div>
-
-                        <div class="account-no-box">
-                            <span id="displayAccountNo">
-                                ----------
-                            </span>
-
-                            <button
-                                type="button"
-                                class="copy-btn"
-                                id="copyVirtualBtn"
-                            >
-                                <i data-lucide="copy"></i>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="bank-item">
-                        <div class="title">
-                            Account Name
-                        </div>
-
-                        <div class="val" id="displayAccountName">
-                            Bigotic User
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="notice-box info-box">
-                    <i data-lucide="info"></i>
-
-                    <div>
-                        Transfers to your dedicated account
-                        are processed automatically after
-                        payment confirmation.
-
-                        <div style="margin-top:7px;">
-                            <strong>
-                                Automated funding fee: 2%
-                            </strong>
-                        </div>
-
-                        <div style="margin-top:5px;">
-                            Example: A ₦5,000 deposit
-                            credits ₦4,900 after the
-                            2% processing charge.
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- GENERATE ACCOUNT -->
-
-            <div id="kycArea" style="display:none;">
-
-                <div class="notice-box info-box">
-                    <i data-lucide="shield-check"></i>
-
-                    <div>
-                        <strong>
-                            Dedicated Account Verification
-                        </strong>
-
-                        <div style="margin-top:6px;">
-                            Identity verification through
-                            BVN or NIN is required by the
-                            account-generation provider
-                            to create a personal virtual account.
-
-                            This is optional for customers
-                            who prefer manual bank transfers.
-                        </div>
-                    </div>
-                </div>
-
-                <form id="genAccountForm">
-
-                    <div class="input-group">
-                        <label for="id_type">
-                            Verification Method
-                        </label>
-
-                        <select id="id_type" required>
-                            <option value="nin">
-                                NIN (National Identity Number)
-                            </option>
-
-                            <option value="bvn">
-                                BVN (Bank Verification Number)
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="id_number">
-                            Verification Number
-                        </label>
-
-                        <input
-                            type="text"
-                            id="id_number"
-                            required
-                            placeholder="Enter 11-digit number"
-                            maxlength="11"
-                            minlength="11"
-                            pattern="[0-9]{11}"
-                            inputmode="numeric"
-                            autocomplete="off"
-                        >
-                    </div>
-
-                    <button
-                        type="submit"
-                        id="genBtn"
-                        class="gen-btn"
-                    >
+                    <span id="genBtnLabel">
                         Generate Dedicated Account
-                    </button>
+                    </span>
+                </button>
 
-                </form>
+            </form>
 
-                <div
-                    class="feedback"
-                    id="generationFeedback"
-                    role="status"
-                    aria-live="polite"
-                ></div>
+            <div
+                id="generationFeedback"
+                class="feedback"
+                role="status"
+                aria-live="polite"
+                hidden
+            ></div>
 
-                <p
-                    style="font-size:10px;line-height:1.7;color:var(--text-dim);margin:14px 0 0;"
-                >
-                    Do not wish to provide BVN or NIN?
-                    You can use the manual PalmPay transfer
-                    option above instead.
-                </p>
-
-            </div>
-
-        </section>
-
-        <!-- CONTACT SUPPORT -->
-
-        <div class="notice-box info-box">
-            <i data-lucide="headset"></i>
-
-            <div>
-                <strong>
-                    Need funding assistance?
-                </strong>
-
-                <div style="margin-top:5px;">
-                    Contact Bigotic Data Support on
-                    <a
-                        href="https://wa.me/2349159436827"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style="color:var(--electric-soft);font-weight:800;"
-                    >
-                        WhatsApp — 09159436827
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- BOTTOM NAVIGATION -->
-
-    <div class="bottom-nav-wrap">
-        <div class="bottom-nav">
-
-            <a href="buy-airtime.html" class="bnav-item">
-                <i data-lucide="phone"></i>
-                <span>Airtime</span>
-            </a>
-
-            <a href="buy-data.html" class="bnav-item">
-                <i data-lucide="wifi"></i>
-                <span>Data</span>
-            </a>
-
-            <div class="bnav-center">
-                <div class="glow"></div>
-
-                <a
-                    href="dashboard.html"
-                    aria-label="Home"
-                >
-                    <i
-                        data-lucide="home"
-                        style="width:20px;height:20px;"
-                    ></i>
-                </a>
-            </div>
-
-            <a href="history.html" class="bnav-item">
-                <i data-lucide="clock"></i>
-                <span>History</span>
-            </a>
-
-            <a href="settings.html" class="bnav-item">
-                <i data-lucide="settings"></i>
-                <span>Settings</span>
-            </a>
+            <p class="help-note">
+                Never share your BVN/NIN by WhatsApp
+                or with anyone claiming to be
+                platform support.
+            </p>
 
         </div>
+
+        <div
+            id="accountLoading"
+            class="feedback"
+            role="status"
+        >
+            Checking dedicated-account status...
+        </div>
+
+    </section>
+
+    <!-- HELP -->
+
+    <div class="notice info help-box">
+
+        <i data-lucide="headset"></i>
+
+        <div>
+            <strong>
+                Need funding assistance?
+            </strong>
+
+            Contact
+            <a
+                href="https://wa.me/2349159436827"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Bigotic Data Support on WhatsApp
+            </a>.
+        </div>
+
     </div>
+</main>
 
-    <script>
-        if (window.lucide) {
-            lucide.createIcons();
+<!-- BOTTOM NAV -->
+
+<div class="bottom-wrap">
+
+    <nav class="bottom-nav">
+
+        <a
+            href="buy-airtime.html"
+            class="bottom-item"
+        >
+            <i data-lucide="phone"></i>
+            Airtime
+        </a>
+
+        <a
+            href="buy-data.html"
+            class="bottom-item"
+        >
+            <i data-lucide="wifi"></i>
+            Data
+        </a>
+
+        <span class="bottom-center">
+
+            <a
+                href="dashboard.html"
+                aria-label="Dashboard"
+            >
+                <i data-lucide="home"></i>
+            </a>
+
+        </span>
+
+        <a
+            href="history.html"
+            class="bottom-item"
+        >
+            <i data-lucide="clock"></i>
+            History
+        </a>
+
+        <a
+            href="settings.html"
+            class="bottom-item"
+        >
+            <i data-lucide="settings"></i>
+            Settings
+        </a>
+
+    </nav>
+</div>
+
+<script>
+'use strict';
+
+/* CONFIGURATION */
+
+const API =
+    'https://bigoticdata-backend.onrender.com';
+
+const MANUAL_ACCOUNT = '6609586137';
+const SUPPORT_WHATSAPP = '2349159436827';
+
+const $ = id =>
+    document.getElementById(id);
+
+let user = null;
+let profileBusy = false;
+let generating = false;
+
+function icons() {
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+icons();
+
+/* SESSION */
+
+function getUser() {
+    try {
+        const value = JSON.parse(
+            localStorage.getItem('user') || 'null'
+        );
+
+        return (
+            value &&
+            typeof value.email === 'string' &&
+            value.email.trim()
+        ) ? value : null;
+
+    } catch (_) {
+        return null;
+    }
+}
+
+function logout() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
+
+    window.location.replace('login.html');
+}
+
+/* TOAST MESSAGES */
+
+function toast(message,type = 'info') {
+    const node =
+        document.createElement('div');
+
+    node.className =
+        'toast ' +
+        (
+            type === 'error' ||
+            type === 'success'
+                ? type
+                : ''
+        );
+
+    node.textContent =
+        String(message);
+
+    $('toastRegion').append(node);
+
+    setTimeout(
+        () => node.remove(),
+        5000
+    );
+}
+
+/* THEME */
+
+function themeToggle() {
+    const next =
+        document.documentElement.dataset.theme === 'light'
+            ? 'dark'
+            : 'light';
+
+    document.documentElement.dataset.theme = next;
+
+    try {
+        localStorage.setItem(
+            'bigotic-theme',
+            next
+        );
+    } catch (_) {}
+}
+
+$('themeToggle').onclick =
+    themeToggle;
+
+/* AUTHENTICATED BACKEND REQUEST */
+
+async function apiFetch(path,options = {}) {
+    const headers =
+        new Headers(options.headers || {});
+
+    if (
+        typeof user?.token === 'string' &&
+        user.token.trim()
+    ) {
+        headers.set(
+            'Authorization',
+            'Bearer ' + user.token.trim()
+        );
+    }
+
+    headers.set(
+        'Accept',
+        'application/json'
+    );
+
+    return fetch(API + path,{
+        ...options,
+        headers,
+        cache:'no-store'
+    });
+}
+
+/* SAVE PROFILE WITHOUT OVERWRITING TOKEN */
+
+function saveSafeUser() {
+    if (!user) return;
+
+    const fields = [
+        'email',
+        'fullName',
+        'username',
+        'phone',
+        'balance',
+        'totalSpent',
+        'virtualAccountNumber',
+        'virtualBankName',
+        'virtualAccountName',
+        'hasPin',
+        'hasDeposited',
+        'referredBy',
+        'role',
+        'token'
+    ];
+
+    const safe = {};
+
+    for (const key of fields) {
+        if (user[key] !== undefined) {
+            safe[key] = user[key];
         }
+    }
 
-        // ===================================
-        // CONFIGURATION
-        // ===================================
+    // Passwords, PINs and identity numbers
+    // must never be saved in the profile.
 
-        const BACKEND_URL =
-            "https://bigoticdata-backend.onrender.com";
+    try {
+        localStorage.setItem(
+            'user',
+            JSON.stringify(safe)
+        );
+    } catch (_) {}
+}
 
-        const MANUAL_ACCOUNT = "6609586137";
-        const SUPPORT_WHATSAPP = "2349159436827";
+/* FORMAT MONEY */
 
-        let isGeneratingAccount = false;
+function money(amount) {
+    const value = Number(amount);
 
-        // ===================================
-        // THEME
-        // ===================================
+    return Number.isFinite(value)
+        ? value.toLocaleString('en-NG',{
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        })
+        : '—';
+}
 
-        function toggleTheme() {
-            const current =
-                document.documentElement.getAttribute("data-theme");
+/* DISPLAY ACCOUNT DETAILS */
 
-            const next = current === "light"
-                ? "dark"
-                : "light";
+function renderAccount() {
+    if (!user) return;
 
-            document.documentElement.setAttribute(
-                "data-theme",
-                next
-            );
+    $('currentBalance').textContent =
+        money(user.balance);
 
-            try {
-                localStorage.setItem("bigotic-theme", next);
-            } catch (_) {}
+    const account =
+        String(
+            user.virtualAccountNumber || ''
+        ).trim();
 
-            updateThemeIcon();
-        }
+    const ready =
+        /^\d{10}$/.test(account);
 
-        function updateThemeIcon() {
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        }
+    $('virtualAccountArea').hidden =
+        !ready;
 
-        document.getElementById("themeToggle")
-            .addEventListener("click", toggleTheme);
+    $('kycArea').hidden =
+        ready;
 
-        // ===================================
-        // SESSION
-        // ===================================
+    $('accountLoading').hidden =
+        true;
 
-        function getCurrentUser() {
-            try {
-                const user = JSON.parse(
-                    localStorage.getItem("user") || "null"
-                );
+    if (ready) {
+        $('displayBankName').textContent =
+            user.virtualBankName ||
+            'Dedicated Account Bank';
 
-                if (
-                    user &&
-                    typeof user.email === "string" &&
-                    user.email.trim()
-                ) {
-                    return user;
-                }
-            } catch (_) {}
+        $('displayAccountNo').textContent =
+            account;
 
-            return null;
-        }
+        $('displayAccountName').textContent =
+            user.virtualAccountName ||
+            user.fullName ||
+            'Bigotic User';
+    }
+}
 
-        // ===================================
-        // COPY ACCOUNT NUMBER
-        // ===================================
+/* GET LATEST PROFILE */
 
-        async function copyText(value, button) {
-            try {
-                if (
-                    navigator.clipboard &&
-                    window.isSecureContext
-                ) {
-                    await navigator.clipboard.writeText(value);
-                } else {
-                    const temporaryInput =
-                        document.createElement("textarea");
+async function refreshProfile() {
+    if (!user || profileBusy) return;
 
-                    temporaryInput.value = value;
-                    temporaryInput.style.position = "fixed";
-                    temporaryInput.style.opacity = "0";
+    profileBusy = true;
 
-                    document.body.appendChild(temporaryInput);
+    $('refreshBalanceBtn').disabled =
+        true;
 
-                    temporaryInput.select();
+    try {
+        const controller =
+            new AbortController();
 
-                    const copied =
-                        document.execCommand("copy");
+        const timeout = setTimeout(
+            () => controller.abort(),
+            20000
+        );
 
-                    temporaryInput.remove();
+        let response;
 
-                    if (!copied) {
-                        throw new Error("Copy failed");
-                    }
-                }
-
-                const originalContent = button.innerHTML;
-
-                button.textContent = "Copied!";
-
-                setTimeout(() => {
-                    button.innerHTML = originalContent;
-
-                    if (window.lucide) {
-                        lucide.createIcons();
-                    }
-                }, 1800);
-
-            } catch (_) {
-                alert(
-                    "Unable to copy automatically. " +
-                    "Please select and copy the account number."
-                );
-            }
-        }
-
-        document.getElementById("copyManualBtn")
-            .addEventListener("click", function () {
-                copyText(MANUAL_ACCOUNT, this);
-            });
-
-        document.getElementById("copyVirtualBtn")
-            .addEventListener("click", function () {
-                const account =
-                    document.getElementById("displayAccountNo")
-                        .textContent.trim();
-
-                if (!/^\d{10}$/.test(account)) {
-                    alert("No valid dedicated account number is available.");
-                    return;
-                }
-
-                copyText(account, this);
-            });
-
-        // ===================================
-        // WHATSAPP PAYMENT CONFIRMATION
-        // ===================================
-
-        document.getElementById("manualPaymentForm")
-            .addEventListener("submit", function (event) {
-                event.preventDefault();
-
-                const user = getCurrentUser();
-
-                if (!user) {
-                    alert("Please log in to continue.");
-
-                    window.location.href = "login.html";
-                    return;
-                }
-
-                const amount = Number(
-                    document.getElementById("manualAmount").value
-                );
-
-                const senderName =
-                    document.getElementById("senderName")
-                        .value.trim();
-
-                const reference =
-                    document.getElementById("paymentReference")
-                        .value.trim();
-
-                if (
-                    !Number.isFinite(amount) ||
-                    amount <= 0 ||
-                    Math.round(amount * 100) !== amount * 100
-                ) {
-                    alert("Please enter a valid amount transferred.");
-                    return;
-                }
-
-                if (!senderName) {
-                    alert("Please enter your bank sender name.");
-                    return;
-                }
-
-                const formattedAmount =
-                    amount.toLocaleString("en-NG", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-
-                const message = [
-                    "Hello Bigotic Data Support,",
-                    "",
-                    "I have made a MANUAL WALLET FUNDING transfer.",
-                    "",
-                    "Payment Details:",
-                    "",
-                    "Registered Email: " + user.email,
-                    "Amount Transferred: ₦" + formattedAmount,
-                    "Sender Name: " + senderName,
-                    "Bank: PalmPay",
-                    "Beneficiary: Bigoticdata (xixapay)",
-                    "Account Number: " + MANUAL_ACCOUNT,
-                    "Transaction Reference: " + (reference || "Not provided"),
-                    "",
-                    "Please confirm my transfer and credit my Bigotic Data wallet.",
-                    "",
-                    "I understand manual funding takes 1–5 hours to reflect after support confirms payment.",
-                    "",
-                    "I will attach my payment receipt to this chat.",
-                    "",
-                    "Thank you."
-                ].join("\n");
-
-                const whatsappURL =
-                    "https://wa.me/" +
-                    SUPPORT_WHATSAPP +
-                    "?text=" +
-                    encodeURIComponent(message);
-
-                const newWindow = window.open(
-                    whatsappURL,
-                    "_blank",
-                    "noopener,noreferrer"
-                );
-
-                if (!newWindow) {
-                    const link = document.createElement("a");
-                    link.href = whatsappURL;
-                    link.target = "_blank";
-                    link.rel = "noopener noreferrer";
-                    link.click();
-                }
-            });
-
-        // ===================================
-        // FETCH FRESH USER PROFILE
-        // ===================================
-
-        async function fetchUserProfile(email) {
-            try {
-                const response = await fetch(
-                    `${BACKEND_URL}/user-profile?email=${encodeURIComponent(email)}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
-                        }
-                    }
-                );
-
-                if (!response.ok) {
-                    return null;
-                }
-
-                const data = await response.json();
-
-                if (
-                    data &&
-                    typeof data.email === "string" &&
-                    data.email.toLowerCase() === email.toLowerCase()
-                ) {
-                    try {
-                        localStorage.setItem(
-                            "user",
-                            JSON.stringify(data)
-                        );
-                    } catch (_) {}
-
-                    return data;
-                }
-
-                return null;
-
-            } catch (error) {
-                console.error(
-                    "Unable to refresh user profile:",
-                    error
-                );
-
-                return null;
-            }
-        }
-
-        // ===================================
-        // RENDER WALLET UI
-        // ===================================
-
-        function setupUI(user) {
-            if (!user) return;
-
-            const balanceValue = Number(user.balance);
-
-            const balance =
-                Number.isFinite(balanceValue)
-                    ? balanceValue
-                    : 0;
-
-            document.getElementById(
-                "currentBalance"
-            ).textContent = balance.toLocaleString(
-                "en-NG",
+        try {
+            response = await apiFetch(
+                '/user-profile?email=' +
+                encodeURIComponent(user.email),
                 {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
+                    signal:controller.signal
                 }
             );
 
-            const virtualAccount =
-                typeof user.virtualAccountNumber === "string"
-                    ? user.virtualAccountNumber.trim()
-                    : String(user.virtualAccountNumber || "").trim();
+        } finally {
+            clearTimeout(timeout);
+        }
 
-            const hasVirtualAccount =
-                /^\d{10}$/.test(virtualAccount);
+        if (response.status === 401) {
+            logout();
+            return;
+        }
 
-            if (hasVirtualAccount) {
-                document.getElementById(
-                    "displayBankName"
-                ).textContent =
-                    user.virtualBankName || "Dedicated Account Bank";
+        if (!response.ok) {
+            throw new Error(
+                'Profile unavailable'
+            );
+        }
 
-                document.getElementById(
-                    "displayAccountNo"
-                ).textContent = virtualAccount;
+        const data =
+            await response.json();
 
-                document.getElementById(
-                    "displayAccountName"
-                ).textContent =
-                    user.virtualAccountName ||
-                    user.fullName ||
-                    "Bigotic User";
+        const profile =
+            data?.user ||
+            data?.data ||
+            data;
 
-                document.getElementById(
-                    "virtualAccountArea"
-                ).style.display = "block";
+        if (
+            !profile ||
+            typeof profile.email !== 'string' ||
+            profile.email.toLowerCase() !==
+            user.email.toLowerCase()
+        ) {
+            throw new Error(
+                'Unexpected account response'
+            );
+        }
 
-                document.getElementById(
-                    "kycArea"
-                ).style.display = "none";
+        const allowed = [
+            'fullName',
+            'username',
+            'phone',
+            'balance',
+            'totalSpent',
+            'virtualAccountNumber',
+            'virtualBankName',
+            'virtualAccountName',
+            'hasPin',
+            'hasDeposited',
+            'role'
+        ];
 
-            } else {
-                document.getElementById(
-                    "virtualAccountArea"
-                ).style.display = "none";
-
-                document.getElementById(
-                    "kycArea"
-                ).style.display = "block";
+        for (const key of allowed) {
+            if (profile[key] !== undefined) {
+                user[key] = profile[key];
             }
         }
 
-        // ===================================
-        // ACCOUNT GENERATION FEEDBACK
-        // ===================================
+        // Preserve the original login token.
+        // Do not replace the entire user object
+        // with the profile response.
 
-        function showGenerationFeedback(type, message) {
-            const feedback =
-                document.getElementById("generationFeedback");
+        saveSafeUser();
+        renderAccount();
 
-            feedback.className = `feedback ${type}`;
+    } catch (_) {
+        $('accountLoading').hidden =
+            false;
 
-            feedback.textContent = message;
+        $('accountLoading').textContent =
+            'Could not refresh account details. Showing the last saved information. Please try refreshing.';
+
+        if (user.virtualAccountNumber) {
+            renderAccount();
         }
 
-        // ===================================
-        // GENERATE VIRTUAL ACCOUNT
-        // ===================================
+    } finally {
+        profileBusy = false;
 
-        document.getElementById("genAccountForm")
-            .addEventListener("submit", async function (event) {
-                event.preventDefault();
+        $('refreshBalanceBtn').disabled =
+            false;
+    }
+}
 
-                if (isGeneratingAccount) return;
+$('refreshBalanceBtn').onclick =
+    refreshProfile;
 
-                const user = getCurrentUser();
+/* COPY ACCOUNT NUMBER */
 
-                if (!user) {
-                    showGenerationFeedback(
-                        "error",
-                        "Your session has expired. Please log in again."
-                    );
+async function copyText(value) {
+    try {
+        if (
+            navigator.clipboard &&
+            window.isSecureContext
+        ) {
+            await navigator.clipboard.writeText(
+                value
+            );
 
-                    setTimeout(() => {
-                        window.location.href = "login.html";
-                    }, 1600);
+        } else {
+            const field =
+                document.createElement('textarea');
 
-                    return;
-                }
+            field.value = value;
+            field.style.position = 'fixed';
+            field.style.opacity = '0';
 
-                const idType =
-                    document.getElementById("id_type").value;
+            document.body.append(field);
 
-                const idNumber =
-                    document.getElementById("id_number")
-                        .value.trim();
+            field.select();
 
-                if (
-                    !["nin", "bvn"].includes(idType)
-                ) {
-                    showGenerationFeedback(
-                        "error",
-                        "Please select a valid verification method."
-                    );
+            const copied =
+                document.execCommand('copy');
 
-                    return;
-                }
+            field.remove();
 
-                if (!/^\d{11}$/.test(idNumber)) {
-                    showGenerationFeedback(
-                        "error",
-                        "Please enter a valid 11-digit BVN or NIN."
-                    );
-
-                    return;
-                }
-
-                const genBtn =
-                    document.getElementById("genBtn");
-
-                isGeneratingAccount = true;
-
-                genBtn.disabled = true;
-                genBtn.textContent = "Generating Account...";
-
-                showGenerationFeedback(
-                    "info",
-                    "Your dedicated account request is being processed."
+            if (!copied) {
+                throw new Error(
+                    'Unable to copy'
                 );
+            }
+        }
 
-                try {
-                    const response = await fetch(
-                        `${BACKEND_URL}/generate-virtual-account`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Accept": "application/json"
-                            },
-                            body: JSON.stringify({
-                                email: user.email,
-                                id_type: idType,
-                                id_number: idNumber
-                            })
-                        }
-                    );
+        toast(
+            'Account number copied.',
+            'success'
+        );
 
-                    let data;
+    } catch (_) {
+        toast(
+            'Please select and copy the account number manually.',
+            'error'
+        );
+    }
+}
 
-                    try {
-                        data = await response.json();
-                    } catch (_) {
-                        data = {};
-                    }
+$('copyManualBtn').onclick = () =>
+    copyText(MANUAL_ACCOUNT);
 
-                    if (
-                        response.ok &&
-                        data.success === true
-                    ) {
-                        showGenerationFeedback(
-                            "success",
-                            "Account generated. Refreshing your details..."
-                        );
+$('copyVirtualBtn').onclick = () => {
+    const account =
+        $('displayAccountNo')
+            .textContent.trim();
 
-                        document.getElementById(
-                            "id_number"
-                        ).value = "";
+    if (!/^\d{10}$/.test(account)) {
+        toast(
+            'No valid dedicated account available.',
+            'error'
+        );
 
-                        const refreshedUser =
-                            await fetchUserProfile(user.email);
+        return;
+    }
 
-                        if (refreshedUser) {
-                            setupUI(refreshedUser);
-                        } else {
-                            showGenerationFeedback(
-                                "info",
-                                "The account request succeeded, but details could not be refreshed. Reload this page shortly."
-                            );
-                        }
+    copyText(account);
+};
 
-                    } else {
-                        showGenerationFeedback(
-                            "error",
-                            data.message ||
-                            data.error ||
-                            "Unable to generate account. Please verify your details and try again."
-                        );
-                    }
+/* MANUAL PAYMENT WHATSAPP FORM */
 
-                } catch (error) {
-                    showGenerationFeedback(
-                        "error",
-                        "Account generation could not be confirmed. Please refresh your profile before submitting another request."
-                    );
+$('manualPaymentForm').addEventListener(
+    'submit',
+    event => {
+        event.preventDefault();
 
-                } finally {
-                    isGeneratingAccount = false;
+        if (!user) {
+            logout();
+            return;
+        }
 
-                    genBtn.disabled = false;
-                    genBtn.textContent =
-                        "Generate Dedicated Account";
-                }
+        const amount = Number(
+            $('manualAmount').value
+        );
+
+        const sender =
+            $('senderName').value.trim();
+
+        const reference =
+            $('paymentReference').value.trim();
+
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0 ||
+            !/^\d+(?:\.\d{1,2})?$/.test(
+                $('manualAmount').value.trim()
+            )
+        ) {
+            toast(
+                'Enter a valid transfer amount.',
+                'error'
+            );
+
+            return;
+        }
+
+        if (!sender) {
+            toast(
+                'Enter the bank account sender name.',
+                'error'
+            );
+
+            return;
+        }
+
+        const formatted =
+            amount.toLocaleString('en-NG',{
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
             });
 
-        // ===================================
-        // PAGE INITIALIZATION
-        // ===================================
+        const message = [
+            'Hello Bigotic Data Support,',
+            '',
+            'I made a MANUAL WALLET FUNDING transfer.',
+            'Registered Email: ' + user.email,
+            'Amount: ₦' + formatted,
+            'Sender Name: ' + sender,
+            'Bank: PalmPay',
+            'Beneficiary: Bigoticdata (xixapay)',
+            'Account Number: ' + MANUAL_ACCOUNT,
+            'Bank Reference: ' +
+                (reference || 'Not provided'),
+            '',
+            'Please independently verify the payment before crediting my wallet.',
+            'I will attach the transfer receipt to this WhatsApp chat.'
+        ].join('\n');
 
-        window.addEventListener("load", async function () {
-            const user = getCurrentUser();
+        const url =
+            'https://wa.me/' +
+            SUPPORT_WHATSAPP +
+            '?text=' +
+            encodeURIComponent(message);
 
-            if (!user) {
-                window.location.href = "login.html";
+        const opened = window.open(
+            url,
+            '_blank',
+            'noopener,noreferrer'
+        );
+
+        if (!opened) {
+            const link =
+                document.createElement('a');
+
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+
+            document.body.append(link);
+            link.click();
+            link.remove();
+        }
+    }
+);
+
+/* GENERATION FEEDBACK */
+
+function feedback(message,type = 'error') {
+    $('generationFeedback').hidden =
+        false;
+
+    $('generationFeedback').className =
+        'feedback ' + type;
+
+    $('generationFeedback').textContent =
+        String(message);
+}
+
+/* BVN / NIN INPUT */
+
+$('id_number').addEventListener(
+    'input',
+    event => {
+        event.target.value =
+            event.target.value
+                .replace(/\D/g,'')
+                .slice(0,11);
+    }
+);
+
+/* GENERATE DEDICATED ACCOUNT */
+
+$('genAccountForm').addEventListener(
+    'submit',
+    async event => {
+        event.preventDefault();
+
+        if (generating) return;
+
+        if (!user) {
+            logout();
+            return;
+        }
+
+        const idType =
+            $('id_type').value;
+
+        const idNumber =
+            $('id_number').value.trim();
+
+        if (
+            !['nin','bvn'].includes(idType) ||
+            !/^\d{11}$/.test(idNumber)
+        ) {
+            feedback(
+                'Choose BVN or NIN and enter the correct 11-digit number.'
+            );
+
+            return;
+        }
+
+        generating = true;
+
+        $('genBtn').disabled =
+            true;
+
+        $('genBtnLabel').textContent =
+            'Processing Request...';
+
+        feedback(
+            'Sending your request to the funding provider.',
+            'info'
+        );
+
+        const controller =
+            new AbortController();
+
+        const timeout = setTimeout(
+            () => controller.abort(),
+            30000
+        );
+
+        try {
+            const response = await apiFetch(
+                '/generate-virtual-account',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+
+                    body:JSON.stringify({
+                        email:user.email,
+                        id_type:idType,
+                        id_number:idNumber
+                    }),
+
+                    signal:controller.signal
+                }
+            );
+
+            // Do not keep BVN or NIN in the form
+            // after submitting the request.
+            $('id_number').value = '';
+
+            if (response.status === 401) {
+                logout();
                 return;
             }
 
-            // Display cached balance and existing
-            // dedicated account while refreshing.
-            setupUI(user);
+            const data = await response.json()
+                .catch(() => ({}));
 
-            // Fetch the server's latest wallet balance
-            // and reserved account information.
-            const refreshedUser =
-                await fetchUserProfile(user.email);
+            if (
+                response.ok &&
+                data.success === true
+            ) {
+                const returnedAccount =
+                    data.virtualAccountNumber ||
+                    data.accountNumber ||
+                    data?.data?.virtualAccountNumber;
 
-            if (refreshedUser) {
-                setupUI(refreshedUser);
+                if (
+                    returnedAccount &&
+                    /^\d{10}$/.test(
+                        String(returnedAccount)
+                    )
+                ) {
+                    user.virtualAccountNumber =
+                        String(returnedAccount);
+
+                    user.virtualBankName =
+                        data.virtualBankName ||
+                        data?.data?.virtualBankName ||
+                        user.virtualBankName ||
+                        '';
+
+                    user.virtualAccountName =
+                        data.virtualAccountName ||
+                        data?.data?.virtualAccountName ||
+                        user.virtualAccountName ||
+                        '';
+
+                    saveSafeUser();
+                }
+
+                feedback(
+                    'Account request succeeded. Refreshing your dedicated account details...',
+                    'success'
+                );
+
+                await refreshProfile();
+
+                if (
+                    /^\d{10}$/.test(
+                        String(
+                            user.virtualAccountNumber || ''
+                        )
+                    )
+                ) {
+                    renderAccount();
+
+                    toast(
+                        'Dedicated account is ready.',
+                        'success'
+                    );
+
+                } else {
+                    feedback(
+                        'Request succeeded, but account details are not visible yet. Refresh later or contact support; do not submit a duplicate request.',
+                        'info'
+                    );
+                }
+
+            } else {
+                feedback(
+                    data.error ||
+                    data.message ||
+                    'Account generation was not completed. Please review your details.'
+                );
             }
-        });
 
-    </script>
+        } catch (_) {
+            $('id_number').value = '';
+
+            feedback(
+                'The request outcome could not be confirmed. Refresh the page to check your account before trying again.'
+            );
+
+        } finally {
+            clearTimeout(timeout);
+
+            generating = false;
+            $('genBtn').disabled = false;
+
+            $('genBtnLabel').textContent =
+                'Generate Dedicated Account';
+        }
+    }
+);
+
+/* INITIALIZATION */
+
+window.addEventListener(
+    'load',
+    async () => {
+        user = getUser();
+
+        if (!user) {
+            logout();
+            return;
+        }
+
+        // Show cached account information
+        // while waiting for the server.
+        renderAccount();
+
+        await refreshProfile();
+    }
+);
+
+window.addEventListener(
+    'focus',
+    () => {
+        if (user && !generating) {
+            refreshProfile();
+        }
+    }
+);
+</script>
 
 </body>
 </html>

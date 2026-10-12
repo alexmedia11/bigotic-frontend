@@ -2,1340 +2,2277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#060915">
-    <title>Buy Airtime | Bigotic Data</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        (function () {
-            try {
-                const saved = localStorage.getItem('bigotic-theme');
-                document.documentElement.setAttribute(
-                    'data-theme',
-                    saved === 'light' ? 'light' : 'dark'
-                );
-            } catch (_) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        })();
-    </script>
-
-    <style>
-        :root {
-            --electric: #3b6bff;
-            --electric-soft: #7c9bff;
-            --cyan: #28e0d6;
-            --emerald: #34d399;
-            --rose: #f97066;
-            --gold: #f4b740;
-        }
-
-        html[data-theme="dark"] {
-            --bg: #060915;
-            --bg-elevated: #0d1330;
-            --card: #0f1638;
-            --card-2: linear-gradient(165deg, #121a42, #0d1330);
-            --border: rgba(148, 163, 255, .14);
-            --text-hi: #eef1ff;
-            --text-mid: #aab0d6;
-            --text-dim: #6b71a0;
-            --nav-bg: rgba(6, 9, 21, .78);
-            --shadow: 0 20px 45px -14px rgba(0, 0, 0, .5);
-            --row-hover: rgba(124, 155, 255, .07);
-            --input-bg: rgba(255, 255, 255, .04);
-        }
-
-        html[data-theme="light"] {
-            --bg: #f2f4fb;
-            --bg-elevated: #fff;
-            --card: #fff;
-            --card-2: linear-gradient(165deg, #fff, #f6f8ff);
-            --border: #e6e9f6;
-            --text-hi: #0f1428;
-            --text-mid: #5b6178;
-            --text-dim: #98a0c2;
-            --nav-bg: rgba(255, 255, 255, .85);
-            --shadow: 0 20px 45px -20px rgba(30, 58, 138, .14);
-            --row-hover: rgba(59, 107, 255, .05);
-            --input-bg: #f5f7fd;
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text-hi);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 110px;
-            transition: background .35s ease, color .35s ease;
-        }
-
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        a { text-decoration: none; color: inherit; }
-        button { font-family: inherit; }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 18px;
-            background: var(--nav-bg);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: var(--text-mid);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .back-btn i { width: 16px; height: 16px; }
-
-        .topbar-title {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .theme-quick {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-mid);
-        }
-
-        main {
-            max-width: 460px;
-            margin: 0 auto;
-            padding: 20px 18px 0;
-        }
-
-        .top-row {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 18px;
-        }
-
-        .auto-badge {
-            font-size: 9.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            background: var(--row-hover);
-            color: var(--text-mid);
-            padding: 5px 12px;
-            border-radius: 999px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            box-shadow: var(--shadow);
-            padding: 22px;
-            margin-bottom: 18px;
-        }
-
-        .field-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--electric-soft);
-            margin: 0 0 10px;
-            display: block;
-        }
-
-        .network-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 9px;
-            margin-bottom: 20px;
-        }
-
-        .network-card {
-            border: 1.5px solid var(--border);
-            border-radius: 14px;
-            padding: 13px 4px;
-            text-align: center;
-            background: var(--input-bg);
-            cursor: pointer;
-            transition: all .2s cubic-bezier(.16, 1, .3, 1);
-        }
-
-        .network-card span {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: -.01em;
-            color: var(--text-mid);
-        }
-
-        .network-card.active {
-            border-color: var(--electric);
-            background: rgba(59, 107, 255, .12);
-            transform: scale(.97);
-            box-shadow: 0 8px 18px -6px rgba(59, 107, 255, .35);
-        }
-
-        .network-card.active span { color: var(--electric-soft); }
-
-        .network-card:focus-visible,
-        .chip:focus-visible,
-        button:focus-visible {
-            outline: 2px solid var(--electric-soft);
-            outline-offset: 3px;
-        }
-
-        .input-wrap {
-            position: relative;
-            margin-bottom: 8px;
-        }
-
-        .input-wrap input {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            padding: 14px 42px 14px 15px;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-hi);
-            outline: none;
-            font-family: 'JetBrains Mono', monospace;
-            transition: border-color .2s ease;
-        }
-
-        .input-wrap input:focus { border-color: var(--electric-soft); }
-
-        .input-wrap i.field-ic {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 17px;
-            height: 17px;
-            color: var(--text-dim);
-            pointer-events: none;
-        }
-
-        .input-wrap .ngn-tag {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 9.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-            background: var(--row-hover);
-            color: var(--text-mid);
-            padding: 4px 8px;
-            border-radius: 7px;
-            pointer-events: none;
-        }
-
-        .carrier-note {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            margin: 10px 0 18px;
-            padding: 9px 12px;
-            border-radius: 11px;
-            background: rgba(52, 211, 153, .1);
-            border: 1px solid rgba(52, 211, 153, .25);
-            font-size: 10.5px;
-            font-weight: 700;
-            color: var(--emerald);
-        }
-
-        .carrier-note .sub {
-            display: block;
-            font-size: 9px;
-            font-weight: 600;
-            color: var(--text-dim);
-            margin-top: 1px;
-        }
-
-        .chip-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 9px;
-            margin: 16px 0 4px;
-        }
-
-        .chip {
-            padding: 10px 4px;
-            text-align: center;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--input-bg);
-            font-size: 11px;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--text-mid);
-            cursor: pointer;
-            transition: all .2s ease;
-        }
-
-        .chip:hover { border-color: var(--electric-soft); }
-
-        .chip.active {
-            background: linear-gradient(135deg, var(--electric), #1d3fbf);
-            border-color: transparent;
-            color: #fff;
-            box-shadow: 0 8px 18px -6px rgba(59, 107, 255, .45);
-        }
-
-        .submit-btn {
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--electric), #1d3fbf);
-            color: #fff;
-            padding: 16px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            box-shadow: 0 16px 34px -10px rgba(59, 107, 255, .45);
-            transition: transform .2s ease, opacity .2s ease;
-        }
-
-        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); }
-
-        .submit-btn:disabled {
-            opacity: .7;
-            cursor: progress;
-        }
-
-        .spinner {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, .35);
-            border-top-color: #fff;
-            animation: spin .7s linear infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .bottom-nav-wrap {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 45;
-            padding: 0 16px 16px;
-        }
-
-        .bottom-nav {
-            max-width: 460px;
-            margin: 0 auto;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 -14px 34px -14px rgba(0, 0, 0, .25);
-        }
-
-        .bnav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            color: var(--text-dim);
-            gap: 3px;
-        }
-
-        .bnav-item.active { color: var(--electric-soft); }
-        .bnav-item i { width: 16px; height: 16px; }
-
-        .bnav-item span {
-            font-size: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .bnav-center { position: relative; top: -16px; }
-
-        .bnav-center .glow {
-            position: absolute;
-            inset: 0;
-            background: var(--electric);
-            border-radius: 14px;
-            filter: blur(10px);
-            opacity: .45;
-        }
-
-        .bnav-center a {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: linear-gradient(135deg, var(--electric), #1d3fbf);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 10px 24px rgba(59, 107, 255, .4);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 90;
-            background: rgba(3, 5, 14, .62);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .28s ease;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            width: 100%;
-            max-width: 330px;
-            background: var(--card-2);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 28px;
-            text-align: center;
-            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, .5);
-            transform: translateY(18px) scale(.96);
-            transition: transform .32s cubic-bezier(.16, 1, .3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modal-overlay.open .modal-card {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 15px;
-            background: rgba(59, 107, 255, .14);
-            color: var(--electric-soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 14px;
-        }
-
-        .modal-card h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0 0 6px;
-        }
-
-        .modal-card p {
-            font-size: 11.5px;
-            color: var(--text-mid);
-            line-height: 1.6;
-            margin: 0 0 18px;
-        }
-
-        .pin-dots {
-            display: flex;
-            gap: 11px;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-
-        .pin-dots span {
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background: var(--border);
-            transition: background .2s ease, transform .2s ease;
-        }
-
-        .pin-dots span.filled {
-            background: var(--electric);
-            transform: scale(1.15);
-        }
-
-        .modal-card input.pin-input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 6px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            border: none;
-            cursor: pointer;
-        }
-
-        .confirm-btn {
-            background: linear-gradient(135deg, var(--electric), #1d3fbf);
-            color: #fff;
-        }
-
-        .cancel-btn {
-            background: var(--row-hover);
-            color: var(--text-mid);
-        }
-
-        .modal-actions button:disabled {
-            opacity: .65;
-            cursor: not-allowed;
-        }
-
-        .result-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: rgba(52, 211, 153, .16);
-        }
-
-        .result-icon::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            opacity: .5;
-            animation: pulse-ring 1.8s ease-out infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% { opacity: .5; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.4); }
-        }
-
-        .result-btn {
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            padding: 13px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            color: #fff;
-            background: linear-gradient(135deg, var(--emerald), #1fae7d);
-        }
-
-        #toastContainer {
-            position: fixed;
-            top: 18px;
-            right: 18px;
-            z-index: 99;
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-            max-width: 340px;
-            width: calc(100% - 36px);
-            pointer-events: none;
-        }
-
-        .toast {
-            pointer-events: auto;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: flex-start;
-            gap: 11px;
-            padding: 15px 16px 14px;
-            border-radius: 16px;
-            background: var(--card-2);
-            border: 1px solid var(--border);
-            box-shadow: 0 24px 55px -16px rgba(0, 0, 0, .35);
-            transform: translateY(-14px) scale(.96);
-            opacity: 0;
-            transition: transform .38s cubic-bezier(.16, 1, .3, 1), opacity .3s ease;
-        }
-
-        .toast.show {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        .toast::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg, var(--rose), #c8362a);
-        }
-
-        .toast::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 2px;
-            width: 100%;
-            background: linear-gradient(90deg, var(--rose), transparent);
-            transform-origin: left;
-            animation: toast-countdown 3.6s linear forwards;
-        }
-
-        .toast:hover::after { animation-play-state: paused; }
-
-        @keyframes toast-countdown {
-            from { transform: scaleX(1); }
-            to { transform: scaleX(0); }
-        }
-
-        .toast .icon {
-            width: 31px;
-            height: 31px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(249, 112, 102, .16);
-            color: var(--rose);
-        }
-
-        .toast .title {
-            margin: 0 0 2px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
-
-        .toast p.msg {
-            margin: 0;
-            font-size: 11.5px;
-            font-weight: 500;
-            color: var(--text-mid);
-            line-height: 1.5;
-        }
-
-        .toast .dismiss {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            padding: 3px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 360px) {
-            main { padding-left: 12px; padding-right: 12px; }
-            .card { padding: 17px; }
-            .network-grid, .chip-row { gap: 6px; }
-            .topbar { padding: 0 12px; }
-            .topbar-title { font-size: 10px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060915">
+
+<title>Buy Airtime | Bigotic Data</title>
+
+<meta
+    name="description"
+    content="Recharge MTN, Airtel, Glo and 9mobile airtime securely with Bigotic Data."
+>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light' : 'dark';
+} catch (_) {
+    document.documentElement.dataset.theme = 'dark';
+}
+</script>
+
+<style>
+:root {
+    --blue:#3b6bff;
+    --soft:#7c9bff;
+    --cyan:#28e0d6;
+    --green:#34d399;
+    --red:#f97066;
+    --gold:#f4b740;
+}
+
+html[data-theme="dark"] {
+    --bg:#060915;
+    --surface:#0d1330;
+    --card:#0f1638;
+    --border:rgba(148,163,255,.14);
+    --high:#eef1ff;
+    --mid:#aab0d6;
+    --dim:#737aa7;
+    --hover:rgba(124,155,255,.08);
+    --input:rgba(255,255,255,.04);
+    --nav:rgba(6,9,21,.9);
+    --shadow:0 20px 45px -14px rgba(0,0,0,.5);
+}
+
+html[data-theme="light"] {
+    --bg:#f2f4fb;
+    --surface:#fff;
+    --card:#fff;
+    --border:#e6e9f6;
+    --high:#0f1428;
+    --mid:#5b6178;
+    --dim:#929abb;
+    --hover:rgba(59,107,255,.06);
+    --input:#f5f7fd;
+    --nav:rgba(255,255,255,.93);
+    --shadow:0 20px 45px -20px rgba(30,58,138,.14);
+}
+
+* { box-sizing:border-box; }
+
+[hidden] {
+    display:none!important;
+}
+
+html,body {
+    margin:0;
+    padding:0;
+}
+
+body {
+    min-height:100vh;
+    padding-bottom:110px;
+    overflow-x:hidden;
+    background:var(--bg);
+    color:var(--high);
+    font-family:Inter,Arial,sans-serif;
+}
+
+body.modal-open {
+    overflow:hidden;
+}
+
+a {
+    color:inherit;
+    text-decoration:none;
+}
+
+button,input {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
+
+button:disabled {
+    opacity:.65;
+    cursor:wait;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline:2px solid var(--soft);
+    outline-offset:3px;
+}
+
+.display {
+    font-family:"Space Grotesk",sans-serif;
+}
+
+.mono {
+    font-family:"JetBrains Mono",monospace;
+}
+
+svg {
+    flex-shrink:0;
+}
+
+/* HEADER */
+
+.topbar {
+    height:62px;
+    position:sticky;
+    top:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:0 18px;
+    background:var(--nav);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid var(--border);
+}
+
+.back {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--mid);
+    font-size:12px;
+    font-weight:800;
+}
+
+.back svg {
+    width:16px;
+    height:16px;
+}
+
+.top-title {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+}
+
+.top-title svg {
+    width:17px;
+    height:17px;
+    color:var(--soft);
+}
+
+.icon-btn {
+    display:grid;
+    place-items:center;
+    width:36px;
+    height:36px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--card);
+    color:var(--soft);
+}
+
+.icon-btn svg {
+    width:17px;
+    height:17px;
+}
+
+/* MAIN */
+
+main {
+    max-width:480px;
+    margin:0 auto;
+    padding:23px 18px 0;
+}
+
+.heading {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.heading h1 {
+    font-size:22px;
+    margin:0;
+    letter-spacing:-.5px;
+}
+
+.auto-badge {
+    padding:7px 10px;
+    border-radius:50px;
+    background:var(--hover);
+    color:var(--soft);
+    font-size:9px;
+    font-weight:800;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+
+.intro {
+    font-size:11px;
+    color:var(--mid);
+    line-height:1.75;
+    margin:0 0 22px;
+}
+
+/* PURCHASE CARD */
+
+.card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:22px;
+    margin-bottom:18px;
+}
+
+.field-label {
+    display:block;
+    margin:0 0 10px;
+    color:var(--soft);
+    font-size:10px;
+    letter-spacing:.08em;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+/* NETWORKS */
+
+.network-grid {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px;
+    margin-bottom:21px;
+}
+
+.network-card {
+    min-width:0;
+    min-height:65px;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    background:var(--input);
+    color:var(--mid);
+    font-size:10px;
+    font-weight:800;
+    text-align:center;
+}
+
+.network-card.active {
+    color:var(--soft);
+    border-color:var(--blue);
+    background:rgba(59,107,255,.12);
+    box-shadow:0 8px 18px -6px rgba(59,107,255,.2);
+}
+
+/* INPUTS */
+
+.input-wrap {
+    position:relative;
+    margin-bottom:12px;
+}
+
+.input-wrap input {
+    display:block;
+    width:100%;
+    height:51px;
+    padding:13px 53px 13px 14px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--input);
+    color:var(--high);
+    outline:none;
+    font:700 13px "JetBrains Mono",monospace;
+}
+
+.input-wrap input:focus {
+    border-color:var(--soft);
+}
+
+.input-wrap input::placeholder {
+    color:var(--dim);
+    font-weight:400;
+}
+
+.input-icon {
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--dim);
+    pointer-events:none;
+}
+
+.input-icon svg {
+    width:18px;
+    height:18px;
+}
+
+.ngn-tag {
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    background:var(--hover);
+    color:var(--mid);
+    font-size:10px;
+    font-weight:800;
+    border-radius:7px;
+    padding:6px 8px;
+}
+
+/* NETWORK DETECTION */
+
+.carrier-note {
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    color:var(--green);
+    border:1px solid rgba(52,211,153,.23);
+    background:rgba(52,211,153,.08);
+    border-radius:11px;
+    padding:11px;
+    margin:0 0 19px;
+    font-size:10px;
+    line-height:1.6;
+}
+
+.carrier-note svg {
+    width:16px;
+    height:16px;
+}
+
+.carrier-note small {
+    display:block;
+    color:var(--dim);
+    font-size:9px;
+    margin-top:4px;
+}
+
+/* QUICK AMOUNTS */
+
+.chip-row {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px;
+    margin:15px 0 3px;
+}
+
+.chip {
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:11px 5px;
+    background:var(--input);
+    color:var(--mid);
+    font:800 10px "JetBrains Mono",monospace;
+}
+
+.chip.active {
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    border-color:transparent;
+}
+
+/* PURCHASE BUTTON */
+
+.submit-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    width:100%;
+    min-height:53px;
+    padding:14px;
+    border:0;
+    border-radius:15px;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    box-shadow:0 16px 34px -10px rgba(59,107,255,.45);
+}
+
+.submit-btn svg {
+    width:18px;
+    height:18px;
+}
+
+.spinner {
+    width:16px;
+    height:16px;
+    display:inline-block;
+    border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+.info-note {
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin-top:18px;
+    padding:14px;
+    border:1px solid rgba(59,107,255,.2);
+    border-radius:13px;
+    background:rgba(59,107,255,.07);
+    color:var(--mid);
+    font-size:10px;
+    line-height:1.75;
+}
+
+.info-note svg {
+    width:18px;
+    height:18px;
+    color:var(--soft);
+}
+
+.info-note a {
+    color:var(--soft);
+    font-weight:800;
+}
+
+/* MODALS */
+
+.modal {
+    position:fixed;
+    inset:0;
+    z-index:90;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(3,5,14,.74);
+    backdrop-filter:blur(6px);
+}
+
+.modal.open {
+    display:flex;
+}
+
+.modal-card {
+    width:100%;
+    max-width:370px;
+    max-height:92vh;
+    overflow-y:auto;
+    border:1px solid var(--border);
+    border-radius:23px;
+    background:var(--surface);
+    padding:26px 22px;
+    text-align:center;
+    box-shadow:0 35px 90px rgba(0,0,0,.4);
+}
+
+.modal-icon {
+    display:grid;
+    place-items:center;
+    width:54px;
+    height:54px;
+    margin:0 auto 15px;
+    border-radius:15px;
+    background:rgba(59,107,255,.13);
+    color:var(--soft);
+}
+
+.modal-icon svg {
+    width:25px;
+    height:25px;
+}
+
+.modal-icon.success {
+    color:var(--green);
+    background:rgba(52,211,153,.13);
+}
+
+.modal-icon.error {
+    color:var(--red);
+    background:rgba(249,112,102,.13);
+}
+
+.modal-card h2 {
+    font-size:19px;
+    margin:0 0 9px;
+}
+
+.modal-card p {
+    font-size:12px;
+    line-height:1.7;
+    color:var(--mid);
+    margin:0 0 17px;
+}
+
+.purchase-summary {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:11px 13px;
+    margin-bottom:17px;
+    text-align:left;
+}
+
+.summary-row {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    padding:9px 0;
+    border-bottom:1px solid var(--border);
+    font-size:11px;
+}
+
+.summary-row:last-child {
+    border:0;
+}
+
+.summary-row span {
+    color:var(--dim);
+}
+
+.summary-row strong {
+    text-align:right;
+    max-width:60%;
+    overflow-wrap:anywhere;
+}
+
+.summary-row.total strong {
+    color:var(--soft);
+}
+
+/* PIN */
+
+.pin-label {
+    display:block;
+    text-align:left;
+    color:var(--soft);
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    margin-bottom:8px;
+}
+
+.pin-input {
+    width:100%;
+    height:52px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--input);
+    color:var(--high);
+    text-align:center;
+    letter-spacing:.5em;
+    font:800 18px "JetBrains Mono",monospace;
+    outline:none;
+}
+
+.pin-input:focus {
+    border-color:var(--soft);
+}
+
+.pin-dots {
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:13px 0 18px;
+}
+
+.pin-dots span {
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--border);
+}
+
+.pin-dots span.filled {
+    background:var(--blue);
+}
+
+.modal-actions {
+    display:flex;
+    gap:9px;
+}
+
+.modal-actions button {
+    flex:1;
+    min-height:45px;
+    padding:11px 8px;
+    border:0;
+    border-radius:11px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.confirm-btn,
+.result-btn {
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+}
+
+.cancel-btn {
+    color:var(--mid);
+    background:var(--hover);
+}
+
+.result-btn {
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    width:100%;
+    font-size:11px;
+    font-weight:800;
+}
+
+/* NOTIFICATIONS */
+
+.toast-region {
+    position:fixed;
+    top:14px;
+    right:14px;
+    z-index:110;
+    width:min(340px,calc(100% - 28px));
+    pointer-events:none;
+}
+
+.toast {
+    padding:13px 14px;
+    margin-bottom:9px;
+    border:1px solid var(--border);
+    border-left:3px solid var(--red);
+    border-radius:12px;
+    background:var(--surface);
+    box-shadow:var(--shadow);
+    color:var(--high);
+    font-size:11px;
+    line-height:1.6;
+}
+
+.toast.success {
+    border-left-color:var(--green);
+}
+
+/* BOTTOM NAVIGATION */
+
+.bottom-wrap {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:45;
+    padding:0 16px 16px;
+}
+
+.bottom-nav {
+    height:64px;
+    max-width:480px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--nav);
+    backdrop-filter:blur(16px);
+}
+
+.bottom-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    width:56px;
+    color:var(--dim);
+    font-size:8px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.bottom-item.active {
+    color:var(--soft);
+}
+
+.bottom-item svg {
+    width:17px;
+    height:17px;
+}
+
+.bottom-center {
+    position:relative;
+    top:-15px;
+}
+
+.bottom-center a {
+    display:grid;
+    place-items:center;
+    width:50px;
+    height:50px;
+    border-radius:15px;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    box-shadow:0 10px 24px rgba(59,107,255,.4);
+}
+
+.bottom-center svg {
+    width:21px;
+    height:21px;
+}
+
+/* MOBILE */
+
+@media(max-width:365px) {
+    main {
+        padding:18px 12px 0;
+    }
+
+    .topbar {
+        padding:0 12px;
+    }
+
+    .card {
+        padding:17px;
+    }
+
+    .network-grid,
+    .chip-row {
+        gap:5px;
+    }
+
+    .heading h1 {
+        font-size:20px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation:none!important;
+        transition:none!important;
+    }
+}
+</style>
 </head>
 
 <body>
-    <nav class="topbar">
-        <a href="dashboard.html" class="back-btn">
-            <i data-lucide="arrow-left"></i> Dashboard
-        </a>
 
-        <div class="topbar-title">
-            <i data-lucide="phone" style="width:14px;height:14px;color:var(--electric-soft);"></i>
-            Buy Airtime
-        </div>
+<!-- HEADER -->
 
-        <button type="button" class="theme-quick" id="themeToggle" aria-label="Toggle theme">
-            <i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i>
-        </button>
-    </nav>
+<nav class="topbar">
+    <a href="dashboard.html" class="back">
+        <i data-lucide="arrow-left"></i>
+        Dashboard
+    </a>
 
-    <div id="toastContainer" aria-live="polite" aria-atomic="false"></div>
+    <div class="top-title">
+        <i data-lucide="phone"></i>
+        Buy Airtime
+    </div>
 
-    <main>
-        <div class="top-row">
-            <span class="auto-badge">Instant delivery</span>
-        </div>
+    <button
+        type="button"
+        id="themeBtn"
+        class="icon-btn"
+        aria-label="Switch theme"
+    >
+        <i data-lucide="sun-moon"></i>
+    </button>
+</nav>
 
-        <form id="airtimeForm">
-            <div class="card">
-                <label class="field-label">Select mobile carrier</label>
+<!-- FEEDBACK -->
 
-                <div class="network-grid" id="networkGrid">
-                    <button type="button" class="network-card" data-value="MTN" aria-pressed="false"><span>MTN</span></button>
-                    <button type="button" class="network-card" data-value="AIRTEL" aria-pressed="false"><span>AIRTEL</span></button>
-                    <button type="button" class="network-card" data-value="GLO" aria-pressed="false"><span>GLO</span></button>
-                    <button type="button" class="network-card" data-value="9MOBILE" aria-pressed="false"><span>9MOBILE</span></button>
-                </div>
+<div
+    id="toastRegion"
+    class="toast-region"
+    aria-live="polite"
+></div>
 
-                <label class="field-label" for="phone">Recipient phone number</label>
-                <div class="input-wrap">
-                    <input
-                        type="tel"
-                        id="phone"
-                        required
-                        placeholder="08012345678"
-                        maxlength="11"
-                        minlength="11"
-                        inputmode="numeric"
-                        autocomplete="tel"
-                    >
-                    <i data-lucide="smartphone" class="field-ic"></i>
-                </div>
+<!-- PURCHASE FORM -->
 
-                <div class="carrier-note" id="carrierNote">
-                    <i data-lucide="check-circle-2" style="width:14px;height:14px;"></i>
-                    <span>
-                        Carrier detected: <strong id="carrierName">&mdash;</strong>
-                        <span class="sub">Override above if this number was ported</span>
-                    </span>
-                </div>
+<main>
 
-                <label class="field-label" for="amount">Recharge amount (₦)</label>
-                <div class="input-wrap">
-                    <input
-                        type="number"
-                        id="amount"
-                        required
-                        min="100"
-                        step="1"
-                        placeholder="Minimum ₦100"
-                        inputmode="numeric"
-                    >
-                    <span class="ngn-tag">NGN</span>
-                </div>
+    <div class="heading">
+        <h1 class="display">Buy Airtime</h1>
 
-                <div class="chip-row">
-                    <button type="button" class="chip" data-amt="100" onclick="selectChip(this,100)">₦100</button>
-                    <button type="button" class="chip" data-amt="200" onclick="selectChip(this,200)">₦200</button>
-                    <button type="button" class="chip" data-amt="500" onclick="selectChip(this,500)">₦500</button>
-                    <button type="button" class="chip" data-amt="1000" onclick="selectChip(this,1000)">₦1,000</button>
-                </div>
+        <span class="auto-badge">
+            Automated Delivery
+        </span>
+    </div>
+
+    <p class="intro">
+        Select a carrier, enter the recipient's
+        number and choose the airtime amount.
+        Verify everything before paying.
+    </p>
+
+    <form id="airtimeForm" novalidate>
+
+        <section class="card">
+
+            <span class="field-label">
+                Select Mobile Carrier
+            </span>
+
+            <div id="networkGrid" class="network-grid">
+
+                <button
+                    type="button"
+                    class="network-card"
+                    data-network="MTN"
+                    aria-pressed="false"
+                >
+                    MTN
+                </button>
+
+                <button
+                    type="button"
+                    class="network-card"
+                    data-network="AIRTEL"
+                    aria-pressed="false"
+                >
+                    AIRTEL
+                </button>
+
+                <button
+                    type="button"
+                    class="network-card"
+                    data-network="GLO"
+                    aria-pressed="false"
+                >
+                    GLO
+                </button>
+
+                <button
+                    type="button"
+                    class="network-card"
+                    data-network="9MOBILE"
+                    aria-pressed="false"
+                >
+                    9MOBILE
+                </button>
+
             </div>
 
-            <button type="submit" id="submitBtn" class="submit-btn">
-                <span id="submitBtnLabel">Purchase airtime</span>
-            </button>
-        </form>
-    </main>
+            <!-- PHONE NUMBER -->
 
-    <div id="pinGateModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="pinModalTitle">
-        <div class="modal-card">
-            <div class="modal-icon">
-                <i data-lucide="lock" style="width:20px;height:20px;"></i>
-            </div>
+            <label class="field-label" for="phone">
+                Recipient Phone Number
+            </label>
 
-            <h3 class="font-display" id="pinModalTitle">Security verification</h3>
-            <p>Enter your 4-digit transaction PIN to finalize this purchase.</p>
-
-            <form id="pinAuthForm">
-                <div class="pin-dots" id="pinDots" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span>
-                </div>
+            <div class="input-wrap">
 
                 <input
-                    type="password"
-                    id="txPin"
-                    class="pin-input"
-                    maxlength="4"
-                    minlength="4"
-                    pattern="[0-9]{4}"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    aria-label="Four-digit transaction PIN"
+                    id="phone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel-national"
+                    maxlength="14"
+                    placeholder="e.g. 08012345678"
                     required
                 >
 
-                <div class="modal-actions">
-                    <button type="submit" id="confirmPayBtn" class="confirm-btn">Confirm</button>
-                    <button type="button" id="cancelPinBtn" class="cancel-btn">Cancel</button>
+                <span class="input-icon">
+                    <i data-lucide="smartphone"></i>
+                </span>
+
+            </div>
+
+            <div
+                id="carrierNote"
+                class="carrier-note"
+                hidden
+            >
+                <i data-lucide="info"></i>
+
+                <div>
+                    Number prefix suggests
+                    <strong id="carrierName">—</strong>.
+
+                    <small>
+                        Numbers may be ported.
+                        Select the actual carrier above
+                        if different.
+                    </small>
                 </div>
-            </form>
-        </div>
-    </div>
 
-    <div id="successResponseModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="successTitle">
-        <div class="modal-card">
-            <div class="result-icon">
-                <i data-lucide="check-circle-2" style="width:26px;height:26px;color:var(--emerald);"></i>
             </div>
 
-            <h3 class="font-display" id="successTitle">Purchase successful!</h3>
-            <p id="successModalMsg">Your airtime has been dispatched.</p>
+            <!-- AMOUNT -->
 
-            <button type="button" id="successAcknowledgeBtn" class="result-btn">Acknowledge</button>
-        </div>
-    </div>
+            <label class="field-label" for="amount">
+                Recharge Amount (₦)
+            </label>
 
-    <div class="bottom-nav-wrap">
-        <div class="bottom-nav">
-            <a href="buy-airtime.html" class="bnav-item active" aria-current="page">
-                <i data-lucide="phone"></i><span>Airtime</span>
-            </a>
-            <a href="buy-data.html" class="bnav-item">
-                <i data-lucide="wifi"></i><span>Data</span>
-            </a>
-            <div class="bnav-center">
-                <div class="glow"></div>
-                <a href="dashboard.html" aria-label="Home">
-                    <i data-lucide="home" style="width:20px;height:20px;"></i>
-                </a>
+            <div class="input-wrap">
+
+                <input
+                    id="amount"
+                    type="number"
+                    min="100"
+                    step="1"
+                    inputmode="numeric"
+                    placeholder="Minimum ₦100"
+                    required
+                >
+
+                <span class="ngn-tag">NGN</span>
+
             </div>
-            <a href="history.html" class="bnav-item">
-                <i data-lucide="clock"></i><span>History</span>
+
+            <div class="chip-row">
+
+                <button
+                    type="button"
+                    class="chip"
+                    data-amount="100"
+                    aria-pressed="false"
+                >
+                    ₦100
+                </button>
+
+                <button
+                    type="button"
+                    class="chip"
+                    data-amount="200"
+                    aria-pressed="false"
+                >
+                    ₦200
+                </button>
+
+                <button
+                    type="button"
+                    class="chip"
+                    data-amount="500"
+                    aria-pressed="false"
+                >
+                    ₦500
+                </button>
+
+                <button
+                    type="button"
+                    class="chip"
+                    data-amount="1000"
+                    aria-pressed="false"
+                >
+                    ₦1,000
+                </button>
+
+            </div>
+
+        </section>
+
+        <button
+            id="submitBtn"
+            type="submit"
+            class="submit-btn"
+        >
+            <i data-lucide="shopping-bag"></i>
+
+            <span id="submitBtnLabel">
+                Purchase Airtime
+            </span>
+        </button>
+
+    </form>
+
+    <div class="info-note">
+        <i data-lucide="shield-check"></i>
+
+        <div>
+            Your four-digit transaction PIN is required.
+            If a request times out or remains unconfirmed,
+            check
+            <a href="history.html">
+                Transaction History
             </a>
-            <a href="settings.html" class="bnav-item">
-                <i data-lucide="settings"></i><span>Settings</span>
-            </a>
+            before trying again.
         </div>
     </div>
 
-    <script>
-        if (window.lucide) {
-            lucide.createIcons();
+</main>
+
+<!-- CONFIRMATION MODAL -->
+
+<div
+    id="pinModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="pinTitle"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon">
+            <i data-lucide="lock-keyhole"></i>
+        </div>
+
+        <h2 class="display" id="pinTitle">
+            Confirm Airtime Purchase
+        </h2>
+
+        <p>
+            Check the details below and enter
+            your four-digit transaction PIN.
+        </p>
+
+        <div class="purchase-summary">
+
+            <div class="summary-row">
+                <span>Carrier</span>
+                <strong id="confirmNetwork">—</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Recipient</span>
+                <strong
+                    class="mono"
+                    id="confirmPhone"
+                >
+                    —
+                </strong>
+            </div>
+
+            <div class="summary-row total">
+                <span>Amount</span>
+                <strong id="confirmAmount">
+                    ₦0.00
+                </strong>
+            </div>
+
+        </div>
+
+        <form id="pinForm" novalidate>
+
+            <label class="pin-label" for="txPin">
+                Transaction PIN
+            </label>
+
+            <input
+                id="txPin"
+                class="pin-input"
+                type="password"
+                inputmode="numeric"
+                maxlength="4"
+                autocomplete="off"
+                placeholder="••••"
+                required
+            >
+
+            <div
+                class="pin-dots"
+                id="pinDots"
+                aria-hidden="true"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="cancelPinBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    id="confirmPayBtn"
+                    class="confirm-btn"
+                >
+                    Confirm Payment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+
+<div
+    id="successModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="successTitle"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon success">
+            <i data-lucide="check-circle-2"></i>
+        </div>
+
+        <h2 class="display" id="successTitle">
+            Purchase Successful
+        </h2>
+
+        <p id="successMessage">
+            Your airtime purchase was successful.
+        </p>
+
+        <button
+            id="successBtn"
+            type="button"
+            class="result-btn"
+        >
+            Return to Dashboard
+        </button>
+
+    </div>
+</div>
+
+<!-- ERROR / UNCERTAIN MODAL -->
+
+<div
+    id="errorModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="errorTitle"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon error">
+            <i data-lucide="alert-circle"></i>
+        </div>
+
+        <h2 class="display" id="errorTitle">
+            Purchase Not Confirmed
+        </h2>
+
+        <p id="errorMessage">
+            Check transaction history before trying again.
+        </p>
+
+        <button
+            id="errorBtn"
+            type="button"
+            class="result-btn"
+        >
+            View History
+        </button>
+
+    </div>
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+
+<div class="bottom-wrap">
+
+    <nav class="bottom-nav">
+
+        <a
+            href="buy-airtime.html"
+            class="bottom-item active"
+            aria-current="page"
+        >
+            <i data-lucide="phone"></i>
+            Airtime
+        </a>
+
+        <a
+            href="buy-data.html"
+            class="bottom-item"
+        >
+            <i data-lucide="wifi"></i>
+            Data
+        </a>
+
+        <span class="bottom-center">
+
+            <a
+                href="dashboard.html"
+                aria-label="Dashboard"
+            >
+                <i data-lucide="home"></i>
+            </a>
+
+        </span>
+
+        <a
+            href="history.html"
+            class="bottom-item"
+        >
+            <i data-lucide="clock"></i>
+            History
+        </a>
+
+        <a
+            href="settings.html"
+            class="bottom-item"
+        >
+            <i data-lucide="settings"></i>
+            Settings
+        </a>
+
+    </nav>
+
+</div>
+
+<script>
+'use strict';
+
+/* ==========================================
+   CONFIGURATION
+========================================== */
+
+const API =
+    'https://bigoticdata-backend.onrender.com';
+
+const $ = id =>
+    document.getElementById(id);
+
+const NETWORK_IDS = {
+    MTN:1,
+    AIRTEL:2,
+    GLO:3,
+    '9MOBILE':4
+};
+
+const PREFIXES = {
+    MTN:[
+        '0803','0806','0810','0813',
+        '0814','0816','0903','0906',
+        '0913','0916','0703','0706',
+        '0702','0704'
+    ],
+
+    AIRTEL:[
+        '0802','0808','0812','0901',
+        '0902','0904','0907','0912',
+        '0911','0701','0708'
+    ],
+
+    GLO:[
+        '0805','0807','0811',
+        '0815','0905','0915','0705'
+    ],
+
+    '9MOBILE':[
+        '0809','0817','0818',
+        '0908','0909'
+    ]
+};
+
+/* ==========================================
+   PAGE STATE
+========================================== */
+
+let user = null;
+
+let selectedNetwork = null;
+
+let chosenManually = false;
+
+let pendingPurchase = null;
+
+let busy = false;
+
+let uncertain = false;
+
+let errorAction = 'history';
+
+/* ==========================================
+   ICONS
+========================================== */
+
+function icons() {
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
+
+icons();
+
+/* ==========================================
+   SESSION
+========================================== */
+
+function getUser() {
+    try {
+        const value = JSON.parse(
+            localStorage.getItem('user') || 'null'
+        );
+
+        return (
+            value &&
+            typeof value.email === 'string' &&
+            value.email.trim()
+        ) ? value : null;
+
+    } catch (_) {
+        return null;
+    }
+}
+
+function logout() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
+
+    window.location.replace('login.html');
+}
+
+/* ==========================================
+   AUTHENTICATED API REQUEST
+========================================== */
+
+function apiFetch(path, options = {}) {
+
+    const headers = new Headers(
+        options.headers || {}
+    );
+
+    // Legacy backend may still work without a token.
+    // Server V2 must enforce authorization.
+
+    if (
+        typeof user?.token === 'string' &&
+        user.token.trim()
+    ) {
+        headers.set(
+            'Authorization',
+            'Bearer ' + user.token.trim()
+        );
+    }
+
+    headers.set(
+        'Accept',
+        'application/json'
+    );
+
+    return fetch(API + path, {
+        ...options,
+        headers,
+        cache:'no-store'
+    });
+}
+
+/* ==========================================
+   PRESERVE LOGIN TOKEN
+========================================== */
+
+function updateStoredBalance(value) {
+
+    const number = Number(value);
+
+    if (!Number.isFinite(number) || !user) {
+        return;
+    }
+
+    user.balance = number;
+
+    try {
+        const previous = JSON.parse(
+            localStorage.getItem('user') || '{}'
+        );
+
+        if (
+            previous.email &&
+            previous.email.toLowerCase() !==
+            user.email.toLowerCase()
+        ) {
+            return;
         }
 
-        const airtimeForm = document.getElementById('airtimeForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const submitBtnLabel = document.getElementById('submitBtnLabel');
-        const phoneInput = document.getElementById('phone');
-        const amountInput = document.getElementById('amount');
-        const carrierNote = document.getElementById('carrierNote');
-        const carrierNameEl = document.getElementById('carrierName');
-        const pinGateModal = document.getElementById('pinGateModal');
-        const pinAuthForm = document.getElementById('pinAuthForm');
-        const txPinInput = document.getElementById('txPin');
-        const confirmPayBtn = document.getElementById('confirmPayBtn');
-        const successResponseModal = document.getElementById('successResponseModal');
-
-        let selectedNetwork = null;
-        let isProcessing = false;
-
-        // These IDs preserve the values used by the existing backend.
-        // Verify them against the MobileSub API documentation before changing them.
-        const networkIds = {
-            MTN: 1,
-            AIRTEL: 2,
-            GLO: 3,
-            '9MOBILE': 4
+        const safe = {
+            ...previous,
+            balance:number
         };
 
-        const networkPrefixes = {
-            MTN: [
-                '0803', '0806', '0810', '0813', '0814', '0816',
-                '0903', '0906', '0913', '0916', '0703', '0706',
-                '0704', '0901'
-            ],
-            AIRTEL: [
-                '0802', '0808', '0812', '0902', '0907',
-                '0912', '0911', '0708', '0701'
-            ],
-            GLO: [
-                '0805', '0807', '0811', '0815',
-                '0905', '0915', '0705'
-            ],
-            '9MOBILE': [
-                '0809', '0817', '0818', '0909', '0908'
-            ]
+        delete safe.password;
+        delete safe.pin;
+        delete safe.bvn;
+        delete safe.nin;
+
+        localStorage.setItem(
+            'user',
+            JSON.stringify(safe)
+        );
+
+    } catch (_) {}
+}
+
+/* ==========================================
+   MONEY FORMATTING
+========================================== */
+
+function money(number) {
+    return '₦' +
+        Number(number).toLocaleString(
+            'en-NG', {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+/* ==========================================
+   THEME
+========================================== */
+
+function toggleTheme() {
+
+    const next =
+        document.documentElement.dataset.theme === 'light'
+            ? 'dark'
+            : 'light';
+
+    document.documentElement.dataset.theme = next;
+
+    try {
+        localStorage.setItem(
+            'bigotic-theme',
+            next
+        );
+    } catch (_) {}
+}
+
+$('themeBtn').onclick = toggleTheme;
+
+/* ==========================================
+   TOAST MESSAGES
+========================================== */
+
+function toast(message, type = 'error') {
+
+    const node =
+        document.createElement('div');
+
+    node.className =
+        'toast ' +
+        (type === 'success' ? 'success' : '');
+
+    node.textContent =
+        String(message);
+
+    $('toastRegion').appendChild(node);
+
+    setTimeout(
+        () => node.remove(),
+        5200
+    );
+}
+
+/* ==========================================
+   NETWORK SELECTION
+========================================== */
+
+function selectNetwork(network, manual = false) {
+
+    if (
+        busy ||
+        !(network in NETWORK_IDS)
+    ) {
+        return;
+    }
+
+    selectedNetwork = network;
+
+    if (manual) {
+        chosenManually = true;
+    }
+
+    document.querySelectorAll(
+        '[data-network]'
+    ).forEach(button => {
+
+        const active =
+            button.dataset.network === network;
+
+        button.classList.toggle(
+            'active',
+            active
+        );
+
+        button.setAttribute(
+            'aria-pressed',
+            String(active)
+        );
+    });
+}
+
+document.querySelectorAll(
+    '[data-network]'
+).forEach(button => {
+
+    button.addEventListener(
+        'click',
+        () => selectNetwork(
+            button.dataset.network,
+            true
+        )
+    );
+});
+
+/* ==========================================
+   NORMALIZE PHONE
+========================================== */
+
+function normalizePhone(value) {
+
+    const digits =
+        String(value || '').replace(/\D/g,'');
+
+    if (
+        digits.startsWith('234') &&
+        digits.length >= 13
+    ) {
+        return '0' + digits.slice(3,13);
+    }
+
+    return digits.slice(0,11);
+}
+
+/* ==========================================
+   SUGGEST NETWORK FROM PREFIX
+========================================== */
+
+$('phone').addEventListener(
+    'input',
+    event => {
+
+        if (busy) return;
+
+        const value =
+            normalizePhone(event.target.value);
+
+        event.target.value = value;
+
+        if (value.length < 4) {
+            $('carrierNote').hidden = true;
+            return;
+        }
+
+        const prefix =
+            value.slice(0,4);
+
+        const suggested =
+            Object.keys(PREFIXES).find(
+                name =>
+                    PREFIXES[name].includes(prefix)
+            );
+
+        $('carrierNote').hidden =
+            !suggested;
+
+        if (suggested) {
+
+            $('carrierName').textContent =
+                suggested;
+
+            if (!chosenManually) {
+                selectNetwork(suggested);
+            }
+        }
+    }
+);
+
+/* ==========================================
+   QUICK AMOUNT BUTTONS
+========================================== */
+
+function syncChips() {
+
+    document.querySelectorAll(
+        '[data-amount]'
+    ).forEach(button => {
+
+        const active =
+            Number(button.dataset.amount) ===
+            Number($('amount').value);
+
+        button.classList.toggle(
+            'active',
+            active
+        );
+
+        button.setAttribute(
+            'aria-pressed',
+            String(active)
+        );
+    });
+}
+
+document.querySelectorAll(
+    '[data-amount]'
+).forEach(button => {
+
+    button.addEventListener(
+        'click',
+        () => {
+
+            if (busy) return;
+
+            $('amount').value =
+                button.dataset.amount;
+
+            syncChips();
+        }
+    );
+});
+
+$('amount').addEventListener(
+    'input',
+    syncChips
+);
+
+/* ==========================================
+   MODAL CONTROLS
+========================================== */
+
+function openModal(id) {
+
+    $(id).classList.add('open');
+
+    $(id).setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'modal-open'
+    );
+}
+
+function closeModal(id) {
+
+    $(id).classList.remove('open');
+
+    $(id).setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+    if (
+        !document.querySelector('.modal.open')
+    ) {
+        document.body.classList.remove(
+            'modal-open'
+        );
+    }
+}
+
+/* ==========================================
+   PIN DOTS
+========================================== */
+
+function updatePinDots() {
+
+    const count =
+        $('txPin').value.length;
+
+    document.querySelectorAll(
+        '#pinDots span'
+    ).forEach((dot, index) => {
+
+        dot.classList.toggle(
+            'filled',
+            index < count
+        );
+    });
+}
+
+$('txPin').addEventListener(
+    'input',
+    event => {
+
+        event.target.value =
+            event.target.value
+                .replace(/\D/g,'')
+                .slice(0,4);
+
+        updatePinDots();
+    }
+);
+
+/* ==========================================
+   OPEN PIN CONFIRMATION
+========================================== */
+
+function openPin() {
+
+    const purchase =
+        pendingPurchase;
+
+    if (
+        !purchase ||
+        busy ||
+        uncertain
+    ) {
+        return;
+    }
+
+    $('confirmNetwork').textContent =
+        purchase.network;
+
+    $('confirmPhone').textContent =
+        purchase.phone;
+
+    $('confirmAmount').textContent =
+        money(purchase.amount);
+
+    $('txPin').value = '';
+
+    updatePinDots();
+
+    openModal('pinModal');
+
+    $('txPin').focus();
+}
+
+/* ==========================================
+   CANCEL PIN
+========================================== */
+
+function closePin() {
+
+    if (busy) return;
+
+    $('txPin').value = '';
+
+    updatePinDots();
+
+    pendingPurchase = null;
+
+    closeModal('pinModal');
+}
+
+$('cancelPinBtn').onclick =
+    closePin;
+
+$('pinModal').addEventListener(
+    'click',
+    event => {
+
+        if (event.target === $('pinModal')) {
+            closePin();
+        }
+    }
+);
+
+/* ==========================================
+   VALIDATE PURCHASE
+========================================== */
+
+function validatePurchase() {
+
+    const phone =
+        normalizePhone($('phone').value);
+
+    const amount =
+        Number($('amount').value);
+
+    if (!selectedNetwork) {
+
+        toast(
+            'Select a mobile carrier.'
+        );
+
+        return null;
+    }
+
+    if (!/^0\d{10}$/.test(phone)) {
+
+        toast(
+            'Enter a valid 11-digit Nigerian mobile number.'
+        );
+
+        $('phone').focus();
+
+        return null;
+    }
+
+    if (
+        !Number.isSafeInteger(amount) ||
+        amount < 100 ||
+        amount > 1000000
+    ) {
+        toast(
+            'Enter a whole-number amount from ₦100 to ₦1,000,000.'
+        );
+
+        $('amount').focus();
+
+        return null;
+    }
+
+    return {
+        network:selectedNetwork,
+        networkId:NETWORK_IDS[selectedNetwork],
+        phone,
+        amount
+    };
+}
+
+/* ==========================================
+   OPEN PURCHASE CONFIRMATION
+========================================== */
+
+$('airtimeForm').addEventListener(
+    'submit',
+    event => {
+
+        event.preventDefault();
+
+        if (busy) return;
+
+        if (uncertain) {
+            showUncertain();
+            return;
+        }
+
+        user = getUser();
+
+        if (!user) {
+            logout();
+            return;
+        }
+
+        pendingPurchase =
+            validatePurchase();
+
+        if (pendingPurchase) {
+            openPin();
+        }
+    }
+);
+
+/* ==========================================
+   PROCESSING STATE
+========================================== */
+
+function setBusy(value) {
+
+    busy = value;
+
+    $('submitBtn').disabled =
+        value;
+
+    $('confirmPayBtn').disabled =
+        value;
+
+    $('cancelPinBtn').disabled =
+        value;
+
+    $('submitBtnLabel').textContent =
+        value
+            ? 'Processing Purchase...'
+            : 'Purchase Airtime';
+
+    $('confirmPayBtn').textContent =
+        value
+            ? 'Processing...'
+            : 'Confirm Payment';
+}
+
+/* ==========================================
+   ERROR RESULT
+========================================== */
+
+function showResult(
+    title,
+    message,
+    button = 'View History',
+    action = 'history'
+) {
+
+    $('errorTitle').textContent =
+        title;
+
+    $('errorMessage').textContent =
+        message;
+
+    $('errorBtn').textContent =
+        button;
+
+    errorAction = action;
+
+    openModal('errorModal');
+}
+
+/* ==========================================
+   UNKNOWN PURCHASE RESULT
+========================================== */
+
+function showUncertain() {
+
+    uncertain = true;
+
+    showResult(
+        'Check Transaction Status',
+        'We could not verify the outcome of this request. Do not pay again yet. Check transaction history or contact support first.',
+        'View History',
+        'history'
+    );
+}
+
+/* ==========================================
+   INTERPRET BACKEND ERRORS
+========================================== */
+
+function showBackendError(data, status) {
+
+    const code =
+        String(data?.code || '')
+            .toUpperCase();
+
+    const paymentStatus =
+        String(data?.status || '')
+            .toLowerCase();
+
+    if (
+        status === 401 ||
+        status === 403
+    ) {
+        showResult(
+            'Session Expired',
+            'Your session is no longer valid. Please sign in again.',
+            'Sign In',
+            'login'
+        );
+
+        return;
+    }
+
+    if (code === 'INSUFFICIENT_WALLET') {
+
+        showResult(
+            'Insufficient Wallet Balance',
+            'Your wallet balance is too low. Fund your wallet before trying again.',
+            'Fund Wallet',
+            'fund'
+        );
+
+        return;
+    }
+
+    if (
+        code === 'INVALID_PIN' ||
+        code === 'INCORRECT_PIN'
+    ) {
+        showResult(
+            'Incorrect Transaction PIN',
+            'Your PIN was not accepted. Check your PIN in Settings before trying again.',
+            'Back to Airtime',
+            'close'
+        );
+
+        return;
+    }
+
+    if (
+        status >= 500 ||
+        [
+            'PURCHASE_STATUS_UNCONFIRMED',
+            'PROVIDER_RESPONSE_UNCONFIRMED'
+        ].includes(code) ||
+        [
+            'pending',
+            'processing',
+            'unknown'
+        ].includes(paymentStatus)
+    ) {
+        showUncertain();
+        return;
+    }
+
+    if (
+        code === 'PROVIDER_INSUFFICIENT_FUNDS' ||
+        code === 'PROVIDER_PURCHASE_FAILED'
+    ) {
+        showResult(
+            'Service Temporarily Unavailable',
+            'The provider could not complete this request. Check your transaction history and balance before another attempt.',
+            'View History',
+            'history'
+        );
+
+        return;
+    }
+
+    showResult(
+        'Purchase Not Completed',
+        'The purchase was not confirmed. Check transaction history and wallet balance before trying again.',
+        'View History',
+        'history'
+    );
+}
+
+/* ==========================================
+   AUTHORIZE AIRTIME PURCHASE
+========================================== */
+
+$('pinForm').addEventListener(
+    'submit',
+    async event => {
+
+        event.preventDefault();
+
+        if (
+            busy ||
+            uncertain ||
+            !pendingPurchase
+        ) {
+            return;
+        }
+
+        const pin =
+            $('txPin').value.trim();
+
+        if (!/^\d{4}$/.test(pin)) {
+
+            toast(
+                'Enter your four-digit transaction PIN.'
+            );
+
+            $('txPin').focus();
+
+            return;
+        }
+
+        user = getUser();
+
+        if (!user) {
+            closePin();
+            logout();
+            return;
+        }
+
+        // Freeze details before submitting.
+        const purchase = {
+            ...pendingPurchase
         };
 
-        function applyThemeIcon() {
-            const isLight =
-                document.documentElement.getAttribute('data-theme') === 'light';
+        const payload = {
+            email:user.email,
+            network:purchase.networkId,
+            phone:purchase.phone,
+            amount:purchase.amount,
+            pin
+        };
 
-            const icon = document.getElementById('themeIconTop');
+        setBusy(true);
 
-            if (icon) {
-                icon.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            }
+        // Clear PIN immediately after preparing request.
+        $('txPin').value = '';
 
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        }
+        updatePinDots();
 
-        function toggleTheme() {
-            const current =
-                document.documentElement.getAttribute('data-theme');
+        closeModal('pinModal');
 
-            const next = current === 'light' ? 'dark' : 'light';
+        const controller =
+            new AbortController();
 
-            document.documentElement.setAttribute('data-theme', next);
+        const timeout = setTimeout(
+            () => controller.abort(),
+            45000
+        );
 
-            try {
-                localStorage.setItem('bigotic-theme', next);
-            } catch (_) {
-                // Theme still changes for the current page session.
-            }
+        try {
 
-            applyThemeIcon();
-        }
+            const response = await apiFetch(
+                '/buy-airtime',
+                {
+                    method:'POST',
 
-        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-        applyThemeIcon();
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
 
-        function selectNetworkCard(value) {
-            selectedNetwork = value;
+                    body:JSON.stringify(payload),
 
-            document.querySelectorAll('.network-card').forEach(card => {
-                const active = card.dataset.value === value;
-                card.classList.toggle('active', active);
-                card.setAttribute('aria-pressed', String(active));
-            });
-        }
-
-        document.querySelectorAll('.network-card').forEach(card => {
-            card.addEventListener('click', () => {
-                selectNetworkCard(card.dataset.value);
-            });
-        });
-
-        function selectChip(el, amount) {
-            document.querySelectorAll('.chip').forEach(chip => {
-                const active = chip === el;
-                chip.classList.toggle('active', active);
-                chip.setAttribute('aria-pressed', String(active));
-            });
-
-            amountInput.value = amount;
-        }
-
-        document.querySelectorAll('.chip').forEach(chip => {
-            chip.setAttribute('aria-pressed', 'false');
-        });
-
-        amountInput.addEventListener('input', () => {
-            document.querySelectorAll('.chip').forEach(chip => {
-                const active = Number(chip.dataset.amt) === Number(amountInput.value);
-                chip.classList.toggle('active', active);
-                chip.setAttribute('aria-pressed', String(active));
-            });
-        });
-
-        phoneInput.addEventListener('input', function () {
-            const phoneNumber = this.value.replace(/\D/g, '').slice(0, 11);
-
-            if (this.value !== phoneNumber) {
-                this.value = phoneNumber;
-            }
-
-            if (phoneNumber.length >= 4) {
-                const prefix = phoneNumber.substring(0, 4);
-                let detectedNetwork = null;
-
-                for (const [network, prefixes] of Object.entries(networkPrefixes)) {
-                    if (prefixes.includes(prefix)) {
-                        detectedNetwork = network;
-                        break;
-                    }
+                    signal:controller.signal
                 }
-
-                if (detectedNetwork) {
-                    carrierNameEl.textContent = detectedNetwork;
-                    carrierNote.style.display = 'flex';
-
-                    // Detect a likely network, but do not override a user's
-                    // deliberate manual selection on every subsequent keystroke.
-                    if (!selectedNetwork || selectedNetwork === detectedNetwork) {
-                        selectNetworkCard(detectedNetwork);
-                    }
-                } else {
-                    carrierNote.style.display = 'none';
-                }
-            } else {
-                carrierNote.style.display = 'none';
-            }
-        });
-
-        function showNotification(message, type = 'error') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-
-            toast.className = 'toast';
-
-            const iconName = type === 'success'
-                ? 'check-circle-2'
-                : 'alert-circle';
-
-            const title = type === 'success'
-                ? 'Success'
-                : 'Something needs attention';
-
-            const iconWrap = document.createElement('span');
-            iconWrap.className = 'icon';
-
-            const icon = document.createElement('i');
-            icon.setAttribute('data-lucide', iconName);
-            icon.style.width = '15px';
-            icon.style.height = '15px';
-            iconWrap.appendChild(icon);
-
-            const content = document.createElement('div');
-            content.style.flex = '1';
-
-            const titleEl = document.createElement('p');
-            titleEl.className = 'title';
-            titleEl.textContent = title;
-
-            const messageEl = document.createElement('p');
-            messageEl.className = 'msg';
-            messageEl.textContent = String(message);
-
-            content.append(titleEl, messageEl);
-
-            const dismiss = document.createElement('button');
-            dismiss.type = 'button';
-            dismiss.className = 'dismiss';
-            dismiss.setAttribute('aria-label', 'Dismiss notification');
-
-            const dismissIcon = document.createElement('i');
-            dismissIcon.setAttribute('data-lucide', 'x');
-            dismissIcon.style.width = '13px';
-            dismissIcon.style.height = '13px';
-            dismiss.appendChild(dismissIcon);
-
-            toast.append(iconWrap, content, dismiss);
-            container.appendChild(toast);
-
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-
-            requestAnimationFrame(() => toast.classList.add('show'));
-
-            let removed = false;
-            let timer;
-
-            const remove = () => {
-                if (removed) return;
-                removed = true;
-                clearTimeout(timer);
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            };
-
-            dismiss.addEventListener('click', remove);
-            timer = setTimeout(remove, 3600);
-
-            toast.addEventListener('mouseenter', () => clearTimeout(timer));
-            toast.addEventListener('mouseleave', () => {
-                if (!removed) timer = setTimeout(remove, 1200);
-            });
-        }
-
-        function openPinGate() {
-            if (isProcessing) return;
-
-            txPinInput.value = '';
-            updatePinDots();
-            pinGateModal.classList.add('open');
-
-            setTimeout(() => txPinInput.focus(), 200);
-        }
-
-        function closePinGate() {
-            if (isProcessing) return;
-
-            pinGateModal.classList.remove('open');
-            txPinInput.value = '';
-            updatePinDots();
-        }
-
-        document.getElementById('cancelPinBtn').addEventListener('click', closePinGate);
-
-        function updatePinDots() {
-            const value = txPinInput.value || '';
-
-            document.querySelectorAll('#pinDots span').forEach((dot, index) => {
-                dot.classList.toggle('filled', index < value.length);
-            });
-        }
-
-        txPinInput.addEventListener('input', function () {
-            this.value = this.value.replace(/\D/g, '').slice(0, 4);
-            updatePinDots();
-        });
-
-        document.querySelector('#pinGateModal .modal-card').addEventListener('click', event => {
-            if (event.target.closest('#pinDots')) {
-                txPinInput.focus();
-            }
-        });
-
-        function closeSuccessModal() {
-            successResponseModal.classList.remove('open');
-            window.location.href = 'dashboard.html';
-        }
-
-        document.getElementById('successAcknowledgeBtn')
-            .addEventListener('click', closeSuccessModal);
-
-        airtimeForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            if (isProcessing) return;
-
-            const phone = phoneInput.value.trim();
-            const amount = Number(amountInput.value);
-
-            if (!selectedNetwork || !Object.hasOwn(networkIds, selectedNetwork)) {
-                showNotification('Please select a mobile carrier.');
-                return;
-            }
-
-            if (!/^0\d{10}$/.test(phone)) {
-                showNotification('Please enter a valid 11-digit Nigerian phone number.');
-                phoneInput.focus();
-                return;
-            }
-
-            if (!Number.isSafeInteger(amount) || amount < 100) {
-                showNotification('Minimum recharge amount is ₦100.');
-                amountInput.focus();
-                return;
-            }
-
-            if (amount > 1000000) {
-                showNotification('Please contact support for airtime purchases above ₦1,000,000.');
-                return;
-            }
-
-            openPinGate();
-        });
-
-        pinAuthForm.addEventListener('submit', async function (event) {
-            event.preventDefault();
-
-            if (isProcessing) return;
-
-            const phone = phoneInput.value.trim();
-            const amount = Number(amountInput.value);
-            const pin = txPinInput.value;
-
-            if (!/^\d{4}$/.test(pin)) {
-                showNotification('Enter your 4-digit transaction PIN.');
-                txPinInput.focus();
-                return;
-            }
-
-            if (!selectedNetwork || !Object.hasOwn(networkIds, selectedNetwork)) {
-                closePinGate();
-                showNotification('Please select a mobile carrier.');
-                return;
-            }
-
-            if (!/^0\d{10}$/.test(phone) || !Number.isSafeInteger(amount) || amount < 100) {
-                closePinGate();
-                showNotification('Check the phone number and recharge amount, then try again.');
-                return;
-            }
-
-            let currentUser;
-
-            try {
-                currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-            } catch (_) {
-                currentUser = null;
-            }
-
-            if (!currentUser || !currentUser.email) {
-                closePinGate();
-                showNotification('Your session has expired. Please log in again.');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1800);
-                return;
-            }
-
-            isProcessing = true;
-            pinGateModal.classList.remove('open');
-            submitBtn.disabled = true;
-            confirmPayBtn.disabled = true;
-            document.getElementById('cancelPinBtn').disabled = true;
-
-            submitBtnLabel.innerHTML =
-                '<span class="spinner"></span> Processing…';
-
-            confirmPayBtn.textContent = 'Processing…';
-
-            let requestCompleted = false;
-
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 45000);
-
-                let response;
-
-                try {
-                    response = await fetch(
-                        'https://bigoticdata-backend.onrender.com/buy-airtime',
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                email: currentUser.email,
-                                network: networkIds[selectedNetwork],
-                                phone,
-                                amount,
-                                pin
-                            }),
-                            signal: controller.signal
-                        }
-                    );
-                } finally {
-                    clearTimeout(timeoutId);
-                }
-
-                let data;
-
-                try {
-                    data = await response.json();
-                } catch (_) {
-                    data = {};
-                }
-
-                requestCompleted = true;
-
-                if (response.ok && data.success === true) {
-                    if (Number.isFinite(Number(data.newBalance))) {
-                        currentUser.balance = Number(data.newBalance);
-
-                        try {
-                            localStorage.setItem('user', JSON.stringify(currentUser));
-                        } catch (_) {
-                            // The server transaction remains authoritative.
-                        }
-                    }
-
-                    document.getElementById('successModalMsg').textContent =
-                        `₦${amount.toLocaleString('en-NG')} airtime was successfully processed for ${phone}.`;
-
-                    successResponseModal.classList.add('open');
-                    return;
-                }
-
-                if (
-                    response.status >= 500 ||
-                    data.code === 'PURCHASE_STATUS_UNCONFIRMED'
-                ) {
-                    showNotification(
-                        'We could not confirm the transaction status. Check your transaction history before trying again.'
-                    );
-                } else {
-                    showNotification(
-                        data.error ||
-                        data.message ||
-                        'Airtime purchase failed. Please check your details and try again.'
-                    );
-                }
-            } catch (error) {
-                // A network timeout does not prove that the provider failed.
-                showNotification(
-                    'We could not confirm the result. Check your transaction history before attempting another purchase.'
+            );
+
+            const result =
+                await response.json()
+                    .catch(() => ({}));
+
+            if (
+                !response.ok ||
+                result.success !== true
+            ) {
+
+                showBackendError(
+                    result,
+                    response.status
                 );
-            } finally {
-                isProcessing = false;
-                submitBtn.disabled = false;
-                confirmPayBtn.disabled = false;
-                document.getElementById('cancelPinBtn').disabled = false;
-                submitBtnLabel.textContent = 'Purchase airtime';
-                confirmPayBtn.textContent = 'Confirm';
-                txPinInput.value = '';
-                updatePinDots();
 
-                if (!successResponseModal.classList.contains('open')) {
-                    pinGateModal.classList.remove('open');
-                }
-            }
-        });
-
-        window.addEventListener('load', function () {
-            let user = null;
-
-            try {
-                user = JSON.parse(localStorage.getItem('user') || 'null');
-            } catch (_) {
-                user = null;
+                return;
             }
 
-            if (!user || !user.email) {
-                window.location.href = 'login.html';
+            // Do not interpret a pending provider
+            // response as completed delivery.
+            if (
+                [
+                    'pending',
+                    'processing',
+                    'unconfirmed'
+                ].includes(
+                    String(
+                        result.status || ''
+                    ).toLowerCase()
+                )
+            ) {
+                showUncertain();
+                return;
             }
-        });
-    </script>
+
+            if (
+                result.newBalance !== undefined &&
+                result.newBalance !== null
+            ) {
+                updateStoredBalance(
+                    result.newBalance
+                );
+            }
+
+            $('successMessage').textContent =
+                money(purchase.amount) +
+                ' airtime purchase for ' +
+                purchase.phone +
+                ' was confirmed successful.';
+
+            openModal('successModal');
+
+        } catch (error) {
+
+            console.warn(
+                'Airtime purchase response unavailable:',
+                error?.name || 'Network error'
+            );
+
+            // A timeout is NOT proof that the
+            // payment or delivery failed.
+            showUncertain();
+
+        } finally {
+
+            clearTimeout(timeout);
+
+            $('txPin').value = '';
+
+            updatePinDots();
+
+            pendingPurchase = null;
+
+            setBusy(false);
+        }
+    }
+);
+
+/* ==========================================
+   RESULT BUTTONS
+========================================== */
+
+$('successBtn').onclick = () => {
+    window.location.href =
+        'dashboard.html';
+};
+
+$('errorBtn').onclick = () => {
+
+    if (errorAction === 'login') {
+        logout();
+        return;
+    }
+
+    if (errorAction === 'fund') {
+        window.location.href =
+            'fund.html';
+        return;
+    }
+
+    if (errorAction === 'history') {
+        window.location.href =
+            'history.html';
+        return;
+    }
+
+    closeModal('errorModal');
+};
+
+/* ==========================================
+   MODAL EVENTS
+========================================== */
+
+$('errorModal').addEventListener(
+    'click',
+    event => {
+
+        if (
+            event.target === $('errorModal')
+        ) {
+            closeModal('errorModal');
+        }
+    }
+);
+
+document.addEventListener(
+    'keydown',
+    event => {
+
+        if (
+            event.key === 'Escape' &&
+            $('pinModal').classList.contains('open')
+        ) {
+            closePin();
+        }
+
+        if (
+            event.key === 'Escape' &&
+            $('errorModal').classList.contains('open')
+        ) {
+            closeModal('errorModal');
+        }
+    }
+);
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+window.addEventListener(
+    'load',
+    () => {
+
+        user = getUser();
+
+        if (!user) {
+            logout();
+        }
+    }
+);
+</script>
+
 </body>
 </html>

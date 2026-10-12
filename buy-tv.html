@@ -2,2142 +2,2806 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#060915">
-
-    <title>Cable TV Subscription | Bigotic Data</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        (function () {
-            try {
-                const saved = localStorage.getItem('bigotic-theme');
-                document.documentElement.setAttribute(
-                    'data-theme',
-                    saved === 'light' ? 'light' : 'dark'
-                );
-            } catch (error) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        })();
-    </script>
-
-    <style>
-        :root {
-            --electric: #3b6bff;
-            --electric-soft: #7c9bff;
-            --cyan: #28e0d6;
-            --emerald: #34d399;
-            --rose: #f97066;
-            --gold: #f4b740;
-        }
-
-        html[data-theme="dark"] {
-            --bg: #060915;
-            --bg-elevated: #0d1330;
-            --card: #0f1638;
-            --card-2: linear-gradient(165deg, #121a42, #0d1330);
-            --border: rgba(148,163,255,0.14);
-            --text-hi: #eef1ff;
-            --text-mid: #aab0d6;
-            --text-dim: #6b71a0;
-            --nav-bg: rgba(6,9,21,0.78);
-            --shadow: 0 20px 45px -14px rgba(0,0,0,.5);
-            --row-hover: rgba(124,155,255,.07);
-            --input-bg: rgba(255,255,255,.04);
-        }
-
-        html[data-theme="light"] {
-            --bg: #f2f4fb;
-            --bg-elevated: #ffffff;
-            --card: #ffffff;
-            --card-2: linear-gradient(165deg, #ffffff, #f6f8ff);
-            --border: #e6e9f6;
-            --text-hi: #0f1428;
-            --text-mid: #5b6178;
-            --text-dim: #98a0c2;
-            --nav-bg: rgba(255,255,255,.85);
-            --shadow: 0 20px 45px -20px rgba(30,58,138,.14);
-            --row-hover: rgba(59,107,255,.05);
-            --input-bg: #f5f7fd;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text-hi);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 110px;
-            transition: background .35s ease, color .35s ease;
-        }
-
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        button {
-            font-family: inherit;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 18px;
-            background: var(--nav-bg);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .back-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: var(--text-mid);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .back-btn i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .topbar-title {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .theme-quick {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-mid);
-        }
-
-        main {
-            max-width: 460px;
-            margin: 0 auto;
-            padding: 20px 18px 0;
-        }
-
-        .top-row {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 18px;
-        }
-
-        .auto-badge {
-            font-size: 9.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            background: var(--row-hover);
-            color: var(--text-mid);
-            padding: 5px 12px;
-            border-radius: 999px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            box-shadow: var(--shadow);
-            padding: 22px;
-            margin-bottom: 18px;
-        }
-
-        .field-label {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--electric-soft);
-            margin: 0 0 10px;
-            display: block;
-        }
-
-        .provider-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 9px;
-            margin-bottom: 20px;
-        }
-
-        .provider-card {
-            border: 1.5px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 4px;
-            text-align: center;
-            background: var(--input-bg);
-            cursor: pointer;
-            transition: all .2s cubic-bezier(.16,1,.3,1);
-        }
-
-        .provider-card span {
-            font-size: 10.5px;
-            font-weight: 800;
-            letter-spacing: -.01em;
-            color: var(--text-mid);
-        }
-
-        .provider-card.active {
-            border-color: var(--electric);
-            background: rgba(59,107,255,.12);
-            transform: scale(.97);
-            box-shadow: 0 8px 18px -6px rgba(59,107,255,.35);
-        }
-
-        .provider-card.active span {
-            color: var(--electric-soft);
-        }
-
-        .provider-card:disabled {
-            opacity: .65;
-            cursor: not-allowed;
-        }
-
-        .provider-card:focus-visible,
-        button:focus-visible {
-            outline: 2px solid var(--electric-soft);
-            outline-offset: 2px;
-        }
-
-        select {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            padding: 14px 40px 14px 15px;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-hi);
-            outline: none;
-            appearance: none;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: border-color .2s ease;
-        }
-
-        select option {
-            background: var(--bg-elevated);
-            color: var(--text-hi);
-        }
-
-        select:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
-
-        select:focus {
-            border-color: var(--electric-soft);
-        }
-
-        .select-wrap {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .select-wrap i {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 15px;
-            height: 15px;
-            color: var(--text-dim);
-            pointer-events: none;
-        }
-
-        .price-preview {
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 13px 15px;
-            border: 1px solid rgba(59,107,255,.25);
-            background: rgba(59,107,255,.08);
-            border-radius: 12px;
-            margin: -7px 0 20px;
-        }
-
-        .price-preview .label {
-            color: var(--text-mid);
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .price-preview .amount {
-            color: var(--electric-soft);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            font-weight: 800;
-        }
-
-        .meter-row {
-            display: flex;
-            gap: 9px;
-            margin-bottom: 6px;
-        }
-
-        .meter-row input {
-            flex: 1;
-            min-width: 0;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            padding: 14px 15px;
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--text-hi);
-            outline: none;
-            font-family: 'JetBrains Mono', monospace;
-            transition: border-color .2s ease;
-        }
-
-        .meter-row input:focus {
-            border-color: var(--electric-soft);
-        }
-
-        .verify-btn {
-            background: var(--text-hi);
-            color: var(--bg);
-            border: none;
-            padding: 0 16px;
-            border-radius: 13px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            cursor: pointer;
-            transition: opacity .2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-
-        .verify-btn:hover:not(:disabled) {
-            opacity: .88;
-        }
-
-        .verify-btn:disabled {
-            opacity: .6;
-            cursor: progress;
-        }
-
-        .verify-box {
-            display: none;
-            margin: 12px 0 4px;
-            padding: 11px 14px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            line-height: 1.6;
-            text-align: left;
-            border: 1px solid;
-            overflow-wrap: anywhere;
-        }
-
-        .verify-box.info {
-            background: rgba(59,107,255,.1);
-            border-color: rgba(124,155,255,.3);
-            color: var(--electric-soft);
-        }
-
-        .verify-box.success {
-            background: rgba(52,211,153,.1);
-            border-color: rgba(52,211,153,.3);
-            color: var(--emerald);
-        }
-
-        .verify-box.error {
-            background: rgba(249,112,102,.1);
-            border-color: rgba(249,112,102,.3);
-            color: var(--rose);
-        }
-
-        .verify-box.warn {
-            background: rgba(244,183,64,.1);
-            border-color: rgba(244,183,64,.35);
-            color: var(--gold);
-        }
-
-        .submit-btn {
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-            color: #fff;
-            padding: 16px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            box-shadow: 0 16px 34px -10px rgba(59,107,255,.45);
-            transition: transform .2s ease, opacity .2s ease;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
-
-        .submit-btn:disabled {
-            opacity: .7;
-            cursor: progress;
-        }
-
-        .spinner {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,.35);
-            border-top-color: #fff;
-            animation: spin .7s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .bottom-nav-wrap {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 45;
-            padding: 0 16px 16px;
-        }
-
-        .bottom-nav {
-            max-width: 460px;
-            margin: 0 auto;
-            background: var(--nav-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 -14px 34px -14px rgba(0,0,0,.25);
-        }
-
-        .bnav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            color: var(--text-dim);
-            gap: 3px;
-        }
-
-        .bnav-item i {
-            width: 16px;
-            height: 16px;
-        }
-
-        .bnav-item span {
-            font-size: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .bnav-center {
-            position: relative;
-            top: -16px;
-        }
-
-        .bnav-center .glow {
-            position: absolute;
-            inset: 0;
-            background: var(--electric);
-            border-radius: 14px;
-            filter: blur(10px);
-            opacity: .45;
-        }
-
-        .bnav-center a {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 10px 24px rgba(59,107,255,.4);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 90;
-            background: rgba(3,5,14,.62);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .28s ease;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            width: 100%;
-            max-width: 330px;
-            background: var(--card-2);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 28px;
-            text-align: center;
-            box-shadow: 0 40px 100px -20px rgba(0,0,0,.5);
-            transform: translateY(18px) scale(.96);
-            transition: transform .32s cubic-bezier(.16,1,.3,1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modal-overlay.open .modal-card {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 15px;
-            background: rgba(59,107,255,.14);
-            color: var(--electric-soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 14px;
-        }
-
-        .modal-card h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0 0 6px;
-        }
-
-        .modal-card p {
-            font-size: 11.5px;
-            color: var(--text-mid);
-            line-height: 1.6;
-            margin: 0 0 18px;
-        }
-
-        .pin-dots {
-            display: flex;
-            gap: 11px;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-
-        .pin-dots span {
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background: var(--border);
-            transition: background .2s ease, transform .2s ease;
-        }
-
-        .pin-dots span.filled {
-            background: var(--electric);
-            transform: scale(1.15);
-        }
-
-        .modal-card input.pin-input {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 6px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            border: none;
-            cursor: pointer;
-        }
-
-        .confirm-btn {
-            background: linear-gradient(135deg,var(--electric),#1d3fbf);
-            color: #fff;
-        }
-
-        .cancel-btn {
-            background: var(--row-hover);
-            color: var(--text-mid);
-        }
-
-        .modal-actions button:disabled {
-            opacity: .65;
-            cursor: not-allowed;
-        }
-
-        .result-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .result-icon::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            opacity: .5;
-            animation: pulse-ring 1.8s ease-out infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                opacity: .5;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(1.4);
-            }
-        }
-
-        .result-btn {
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            padding: 13px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            color: #fff;
-        }
-
-        #toastContainer {
-            position: fixed;
-            top: 18px;
-            right: 18px;
-            z-index: 99;
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-            max-width: 340px;
-            width: calc(100% - 36px);
-            pointer-events: none;
-        }
-
-        .toast {
-            pointer-events: auto;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: flex-start;
-            gap: 11px;
-            padding: 15px 16px 14px;
-            border-radius: 16px;
-            background: var(--card-2);
-            border: 1px solid var(--border);
-            box-shadow: 0 24px 55px -16px rgba(0,0,0,.35);
-            transform: translateY(-14px) scale(.96);
-            opacity: 0;
-            transition: transform .38s cubic-bezier(.16,1,.3,1), opacity .3s ease;
-        }
-
-        .toast.show {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        .toast::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg,var(--rose),#c8362a);
-        }
-
-        .toast .icon {
-            width: 31px;
-            height: 31px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(249,112,102,.16);
-            color: var(--rose);
-        }
-
-        .toast .title {
-            margin: 0 0 2px;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
-
-        .toast p.msg {
-            margin: 0;
-            font-size: 11.5px;
-            font-weight: 500;
-            color: var(--text-mid);
-            line-height: 1.5;
-        }
-
-        .toast .dismiss {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            padding: 3px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 360px) {
-            main {
-                padding: 16px 12px 0;
-            }
-
-            .card {
-                padding: 18px 15px;
-            }
-
-            .meter-row {
-                gap: 6px;
-            }
-
-            .verify-btn {
-                padding: 0 11px;
-            }
-
-            .topbar-title {
-                font-size: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060915">
+
+<title>Cable TV Subscription | Bigotic Data</title>
+
+<meta
+    name="description"
+    content="Renew DStv, GOtv and StarTimes subscriptions securely on Bigotic Data."
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+try {
+    document.documentElement.dataset.theme =
+        localStorage.getItem('bigotic-theme') === 'light'
+            ? 'light'
+            : 'dark';
+} catch (_) {
+    document.documentElement.dataset.theme = 'dark';
+}
+</script>
+
+<style>
+:root {
+    --blue:#3b6bff;
+    --soft:#7c9bff;
+    --cyan:#28e0d6;
+    --green:#34d399;
+    --red:#f97066;
+    --gold:#f4b740;
+}
+
+html[data-theme="dark"] {
+    --bg:#060915;
+    --surface:#0d1330;
+    --card:#0f1638;
+    --border:rgba(148,163,255,.14);
+    --high:#eef1ff;
+    --mid:#aab0d6;
+    --dim:#737aa7;
+    --hover:rgba(124,155,255,.08);
+    --input:rgba(255,255,255,.04);
+    --nav:rgba(6,9,21,.9);
+    --shadow:0 20px 45px -14px rgba(0,0,0,.5);
+}
+
+html[data-theme="light"] {
+    --bg:#f2f4fb;
+    --surface:#fff;
+    --card:#fff;
+    --border:#e6e9f6;
+    --high:#0f1428;
+    --mid:#5b6178;
+    --dim:#9399bc;
+    --hover:rgba(59,107,255,.06);
+    --input:#f5f7fd;
+    --nav:rgba(255,255,255,.93);
+    --shadow:0 20px 45px -20px rgba(30,58,138,.14);
+}
+
+* {
+    box-sizing:border-box;
+}
+
+[hidden] {
+    display:none!important;
+}
+
+html,body {
+    margin:0;
+    padding:0;
+}
+
+body {
+    min-height:100vh;
+    padding-bottom:110px;
+    overflow-x:hidden;
+    background:var(--bg);
+    color:var(--high);
+    font-family:Inter,Arial,sans-serif;
+}
+
+body.modal-open {
+    overflow:hidden;
+}
+
+a {
+    color:inherit;
+    text-decoration:none;
+}
+
+button,input,select {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
+
+button:disabled {
+    opacity:.6;
+    cursor:wait;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline:2px solid var(--soft);
+    outline-offset:3px;
+}
+
+.display {
+    font-family:"Space Grotesk",sans-serif;
+}
+
+.mono {
+    font-family:"JetBrains Mono",monospace;
+}
+
+svg {
+    flex-shrink:0;
+}
+
+/* HEADER */
+
+.topbar {
+    position:sticky;
+    top:0;
+    z-index:40;
+    height:62px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:0 18px;
+    border-bottom:1px solid var(--border);
+    background:var(--nav);
+    backdrop-filter:blur(15px);
+}
+
+.back-link {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--mid);
+    font-size:12px;
+    font-weight:800;
+}
+
+.back-link svg {
+    width:16px;
+    height:16px;
+}
+
+.top-title {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+}
+
+.top-title svg {
+    width:17px;
+    height:17px;
+    color:var(--soft);
+}
+
+.icon-btn {
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:var(--card);
+    color:var(--soft);
+}
+
+.icon-btn svg {
+    width:17px;
+    height:17px;
+}
+
+/* MAIN */
+
+main {
+    max-width:480px;
+    margin:0 auto;
+    padding:22px 18px 0;
+}
+
+.heading {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.heading h1 {
+    font-size:22px;
+    letter-spacing:-.5px;
+    margin:0;
+}
+
+.auto-badge {
+    padding:7px 10px;
+    border-radius:99px;
+    background:var(--hover);
+    color:var(--soft);
+    font-size:9px;
+    font-weight:800;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+
+.intro {
+    margin:0 0 22px;
+    color:var(--mid);
+    font-size:11px;
+    line-height:1.8;
+}
+
+.card {
+    margin-bottom:18px;
+    padding:22px;
+    border:1px solid var(--border);
+    border-radius:22px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+}
+
+.field-label {
+    display:block;
+    margin:0 0 10px;
+    color:var(--soft);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+}
+
+/* PROVIDERS */
+
+.provider-grid {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:9px;
+    margin-bottom:22px;
+}
+
+.provider-card {
+    min-width:0;
+    min-height:72px;
+    padding:11px 5px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    background:var(--input);
+    color:var(--mid);
+    font-size:11px;
+    font-weight:800;
+}
+
+.provider-card svg {
+    width:20px;
+    height:20px;
+}
+
+.provider-card.active {
+    border-color:var(--blue);
+    background:rgba(59,107,255,.12);
+    color:var(--soft);
+    box-shadow:0 8px 18px -6px rgba(59,107,255,.2);
+}
+
+/* PACKAGE SELECTOR */
+
+.select-wrap {
+    position:relative;
+    margin-bottom:16px;
+}
+
+.select-wrap select {
+    width:100%;
+    min-height:52px;
+    padding:13px 40px 13px 13px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    appearance:none;
+    outline:none;
+    background:var(--input);
+    color:var(--high);
+    font-size:12px;
+    font-weight:700;
+}
+
+.select-wrap select:focus {
+    border-color:var(--soft);
+}
+
+.select-wrap select option {
+    background:var(--surface);
+    color:var(--high);
+}
+
+.select-wrap > svg {
+    position:absolute;
+    top:50%;
+    right:13px;
+    transform:translateY(-50%);
+    width:17px;
+    height:17px;
+    pointer-events:none;
+    color:var(--dim);
+}
+
+.price-preview {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:0 0 21px;
+    padding:15px;
+    border:1px solid rgba(59,107,255,.25);
+    border-radius:13px;
+    background:rgba(59,107,255,.08);
+}
+
+.price-preview span {
+    color:var(--mid);
+    font-size:10px;
+    font-weight:700;
+}
+
+.price-preview strong {
+    color:var(--soft);
+    font:800 16px "JetBrains Mono",monospace;
+}
+
+/* SMARTCARD */
+
+.smartcard-row {
+    display:flex;
+    align-items:stretch;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.smartcard-row input {
+    flex:1;
+    min-width:0;
+    min-height:52px;
+    padding:13px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    outline:none;
+    background:var(--input);
+    color:var(--high);
+    font:700 12px "JetBrains Mono",monospace;
+}
+
+.smartcard-row input:focus {
+    border-color:var(--soft);
+}
+
+.smartcard-row input::placeholder {
+    color:var(--dim);
+    font-weight:400;
+}
+
+.verify-btn {
+    min-width:84px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:0 12px;
+    border:0;
+    border-radius:13px;
+    background:var(--high);
+    color:var(--bg);
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.verify-btn svg {
+    width:14px;
+    height:14px;
+}
+
+/* VERIFICATION */
+
+.verify-box {
+    margin:11px 0 1px;
+    padding:12px 13px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:11px;
+    line-height:1.7;
+    overflow-wrap:anywhere;
+}
+
+.verify-box.info {
+    color:var(--soft);
+    background:rgba(59,107,255,.08);
+    border-color:rgba(59,107,255,.25);
+}
+
+.verify-box.success {
+    color:var(--green);
+    background:rgba(52,211,153,.09);
+    border-color:rgba(52,211,153,.28);
+}
+
+.verify-box.error {
+    color:var(--red);
+    background:rgba(249,112,102,.09);
+    border-color:rgba(249,112,102,.28);
+}
+
+.verify-box.warn {
+    color:var(--gold);
+    background:rgba(244,183,64,.09);
+    border-color:rgba(244,183,64,.3);
+}
+
+.field-note {
+    margin:12px 0 0;
+    color:var(--dim);
+    font-size:10px;
+    line-height:1.75;
+}
+
+/* PAYMENT BUTTON */
+
+.submit-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    width:100%;
+    min-height:54px;
+    padding:14px;
+    border:0;
+    border-radius:15px;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    box-shadow:0 16px 34px -10px rgba(59,107,255,.45);
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.submit-btn svg {
+    width:18px;
+    height:18px;
+}
+
+.spinner {
+    width:16px;
+    height:16px;
+    display:inline-block;
+    border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform:rotate(360deg); }
+}
+
+/* INFORMATION */
+
+.info-note {
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin:18px 0 22px;
+    padding:14px;
+    border:1px solid rgba(59,107,255,.22);
+    border-radius:13px;
+    color:var(--mid);
+    background:rgba(59,107,255,.07);
+    font-size:10px;
+    line-height:1.75;
+}
+
+.info-note svg {
+    width:18px;
+    height:18px;
+    color:var(--soft);
+}
+
+.info-note a {
+    color:var(--soft);
+    font-weight:800;
+}
+
+/* MODALS */
+
+.modal {
+    position:fixed;
+    inset:0;
+    z-index:90;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(3,5,14,.74);
+    backdrop-filter:blur(6px);
+}
+
+.modal.open {
+    display:flex;
+}
+
+.modal-card {
+    width:100%;
+    max-width:365px;
+    max-height:92vh;
+    overflow:auto;
+    padding:26px 22px;
+    border:1px solid var(--border);
+    border-radius:23px;
+    background:var(--surface);
+    box-shadow:0 35px 90px rgba(0,0,0,.4);
+    text-align:center;
+}
+
+.modal-icon {
+    width:55px;
+    height:55px;
+    display:grid;
+    place-items:center;
+    margin:0 auto 15px;
+    border-radius:16px;
+    background:rgba(59,107,255,.13);
+    color:var(--soft);
+}
+
+.modal-icon svg {
+    width:26px;
+    height:26px;
+}
+
+.modal-icon.success {
+    color:var(--green);
+    background:rgba(52,211,153,.13);
+}
+
+.modal-icon.warning {
+    color:var(--gold);
+    background:rgba(244,183,64,.13);
+}
+
+.modal-card h2 {
+    margin:0 0 10px;
+    font-size:19px;
+}
+
+.modal-card p {
+    margin:0 0 18px;
+    color:var(--mid);
+    font-size:12px;
+    line-height:1.75;
+    overflow-wrap:anywhere;
+}
+
+/* PURCHASE SUMMARY */
+
+.purchase-summary {
+    padding:11px 13px;
+    margin-bottom:17px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--card);
+    text-align:left;
+}
+
+.summary-row {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    padding:9px 0;
+    border-bottom:1px solid var(--border);
+    font-size:11px;
+}
+
+.summary-row:last-child {
+    border-bottom:0;
+}
+
+.summary-row span {
+    color:var(--dim);
+}
+
+.summary-row strong {
+    max-width:65%;
+    text-align:right;
+    overflow-wrap:anywhere;
+}
+
+.summary-row.total strong {
+    color:var(--soft);
+}
+
+/* PIN */
+
+.pin-label {
+    display:block;
+    text-align:left;
+    margin-bottom:9px;
+    color:var(--soft);
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.pin-input {
+    width:100%;
+    min-height:52px;
+    padding:11px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    outline:none;
+    background:var(--input);
+    color:var(--high);
+    text-align:center;
+    font:800 18px "JetBrains Mono",monospace;
+    letter-spacing:.4em;
+}
+
+.pin-input:focus {
+    border-color:var(--soft);
+}
+
+.pin-dots {
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:13px 0 18px;
+}
+
+.pin-dots span {
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--border);
+}
+
+.pin-dots span.filled {
+    background:var(--blue);
+}
+
+.modal-actions {
+    display:flex;
+    gap:9px;
+}
+
+.modal-actions button {
+    flex:1;
+    min-height:45px;
+    border:0;
+    border-radius:11px;
+    padding:11px 8px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.confirm-btn,
+.result-btn {
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+}
+
+.cancel-btn {
+    background:var(--hover);
+    color:var(--mid);
+}
+
+.result-btn {
+    width:100%;
+    min-height:45px;
+    border:0;
+    border-radius:12px;
+    padding:13px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.secondary-btn {
+    width:100%;
+    min-height:43px;
+    margin-top:9px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--hover);
+    color:var(--soft);
+    font-size:11px;
+    font-weight:800;
+}
+
+/* TOAST */
+
+.toast-region {
+    position:fixed;
+    top:14px;
+    right:14px;
+    z-index:110;
+    width:min(340px,calc(100% - 28px));
+    pointer-events:none;
+}
+
+.toast {
+    padding:13px 14px;
+    margin-bottom:9px;
+    border:1px solid var(--border);
+    border-left:3px solid var(--red);
+    border-radius:12px;
+    background:var(--surface);
+    color:var(--high);
+    box-shadow:var(--shadow);
+    font-size:11px;
+    line-height:1.7;
+}
+
+.toast.success {
+    border-left-color:var(--green);
+}
+
+/* BOTTOM NAV */
+
+.bottom-wrap {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:45;
+    padding:0 16px 16px;
+}
+
+.bottom-nav {
+    max-width:480px;
+    height:64px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--nav);
+    backdrop-filter:blur(16px);
+}
+
+.bottom-item {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    width:56px;
+    color:var(--dim);
+    font-size:8px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.bottom-item svg {
+    width:17px;
+    height:17px;
+}
+
+.bottom-center {
+    position:relative;
+    top:-15px;
+}
+
+.bottom-center a {
+    display:grid;
+    place-items:center;
+    width:50px;
+    height:50px;
+    border-radius:15px;
+    background:linear-gradient(135deg,var(--blue),#1d3fbf);
+    color:#fff;
+    box-shadow:0 10px 24px rgba(59,107,255,.4);
+}
+
+.bottom-center svg {
+    width:21px;
+    height:21px;
+}
+
+/* MOBILE */
+
+@media(max-width:365px) {
+    main {
+        padding:18px 12px 0;
+    }
+
+    .topbar {
+        padding:0 12px;
+    }
+
+    .top-title {
+        font-size:10px;
+    }
+
+    .card {
+        padding:17px;
+    }
+
+    .smartcard-row {
+        gap:6px;
+    }
+
+    .verify-btn {
+        min-width:72px;
+        padding:0 9px;
+        font-size:9px;
+    }
+
+    .heading h1 {
+        font-size:20px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation:none!important;
+        transition:none!important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <nav class="topbar">
-        <a href="dashboard.html" class="back-btn">
-            <i data-lucide="arrow-left"></i>
-            Dashboard
-        </a>
+<!-- HEADER -->
 
-        <div class="topbar-title">
-            <i data-lucide="tv" style="width:14px;height:14px;color:var(--electric-soft);"></i>
-            Cable TV Service
-        </div>
+<nav class="topbar">
 
-        <button
-            type="button"
-            class="theme-quick"
-            id="themeToggle"
-            aria-label="Toggle theme"
-        >
-            <i data-lucide="sun-moon" id="themeIconTop" style="width:15px;height:15px;"></i>
-        </button>
-    </nav>
+    <a href="dashboard.html" class="back-link">
+        <i data-lucide="arrow-left"></i>
+        Dashboard
+    </a>
 
-    <div id="toastContainer" aria-live="polite"></div>
+    <div class="top-title">
+        <i data-lucide="tv"></i>
+        Cable TV
+    </div>
 
-    <main>
-        <div class="top-row">
-            <span class="auto-badge">Instant activation</span>
-        </div>
-
-        <form id="cableForm">
-            <div class="card">
-
-                <label class="field-label">
-                    Select cable provider
-                </label>
-
-                <div class="provider-grid" id="providerGrid">
-                    <button
-                        type="button"
-                        class="provider-card"
-                        data-value="2"
-                        aria-pressed="false"
-                    >
-                        <span>DSTV</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="provider-card"
-                        data-value="1"
-                        aria-pressed="false"
-                    >
-                        <span>GOTV</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="provider-card"
-                        data-value="3"
-                        aria-pressed="false"
-                    >
-                        <span>STARTIMES</span>
-                    </button>
-                </div>
-
-                <label class="field-label" for="cableplan">
-                    Package subscription plan
-                </label>
-
-                <div class="select-wrap">
-                    <select id="cableplan" required disabled>
-                        <option value="" disabled selected>
-                            Select provider first
-                        </option>
-                    </select>
-
-                    <i data-lucide="chevron-down"></i>
-                </div>
-
-                <div class="price-preview" id="pricePreview">
-                    <span class="label">
-                        Subscription amount
-                    </span>
-
-                    <strong class="amount" id="priceAmount">
-                        ₦0
-                    </strong>
-                </div>
-
-                <label class="field-label" for="smartCardNumber">
-                    SmartCard / IUC number
-                </label>
-
-                <div class="meter-row">
-                    <input
-                        type="text"
-                        id="smartCardNumber"
-                        required
-                        placeholder="e.g. 1023456789"
-                        maxlength="12"
-                        inputmode="numeric"
-                        autocomplete="off"
-                    >
-
-                    <button
-                        type="button"
-                        id="verifyBtn"
-                        class="verify-btn"
-                    >
-                        <i data-lucide="shield-check" style="width:13px;height:13px;"></i>
-                        <span id="verifyBtnText">Verify</span>
-                    </button>
-                </div>
-
-                <div
-                    id="verificationBox"
-                    class="verify-box"
-                    role="status"
-                    aria-live="polite"
-                ></div>
-
-            </div>
-
-            <button
-                type="submit"
-                id="submitBtn"
-                class="submit-btn"
-            >
-                <span id="submitBtnLabel">
-                    Activate subscription
-                </span>
-            </button>
-        </form>
-    </main>
-
-    <!-- TRANSACTION PIN -->
-    <div
-        id="pinGateModal"
-        class="modal-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="pinModalTitle"
+    <button
+        type="button"
+        class="icon-btn"
+        id="themeBtn"
+        aria-label="Switch theme"
     >
-        <div class="modal-card">
-            <div class="modal-icon">
-                <i data-lucide="lock" style="width:20px;height:20px;"></i>
+        <i data-lucide="sun-moon"></i>
+    </button>
+
+</nav>
+
+<!-- NOTIFICATIONS -->
+
+<div
+    id="toastRegion"
+    class="toast-region"
+    aria-live="polite"
+></div>
+
+<!-- MAIN -->
+
+<main>
+
+    <div class="heading">
+
+        <h1 class="display">
+            Cable TV Subscription
+        </h1>
+
+        <span class="auto-badge">
+            Automated Service
+        </span>
+
+    </div>
+
+    <p class="intro">
+        Choose your cable provider and subscription
+        package. Verify the SmartCard or IUC number
+        before authorizing payment.
+    </p>
+
+    <form id="cableForm" novalidate>
+
+        <section class="card">
+
+            <!-- PROVIDER -->
+
+            <span class="field-label">
+                Select Cable Provider
+            </span>
+
+            <div
+                id="providerGrid"
+                class="provider-grid"
+            >
+
+                <button
+                    type="button"
+                    class="provider-card"
+                    data-provider="2"
+                    aria-pressed="false"
+                >
+                    <i data-lucide="satellite"></i>
+                    DStv
+                </button>
+
+                <button
+                    type="button"
+                    class="provider-card"
+                    data-provider="1"
+                    aria-pressed="false"
+                >
+                    <i data-lucide="tv"></i>
+                    GOtv
+                </button>
+
+                <button
+                    type="button"
+                    class="provider-card"
+                    data-provider="3"
+                    aria-pressed="false"
+                >
+                    <i data-lucide="monitor-play"></i>
+                    StarTimes
+                </button>
+
             </div>
 
-            <h3 class="font-display" id="pinModalTitle">
-                Security verification
-            </h3>
+            <!-- PACKAGES -->
 
-            <p id="pinModalDescription">
-                Enter your 4-digit transaction PIN to finalize this activation.
-            </p>
+            <label
+                class="field-label"
+                for="cableplan"
+            >
+                Subscription Package
+            </label>
 
-            <form id="pinAuthForm">
-                <div class="pin-dots" id="pinDots" aria-hidden="true">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+            <div class="select-wrap">
+
+                <select
+                    id="cableplan"
+                    required
+                    disabled
+                >
+                    <option value="">
+                        Select provider first
+                    </option>
+                </select>
+
+                <i data-lucide="chevron-down"></i>
+
+            </div>
+
+            <!-- PRICE -->
+
+            <div
+                id="pricePreview"
+                class="price-preview"
+                hidden
+            >
+                <span>
+                    Subscription Amount
+                </span>
+
+                <strong
+                    id="priceAmount"
+                    class="mono"
+                >
+                    ₦0.00
+                </strong>
+            </div>
+
+            <!-- SMARTCARD / IUC -->
+
+            <label
+                class="field-label"
+                for="smartCardNumber"
+            >
+                SmartCard / IUC Number
+            </label>
+
+            <div class="smartcard-row">
 
                 <input
-                    type="password"
-                    id="txPin"
-                    class="pin-input"
-                    maxlength="4"
-                    pattern="[0-9]{4}"
+                    id="smartCardNumber"
+                    type="text"
                     inputmode="numeric"
+                    maxlength="12"
                     autocomplete="off"
-                    aria-label="Four-digit transaction PIN"
+                    placeholder="e.g. 1023456789"
                     required
                 >
 
-                <div class="modal-actions">
-                    <button
-                        type="submit"
-                        id="confirmPayBtn"
-                        class="confirm-btn"
-                    >
-                        Confirm
-                    </button>
+                <button
+                    type="button"
+                    class="verify-btn"
+                    id="verifyBtn"
+                >
+                    <i data-lucide="shield-check"></i>
 
-                    <button
-                        type="button"
-                        id="cancelPinBtn"
-                        class="cancel-btn"
-                    >
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+                    <span id="verifyBtnText">
+                        Verify
+                    </span>
+                </button>
 
-    <!-- SUCCESS MODAL -->
-    <div
-        id="successResponseModal"
-        class="modal-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="successModalTitle"
-    >
-        <div class="modal-card">
-            <div
-                class="result-icon"
-                style="background:rgba(52,211,153,.16);"
-            >
-                <i
-                    data-lucide="check-circle-2"
-                    style="width:26px;height:26px;color:var(--emerald);"
-                ></i>
             </div>
 
-            <h3 class="font-display" id="successModalTitle">
-                Activation successful!
-            </h3>
+            <div
+                id="verificationBox"
+                class="verify-box"
+                role="status"
+                aria-live="polite"
+                hidden
+            ></div>
 
-            <p id="successModalMsg">
-                Your cable TV subscription has been processed successfully.
+            <p class="field-note">
+                Confirm the subscriber's name after
+                SmartCard verification. Do not continue
+                if the customer details are incorrect.
             </p>
 
-            <button
-                type="button"
-                id="closeSuccessBtn"
-                class="result-btn"
-                style="background:linear-gradient(135deg,var(--emerald),#1fae7d);"
-            >
-                Acknowledge
-            </button>
+        </section>
+
+        <!-- PURCHASE BUTTON -->
+
+        <button
+            type="submit"
+            class="submit-btn"
+            id="submitBtn"
+        >
+            <i data-lucide="tv"></i>
+
+            <span id="submitBtnLabel">
+                Activate Subscription
+            </span>
+        </button>
+
+    </form>
+
+    <div class="info-note">
+
+        <i data-lucide="shield-check"></i>
+
+        <div>
+            Your four-digit transaction PIN
+            is required for payment.
+
+            If activation is not confirmed,
+            check your
+            <a href="history.html">
+                transaction history
+            </a>
+            and decoder status before trying again.
         </div>
+
     </div>
 
-    <!-- ERROR / UNCERTAIN RESULT MODAL -->
-    <div
-        id="errorResponseModal"
-        class="modal-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="errorModalTitle"
-    >
-        <div class="modal-card">
+</main>
+
+<!-- PIN CONFIRMATION MODAL -->
+
+<div
+    id="pinModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="pinTitle"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon">
+            <i data-lucide="lock-keyhole"></i>
+        </div>
+
+        <h2
+            class="display"
+            id="pinTitle"
+        >
+            Confirm Cable Subscription
+        </h2>
+
+        <p>
+            Review the details below and enter
+            your four-digit transaction PIN.
+        </p>
+
+        <div class="purchase-summary">
+
+            <div class="summary-row">
+
+                <span>Provider</span>
+
+                <strong id="confirmProvider">
+                    —
+                </strong>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>Package</span>
+
+                <strong id="confirmPlan">
+                    —
+                </strong>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>SmartCard / IUC</span>
+
+                <strong
+                    id="confirmIuc"
+                    class="mono"
+                >
+                    —
+                </strong>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>Verified Customer</span>
+
+                <strong id="confirmCustomer">
+                    —
+                </strong>
+
+            </div>
+
+            <div class="summary-row total">
+
+                <span>Amount</span>
+
+                <strong id="confirmAmount">
+                    ₦0.00
+                </strong>
+
+            </div>
+
+        </div>
+
+        <form id="pinForm" novalidate>
+
+            <label
+                class="pin-label"
+                for="txPin"
+            >
+                Transaction PIN
+            </label>
+
+            <input
+                type="password"
+                id="txPin"
+                class="pin-input"
+                maxlength="4"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="••••"
+                required
+            >
+
             <div
-                class="result-icon"
-                style="background:rgba(249,112,102,.16);"
+                id="pinDots"
+                class="pin-dots"
+                aria-hidden="true"
             >
-                <i
-                    data-lucide="alert-circle"
-                    style="width:26px;height:26px;color:var(--rose);"
-                ></i>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
 
-            <h3 class="font-display" id="errorModalTitle">
-                Activation unsuccessful
-            </h3>
+            <div class="modal-actions">
 
-            <p id="errorModalMsg">
-                Your subscription could not be completed.
-            </p>
+                <button
+                    type="button"
+                    id="cancelPinBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
 
-            <button
-                type="button"
-                id="closeErrorBtn"
-                class="result-btn"
-                style="background:linear-gradient(135deg,var(--rose),#c8362a);"
-            >
-                Go back
-            </button>
-        </div>
-    </div>
+                <button
+                    type="submit"
+                    id="confirmPayBtn"
+                    class="confirm-btn"
+                >
+                    Confirm Payment
+                </button>
 
-    <!-- BOTTOM NAVIGATION -->
-    <div class="bottom-nav-wrap">
-        <div class="bottom-nav">
-
-            <a href="buy-airtime.html" class="bnav-item">
-                <i data-lucide="phone"></i>
-                <span>Airtime</span>
-            </a>
-
-            <a href="buy-data.html" class="bnav-item">
-                <i data-lucide="wifi"></i>
-                <span>Data</span>
-            </a>
-
-            <div class="bnav-center">
-                <div class="glow"></div>
-
-                <a href="dashboard.html" aria-label="Home">
-                    <i data-lucide="home" style="width:20px;height:20px;"></i>
-                </a>
             </div>
 
-            <a href="history.html" class="bnav-item">
-                <i data-lucide="clock"></i>
-                <span>History</span>
-            </a>
+        </form>
 
-            <a href="settings.html" class="bnav-item">
-                <i data-lucide="settings"></i>
-                <span>Settings</span>
-            </a>
-
-        </div>
     </div>
 
-    <script>
-        if (window.lucide) {
-            lucide.createIcons();
+</div>
+
+<!-- SUCCESS MODAL -->
+
+<div
+    id="successModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="successTitle"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon success">
+            <i data-lucide="check-circle-2"></i>
+        </div>
+
+        <h2
+            class="display"
+            id="successTitle"
+        >
+            Subscription Successful
+        </h2>
+
+        <p id="successMessage">
+            Your cable subscription was confirmed.
+        </p>
+
+        <button
+            type="button"
+            class="result-btn"
+            id="successBtn"
+        >
+            Return to Dashboard
+        </button>
+
+        <button
+            type="button"
+            class="secondary-btn"
+            id="successHistoryBtn"
+        >
+            View Transaction History
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ERROR / UNCERTAIN RESULT -->
+
+<div
+    id="errorModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="errorTitle"
+    aria-hidden="true"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-icon warning">
+            <i data-lucide="alert-triangle"></i>
+        </div>
+
+        <h2
+            class="display"
+            id="errorTitle"
+        >
+            Subscription Not Confirmed
+        </h2>
+
+        <p id="errorMessage">
+            Check transaction history
+            before trying again.
+        </p>
+
+        <button
+            type="button"
+            class="result-btn"
+            id="errorBtn"
+        >
+            View History
+        </button>
+
+    </div>
+
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+
+<div class="bottom-wrap">
+
+    <nav class="bottom-nav">
+
+        <a
+            href="buy-airtime.html"
+            class="bottom-item"
+        >
+            <i data-lucide="phone"></i>
+            Airtime
+        </a>
+
+        <a
+            href="buy-data.html"
+            class="bottom-item"
+        >
+            <i data-lucide="wifi"></i>
+            Data
+        </a>
+
+        <span class="bottom-center">
+
+            <a
+                href="dashboard.html"
+                aria-label="Dashboard"
+            >
+                <i data-lucide="home"></i>
+            </a>
+
+        </span>
+
+        <a
+            href="history.html"
+            class="bottom-item"
+        >
+            <i data-lucide="clock"></i>
+            History
+        </a>
+
+        <a
+            href="settings.html"
+            class="bottom-item"
+        >
+            <i data-lucide="settings"></i>
+            Settings
+        </a>
+
+    </nav>
+
+</div>
+
+<script>
+'use strict';
+
+/* ==========================================
+   BIGOTIC DATA CABLE TV V2
+========================================== */
+
+const API =
+    'https://bigoticdata-backend.onrender.com';
+
+const $ = id =>
+    document.getElementById(id);
+
+/* ==========================================
+   EXACT EXISTING PROVIDERS
+========================================== */
+
+const PROVIDERS = {
+    '1':'GOtv',
+    '2':'DStv',
+    '3':'StarTimes'
+};
+
+/* ==========================================
+   EXACT EXISTING PLANS AND PRICES
+   SERVER MUST VALIDATE BOTH
+========================================== */
+
+const CABLE_PLANS = {
+
+    '2':[
+        {
+            id:'dstv-padi',
+            name:'DStv Padi',
+            price:4400
+        },
+        {
+            id:'dstv-yanga',
+            name:'DStv Yanga',
+            price:6000
+        },
+        {
+            id:'dstv-confam',
+            name:'DStv Confam',
+            price:11400
+        },
+        {
+            id:'dstv-compact',
+            name:'DStv Compact',
+            price:19000
+        },
+        {
+            id:'dstv-compact-plus',
+            name:'DStv Compact Plus',
+            price:30000
         }
+    ],
 
-        const BACKEND_URL =
-            'https://bigoticdata-backend.onrender.com';
-
-        /*
-         * These plan IDs and customer prices match
-         * the /buy-cable pricing rules previously shared.
-         *
-         * Do not add new plans or alter customer prices
-         * without updating the backend first.
-         *
-         * The backend must remain the authority for
-         * wallet deductions and supported plans.
-         */
-
-        const cablePlans = {
-            '2': [
-                {
-                    id: 'dstv-padi',
-                    name: 'DSTv Padi',
-                    price: 4400
-                },
-                {
-                    id: 'dstv-yanga',
-                    name: 'DSTv Yanga',
-                    price: 6000
-                },
-                {
-                    id: 'dstv-confam',
-                    name: 'DSTv Confam',
-                    price: 11400
-                },
-                {
-                    id: 'dstv-compact',
-                    name: 'DSTv Compact',
-                    price: 19000
-                },
-                {
-                    id: 'dstv-compact-plus',
-                    name: 'DSTv Compact Plus',
-                    price: 30000
-                }
-            ],
-
-            '1': [
-                {
-                    id: 'gotv-supa',
-                    name: 'GOTv Supa (Monthly)',
-                    price: 11400
-                },
-                {
-                    id: 'gotv-max',
-                    name: 'GOTv Max (Monthly)',
-                    price: 8500
-                },
-                {
-                    id: 'gotv-jolli',
-                    name: 'GOTv Jolli (Monthly)',
-                    price: 5800
-                },
-                {
-                    id: 'gotv-jinja',
-                    name: 'GOTv Jinja (Monthly)',
-                    price: 3900
-                },
-                {
-                    id: 'gotv-smallie',
-                    name: 'GOTv Smallie (Monthly)',
-                    price: 1900
-                }
-            ],
-
-            '3': [
-                {
-                    id: 'startimes-nova-month',
-                    name: 'Nova (1 Month)',
-                    price: 2000
-                },
-                {
-                    id: 'startimes-basic-month',
-                    name: 'Basic Antenna (1 Month)',
-                    price: 3800
-                },
-                {
-                    id: 'startimes-classic-month',
-                    name: 'Classic Antenna (1 Month)',
-                    price: 5500
-                }
-            ]
-        };
-
-        const providerNames = {
-            '1': 'GOTV',
-            '2': 'DSTV',
-            '3': 'STARTIMES'
-        };
-
-        const cableForm =
-            document.getElementById('cableForm');
-
-        const planSelect =
-            document.getElementById('cableplan');
-
-        const iucInput =
-            document.getElementById('smartCardNumber');
-
-        const verificationBox =
-            document.getElementById('verificationBox');
-
-        const verifyBtn =
-            document.getElementById('verifyBtn');
-
-        const verifyBtnText =
-            document.getElementById('verifyBtnText');
-
-        const submitBtn =
-            document.getElementById('submitBtn');
-
-        const submitBtnLabel =
-            document.getElementById('submitBtnLabel');
-
-        const pinGateModal =
-            document.getElementById('pinGateModal');
-
-        const pinAuthForm =
-            document.getElementById('pinAuthForm');
-
-        const txPinInput =
-            document.getElementById('txPin');
-
-        const confirmPayBtn =
-            document.getElementById('confirmPayBtn');
-
-        const cancelPinBtn =
-            document.getElementById('cancelPinBtn');
-
-        const successResponseModal =
-            document.getElementById('successResponseModal');
-
-        const errorResponseModal =
-            document.getElementById('errorResponseModal');
-
-        const pricePreview =
-            document.getElementById('pricePreview');
-
-        const priceAmount =
-            document.getElementById('priceAmount');
-
-        let selectedProvider = null;
-        let isVerified = false;
-        let verifiedAccountKey = null;
-        let isVerifying = false;
-        let isProcessing = false;
-
-        let verificationController = null;
-        let verificationSequence = 0;
-
-        // ==========================
-        // THEME
-        // ==========================
-
-        function applyThemeIcon() {
-            const isLight =
-                document.documentElement.getAttribute('data-theme') === 'light';
-
-            const icon =
-                document.getElementById('themeIconTop');
-
-            if (icon) {
-                icon.setAttribute(
-                    'data-lucide',
-                    isLight ? 'sun' : 'moon'
-                );
-            }
-
-            if (window.lucide) {
-                lucide.createIcons();
-            }
+    '1':[
+        {
+            id:'gotv-supa',
+            name:'GOtv Supa (Monthly)',
+            price:11400
+        },
+        {
+            id:'gotv-max',
+            name:'GOtv Max (Monthly)',
+            price:8500
+        },
+        {
+            id:'gotv-jolli',
+            name:'GOtv Jolli (Monthly)',
+            price:5800
+        },
+        {
+            id:'gotv-jinja',
+            name:'GOtv Jinja (Monthly)',
+            price:3900
+        },
+        {
+            id:'gotv-smallie',
+            name:'GOtv Smallie (Monthly)',
+            price:1900
         }
+    ],
 
-        function toggleTheme() {
-            const current =
-                document.documentElement.getAttribute('data-theme');
-
-            const next =
-                current === 'light' ? 'dark' : 'light';
-
-            document.documentElement.setAttribute(
-                'data-theme',
-                next
-            );
-
-            try {
-                localStorage.setItem('bigotic-theme', next);
-            } catch (_) {}
-
-            applyThemeIcon();
+    '3':[
+        {
+            id:'startimes-nova-month',
+            name:'Nova (1 Month)',
+            price:2000
+        },
+        {
+            id:'startimes-basic-month',
+            name:'Basic Antenna (1 Month)',
+            price:3800
+        },
+        {
+            id:'startimes-classic-month',
+            name:'Classic Antenna (1 Month)',
+            price:5500
         }
+    ]
+};
 
-        document.getElementById('themeToggle')
-            .addEventListener('click', toggleTheme);
+/* ==========================================
+   PAGE STATE
+========================================== */
 
-        applyThemeIcon();
+let user = null;
 
-        // ==========================
-        // SESSION
-        // ==========================
+let selectedProvider = '';
 
-        function getCurrentUser() {
-            try {
-                const user = JSON.parse(
-                    localStorage.getItem('user') || 'null'
-                );
+let verified = false;
 
-                if (
-                    user &&
-                    typeof user.email === 'string' &&
-                    user.email.trim()
-                ) {
-                    return user;
-                }
-            } catch (_) {}
+let verifiedKey = null;
 
-            return null;
-        }
+let verifiedCustomer = '';
 
-        // ==========================
-        // NOTIFICATIONS
-        // ==========================
+let verifying = false;
 
-        function showNotification(message, type = 'error') {
-            const container =
-                document.getElementById('toastContainer');
+let processing = false;
 
-            const toast = document.createElement('div');
-            toast.className = 'toast';
+let uncertain = false;
 
-            const iconWrap = document.createElement('span');
-            iconWrap.className = 'icon';
+let pendingPurchase = null;
 
-            const icon = document.createElement('i');
-            icon.setAttribute(
-                'data-lucide',
-                type === 'success'
-                    ? 'check-circle-2'
-                    : 'alert-circle'
-            );
+let verificationController = null;
 
-            icon.style.width = '15px';
-            icon.style.height = '15px';
+let verificationSequence = 0;
 
-            iconWrap.appendChild(icon);
+let errorAction = 'history';
 
-            const content = document.createElement('div');
-            content.style.flex = '1';
+/* ==========================================
+   ICONS
+========================================== */
 
-            const titleEl = document.createElement('p');
-            titleEl.className = 'title';
+function icons() {
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+}
 
-            titleEl.textContent =
-                type === 'success'
-                    ? 'Success'
-                    : 'Something needs attention';
+icons();
 
-            const messageEl = document.createElement('p');
-            messageEl.className = 'msg';
-            messageEl.textContent = String(message);
+/* ==========================================
+   SESSION
+========================================== */
 
-            content.appendChild(titleEl);
-            content.appendChild(messageEl);
-
-            const dismiss = document.createElement('button');
-            dismiss.type = 'button';
-            dismiss.className = 'dismiss';
-            dismiss.setAttribute(
-                'aria-label',
-                'Dismiss notification'
-            );
-
-            const closeIcon = document.createElement('i');
-            closeIcon.setAttribute('data-lucide', 'x');
-            closeIcon.style.width = '13px';
-            closeIcon.style.height = '13px';
-
-            dismiss.appendChild(closeIcon);
-
-            toast.appendChild(iconWrap);
-            toast.appendChild(content);
-            toast.appendChild(dismiss);
-
-            container.appendChild(toast);
-
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-
-            requestAnimationFrame(() => {
-                toast.classList.add('show');
-            });
-
-            let dismissed = false;
-            let timer;
-
-            const remove = () => {
-                if (dismissed) return;
-
-                dismissed = true;
-                clearTimeout(timer);
-
-                toast.classList.remove('show');
-
-                setTimeout(() => toast.remove(), 300);
-            };
-
-            dismiss.addEventListener('click', remove);
-
-            timer = setTimeout(remove, 4500);
-
-            toast.addEventListener(
-                'mouseenter',
-                () => clearTimeout(timer)
-            );
-
-            toast.addEventListener('mouseleave', () => {
-                if (!dismissed) {
-                    timer = setTimeout(remove, 1200);
-                }
-            });
-        }
-
-        // ==========================
-        // CABLE PLANS
-        // ==========================
-
-        function getSelectedPlan() {
-            if (!selectedProvider) return null;
-
-            const plans =
-                cablePlans[selectedProvider] || [];
-
-            return plans.find(
-                plan => plan.id === planSelect.value
-            ) || null;
-        }
-
-        function updatePricePreview() {
-            const plan = getSelectedPlan();
-
-            if (!plan) {
-                pricePreview.style.display = 'none';
-                priceAmount.textContent = '₦0';
-                return;
-            }
-
-            pricePreview.style.display = 'flex';
-
-            priceAmount.textContent =
-                `₦${plan.price.toLocaleString('en-NG')}`;
-        }
-
-        function populateCablePlans(provider) {
-            planSelect.replaceChildren();
-
-            const placeholder = document.createElement('option');
-
-            placeholder.value = '';
-            placeholder.disabled = true;
-            placeholder.selected = true;
-            placeholder.textContent = '-- Choose plan --';
-
-            planSelect.appendChild(placeholder);
-
-            const plans = cablePlans[provider] || [];
-
-            plans.forEach(plan => {
-                const option = document.createElement('option');
-
-                option.value = plan.id;
-
-                option.textContent =
-                    `${plan.name} - ₦${plan.price.toLocaleString('en-NG')}`;
-
-                planSelect.appendChild(option);
-            });
-
-            planSelect.disabled = plans.length === 0;
-
-            updatePricePreview();
-        }
-
-        document.querySelectorAll('.provider-card')
-            .forEach(card => {
-                card.addEventListener('click', () => {
-                    if (isProcessing) return;
-
-                    selectedProvider = card.dataset.value;
-
-                    document.querySelectorAll('.provider-card')
-                        .forEach(item => {
-                            const active =
-                                item.dataset.value === selectedProvider;
-
-                            item.classList.toggle('active', active);
-
-                            item.setAttribute(
-                                'aria-pressed',
-                                String(active)
-                            );
-                        });
-
-                    populateCablePlans(selectedProvider);
-
-                    resetVerification();
-                });
-            });
-
-        planSelect.addEventListener('change', () => {
-            updatePricePreview();
-        });
-
-        // ==========================
-        // IUC VERIFICATION STATE
-        // ==========================
-
-        function getVerificationKey() {
-            return [
-                selectedProvider || '',
-                iucInput.value.trim()
-            ].join('|');
-        }
-
-        function setVerifyBox(state, message) {
-            verificationBox.className =
-                `verify-box ${state}`;
-
-            verificationBox.style.display = 'block';
-
-            verificationBox.textContent = message;
-        }
-
-        function resetVerification() {
-            verificationSequence++;
-
-            if (verificationController) {
-                verificationController.abort();
-                verificationController = null;
-            }
-
-            isVerified = false;
-            isVerifying = false;
-            verifiedAccountKey = null;
-
-            verifyBtn.disabled = false;
-            verifyBtnText.textContent = 'Verify';
-
-            verificationBox.style.display = 'none';
-            verificationBox.textContent = '';
-        }
-
-        iucInput.addEventListener('input', function () {
-            const cleanNumber =
-                this.value.replace(/\D/g, '').slice(0, 12);
-
-            if (this.value !== cleanNumber) {
-                this.value = cleanNumber;
-            }
-
-            resetVerification();
-        });
-
-        // ==========================
-        // VERIFY SMARTCARD / IUC
-        // ==========================
-
-        function triggerManualVerification() {
-            if (isProcessing || isVerifying) return;
-
-            const iuc = iucInput.value.trim();
-
-            if (
-                !selectedProvider ||
-                !Object.prototype.hasOwnProperty.call(
-                    providerNames,
-                    selectedProvider
-                )
-            ) {
-                setVerifyBox(
-                    'warn',
-                    'Please select a cable TV provider first.'
-                );
-
-                return;
-            }
-
-            if (!/^\d{8,12}$/.test(iuc)) {
-                setVerifyBox(
-                    'error',
-                    'Enter a valid SmartCard / IUC number containing 8 to 12 digits.'
-                );
-
-                iucInput.focus();
-                return;
-            }
-
-            performIUCVerification(
-                iuc,
-                selectedProvider
-            );
-        }
-
-        verifyBtn.addEventListener(
-            'click',
-            triggerManualVerification
+function getUser() {
+    try {
+        const item = JSON.parse(
+            localStorage.getItem('user') || 'null'
         );
 
-        async function performIUCVerification(
-            iuc,
-            provider
+        if (
+            item &&
+            typeof item.email === 'string' &&
+            item.email.trim()
         ) {
-            const requestKey =
-                [provider, iuc].join('|');
+            return item;
+        }
 
-            const requestSequence =
-                ++verificationSequence;
+    } catch (_) {}
 
-            const controller = new AbortController();
+    return null;
+}
 
-            verificationController = controller;
+function logout() {
+    try {
+        localStorage.removeItem('user');
+    } catch (_) {}
 
-            isVerifying = true;
-            isVerified = false;
-            verifiedAccountKey = null;
+    window.location.replace('login.html');
+}
 
-            verifyBtn.disabled = true;
-            verifyBtnText.textContent = 'Checking...';
+/* ==========================================
+   AUTHENTICATED API REQUEST
+========================================== */
 
-            setVerifyBox(
-                'info',
-                'Verifying SmartCard / IUC account details...'
+function apiFetch(path,options = {}) {
+    const headers = new Headers(
+        options.headers || {}
+    );
+
+    const token =
+        typeof user?.token === 'string'
+            ? user.token.trim()
+            : '';
+
+    if (token) {
+        headers.set(
+            'Authorization',
+            'Bearer ' + token
+        );
+    }
+
+    headers.set(
+        'Accept',
+        'application/json'
+    );
+
+    return fetch(API + path,{
+        ...options,
+        headers,
+        cache:'no-store'
+    });
+}
+
+/* ==========================================
+   PRESERVE LOGIN TOKEN
+========================================== */
+
+function updateStoredBalance(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ''
+    ) {
+        return;
+    }
+
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount) || !user) {
+        return;
+    }
+
+    user.balance = amount;
+
+    try {
+        const stored = JSON.parse(
+            localStorage.getItem('user') || '{}'
+        );
+
+        if (
+            stored.email &&
+            stored.email.toLowerCase() !==
+            user.email.toLowerCase()
+        ) {
+            return;
+        }
+
+        const safe = {
+            ...stored,
+            balance:amount
+        };
+
+        delete safe.password;
+        delete safe.pin;
+        delete safe.bvn;
+        delete safe.nin;
+
+        localStorage.setItem(
+            'user',
+            JSON.stringify(safe)
+        );
+
+    } catch (_) {}
+}
+
+/* ==========================================
+   THEME
+========================================== */
+
+function toggleTheme() {
+
+    const next =
+        document.documentElement.dataset.theme === 'light'
+            ? 'dark'
+            : 'light';
+
+    document.documentElement.dataset.theme = next;
+
+    try {
+        localStorage.setItem(
+            'bigotic-theme',
+            next
+        );
+    } catch (_) {}
+}
+
+$('themeBtn').onclick =
+    toggleTheme;
+
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
+function toast(message,type = 'error') {
+
+    const node =
+        document.createElement('div');
+
+    node.className =
+        'toast ' +
+        (type === 'success'
+            ? 'success'
+            : '');
+
+    node.textContent =
+        String(message);
+
+    $('toastRegion').append(node);
+
+    setTimeout(
+        () => node.remove(),
+        5500
+    );
+}
+
+/* ==========================================
+   MONEY FORMAT
+========================================== */
+
+function money(value) {
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount)) {
+        return '—';
+    }
+
+    return '₦' +
+        amount.toLocaleString(
+            'en-NG',{
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+/* ==========================================
+   GET SELECTED PACKAGE
+========================================== */
+
+function getSelectedPlan() {
+    if (!selectedProvider) {
+        return null;
+    }
+
+    const plans =
+        CABLE_PLANS[selectedProvider] || [];
+
+    return plans.find(
+        plan =>
+            plan.id === $('cableplan').value
+    ) || null;
+}
+
+/* ==========================================
+   PRICE PREVIEW
+========================================== */
+
+function updatePrice() {
+    const plan =
+        getSelectedPlan();
+
+    if (!plan) {
+        $('pricePreview').hidden = true;
+
+        $('priceAmount').textContent =
+            '₦0.00';
+
+        return;
+    }
+
+    $('pricePreview').hidden = false;
+
+    $('priceAmount').textContent =
+        money(plan.price);
+}
+
+/* ==========================================
+   POPULATE PACKAGE SELECTOR
+========================================== */
+
+function populatePlans() {
+    const select =
+        $('cableplan');
+
+    select.replaceChildren();
+
+    const placeholder =
+        document.createElement('option');
+
+    placeholder.value = '';
+    placeholder.textContent =
+        '-- Choose package --';
+
+    select.appendChild(placeholder);
+
+    const plans =
+        CABLE_PLANS[selectedProvider] || [];
+
+    for (const plan of plans) {
+        const option =
+            document.createElement('option');
+
+        option.value =
+            plan.id;
+
+        option.textContent =
+            plan.name +
+            ' — ' +
+            money(plan.price);
+
+        select.appendChild(option);
+    }
+
+    select.disabled =
+        processing || plans.length === 0;
+
+    updatePrice();
+}
+
+/* ==========================================
+   SELECT PROVIDER
+========================================== */
+
+function selectProvider(provider) {
+
+    if (processing) return;
+
+    if (
+        !Object.prototype.hasOwnProperty.call(
+            PROVIDERS,
+            provider
+        )
+    ) {
+        return;
+    }
+
+    selectedProvider =
+        provider;
+
+    document.querySelectorAll(
+        '[data-provider]'
+    ).forEach(button => {
+
+        const active =
+            button.dataset.provider === provider;
+
+        button.classList.toggle(
+            'active',
+            active
+        );
+
+        button.setAttribute(
+            'aria-pressed',
+            String(active)
+        );
+    });
+
+    populatePlans();
+    resetVerification();
+}
+
+document.querySelectorAll(
+    '[data-provider]'
+).forEach(button => {
+
+    button.addEventListener(
+        'click',
+        () => {
+            selectProvider(
+                button.dataset.provider
+            );
+        }
+    );
+});
+
+$('cableplan').addEventListener(
+    'change',
+    () => {
+        updatePrice();
+
+        // A selected package is not a verification
+        // credential. Account verification remains
+        // associated with the provider and IUC.
+        pendingPurchase = null;
+    }
+);
+
+/* ==========================================
+   IUC VERIFICATION KEY
+========================================== */
+
+function verificationKey() {
+    return [
+        selectedProvider,
+        $('smartCardNumber').value.trim()
+    ].join('|');
+}
+
+/* ==========================================
+   VERIFICATION MESSAGE
+========================================== */
+
+function showVerify(message,type = 'info') {
+
+    const box =
+        $('verificationBox');
+
+    box.hidden = false;
+
+    box.className =
+        'verify-box ' + type;
+
+    box.textContent =
+        String(message);
+}
+
+/* ==========================================
+   INVALIDATE VERIFICATION
+========================================== */
+
+function resetVerification() {
+
+    verificationSequence += 1;
+
+    if (verificationController) {
+        verificationController.abort();
+        verificationController = null;
+    }
+
+    verifying = false;
+    verified = false;
+
+    verifiedKey = null;
+    verifiedCustomer = '';
+
+    pendingPurchase = null;
+
+    $('verificationBox').hidden = true;
+    $('verificationBox').textContent = '';
+
+    $('verifyBtn').disabled =
+        processing;
+
+    $('verifyBtnText').textContent =
+        'Verify';
+}
+
+/* ==========================================
+   IUC INPUT
+========================================== */
+
+$('smartCardNumber').addEventListener(
+    'input',
+    event => {
+        if (processing) return;
+
+        event.target.value =
+            event.target.value
+                .replace(/\D/g,'')
+                .slice(0,12);
+
+        resetVerification();
+    }
+);
+
+/* ==========================================
+   VERIFY SMARTCARD / IUC
+========================================== */
+
+async function verifyIuc() {
+
+    if (processing || verifying) {
+        return;
+    }
+
+    user = getUser();
+
+    if (!user) {
+        logout();
+        return;
+    }
+
+    const iuc =
+        $('smartCardNumber').value.trim();
+
+    if (
+        !Object.prototype.hasOwnProperty.call(
+            PROVIDERS,
+            selectedProvider
+        )
+    ) {
+        showVerify(
+            'Select your cable TV provider first.',
+            'warn'
+        );
+
+        return;
+    }
+
+    if (!/^\d{8,12}$/.test(iuc)) {
+        showVerify(
+            'Enter a SmartCard or IUC number containing 8 to 12 digits.',
+            'error'
+        );
+
+        $('smartCardNumber').focus();
+
+        return;
+    }
+
+    const requestedKey =
+        verificationKey();
+
+    const sequence =
+        ++verificationSequence;
+
+    const controller =
+        new AbortController();
+
+    verificationController =
+        controller;
+
+    verifying = true;
+    verified = false;
+
+    verifiedKey = null;
+    verifiedCustomer = '';
+
+    $('verifyBtn').disabled = true;
+
+    $('verifyBtnText').textContent =
+        'Checking...';
+
+    showVerify(
+        'Checking your SmartCard / IUC account...',
+        'info'
+    );
+
+    const timeout = setTimeout(
+        () => controller.abort(),
+        25000
+    );
+
+    try {
+
+        const response = await apiFetch(
+            '/verify-iuc',
+            {
+                method:'POST',
+
+                headers:{
+                    'Content-Type':'application/json'
+                },
+
+                body:JSON.stringify({
+                    cable:selectedProvider,
+                    iuc
+                }),
+
+                signal:controller.signal
+            }
+        );
+
+        if (
+            sequence !== verificationSequence ||
+            requestedKey !== verificationKey()
+        ) {
+            return;
+        }
+
+        if (response.status === 401) {
+            logout();
+            return;
+        }
+
+        const data =
+            await response.json()
+                .catch(() => ({}));
+
+        if (
+            response.ok &&
+            data.success === true
+        ) {
+            verified = true;
+
+            verifiedKey =
+                requestedKey;
+
+            verifiedCustomer =
+                typeof data.customerName === 'string'
+                    ? data.customerName.trim()
+                    : '';
+
+            showVerify(
+                verifiedCustomer
+                    ? 'Account verified — ' +
+                      verifiedCustomer
+                    : 'SmartCard / IUC verified. Confirm the number before payment.',
+                'success'
             );
 
-            const timeoutId = setTimeout(() => {
-                controller.abort();
-            }, 25000);
+        } else {
+            verified = false;
+            verifiedKey = null;
 
-            try {
-                const response = await fetch(
-                    `${BACKEND_URL}/verify-iuc`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            cable: provider,
-                            iuc
-                        }),
-                        signal: controller.signal
-                    }
+            showVerify(
+                'Verification could not be completed. Confirm the provider and SmartCard/IUC number, then retry.',
+                'error'
+            );
+        }
+
+    } catch (_) {
+        if (sequence !== verificationSequence) {
+            return;
+        }
+
+        verified = false;
+        verifiedKey = null;
+
+        showVerify(
+            'Could not verify this SmartCard / IUC right now. Please check your connection and try again.',
+            'warn'
+        );
+
+    } finally {
+        clearTimeout(timeout);
+
+        if (sequence === verificationSequence) {
+            verifying = false;
+            verificationController = null;
+
+            $('verifyBtn').disabled =
+                processing;
+
+            $('verifyBtnText').textContent =
+                'Verify';
+        }
+    }
+}
+
+$('verifyBtn').onclick =
+    verifyIuc;
+
+/* ==========================================
+   VALIDATE CABLE PAYMENT
+========================================== */
+
+function validatePurchase() {
+
+    if (
+        !Object.prototype.hasOwnProperty.call(
+            PROVIDERS,
+            selectedProvider
+        )
+    ) {
+        toast(
+            'Select a cable TV provider.'
+        );
+
+        return null;
+    }
+
+    const plan =
+        getSelectedPlan();
+
+    if (!plan) {
+        toast(
+            'Choose a valid subscription package.'
+        );
+
+        return null;
+    }
+
+    const iuc =
+        $('smartCardNumber').value.trim();
+
+    if (!/^\d{8,12}$/.test(iuc)) {
+        toast(
+            'Enter a valid SmartCard / IUC number.'
+        );
+
+        return null;
+    }
+
+    if (
+        verifying ||
+        !verified ||
+        verifiedKey !== verificationKey()
+    ) {
+        toast(
+            'Verify this SmartCard / IUC account before subscribing.'
+        );
+
+        return null;
+    }
+
+    return {
+        provider:selectedProvider,
+        planId:plan.id,
+        planName:plan.name,
+        price:plan.price,
+        iuc,
+        customer:verifiedCustomer,
+        verificationKey:verifiedKey
+    };
+}
+
+/* ==========================================
+   MODALS
+========================================== */
+
+function openModal(id) {
+    $(id).classList.add('open');
+
+    $(id).setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'modal-open'
+    );
+}
+
+function closeModal(id) {
+    $(id).classList.remove('open');
+
+    $(id).setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+    if (
+        !document.querySelector(
+            '.modal.open'
+        )
+    ) {
+        document.body.classList.remove(
+            'modal-open'
+        );
+    }
+}
+
+/* ==========================================
+   PIN DOTS
+========================================== */
+
+function updatePinDots() {
+    const length =
+        $('txPin').value.length;
+
+    document.querySelectorAll(
+        '#pinDots span'
+    ).forEach((dot,index) => {
+
+        dot.classList.toggle(
+            'filled',
+            index < length
+        );
+    });
+}
+
+$('txPin').addEventListener(
+    'input',
+    event => {
+
+        event.target.value =
+            event.target.value
+                .replace(/\D/g,'')
+                .slice(0,4);
+
+        updatePinDots();
+    }
+);
+
+/* ==========================================
+   OPEN PIN CONFIRMATION
+========================================== */
+
+function openPin() {
+
+    if (
+        processing ||
+        verifying ||
+        uncertain ||
+        !pendingPurchase
+    ) {
+        return;
+    }
+
+    const purchase =
+        pendingPurchase;
+
+    $('confirmProvider').textContent =
+        PROVIDERS[purchase.provider];
+
+    $('confirmPlan').textContent =
+        purchase.planName;
+
+    $('confirmIuc').textContent =
+        purchase.iuc;
+
+    $('confirmCustomer').textContent =
+        purchase.customer ||
+        'Account verified';
+
+    $('confirmAmount').textContent =
+        money(purchase.price);
+
+    $('txPin').value = '';
+    updatePinDots();
+
+    openModal('pinModal');
+
+    $('txPin').focus();
+}
+
+/* ==========================================
+   CANCEL PIN CONFIRMATION
+========================================== */
+
+function closePin() {
+
+    if (processing) return;
+
+    $('txPin').value = '';
+    updatePinDots();
+
+    pendingPurchase = null;
+
+    closeModal('pinModal');
+}
+
+$('cancelPinBtn').onclick =
+    closePin;
+
+$('pinModal').addEventListener(
+    'click',
+    event => {
+        if (event.target === $('pinModal')) {
+            closePin();
+        }
+    }
+);
+
+/* ==========================================
+   FORM SUBMISSION
+========================================== */
+
+$('cableForm').addEventListener(
+    'submit',
+    event => {
+
+        event.preventDefault();
+
+        if (processing || verifying) {
+            return;
+        }
+
+        if (uncertain) {
+            showUncertain();
+            return;
+        }
+
+        user = getUser();
+
+        if (!user) {
+            logout();
+            return;
+        }
+
+        pendingPurchase =
+            validatePurchase();
+
+        if (pendingPurchase) {
+            openPin();
+        }
+    }
+);
+
+/* ==========================================
+   PROCESSING STATE
+========================================== */
+
+function setProcessing(value) {
+
+    processing = value;
+
+    $('submitBtn').disabled = value;
+    $('confirmPayBtn').disabled = value;
+    $('cancelPinBtn').disabled = value;
+    $('verifyBtn').disabled = value;
+
+    $('smartCardNumber').disabled = value;
+
+    $('cableplan').disabled =
+        value || !selectedProvider;
+
+    document.querySelectorAll(
+        '[data-provider]'
+    ).forEach(button => {
+        button.disabled = value;
+    });
+
+    $('submitBtnLabel').textContent =
+        value
+            ? 'Processing Subscription...'
+            : 'Activate Subscription';
+
+    $('confirmPayBtn').textContent =
+        value
+            ? 'Processing...'
+            : 'Confirm Payment';
+}
+
+/* ==========================================
+   RESULT MESSAGES
+========================================== */
+
+function showResult(
+    title,
+    message,
+    buttonText = 'View History',
+    action = 'history'
+) {
+
+    $('errorTitle').textContent =
+        title;
+
+    $('errorMessage').textContent =
+        message;
+
+    $('errorBtn').textContent =
+        buttonText;
+
+    errorAction = action;
+
+    openModal('errorModal');
+}
+
+/* ==========================================
+   UNCERTAIN PAYMENT RESULT
+========================================== */
+
+function showUncertain() {
+
+    uncertain = true;
+
+    showResult(
+        'Check Subscription Status',
+        'We cannot confirm whether your subscription was activated. Do not pay again yet. Check transaction history and your decoder status, or contact support.',
+        'View History',
+        'history'
+    );
+}
+
+/* ==========================================
+   HANDLE PAYMENT ERRORS
+========================================== */
+
+function handlePaymentError(data,status) {
+
+    const code =
+        String(data?.code || '')
+            .toUpperCase();
+
+    const transactionStatus =
+        String(data?.status || '')
+            .toLowerCase();
+
+    if (
+        status === 401 ||
+        status === 403
+    ) {
+        showResult(
+            'Session Expired',
+            'Your login session is no longer valid. Please sign in again.',
+            'Sign In',
+            'login'
+        );
+
+        return;
+    }
+
+    if (code === 'INSUFFICIENT_WALLET') {
+        showResult(
+            'Insufficient Wallet Balance',
+            'Your wallet balance is too low for this subscription.',
+            'Fund Wallet',
+            'fund'
+        );
+
+        return;
+    }
+
+    if (
+        code === 'INVALID_PIN' ||
+        code === 'INCORRECT_PIN'
+    ) {
+        showResult(
+            'Incorrect Transaction PIN',
+            'Your transaction PIN was not accepted. Check your PIN in Settings.',
+            'Back to Subscription',
+            'close'
+        );
+
+        return;
+    }
+
+    if (
+        status >= 500 ||
+        [
+            'PURCHASE_STATUS_UNCONFIRMED',
+            'PROVIDER_RESPONSE_UNCONFIRMED'
+        ].includes(code) ||
+        [
+            'pending',
+            'processing',
+            'unconfirmed',
+            'unknown'
+        ].includes(transactionStatus)
+    ) {
+        showUncertain();
+        return;
+    }
+
+    if (
+        code === 'PROVIDER_PURCHASE_FAILED' ||
+        code === 'PROVIDER_INSUFFICIENT_FUNDS'
+    ) {
+        showResult(
+            'Service Temporarily Unavailable',
+            'The cable provider could not complete this subscription. Check transaction history and decoder status before trying again.',
+            'View History',
+            'history'
+        );
+
+        return;
+    }
+
+    showResult(
+        'Subscription Not Confirmed',
+        'The subscription was not confirmed as successful. Check transaction history and decoder status before making another payment.',
+        'View History',
+        'history'
+    );
+}
+
+/* ==========================================
+   CONFIRM SUBSCRIPTION PAYMENT
+========================================== */
+
+$('pinForm').addEventListener(
+    'submit',
+    async event => {
+
+        event.preventDefault();
+
+        if (
+            processing ||
+            uncertain ||
+            !pendingPurchase
+        ) {
+            return;
+        }
+
+        const pin =
+            $('txPin').value.trim();
+
+        if (!/^\d{4}$/.test(pin)) {
+            toast(
+                'Enter your four-digit transaction PIN.'
+            );
+
+            $('txPin').focus();
+            return;
+        }
+
+        user = getUser();
+
+        if (!user) {
+            closePin();
+            logout();
+            return;
+        }
+
+        const purchase = {
+            ...pendingPurchase
+        };
+
+        if (
+            !verified ||
+            purchase.verificationKey !==
+                verificationKey() ||
+            selectedProvider !==
+                purchase.provider ||
+            getSelectedPlan()?.id !==
+                purchase.planId
+        ) {
+            closePin();
+
+            toast(
+                'Subscription details changed. Please check them again.'
+            );
+
+            return;
+        }
+
+        // Preserve the existing backend field
+        // names and provider identifiers.
+
+        const payload = {
+            email:user.email,
+            cablename:purchase.provider,
+            cableplan:purchase.planId,
+            smartCardNumber:purchase.iuc,
+            pin
+        };
+
+        setProcessing(true);
+
+        $('txPin').value = '';
+        updatePinDots();
+
+        closeModal('pinModal');
+
+        const controller =
+            new AbortController();
+
+        const timeout = setTimeout(
+            () => controller.abort(),
+            60000
+        );
+
+        try {
+
+            const response = await apiFetch(
+                '/buy-cable',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+
+                    body:JSON.stringify(payload),
+
+                    signal:controller.signal
+                }
+            );
+
+            const data = await response.json()
+                .catch(() => ({}));
+
+            if (
+                !response.ok ||
+                data.success !== true
+            ) {
+                handlePaymentError(
+                    data,
+                    response.status
                 );
 
-                let data;
-
-                try {
-                    data = await response.json();
-                } catch (_) {
-                    data = {};
-                }
-
-                // A response for an old IUC or provider
-                // must never verify new details.
-                if (
-                    requestSequence !== verificationSequence ||
-                    requestKey !== getVerificationKey()
-                ) {
-                    return;
-                }
-
-                if (
-                    response.ok &&
-                    data.success === true
-                ) {
-                    isVerified = true;
-                    verifiedAccountKey = requestKey;
-
-                    const customerName =
-                        typeof data.customerName === 'string'
-                            ? data.customerName.trim()
-                            : '';
-
-                    setVerifyBox(
-                        'success',
-                        customerName
-                            ? `Account verified — ${customerName}`
-                            : 'SmartCard / IUC account verified successfully.'
-                    );
-                } else {
-                    isVerified = false;
-                    verifiedAccountKey = null;
-
-                    setVerifyBox(
-                        'error',
-                        data.error ||
-                        data.message ||
-                        'Verification failed. Please confirm your SmartCard / IUC number and cable provider.'
-                    );
-                }
-            } catch (error) {
-                if (
-                    requestSequence !== verificationSequence
-                ) {
-                    return;
-                }
-
-                isVerified = false;
-                verifiedAccountKey = null;
-
-                setVerifyBox(
-                    'warn',
-                    'Account verification could not be completed. Please try again.'
-                );
-            } finally {
-                clearTimeout(timeoutId);
-
-                if (
-                    requestSequence === verificationSequence
-                ) {
-                    isVerifying = false;
-                    verificationController = null;
-
-                    verifyBtn.disabled = false;
-                    verifyBtnText.textContent = 'Verify';
-                }
-            }
-        }
-
-        // ==========================
-        // SECURITY PIN
-        // ==========================
-
-        function openPinGate() {
-            if (isProcessing || isVerifying) return;
-
-            txPinInput.value = '';
-            updatePinDots();
-
-            pinGateModal.classList.add('open');
-
-            setTimeout(() => {
-                txPinInput.focus();
-            }, 200);
-        }
-
-        function closePinGate() {
-            if (isProcessing) return;
-
-            pinGateModal.classList.remove('open');
-
-            txPinInput.value = '';
-            updatePinDots();
-        }
-
-        function updatePinDots() {
-            const value = txPinInput.value || '';
-
-            document.querySelectorAll('#pinDots span')
-                .forEach((dot, index) => {
-                    dot.classList.toggle(
-                        'filled',
-                        index < value.length
-                    );
-                });
-        }
-
-        txPinInput.addEventListener('input', function () {
-            this.value = this.value
-                .replace(/\D/g, '')
-                .slice(0, 4);
-
-            updatePinDots();
-        });
-
-        document.getElementById('pinDots')
-            .addEventListener('click', () => {
-                txPinInput.focus();
-            });
-
-        cancelPinBtn.addEventListener(
-            'click',
-            closePinGate
-        );
-
-        // ==========================
-        // TRANSACTION STATE
-        // ==========================
-
-        function setProcessing(status) {
-            isProcessing = status;
-
-            submitBtn.disabled = status;
-            confirmPayBtn.disabled = status;
-            cancelPinBtn.disabled = status;
-
-            planSelect.disabled =
-                status || !selectedProvider;
-
-            iucInput.disabled = status;
-            verifyBtn.disabled = status;
-
-            document.querySelectorAll('.provider-card')
-                .forEach(card => {
-                    card.disabled = status;
-                });
-
-            if (status) {
-                submitBtnLabel.innerHTML =
-                    '<span class="spinner"></span> Processing...';
-
-                confirmPayBtn.textContent = 'Processing...';
-            } else {
-                submitBtnLabel.textContent =
-                    'Activate subscription';
-
-                confirmPayBtn.textContent = 'Confirm';
-            }
-        }
-
-        // ==========================
-        // VALIDATE PURCHASE
-        // ==========================
-
-        function validatePurchase() {
-            if (
-                !selectedProvider ||
-                !Object.prototype.hasOwnProperty.call(
-                    providerNames,
-                    selectedProvider
-                )
-            ) {
-                return {
-                    valid: false,
-                    error: 'Please select a cable TV provider.'
-                };
-            }
-
-            const plan = getSelectedPlan();
-
-            if (!plan) {
-                return {
-                    valid: false,
-                    error: 'Please choose a valid subscription package.'
-                };
-            }
-
-            const iuc = iucInput.value.trim();
-
-            if (!/^\d{8,12}$/.test(iuc)) {
-                return {
-                    valid: false,
-                    error: 'Enter a valid SmartCard / IUC number.'
-                };
-            }
-
-            if (
-                isVerifying ||
-                !isVerified ||
-                verifiedAccountKey !== getVerificationKey()
-            ) {
-                return {
-                    valid: false,
-                    error: 'Please verify this SmartCard / IUC number before subscribing.'
-                };
-            }
-
-            return {
-                valid: true,
-                provider: selectedProvider,
-                plan,
-                iuc
-            };
-        }
-
-        cableForm.addEventListener(
-            'submit',
-            function (event) {
-                event.preventDefault();
-
-                if (isProcessing) return;
-
-                const currentUser = getCurrentUser();
-
-                if (!currentUser) {
-                    showNotification(
-                        'Your session has expired. Please log in again.'
-                    );
-
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1600);
-
-                    return;
-                }
-
-                const validation = validatePurchase();
-
-                if (!validation.valid) {
-                    showNotification(validation.error);
-                    return;
-                }
-
-                document.getElementById(
-                    'pinModalDescription'
-                ).textContent =
-                    `Enter your 4-digit transaction PIN to authorize ` +
-                    `${validation.plan.name} for ` +
-                    `₦${validation.plan.price.toLocaleString('en-NG')}.`;
-
-                openPinGate();
-            }
-        );
-
-        // ==========================
-        // PURCHASE CABLE TV
-        // ==========================
-
-        pinAuthForm.addEventListener(
-            'submit',
-            async function (event) {
-                event.preventDefault();
-
-                if (isProcessing) return;
-
-                const pin = txPinInput.value;
-
-                if (!/^\d{4}$/.test(pin)) {
-                    showNotification(
-                        'Enter your valid 4-digit transaction PIN.'
-                    );
-
-                    txPinInput.focus();
-                    return;
-                }
-
-                const currentUser = getCurrentUser();
-
-                if (!currentUser) {
-                    closePinGate();
-
-                    showNotification(
-                        'Session expired. Please log in again.'
-                    );
-
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1600);
-
-                    return;
-                }
-
-                const validation = validatePurchase();
-
-                if (!validation.valid) {
-                    closePinGate();
-                    showNotification(validation.error);
-                    return;
-                }
-
-                // Capture exact authorized values.
-                const provider = validation.provider;
-                const selectedPlan = validation.plan;
-                const iuc = validation.iuc;
-
-                setProcessing(true);
-
-                pinGateModal.classList.remove('open');
-
-                const controller = new AbortController();
-
-                const timeoutId = setTimeout(() => {
-                    controller.abort();
-                }, 60000);
-
-                try {
-                    const response = await fetch(
-                        `${BACKEND_URL}/buy-cable`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                email: currentUser.email,
-                                cablename: provider,
-                                cableplan: selectedPlan.id,
-                                smartCardNumber: iuc,
-                                pin
-                            }),
-                            signal: controller.signal
-                        }
-                    );
-
-                    let data;
-
-                    try {
-                        data = await response.json();
-                    } catch (_) {
-                        data = {};
-                    }
-
-                    if (
-                        response.ok &&
-                        data.success === true
-                    ) {
-                        if (
-                            data.newBalance !== undefined &&
-                            data.newBalance !== null &&
-                            Number.isFinite(Number(data.newBalance))
-                        ) {
-                            currentUser.balance =
-                                Number(data.newBalance);
-
-                            try {
-                                localStorage.setItem(
-                                    'user',
-                                    JSON.stringify(currentUser)
-                                );
-                            } catch (_) {}
-                        }
-
-                        document.getElementById(
-                            'successModalMsg'
-                        ).textContent =
-                            `${selectedPlan.name} subscription ` +
-                            `of ₦${selectedPlan.price.toLocaleString('en-NG')} ` +
-                            `was processed successfully for ` +
-                            `${providerNames[provider]} ` +
-                            `SmartCard / IUC ${iuc}.`;
-
-                        successResponseModal.classList.add('open');
-
-                        return;
-                    }
-
-                    const uncertain =
-                        response.status >= 500 ||
-                        data.code === 'PURCHASE_STATUS_UNCONFIRMED';
-
-                    document.getElementById(
-                        'errorModalTitle'
-                    ).textContent = uncertain
-                        ? 'Transaction status pending'
-                        : 'Activation unsuccessful';
-
-                    document.getElementById(
-                        'errorModalMsg'
-                    ).textContent = uncertain
-                        ? 'We could not confirm whether the provider processed your subscription. Please check transaction history and your decoder status before paying again.'
-                        : (
-                            data.error ||
-                            data.message ||
-                            'The provider rejected this subscription request.'
-                        );
-
-                    errorResponseModal.classList.add('open');
-
-                } catch (error) {
-                    document.getElementById(
-                        'errorModalTitle'
-                    ).textContent =
-                        'Transaction status unknown';
-
-                    document.getElementById(
-                        'errorModalMsg'
-                    ).textContent =
-                        'The server connection was interrupted. Your subscription may still have been processed. Check your transaction history and decoder status before trying again.';
-
-                    errorResponseModal.classList.add('open');
-
-                } finally {
-                    clearTimeout(timeoutId);
-
-                    setProcessing(false);
-
-                    txPinInput.value = '';
-                    updatePinDots();
-
-                    pinGateModal.classList.remove('open');
-                }
-            }
-        );
-
-        // ==========================
-        // RESULT MODALS
-        // ==========================
-
-        document.getElementById('closeSuccessBtn')
-            .addEventListener('click', () => {
-                successResponseModal.classList.remove('open');
-
-                window.location.href = 'dashboard.html';
-            });
-
-        document.getElementById('closeErrorBtn')
-            .addEventListener('click', () => {
-                errorResponseModal.classList.remove('open');
-            });
-
-        // ==========================
-        // INITIALIZE PAGE
-        // ==========================
-
-        window.addEventListener('load', function () {
-            const currentUser = getCurrentUser();
-
-            if (!currentUser) {
-                window.location.href = 'login.html';
                 return;
             }
 
-            resetVerification();
-            updatePricePreview();
-        });
-    </script>
+            const finalStatus =
+                String(
+                    data.status || ''
+                ).toLowerCase();
+
+            if (
+                [
+                    'pending',
+                    'processing',
+                    'unconfirmed',
+                    'unknown'
+                ].includes(finalStatus)
+            ) {
+                showUncertain();
+                return;
+            }
+
+            // Wallet balance update must not
+            // remove the stored login token.
+
+            updateStoredBalance(
+                data.newBalance
+            );
+
+            $('successMessage').textContent =
+                purchase.planName +
+                ' (' +
+                money(purchase.price) +
+                ') for ' +
+                PROVIDERS[purchase.provider] +
+                ' SmartCard / IUC ' +
+                purchase.iuc +
+                ' was confirmed successful.';
+
+            openModal('successModal');
+
+        } catch (error) {
+
+            console.warn(
+                'Cable purchase response unavailable:',
+                error?.name || 'Network error'
+            );
+
+            // A timeout or lost response does not
+            // prove that the provider rejected
+            // the subscription.
+
+            showUncertain();
+
+        } finally {
+
+            clearTimeout(timeout);
+
+            $('txPin').value = '';
+            updatePinDots();
+
+            pendingPurchase = null;
+
+            setProcessing(false);
+        }
+    }
+);
+
+/* ==========================================
+   RESULT BUTTONS
+========================================== */
+
+$('successBtn').onclick =
+    () => {
+        window.location.href =
+            'dashboard.html';
+    };
+
+$('successHistoryBtn').onclick =
+    () => {
+        window.location.href =
+            'history.html';
+    };
+
+$('errorBtn').onclick =
+    () => {
+
+        if (errorAction === 'login') {
+            logout();
+            return;
+        }
+
+        if (errorAction === 'fund') {
+            window.location.href =
+                'fund.html';
+            return;
+        }
+
+        if (errorAction === 'history') {
+            window.location.href =
+                'history.html';
+            return;
+        }
+
+        closeModal('errorModal');
+    };
+
+/* ==========================================
+   ERROR MODAL BACKDROP
+========================================== */
+
+$('errorModal').addEventListener(
+    'click',
+    event => {
+        if (event.target === $('errorModal')) {
+            closeModal('errorModal');
+        }
+    }
+);
+
+/* ==========================================
+   ESCAPE KEY
+========================================== */
+
+document.addEventListener(
+    'keydown',
+    event => {
+
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        if (
+            $('pinModal').classList.contains('open') &&
+            !processing
+        ) {
+            closePin();
+        }
+
+        if (
+            $('errorModal').classList.contains('open')
+        ) {
+            closeModal('errorModal');
+        }
+    }
+);
+
+/* ==========================================
+   INITIALIZATION
+========================================== */
+
+window.addEventListener(
+    'load',
+    () => {
+
+        user = getUser();
+
+        if (!user) {
+            logout();
+            return;
+        }
+
+        resetVerification();
+        updatePrice();
+    }
+);
+
+</script>
 </body>
 </html>
