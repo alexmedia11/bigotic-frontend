@@ -548,6 +548,7 @@ main {
     }
 }
 </style>
+    <script src="session-guard.js"></script>
 </head>
 
 <body>
@@ -1674,8 +1675,7 @@ $('bulkSmsForm').addEventListener(
             /* Invalid Login Session */
 
             if (
-                response.status === 401 ||
-                response.status === 403
+                response.status === 401
             ) {
                 showResult(
                     'Session Expired',

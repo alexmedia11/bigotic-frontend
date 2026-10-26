@@ -984,10 +984,8 @@ $('loginForm').addEventListener('submit', async event => {
         }
 
         try {
-            localStorage.setItem(
-                'user',
-                JSON.stringify(profile)
-            );
+            localStorage.removeItem('bigotic-last-activity-v1');
+            localStorage.setItem('user', JSON.stringify(profile));
         } catch (_) {
             showMessage(
                 'Unable to save your login session. Check your browser settings.'

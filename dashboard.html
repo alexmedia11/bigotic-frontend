@@ -1131,6 +1131,7 @@ html[data-theme="light"] .referral-box input {
 }
 
 </style>
+    <script src="session-guard.js"></script>
 </head>
 
 <body>
@@ -2022,6 +2023,7 @@ function saveUser() {
 
 function logout() {
     try {
+        localStorage.removeItem('bigotic-last-activity-v1');
         localStorage.removeItem('user');
     } catch (_) {}
 

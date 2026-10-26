@@ -897,6 +897,7 @@ main {
     }
 }
 </style>
+    <script src="session-guard.js"></script>
 </head>
 
 <body>
@@ -2442,7 +2443,7 @@ function showPurchaseError(
         responseData?.status || ''
     ).toLowerCase();
 
-    if (status === 401 || status === 403) {
+    if (status === 401) {
         openErrorModal(
             'Session Expired',
             'Your login session is no longer valid. Please sign in again.',

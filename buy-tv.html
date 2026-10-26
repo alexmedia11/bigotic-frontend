@@ -855,6 +855,7 @@ main {
     }
 }
 </style>
+    <script src="session-guard.js"></script>
 </head>
 
 <body>
@@ -2445,8 +2446,7 @@ function handlePaymentError(data,status) {
             .toLowerCase();
 
     if (
-        status === 401 ||
-        status === 403
+        status === 401
     ) {
         showResult(
             'Session Expired',

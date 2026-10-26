@@ -730,6 +730,7 @@ main {
     }
 }
 </style>
+    <script src="session-guard.js"></script>
 </head>
 
 <body>
@@ -2133,8 +2134,7 @@ async function purchase() {
             .catch(() => ({}));
 
         if (
-            response.status === 401 ||
-            response.status === 403
+            response.status === 401
         ) {
             toast(
                 'Your session expired. Sign in again.'
