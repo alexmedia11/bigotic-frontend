@@ -1174,6 +1174,13 @@ html[data-theme="light"] .knob {
                     </button>
 
                 </form>
+<div style="text-align:center;margin:16px 0">
+    <a href="forgot-password.html"
+       style="color:var(--soft);font-size:12px;font-weight:700">
+        Forgot your password?
+    </a>
+</div>
+
 
             </div>
         </details>
@@ -2314,10 +2321,7 @@ $('passwordForm').addEventListener(
                 }
             );
 
-            if (response.status === 401) {
-                sessionExpired();
-                return;
-            }
+            
 
             const result =
                 await readResult(response);
@@ -2526,10 +2530,7 @@ $('pinForm').addEventListener(
                 }
             );
 
-            if (response.status === 401) {
-                sessionExpired();
-                return;
-            }
+            
 
             const result =
                 await readResult(response);
