@@ -523,7 +523,7 @@ a { color: var(--blue); text-decoration: none; }
     .login-card { padding: 28px; }
 }
 
-/* MOBILE — LOGIN FIRST, PROMO HIDDEN */
+/* MOBILE â€” LOGIN FIRST, PROMO HIDDEN */
 
 @media (max-width: 760px) {
     .story-panel {
@@ -645,7 +645,7 @@ a { color: var(--blue); text-decoration: none; }
 
         <div class="story-bottom">
             <span>
-                <strong>BIGOTIC DATA</strong> · Powered by Bigotic Group
+                <strong>BIGOTIC DATA</strong> Â· Powered by Bigotic Group
             </span>
             <span>Fast. Reliable. Digital.</span>
         </div>
@@ -907,9 +907,7 @@ function safeProfile(data) {
 /* PASSWORD RECOVERY */
 
 $('forgotButton').addEventListener('click', () => {
-    showMessage(
-        'For password recovery, contact Bigotic Data Support on WhatsApp: 09159436827. Never share your password or transaction PIN.'
-    );
+    window.location.href = 'forgot-password.html';
 });
 
 /* LOGIN REQUEST */
