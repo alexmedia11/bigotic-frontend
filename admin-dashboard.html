@@ -521,6 +521,20 @@ select:focus-visible {
   h1 { font-size: 21px; }
   .search { width: 100%; }
 }
+/* EMAIL CAMPAIGN CENTER */
+.mail-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:17px}
+.mail-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.mail-stat{border:1px solid var(--line);border-radius:12px;background:var(--hover);padding:13px}
+.mail-stat strong{display:block;font-size:21px;color:var(--soft);margin-top:6px}
+.mail-help{font-size:11px;color:var(--mid);line-height:1.7}
+.mail-list{display:grid;gap:11px}
+.mail-row{border:1px solid var(--line);border-radius:13px;padding:14px;background:var(--surface)}
+.mail-row strong{display:block;overflow-wrap:anywhere;font-size:12px}
+.mail-row small{display:block;margin:7px 0;color:var(--dim)}
+.mail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.mail-actions button{padding:9px 12px}
+.mail-pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.75;color:var(--mid)}
+@media(max-width:760px){.mail-grid{grid-template-columns:1fr}.mail-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.mail-stat{padding:9px}.mail-stat strong{font-size:16px}}
 </style>
 </head>
 
@@ -575,7 +589,9 @@ select:focus-visible {
       <i data-lucide="bell-ring"></i>
       Announcements
     </button>
-  </nav>
+    <button class="nav-btn" data-tab="mail">
+      <i data-lucide="mail"></i>Email Campaigns
+    </button>  </nav>
 
   <div class="side-footer">
     <button class="btn soft" id="themeDesktop">
@@ -819,6 +835,48 @@ select:focus-visible {
   </div>
 </section>
 
+<!-- EMAIL CAMPAIGNS -->
+<section class="tab" id="mail">
+  <div class="notice"><strong>Responsible sending:</strong> Send promotions only to customers who have agreed to receive them. Customers who unsubscribe are excluded from future campaigns. Brevo acceptance does not guarantee inbox delivery. Your marketing cap is 90 send attempts per Lagos calendar day; platform receipts and reset emails use the same Brevo account.</div>
+  <div class="mail-stats">
+    <div class="mail-stat"><small>Marketing attempts today</small><strong id="mailUsed">—</strong></div>
+    <div class="mail-stat"><small>Daily limit</small><strong id="mailCap">90</strong></div>
+    <div class="mail-stat"><small>Campaigns</small><strong id="mailCount">—</strong></div>
+  </div>
+  <div class="mail-grid">
+    <div class="card pad">
+      <h2>Create Email Campaign</h2>
+      <form id="mailCampaignForm">
+        <div class="field"><label for="mailAudience">Send to</label>
+          <select id="mailAudience">
+            <option value="unfunded">Registered customers without a deposit</option>
+            <option value="funded">Customers who have deposited</option>
+            <option value="all">All registered customers</option>
+            <option value="selected">Specific registered emails</option>
+          </select>
+        </div>
+        <div class="field" id="mailSelectedGroup" hidden><label for="mailSelected">Selected customer emails (separate using comma or newline)</label><textarea id="mailSelected" placeholder="first@example.com, second@example.com"></textarea></div>
+        <div class="field"><label for="mailSubject">Email subject</label><input id="mailSubject" maxlength="140" required placeholder="A new reason to fund your Bigotic wallet"></div>
+        <div class="field"><label for="mailMessage">Message text</label><textarea id="mailMessage" maxlength="7000" required rows="9" placeholder="Write the message customers should receive..."></textarea></div>
+        <div class="field"><label for="mailActionUrl">Action URL (optional HTTPS)</label><input id="mailActionUrl" type="url" placeholder="https://bigoticdata.com.ng/login.html"></div>
+        <label class="check"><input id="mailPermission" type="checkbox" required> I confirm these customers gave permission to receive marketing emails and this campaign follows applicable email rules.</label>
+        <div class="actions"><button class="btn soft" id="mailTestBtn" type="button">Test to My Admin Email</button><button class="btn" type="submit" id="mailCreateBtn">Save Campaign &amp; Recipients</button></div>
+      </form>
+      <p class="mail-help">Saving a campaign does not send email. After checking your test email, use <b>Send next 10</b> below. Each recipient is recorded, so continuing the next day starts with unsent recipients.</p>
+    </div>
+    <div class="card pad">
+      <h2>Message Preview</h2>
+      <div class="preview">
+        <p style="font-weight:800;color:var(--soft)" id="mailPreviewSubject">Your subject appears here</p>
+        <p class="mail-pre" id="mailPreviewMessage">Your message appears here.</p>
+        <a id="mailPreviewLink" target="_blank" rel="noopener noreferrer" hidden style="font-size:11px;color:var(--soft)">Open Bigotic Data</a>
+      </div>
+      <p class="mail-help">Branded messages use your existing BD logo and Brevo sender. A customer unsubscribe link is included automatically.</p>
+    </div>
+  </div>
+  <div class="card pad"><div class="card-head"><strong>Campaigns &amp; Send History</strong><button type="button" id="mailRefresh" class="btn soft">Refresh</button></div><div class="mail-list" id="mailCampaignList"><p class="mail-help">Open this tab to load campaigns.</p></div></div>
+  <div class="card pad" id="mailRecipientPanel" hidden><div class="card-head"><strong id="mailRecipientTitle">Campaign recipients</strong><button class="btn soft" type="button" id="mailRecipientsClose">Close</button></div><div class="table-wrap"><table><thead><tr><th>Customer email</th><th>Status</th><th>Last action</th><th>Detail</th></tr></thead><tbody id="mailRecipientBody"></tbody></table></div></div>
+</section>
 <!-- ANNOUNCEMENTS -->
 
 <section class="tab" id="popup">
@@ -906,7 +964,9 @@ select:focus-visible {
   <button class="nav-btn" data-tab="popup">
     <i data-lucide="bell"></i>Notice
   </button>
-</nav>
+  <button class="nav-btn" data-tab="mail">
+    <i data-lucide="mail"></i>Mail
+  </button></nav>
 
 <!-- WALLET MODAL -->
 
@@ -1309,6 +1369,7 @@ const pageTitles = {
     'Data Plan Pricing',
     'Fixed-profit MobileSub catalogue and availability'
   ],
+  mail: ['Email Campaigns','Brevo promotional broadcasts and recipient tracking'],
   popup: [
     'Announcements',
     'Manage global customer dashboard notices'
@@ -1339,6 +1400,7 @@ function switchTab(tab) {
   $('pageTitle').textContent = pageTitles[tab][0];
   $('pageDescription').textContent = pageTitles[tab][1];
 
+  if (tab === 'mail') loadMailOverview();
   if (tab === 'pricing' && !pricingLoaded) {
     loadPricing();
   }
@@ -2506,6 +2568,112 @@ window.addEventListener('load', async () => {
     }
   }
 });
+
+/* EMAIL CAMPAIGN MANAGEMENT */
+let mailSending = false;
+const mailFormatDate = value => value ? new Date(value).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'}) : '—';
+
+function mailPreview(){
+  $('mailSelectedGroup').hidden = $('mailAudience').value !== 'selected';
+  $('mailPreviewSubject').textContent = $('mailSubject').value.trim() || 'Your subject appears here';
+  $('mailPreviewMessage').textContent = $('mailMessage').value.trim() || 'Your message appears here.';
+  const url = $('mailActionUrl').value.trim();
+  $('mailPreviewLink').hidden = !url || !https(url);
+  if (!$('mailPreviewLink').hidden) $('mailPreviewLink').href = url;
+}
+['mailAudience','mailSubject','mailMessage','mailActionUrl'].forEach(id=>{
+  $(id).addEventListener('input',mailPreview);
+  $(id).addEventListener('change',mailPreview);
+});
+mailPreview();
+
+async function loadMailOverview(){
+  try {
+    const data = await req('/admin/mail/overview');
+    $('mailUsed').textContent = data.usedToday;
+    $('mailCap').textContent = data.dailyCap;
+    $('mailCount').textContent = data.campaigns.length;
+    const list = $('mailCampaignList');
+    list.replaceChildren();
+    if (!data.campaigns.length){
+      const note=document.createElement('p');note.className='mail-help';note.textContent='No campaigns yet.';list.append(note);return;
+    }
+    for(const campaign of data.campaigns){
+      const panel=document.createElement('div');panel.className='mail-row';
+      const name=document.createElement('strong');name.textContent=campaign.subject;
+      const meta=document.createElement('small');meta.textContent=`${campaign.audience} · ${mailFormatDate(campaign.createdAt)} · ${campaign.total} customers`;
+      const status=document.createElement('div');status.className='mail-help';
+      status.textContent=`Pending: ${campaign.pending} · Brevo accepted: ${campaign.accepted} · Failed: ${campaign.failed} · Skipped: ${campaign.skipped} · Uncertain: ${campaign.sending}`;
+      const actions=document.createElement('div');actions.className='mail-actions';
+      const send=document.createElement('button');send.className='btn';send.type='button';send.textContent='Send next 10';send.disabled=mailSending || !campaign.pending || data.usedToday>=data.dailyCap;
+      send.onclick=()=>sendMailBatch(campaign._id);
+      const view=document.createElement('button');view.className='btn soft';view.type='button';view.textContent='View recipients';view.onclick=()=>viewMailRecipients(campaign._id,campaign.subject);
+      actions.append(send,view);panel.append(name,meta,status,actions);list.append(panel);
+    }
+  }catch(error){notify('Email campaigns could not be loaded: '+error.message)}
+}
+
+async function sendMailBatch(id){
+  if(mailSending)return;
+  if(!window.confirm('Send up to 10 pending messages now? This cannot be undone.'))return;
+  mailSending=true;
+  try{
+    const result=await req('/admin/mail/campaigns/'+encodeURIComponent(id)+'/send-batch',jsonBody({}));
+    notify(`Attempted ${result.attempted}; accepted ${result.accepted}; failed ${result.failed}; skipped ${result.skipped}.`,true);
+  }catch(error){notify('Send outcome uncertain: '+error.message+'. Check campaign history before retrying.')}
+  finally{mailSending=false;await loadMailOverview()}
+}
+
+async function viewMailRecipients(id,subject){
+  try{
+    const data=await req('/admin/mail/campaigns/'+encodeURIComponent(id)+'/recipients');
+    $('mailRecipientTitle').textContent=subject+' — Recipient status';
+    const body=$('mailRecipientBody');body.replaceChildren();
+    for(const entry of data.entries){
+      const row=document.createElement('tr');
+      for(const value of [entry.email,entry.status,mailFormatDate(entry.finishedAt),entry.error||'—']){
+        const td=document.createElement('td');td.textContent=value;row.append(td);
+      }
+      body.append(row);
+    }
+    $('mailRecipientPanel').hidden=false;
+    $('mailRecipientPanel').scrollIntoView({behavior:'smooth'});
+  }catch(error){notify('Could not load recipient history: '+error.message)}
+}
+$('mailRecipientsClose').onclick=()=>{$('mailRecipientPanel').hidden=true};
+$('mailRefresh').onclick=loadMailOverview;
+
+$('mailTestBtn').onclick=async()=>{
+  const subject=$('mailSubject').value.trim(),message=$('mailMessage').value.trim(),actionUrl=$('mailActionUrl').value.trim();
+  if(!subject||!message){notify('Enter a subject and message before testing.');return}
+  $('mailTestBtn').disabled=true;
+  try{
+    const result=await req('/admin/mail/test',jsonBody({subject,message,actionUrl}));
+    notify(result.message||'Test accepted by Brevo.',true);
+  }catch(error){notify('Test failed: '+error.message)}
+  finally{$('mailTestBtn').disabled=false}
+};
+
+$('mailCampaignForm').onsubmit=async event=>{
+  event.preventDefault();
+  if(!$('mailPermission').checked){notify('Confirm marketing permission first.');return}
+  const payload={
+    audience:$('mailAudience').value,
+    selectedEmails:$('mailSelected').value,
+    subject:$('mailSubject').value.trim(),
+    message:$('mailMessage').value.trim(),
+    actionUrl:$('mailActionUrl').value.trim(),
+    confirmPermission:true
+  };
+  if(!window.confirm('Save campaign and lock in its recipient list? No emails will be sent yet.'))return;
+  $('mailCreateBtn').disabled=true;
+  try{
+    const result=await req('/admin/mail/campaigns',jsonBody(payload));
+    notify(`Campaign created for ${result.report.total} customers. Test it, then send batches.`,true);
+    await loadMailOverview();
+  }catch(error){notify('Campaign creation failed: '+error.message)}
+  finally{$('mailCreateBtn').disabled=false}
+};
 </script>
 
 </body>
