@@ -808,7 +808,45 @@ main {
         </p>
     </header>
 
-    <!-- MANUAL FUNDING -->
+    <section id="fundingMethodPicker" style="margin-bottom:23px">
+    <h2 class="section-label">Choose Your Funding Method</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <button type="button" id="chooseManual"
+            aria-pressed="false"
+            style="padding:20px 10px;border:1px solid var(--border);border-radius:17px;background:var(--card);color:var(--high);text-align:center;cursor:pointer">
+            <i data-lucide="landmark"
+                style="width:26px;height:26px;color:var(--soft)"></i>
+            <strong style="display:block;margin:12px 0 6px;font-size:12px">
+                Manual Transfer
+            </strong>
+            <small style="display:block;color:var(--mid);line-height:1.6">
+                PalmPay · Support verification
+            </small>
+            <small style="display:block;margin-top:9px;color:var(--soft)">
+                2% fee
+            </small>
+        </button>
+
+        <button type="button" id="chooseAutomatic"
+            aria-pressed="false"
+            style="padding:20px 10px;border:1px solid var(--border);border-radius:17px;background:var(--card);color:var(--high);text-align:center;cursor:pointer">
+            <i data-lucide="zap"
+                style="width:26px;height:26px;color:var(--soft)"></i>
+            <strong style="display:block;margin:12px 0 6px;font-size:12px">
+                Automated Transfer
+            </strong>
+            <small style="display:block;color:var(--mid);line-height:1.6">
+                Personal dedicated bank account
+            </small>
+            <small style="display:block;margin-top:9px;color:var(--soft)">
+                2% fee
+            </small>
+        </button>
+    </div>
+</section>
+<div id="manualFundingOption" hidden>
+<!-- MANUAL FUNDING -->
 
     <h2 class="section-label">
         Option 01 — Manual Bank Transfer
@@ -1041,7 +1079,9 @@ main {
         </div>
     </section>
 
-    <!-- AUTOMATED FUNDING -->
+    </div>
+<div id="automaticFundingOption" hidden>
+<!-- AUTOMATED FUNDING -->
 
     <h2 class="section-label">
         Option 02 — Automated Bank Transfer
@@ -1249,7 +1289,8 @@ main {
 
     </section>
 
-    <!-- HELP -->
+    </div>
+<!-- HELP -->
 
     <div class="notice info help-box">
 
@@ -2083,6 +2124,43 @@ window.addEventListener(
             ' (2%) | Estimated wallet credit: ' + naira(net) +
             ' after payment verification.';
     });
+})();
+</script>
+<script>
+(function () {
+    const manual = document.getElementById('manualFundingOption');
+    const automatic = document.getElementById('automaticFundingOption');
+    const manualButton = document.getElementById('chooseManual');
+    const automaticButton = document.getElementById('chooseAutomatic');
+
+    if (!manual || !automatic || !manualButton || !automaticButton) {
+        return;
+    }
+
+    function choose(method) {
+        const isManual = method === 'manual';
+
+        manual.hidden = !isManual;
+        automatic.hidden = isManual;
+
+        manualButton.setAttribute('aria-pressed', String(isManual));
+        automaticButton.setAttribute('aria-pressed', String(!isManual));
+
+        manualButton.style.borderColor =
+            isManual ? 'var(--blue)' : 'var(--border)';
+
+        automaticButton.style.borderColor =
+            isManual ? 'var(--border)' : 'var(--blue)';
+
+        manualButton.style.background =
+            isManual ? 'var(--hover)' : 'var(--card)';
+
+        automaticButton.style.background =
+            isManual ? 'var(--card)' : 'var(--hover)';
+    }
+
+    manualButton.addEventListener('click', () => choose('manual'));
+    automaticButton.addEventListener('click', () => choose('automatic'));
 })();
 </script>
 </body>
