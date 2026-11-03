@@ -831,7 +831,18 @@ main {
             </div>
         </div>
 
-        <div class="account-panel">
+        
+<div class="notice info">
+    <i data-lucide="badge-percent"></i>
+    <div>
+        <strong>2% Manual Funding Fee</strong>
+        Manual deposits are subject to the same 2% charge
+        as automatic deposits. After your transfer is verified,
+        98% of the received amount is credited to your wallet.
+        For example, a ₦5,000 transfer credits ₦4,900.
+    </div>
+</div>
+<div class="account-panel">
 
             <div class="bank-item">
                 <small>Bank Name</small>
@@ -1015,6 +1026,10 @@ main {
                 </button>
 
             </form>
+<p class="help-note" id="manualFeePreview" aria-live="polite">
+    Enter the transfer amount to see the 2% fee and estimated wallet credit.
+</p>
+
 
             <div class="support-foot">
                 Support:
@@ -2037,5 +2052,38 @@ window.addEventListener(
 );
 </script>
 
+
+<script>
+(function () {
+    const amount = document.getElementById('manualAmount');
+    const output = document.getElementById('manualFeePreview');
+
+    if (!amount || !output) return;
+
+    const naira = value =>
+        '₦' + value.toLocaleString('en-NG', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+    amount.addEventListener('input', () => {
+        const gross = Number(amount.value);
+
+        if (!Number.isFinite(gross) || gross <= 0) {
+            output.textContent =
+                'Enter the transfer amount to see the 2% fee and estimated wallet credit.';
+            return;
+        }
+
+        const fee = Math.round((gross * 0.02 + Number.EPSILON) * 100) / 100;
+        const net = Math.round((gross - fee + Number.EPSILON) * 100) / 100;
+
+        output.textContent =
+            'Processing fee: ' + naira(fee) +
+            ' (2%) | Estimated wallet credit: ' + naira(net) +
+            ' after payment verification.';
+    });
+})();
+</script>
 </body>
 </html>
